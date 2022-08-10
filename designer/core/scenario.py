@@ -37,15 +37,31 @@ class Scenario:
         # return {model_config["uid"]: model_class(model_config) for model_config in self.config["models"]}
     
     def load_connections(self):
-        connections = []
-        for config in self.config["connections"]:
-            conn = Connection(config, self.models)
-            connections.append(conn)
-            conn.assign_connections()
+        connections = {}
+        for num, conn in enumerate(self.config["connections"]):
+            connection = Connection(conn, self.models, num)
+            connection.assign_connection_to_models()
+
+            connections[num] = connection
         return connections
   
 
+    def outputs(self):
+        pass
 
+    def emitters(self):
+        pass
+
+    def mass_loss(self):
+        pass
+
+    @property
+    def from_uids(self):
+        return [conn.from_uid for conn in self.connections.values()]
+    
+    @property
+    def to_uids(self):
+        return [conn.to_uid for conn in self.connections.values()]
     
     @property
     def cost(self):
