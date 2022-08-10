@@ -7,7 +7,8 @@
         "author": "Doutzen"},
 
     "scenarios": [{
-        "name": "Scenario - volledige ontharding",
+        "name": "Scenario A",
+        "description": "terugspoelen vanuit tussenkelder",
         "scenario_version": 1.0,
         "models":[  
                 { "uid": "1", "type": "input", "position": { "x": 694, "y": 443 } },

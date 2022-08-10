@@ -19,14 +19,14 @@ class Model:
     def equations(self):
         return []
 
-    @property
-    def cost(self):
-        return 250_000 # €
+    # @property
+    # def cost(self):
+    #     return 250_000 # €
 
-    @property
-    def emission(self):
-        return 500_000 # CO2eq
+    # @property
+    # def emission(self):
+    #     return 500_000 # CO2eq
 
-    @property    
-    def energy(self):
-        return 350_000 # kWh
+    # @property    
+    # def energy(self):
+    #     return 350_000 # kWh

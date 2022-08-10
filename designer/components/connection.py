@@ -6,7 +6,7 @@ class Connection:
         self.to = to
         self.fro = fro
 
-        print(f"Going from {self.fro} <-> {self.to}")
+        # print(f"Going from {self.fro} <-> {self.to}")
 
     @property
     def name(self):

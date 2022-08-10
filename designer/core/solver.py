@@ -4,6 +4,7 @@ class Solver:
     def __init__(self, scenario):
         self.scenario = scenario
         self.connect_models()
+        
         # self.solve_mass_balance()
 
     def solve_mass_balance(self):
@@ -36,12 +37,8 @@ class Solver:
         
 
         return solved
-     
-
-        
 
     def connect_models(self):
-
         # connect models and connections        
         for conn in self.scenario.connections:
             from_model = self.scenario.models[conn['src']]
@@ -52,8 +49,10 @@ class Solver:
             from_model.connect(from_anchor, to_model, to_anchor)
             
 
-            
-            # print(f"{from_model.type} is connected to {to_model.type}")
+    
+    def energy_solver(self):
+        for ui, model in self.scenario.models.items():
+            value = model.__dict__.get("energy")
         
        
         

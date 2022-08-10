@@ -45,14 +45,17 @@ class Scenario:
     
     @property
     def cost(self):
-        return sum([model.cost for model in self.models.values()])
+        """Sum all costs, if available."""
+        return sum([getattr(model, 'cost', 0) for model in self.models.values()])
 
     @property
     def emission(self):
-        return sum([model.emission for model in self.models.values()])
+        """Sum all emissions, if available."""
+        return sum([getattr(model, 'emission', 0) for model in self.models.values()])
 
     @property    
     def energy(self):
-        return sum([model.energy for model in self.models.values()])
+        """Sum all energy, if available."""
+        return sum([getattr(model, 'energy', 0) for model in self.models.values()])
         
         

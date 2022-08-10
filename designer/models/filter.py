@@ -7,23 +7,42 @@ class Filter(Model):
 
     @property
     def equations(self):
+        """
+        Construct linear equations.
+        Seperate variables from constants.
+
+        """
         equations = []
+        
         # output equal sum of inputs
-        lc1 = [c.eq(1) for c in self.connections['left']]
-        lc2 = [c.eq(-1) for c in self.connections['right']]
-        equations.append([ lc1 + lc2, 0])
+
+        #eq1 = [left of equal sign]
+        #eq2 = [right of equal sign, substitue to left]
+        #result = 0
+        eq1 = [c.eq(1) for c in self.connections['left']]
+        eq2 = [c.eq(-1) for c in self.connections['right']]
+        equations.append([ eq1 + eq2, 0])
         
         # backwash in equals loss times sum of inputs
-        lc3 = [c.eq(self.loss) for c in self.connections['left']]
-        lc4 = [c.eq(-1) for c in self.connections.get("top",[])]        
-        equations.append([lc3 + lc4, 0])
+        eq3 = [c.eq(self.loss) for c in self.connections['left']]
+        eq4 = [c.eq(-1) for c in self.connections.get("top",[])]        
+        equations.append([eq3 + eq4, 0])
         
         # backwash out equals loss times sum of inputs
-        lc5 = [c.eq(self.loss) for c in self.connections['left']]
-        lc6 = [c.eq(-1) for c in self.connections.get("bottom",[])]
-        equations.append([ lc5 + lc6, 0])
+        eq5 = [c.eq(self.loss) for c in self.connections['left']]
+        eq6 = [c.eq(-1) for c in self.connections.get("bottom",[])]
+        equations.append([ eq5 + eq6, 0])
         
         return equations    
-        
-    
-        
+            
+    @property
+    def cost(self):
+        return 250_000 # €
+
+    @property
+    def emission(self):
+        return 500_000 # CO2eq
+
+    @property    
+    def energy(self):
+        return 350_000 # kWh        
