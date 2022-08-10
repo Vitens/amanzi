@@ -7,10 +7,10 @@ class Model:
         self.name = self.type.capitalize()
         self.connections = {}
 
-    def connect(self, from_anchor, to_model, to_anchor):
-        new_connection = Connection(self, to_model)
-        self.connections.setdefault(from_anchor, []).append(new_connection)
-        to_model.connections.setdefault(to_anchor, []).append(new_connection)        
+    # def connect(self, from_anchor, to_model, to_anchor):
+    #     new_connection = Connection(self, to_model)
+    #     self.connections.setdefault(from_anchor, []).append(new_connection)
+    #     to_model.connections.setdefault(to_anchor, []).append(new_connection)        
     
     # def get_conn(self, anchor):
     #     self.connections.get(anchor, [])

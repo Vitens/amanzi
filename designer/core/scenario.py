@@ -37,8 +37,12 @@ class Scenario:
         # return {model_config["uid"]: model_class(model_config) for model_config in self.config["models"]}
     
     def load_connections(self):
-        return self.config["connections"]
-        # return [Connection(conn) for conn in self.config["connections"]]
+        connections = []
+        for config in self.config["connections"]:
+            conn = Connection(config, self.models)
+            connections.append(conn)
+            conn.assign_connections()
+        return connections
   
 
 

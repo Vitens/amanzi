@@ -3,7 +3,7 @@ import numpy as np
 class Solver:
     def __init__(self, scenario):
         self.scenario = scenario
-        self.connect_models()
+        # self.connect_models()
         
         # self.solve_mass_balance()
 
@@ -37,16 +37,22 @@ class Solver:
         
 
         return solved
+    
+    # def connect(self, from_anchor, to_model, to_anchor):
+    #     new_connection = Connection(self, to_model)
+    #     self.connections.setdefault(from_anchor, []).append(new_connection)
+    #     to_model.connections.setdefault(to_anchor, []).append(new_connection)        
+    
 
-    def connect_models(self):
-        # connect models and connections        
-        for conn in self.scenario.connections:
-            from_model = self.scenario.models[conn['src']]
-            from_anchor = conn['srcAnchor']
-            to_model = self.scenario.models[conn['tgt']]
-            to_anchor = conn['tgtAnchor']
+    # def connect_models(self):
+    #     # connect models and connections        
+    #     for conn in self.scenario.connections:
+    #         from_model = self.scenario.models[conn['src']]
+    #         from_anchor = conn['srcAnchor']
+    #         to_model = self.scenario.models[conn['tgt']]
+    #         to_anchor = conn['tgtAnchor']
 
-            from_model.connect(from_anchor, to_model, to_anchor)
+    #         from_model.connect(from_anchor, to_model, to_anchor)
             
 
     
