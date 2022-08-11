@@ -3,13 +3,17 @@
         {"version": 0.1,
         "ui_version": 0.2,
 
-        "project_name": "Project B",
-        "author": "Doutzen"},
+        "project_name": "Project C",
+        "author": "Doutzen",
+        "description": "Compare water efficiency with reservoir placements"
+        },
 
     "scenarios": [{
-        "name": "Scenario A",
-        "description": "terugspoelen vanuit tussenkelder",
-        "scenario_version": 1.0,
+        "metadata": {
+            "name": "Scenario A",
+            "description": "terugspoelen vanuit tussenkelder",
+            "scenario_version": 1.0
+            },
         "models":[  
                 { "uid": "1", "type": "input", "position": { "x": 694, "y": 443 } },
                 { "uid": "2", "type": "filter", "position": { "x": 1105, "y": 446 } },
@@ -43,9 +47,11 @@
                 {"src":"8","srcAnchor":"bottom","tgt":"9","tgtAnchor":"left"}
             ]},
             {
-        "name": "Scenario B",
-        "description": "terugspoelen vanuit tussenkelder",
-        "scenario_version": 1.0,
+        "metadata": {
+            "name": "Scenario B",
+            "description": "terugspoelen vanuit tussenkelder",
+            "scenario_version": 1.0
+            },                
         "models":[  
                 { "uid": "1", "type": "input", "position": { "x": 694, "y": 443 } },
                 { "uid": "2", "type": "filter", "position": { "x": 1105, "y": 446 } },

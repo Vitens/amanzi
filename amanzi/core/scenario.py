@@ -8,13 +8,11 @@ import sys
 MODULES = sys.modules['amanzi.models']
 
 class Scenario:
-    def __init__(self, config):
+    def __init__(self, project, config):
         self.config = config
         
-        # parse metadata
-        self.name = config["name"]
-        self.scenario_version = config["scenario_version"]
- 
+        project.assistant.parse_metadata(self)
+
         # loading
         self.models = self.load_models()  
         self.connections = self.load_connections()
@@ -39,29 +37,7 @@ class Scenario:
             connection.assign_to_models()
             connections[id] = connection
         return connections
-  
 
-    def outputs(self):
-        pass
-
-    def emitters(self):
-        pass
-
-    def mass_loss(self):
-        pass
-
-    @property
-    def from_uids(self):
-        return [conn.from_uid for conn in self.connections.values()]
-    
-    @property
-    def to_uids(self):
-        return [conn.to_uid for conn in self.connections.values()]
-
-    @property
-    def flows(self):
-        return sum([conn.mass_flow for conn in self.connections.values()])
-    
     @property
     def cost(self):
         """Sum all costs, if available."""
@@ -74,7 +50,28 @@ class Scenario:
 
     @property    
     def energy(self):
-        """Sum all energy, if available."""
-        return sum([getattr(model, 'energy', 0) for model in self.models.values()])
-        
-        
+        """Sum all energy consumptions, if available."""
+        return sum([getattr(model, 'energy', 0) for model in self.models.values()])        
+  
+
+    # def outputs(self):
+    #     pass
+
+    # def emitters(self):
+    #     pass
+
+    # def mass_loss(self):
+    #     pass
+
+    # @property
+    # def from_uids(self):
+    #     return [conn.from_uid for conn in self.connections.values()]
+    
+    # @property
+    # def to_uids(self):
+    #     return [conn.to_uid for conn in self.connections.values()]
+
+    # @property
+    # def flows(self):
+    #     return sum([conn.mass_flow for conn in self.connections.values()])
+    

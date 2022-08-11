@@ -1,25 +1,19 @@
 from .scenario import Scenario
-# from .components import Assistant
+from ..components.assistant import Assistant
 import json
 
 
 class Project:
-    def __init__(self, slm = "projectA.slm", debug=True):                
+    def __init__(self, slm = "projectC.slm", debug=True):                
         self.config = self.load_file(slm)
-        
-#         self.ui_version = config["metadata"]["ui_version"]
-#         self.version = config["metadata"]["version"]        
-        # self.assistant = Assistant(self.config)
+        self.assistant = Assistant(self)
         self.scenarios = self.load_scenarios()
          
     def load_scenarios(self):
-        return {s: Scenario(scenario_config) 
-            for s, scenario_config in enumerate(self.config['scenarios'], 1)}
+        return {s: Scenario(self, scenario) 
+            for s, scenario in enumerate(self.config['scenarios'], 1)}
         
     def load_file(self, file):
         with open(file) as slm:
             output = json.load(slm)
-#         print(json.dumps(output, indent=2, sort_keys=True))
         return output
-
-# project = Project("../../projectA.slm")
