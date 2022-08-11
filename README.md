@@ -26,6 +26,7 @@ project = Project("input/ProjectC.slm")
 
 # returns scenarios
 project.scenarios
+```
 
 
 ## Contributing
@@ -35,4 +36,3 @@ Please make sure to update tests as appropriate.
 
 ## License
 [Apache Licence 2.0](https://choosealicense.com/licenses/apache-2.0/)
-```
