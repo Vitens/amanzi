@@ -19,6 +19,8 @@ class Scenario:
         
         # init solver
         self.solver = Solver(self)
+
+        self.solver.solve()
         
         
     def load_models(self):
@@ -37,6 +39,25 @@ class Scenario:
             connection.assign_to_models()
             connections[id] = connection
         return connections
+
+    @property
+    def water_efficiency(self):
+        return round((((self.inflow - self.waste) / self.inflow)*100), 2)
+
+    @property
+    def inflow(self):
+        """Sum all incoming flows, if available."""
+        return sum([getattr(model, 'inflow', 0) for model in self.models.values()])
+
+    @property
+    def outflow(self):
+        """Sum all outgoing flows (including waste), if available."""
+        return sum([getattr(model, 'inflow', 0) for model in self.models.values()])
+
+    @property
+    def waste(self):
+        """Sum all waste flows, if available."""
+        return sum([getattr(model, 'waste', 0) for model in self.models.values()])
 
     @property
     def cost(self):

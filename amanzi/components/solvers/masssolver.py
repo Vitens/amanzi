@@ -36,4 +36,4 @@ class MassSolver:
 
     def assign_to_connections(self, mass_flows):
         for conn, flow in zip(self.scenario.connections.values(), mass_flows):
-            conn.mass_flow = flow
+            conn.flow = round(flow, 2)

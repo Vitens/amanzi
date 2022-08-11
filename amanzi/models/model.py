@@ -7,13 +7,35 @@ class Model:
         self.name = self.type.capitalize()
         self.connections = {}
 
-    # def connect(self, from_anchor, to_model, to_anchor):
-    #     new_connection = Connection(self, to_model)
-    #     self.connections.setdefault(from_anchor, []).append(new_connection)
-    #     to_model.connections.setdefault(to_anchor, []).append(new_connection)        
+    @property
+    def upstream_connections(self):
+        upstream = []
+        upstream.extend(self.connections.get("left", []))
+        upstream.extend(self.connections.get("top", []))
+
+        return upstream
     
-    # def get_conn(self, anchor):
-    #     self.connections.get(anchor, [])
+    @property
+    def downstream_connections(self):
+        downstream = []
+        downstream.extend(self.connections.get("right", []))
+        downstream.extend(self.connections.get("bottom", []))
+
+        return downstream
+
+    @property
+    def inflow(self):
+        return sum([conn.flow for conn in self.upstream_connections])
+
+    @property
+    def outflow(self):
+        return sum([conn.flow for conn in self.downstream_connections])
+
+    # @property
+    # def waste_flow(self):
+    #     for conn in self.connections.values():
+    #         if isinstance(conn.to_model, Output)
+
 
     @property
     def equations(self):

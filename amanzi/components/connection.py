@@ -9,7 +9,7 @@ class Connection:
         self.to_model = models[config['tgt']]
         self.to_anchor = config['tgtAnchor']
 
-        self.mass_flow = 0
+        self.flow = 0
 
         # print(f"Going from {self.from_model} <-> {self.to_model}")
 

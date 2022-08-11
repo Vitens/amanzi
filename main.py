@@ -22,3 +22,20 @@ for scenario in project.scenarios.values():
     print(f"Description: {scenario.description}")
     print(f"Version: {scenario.scenario_version}")
     print(" ")
+
+model_uid = '3'
+
+
+
+print("self.waste", project.scenarios[1].waste)
+print("self.inflow", project.scenarios[1].inflow)
+print("self.outflow", project.scenarios[1].outflow)
+
+print("self.waste", project.scenarios[2].waste)
+print("self.inflow", project.scenarios[2].inflow)
+print("self.outflow", project.scenarios[2].outflow)
+# print(project.scenarios[1].waste)
+# print(project.scenarios[1].models[model_uid].upstream_connections)
+# print(project.scenarios[1].models[model_uid].inflow)
+# print(project.scenarios[1].models[model_uid].downstream_connections)
+# print(project.scenarios[1].models[model_uid].outflow)
