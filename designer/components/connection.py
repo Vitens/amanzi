@@ -1,10 +1,6 @@
 class Connection:
-    def __init__(self, config, models, num):
-        self.num = num
-        # self.num = Connection.num
-        # Connection.num+=1
-
-
+    def __init__(self, id, config, models):
+        self.id = id
         self.from_uid = config['src']
         self.from_model = models[config['src']]
         self.from_anchor = config['srcAnchor']
@@ -15,9 +11,9 @@ class Connection:
 
         self.mass_flow = 0
 
-        print(f"Going from {self.from_model} <-> {self.to_model}")
+        # print(f"Going from {self.from_model} <-> {self.to_model}")
 
-    def assign_connection_to_models(self):
+    def assign_to_models(self):
         self.from_model.connections.setdefault(self.from_anchor, []).append(self)
         self.to_model.connections.setdefault(self.to_anchor, []).append(self)
 

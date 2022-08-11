@@ -1,48 +1,43 @@
 from .solver import Solver
 from .. import models
 from ..components import Connection
+from ..components import solvers
 import sys 
+
+
+MODULES = sys.modules['designer.models']
 
 class Scenario:
     def __init__(self, config):
         self.config = config
         
+        # parse metadata
         self.name = config["name"]
         self.scenario_version = config["scenario_version"]
-        
-           
-        
-        #loading
+ 
+        # loading
         self.models = self.load_models()  
         self.connections = self.load_connections()
         
+        # init solver
         self.solver = Solver(self)
         
         
     def load_models(self):
         models = {}
         for model in self.config['models']:
-            uid = model["uid"]
-            try:
-                model_class = getattr(sys.modules['designer.models'], model['type'].capitalize())
-            except:
-                # no python model class found (charts etc.)
-                print(f"Model {model['type']} has unknown type/template ")
-                model_class = getattr(sys.modules['designer.models'], "Model")
-      
-            models[uid] = model_class(model)
+            modeltype = model['type'].capitalize()
+            model_class = getattr(MODULES, modeltype , "Model")
+            models[model["uid"]] = model_class(model)
             
         return models
-            
-        # return {model_config["uid"]: model_class(model_config) for model_config in self.config["models"]}
-    
+
     def load_connections(self):
         connections = {}
-        for num, conn in enumerate(self.config["connections"]):
-            connection = Connection(conn, self.models, num)
-            connection.assign_connection_to_models()
-
-            connections[num] = connection
+        for i, conn in enumerate(self.config["connections"]):
+            connection = Connection(i, conn, self.models)
+            connection.assign_to_models()
+            connections[id] = connection
         return connections
   
 
@@ -62,6 +57,10 @@ class Scenario:
     @property
     def to_uids(self):
         return [conn.to_uid for conn in self.connections.values()]
+
+    @property
+    def flows(self):
+        return sum([conn.mass_flow for conn in self.connections.values()])
     
     @property
     def cost(self):
