@@ -3,9 +3,11 @@
 Amanzi is the back-end processor for SLIMM Designer files. It takes a `project.slm` as input and calculates each scenario.
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Clone and install this repository
 
 ```bash
+git clone https://github.com/Vitens/amanzi
+
 python setup.py install
 ```
 
