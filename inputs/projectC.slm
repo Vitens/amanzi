@@ -5,14 +5,14 @@
 
         "project_name": "Project C",
         "author": "Doutzen",
-        "description": "Compare water efficiency with reservoir placements"
+        "description": "Vergelijk waterverlies tussen verschillende terugspoel-reservoirs"
         },
 
     "scenarios": [{
         "metadata": {
             "name": "Scenario A",
             "description": "terugspoelen vanuit tussenkelder",
-            "scenario_version": 1.0
+            "scenario_version": 1.1
             },
         "models":[  
                 { "uid": "1", "type": "input", "position": { "x": 694, "y": 443 } },
@@ -49,7 +49,7 @@
             {
         "metadata": {
             "name": "Scenario B",
-            "description": "terugspoelen vanuit tussenkelder",
+            "description": "terugspoelen vanuit reservoir",
             "scenario_version": 1.0
             },                
         "models":[  

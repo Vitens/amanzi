@@ -1,9 +1,11 @@
 from amanzi.core import Project
 
-project = Project('projectC.slm')
+project = Project('inputs/projectC.slm')
 
 
+print(" ")
 print(f"✅ Project processed!")
+print(" ")
 print("Summary")
 print("_________")
 print(f"Name: {project.project_name}")
