@@ -1,4 +1,4 @@
-from designer.core import Project
+from amanzi.core import Project
 
 project = Project('projectB.slm')
 

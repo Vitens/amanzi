@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
-setup(name='designer',
+setup(name='amanzi',
       version='0.1',
-      description='Vitens Modeling and Simulation Environment',
-    #   url='https://github.com/VitensTC/doutzen2',
+      description='Back-end of SLIMM Designer',
+      url='https://github.com/Vitens/amanzi',
       author='Christiaan Slippens',
       author_email='christiaan.slippens@vitens.nl',
       license='Apache Licence 2.0',
-      packages=['designer'],
+      packages=['amanzi'],
       zip_safe=False)

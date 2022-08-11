@@ -5,7 +5,7 @@ from ..components import solvers
 import sys 
 
 
-MODULES = sys.modules['designer.models']
+MODULES = sys.modules['amanzi.models']
 
 class Scenario:
     def __init__(self, config):
@@ -34,8 +34,8 @@ class Scenario:
 
     def load_connections(self):
         connections = {}
-        for i, conn in enumerate(self.config["connections"]):
-            connection = Connection(i, conn, self.models)
+        for id, conn in enumerate(self.config["connections"]):
+            connection = Connection(id, conn, self.models)
             connection.assign_to_models()
             connections[id] = connection
         return connections
