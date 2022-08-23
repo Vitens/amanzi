@@ -1,11 +1,27 @@
 from ..components import Connection
+import sys
+import pandas as pd
+from .. import categories
+CATEGORY_MODULES = sys.modules['amanzi.categories']
 
 class Model:
     def __init__(self, config):
+        self.config = config
         self.uid = config['uid']
         self.type = config["type"]
         self.name = self.type.capitalize()
+        self.process = self.type
         self.connections = {}
+        self.init_categories()
+
+    def init_categories(self) -> None:
+        """Uses the configuration categorial settings
+        to initialize all categories via their respective instances"""
+
+        self.categories = {}
+        for cat, settings in self.config['categories'].items():
+            cat_instance = getattr(CATEGORY_MODULES, cat.capitalize())
+            self.categories[cat] = cat_instance(self.process, settings)
 
     @property
     def upstream_connections(self):
@@ -31,25 +47,7 @@ class Model:
     def outflow(self):
         """all outgoing flows, including waste flows"""
         return sum([conn.flow for conn in self.downstream_connections])
-
-    # @property
-    # def waste_flow(self):
-    #     for conn in self.connections.values():
-    #         if isinstance(conn.to_model, Output)
-
-
+        
     @property
     def equations(self):
         return []
-
-    # @property
-    # def cost(self):
-    #     return 250_000 # €
-
-    # @property
-    # def emission(self):
-    #     return 500_000 # CO2eq
-
-    # @property    
-    # def energy(self):
-    #     return 350_000 # kWh

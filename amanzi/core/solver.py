@@ -4,6 +4,7 @@ from ..components.solvers import MassSolver, ChemicalSolver, CategorySolver
 
 class Solver:
     def __init__(self, scenario):
+        self.scenario = scenario
         self.models = scenario.models
         self.connections = scenario.connections
 
@@ -29,7 +30,8 @@ class Solver:
         self.chemical_solver.solve()
 
         # 3 - solve cost funcs
-        self.category_solver.solve()
+        costfuncs = self.category_solver.solve()
+        setattr(self.scenario, 'costfuncs', costfuncs)
 
     
 
