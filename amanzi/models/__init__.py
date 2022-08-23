@@ -6,3 +6,4 @@ from .balance import Balance
 from .output import Output
 from .waste import Waste
 from .softening import Softening
+from .plateaerator import PlateAerator

@@ -2,6 +2,7 @@ from ..components import Connection
 import sys
 import pandas as pd
 from .. import categories
+
 CATEGORY_MODULES = sys.modules['amanzi.categories']
 
 class Model:
@@ -47,7 +48,7 @@ class Model:
     def outflow(self):
         """all outgoing flows, including waste flows"""
         return sum([conn.flow for conn in self.downstream_connections])
-        
+
     @property
     def equations(self):
         return []

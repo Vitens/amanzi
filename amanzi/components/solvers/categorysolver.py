@@ -13,5 +13,6 @@ class CategorySolver:
                 row = category.summary
                 rows.append(pd.Series(data=row, index=None))
 
+        # combine all model-categories
         df = pd.concat(rows, axis=1).T if len(rows) > 0 else None
         return df
