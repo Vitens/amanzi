@@ -29,6 +29,7 @@ class Model:
 
     @property
     def outflow(self):
+        """all outgoing flows, including waste flows"""
         return sum([conn.flow for conn in self.downstream_connections])
 
     # @property

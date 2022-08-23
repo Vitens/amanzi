@@ -2,7 +2,7 @@ from .solver import Solver
 from .. import models
 from ..components import Connection
 from ..components import solvers
-import sys 
+import sys
 
 
 MODULES = sys.modules['amanzi.models']
@@ -20,6 +20,9 @@ class Scenario:
         # init solver
         self.solver = Solver(self)
 
+        self.run_scenario()
+
+    def run_scenario(self):
         self.solver.solve()
         
         

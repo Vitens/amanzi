@@ -9,10 +9,6 @@ class Connection:
         self.to_model = models[config['tgt']]
         self.to_anchor = config['tgtAnchor']
 
-        self.flow = 0
-
-        # print(f"Going from {self.from_model} <-> {self.to_model}")
-
     def assign_to_models(self):
         self.from_model.connections.setdefault(self.from_anchor, []).append(self)
         self.to_model.connections.setdefault(self.to_anchor, []).append(self)

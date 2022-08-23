@@ -3,15 +3,54 @@ import numpy as np
 
 @dataclass
 class MassSolver:
+    """
+    A class to solve all linear equations in a process.
+
+    ...
+
+    Attributes
+    ----------
+    scenario : dict
+        config of a scenario containing all models and connections
+
+    Methods
+    -------
+    solve():
+        Solve the linear matrix equation.
+    """
+
     scenario: dict
 
-    def solve(self):        
-        mass_flows = self.solve_mass_balance()
-        self.assign_to_connections(mass_flows)
+    def solve(self) -> list: 
+        """
+        Solve the linear matrix equation.
 
-    def solve_mass_balance(self):
+        Computes the "exact" solution, `x`, of the well-determined, i.e., full
+        rank, linear matrix equation `ax = b`.
+
+        Parameters
+        ----------
+        a : (..., M, M) array_like
+            Coefficient matrix.
+        b : {(..., M,), (..., M, K)}, array_like
+            Ordinate or "dependent variable" values.
+
+        Returns
+        -------
+        x : {(..., M,), (..., M, K)} ndarray
+            Solution to the system a x = b.  Returned shape is identical to `b`.
+
+        Raises
+        ------
+        LinAlgError
+            If `a` is singular or not square.
+
+        See Also
+        --------
+        scipy.linalg.solve : Similar function in SciPy.
+        """        
+
         all_equations = []
-        matrix = []
         results = []
         
         # collect equations from models
@@ -32,8 +71,3 @@ class MassSolver:
         mass_flows = np.linalg.solve(matrix, results)
         
         return mass_flows
-
-
-    def assign_to_connections(self, mass_flows):
-        for conn, flow in zip(self.scenario.connections.values(), mass_flows):
-            conn.flow = round(flow, 2)

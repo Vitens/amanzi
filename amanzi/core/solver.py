@@ -1,5 +1,5 @@
 import numpy as np
-from ..components.solvers import MassSolver, ChemicalSolver
+from ..components.solvers import MassSolver, ChemicalSolver, CategorySolver
 
 
 class Solver:
@@ -10,40 +10,26 @@ class Solver:
         # init solvers
         self.mass_solver = MassSolver(scenario)
         self.chemical_solver = ChemicalSolver(scenario)
+        self.category_solver = CategorySolver(scenario)        
         # self.cost_solver = CostSolver
         # self.emission_solver = EmissionSolver
         # self.energy_solver = EnergySolver
-        
 
     def solve(self):
-        self.mass_solver.solve()
-        # self.solve_mass_balance()
 
-    # def solve_mass_balance(self):
-    #     all_equations = []
-    #     matrix = []
-    #     results = []
+        # 1 - solve mass balance
+        mass_flows = self.mass_solver.solve()
         
-    #     # collect equations from models
-    #     for model in self.models.values():
-    #         for eq, mass in model.equations:
-    #             all_equations.append(eq)
-    #             results.append(mass)
+        # assign mass flows to connection
+        for conn, flow in zip(self.connections.values(), mass_flows):
+            setattr(conn, "flow", flow)
+
         
-    #     # construct matrix
-    #     matrix = np.zeros((len(all_equations), len(results)))
-        
-    #     # fill matrix
-    #     for row, eq in enumerate(all_equations):
-    #         for conn, weight in eq:
-    #             matrix[row, conn.id] = weight  
+        # 2 - solve chemistry
+        self.chemical_solver.solve()
 
-    #     # solve matrix
-    #     mass_flows = np.linalg.solve(matrix, results)
+        # 3 - solve cost funcs
+        self.category_solver.solve()
 
-    #     #assign massflows to connections
-    #     for conn, flow in zip(self.connections.values(), mass_flows):
-    #         conn.mass_flow = flow
-
-    #     # return solved
+    
 
