@@ -24,7 +24,7 @@
                         "maintenance": {
                             "subunit": "sand",
                             "amount": 1200,
-                            "frequency": "monthly"
+                            "frequency": "1M"
                             }
                     } },
                 { "uid": "2", "type": "filter", "position": { "x": 1105, "y": 446 }, "categories":                    {
@@ -36,9 +36,16 @@
                         "maintenance": {
                             "subunit": "sand",
                             "amount": 1200,
-                            "frequency": "monthly"
+                            "frequency": "1M"
                             }
                     } },
+                { "uid": "10", "type": "plateaeration", "position": { "x": 1105, "y": 446 }, "categories":{
+                    "maintenance": {
+                        "subunit": "plates",
+                        "amount": 1200,
+                        "frequency": "1M"                        
+                    }
+                } },
                 { "uid": "3", "type": "filter", "position": { "x": 1105, "y": 446 }, "categories":                    {
                         "dosing": {
                             "chemical": "naoh",
@@ -47,8 +54,8 @@
                             },
                         "maintenance": {
                             "subunit": "sand",
-                            "amount": 1200,
-                            "frequency": "monthly"
+                            "amount": 600,
+                            "frequency": "1M"
                             }
                     } },
                 { "uid": "4", "type": "balance", "position": { "x": 1105, "y": 446 }, "categories":                    {
@@ -60,7 +67,7 @@
                         "maintenance": {
                             "subunit": "sand",
                             "amount": 1200,
-                            "frequency": "monthly"
+                            "frequency": "1M"
                             }
                     } },
                 { "uid": "5", "type": "softening", "position": { "x": 1105, "y": 446 },
@@ -74,7 +81,7 @@
                         "maintenance": {
                             "subunit": "sand",
                             "amount": 1200,
-                            "frequency": "monthly"
+                            "frequency": "1M"
                             },
                         "residual": {
                             "compound": "lime_pellets",
@@ -92,7 +99,7 @@
                         "maintenance": {
                             "subunit": "sand",
                             "amount": 1200,
-                            "frequency": "monthly"
+                            "frequency": "1M"
                             }
                     } },
                 { "uid": "8", "type": "split", "position": { "x": 1105, "y": 446 }, "categories":                    {
@@ -104,7 +111,7 @@
                         "maintenance": {
                             "subunit": "sand",
                             "amount": 1200,
-                            "frequency": "monthly"
+                            "frequency": "1M"
                             }
                     } },    
                 { "uid": "7", "type": "output", "position": { "x": 1105, "y": 446 }, "categories":                    {
@@ -116,7 +123,7 @@
                         "maintenance": {
                             "subunit": "sand",
                             "amount": 1200,
-                            "frequency": "monthly"
+                            "frequency": "1M"
                             }
                     } },
                 { "uid": "9", "type": "waste", "position": { "x": 1105, "y": 446 }, "categories":                    {
@@ -128,14 +135,16 @@
                         "maintenance": {
                             "subunit": "sand",
                             "amount": 1200,
-                            "frequency": "monthly"
+                            "frequency": "1M"
                             }
                     } }],
         "connections": [
                 {"src":"1","srcAnchor":"right","tgt":"2","tgtAnchor":"left"},
 
-                {"src":"2","srcAnchor":"right","tgt":"3","tgtAnchor":"left"},
+                {"src":"2","srcAnchor":"right","tgt":"10","tgtAnchor":"left"},
                 {"src":"2","srcAnchor":"bottom","tgt":"8","tgtAnchor":"left"},
+
+                {"src":"10","srcAnchor":"right","tgt":"3","tgtAnchor":"left"},
 
                 {"src":"3","srcAnchor":"right","tgt":"4","tgtAnchor":"left"},
                 {"src":"3","srcAnchor":"bottom","tgt":"8","tgtAnchor":"left"},
@@ -162,6 +171,7 @@
         "models":[  
                 { "uid": "1", "type": "input", "position": { "x": 694, "y": 443 }, "categories":{} },
                 { "uid": "2", "type": "filter", "position": { "x": 1105, "y": 446 }, "categories":{} },
+                { "uid": "10", "type": "plateaeration", "position": { "x": 1105, "y": 446 }, "categories":{} },
                 { "uid": "3", "type": "filter", "position": { "x": 1105, "y": 446 }, "categories":{} },
                 { "uid": "4", "type": "split", "position": { "x": 1105, "y": 446 }, "categories":{} },
                 { "uid": "5", "type": "split", "position": { "x": 1105, "y": 446 }, "categories":{} },
@@ -172,8 +182,10 @@
         "connections": [
                 {"src":"1","srcAnchor":"right","tgt":"2","tgtAnchor":"left"},
 
-                {"src":"2","srcAnchor":"right","tgt":"3","tgtAnchor":"left"},
+                {"src":"2","srcAnchor":"right","tgt":"10","tgtAnchor":"left"},
                 {"src":"2","srcAnchor":"bottom","tgt":"7","tgtAnchor":"left"},
+                
+                {"src":"10","srcAnchor":"right","tgt":"3","tgtAnchor":"left"},
 
                 {"src":"3","srcAnchor":"right","tgt":"4","tgtAnchor":"left"},
                 {"src":"3","srcAnchor":"bottom","tgt":"7","tgtAnchor":"left"},

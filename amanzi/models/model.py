@@ -13,6 +13,7 @@ class Model:
         self.name = self.type.capitalize()
         self.process = self.type
         self.connections = {}
+        self.costfuncs = None
         self.init_categories()
 
     def init_categories(self) -> None:
@@ -23,6 +24,12 @@ class Model:
         for cat, settings in self.config['categories'].items():
             cat_instance = getattr(CATEGORY_MODULES, cat.capitalize())
             self.categories[cat] = cat_instance(self.process, settings)
+
+    def solve(self):
+        pass
+    # def solve(self, influent = None):
+    #     influent = pp.add_solution({})
+    #     self.effluent = influent
 
     @property
     def upstream_connections(self):
