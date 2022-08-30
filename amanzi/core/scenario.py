@@ -25,6 +25,7 @@ class Scenario:
         models = {}
         for model in self.config['models']:
             modeltype = model['type'].capitalize()
+            print(modeltype)
             model_class = getattr(MODULES, modeltype , "Model")
             models[model["uid"]] = model_class(model)
             

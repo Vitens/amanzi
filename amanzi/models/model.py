@@ -5,7 +5,7 @@ class Model:
         self.uid = config['uid']
         self.type = config["type"]
         self.name = self.type.capitalize()
-        self.connections = {}
+        self.connections = {'top': [], 'bottom': [], 'left': [], 'right': []}
 
     # def connect(self, from_anchor, to_model, to_anchor):
     #     new_connection = Connection(self, to_model)

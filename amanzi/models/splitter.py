@@ -1,9 +1,9 @@
 from .model import Model
 
-class Split(Model):
+class Splitter(Model):
     def __init__(self, config, split=0.5):
         super().__init__(config)
-        self.split = split
+        self.split = config['configuration'].get('fraction', 0.5)
     
     @property
     def equations(self):

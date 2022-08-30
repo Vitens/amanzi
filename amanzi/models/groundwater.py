@@ -1,8 +1,8 @@
 from .model import Model
-class Input(Model):
-    def __init__(self, config, constant=10):
+class Groundwater(Model):
+    def __init__(self, config):
         super().__init__(config)
-        self.constant = constant
+        self.constant = config['configuration'].get("production", 0)
     
     @property
     def equations(self):
