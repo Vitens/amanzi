@@ -7,7 +7,6 @@ class ChemicalSolver:
         self.models = scenario.models
 
     def solve(self):
-        
         pass
 
     # def solve(self):

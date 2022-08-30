@@ -1,6 +1,4 @@
-from .model import Model
-
-class Balance(Model):
+class Balance:
     @property
     def equations(self):
         # all ingoing streams must match all outgoing streams

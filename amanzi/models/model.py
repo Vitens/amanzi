@@ -12,16 +12,18 @@ class Model:
         self.type = config["type"]
         self.name = self.type.capitalize()
         self.process = self.type
+        self.connections = {'top': [], 'bottom': [], 'left': [], 'right': []}
         self.costfuncs = None
         self.init_categories()
-        self.connections = {'top': [], 'bottom': [], 'left': [], 'right': []}
 
     def init_categories(self) -> None:
         """Uses the configuration categorial settings
         to initialize all categories via their respective instances"""
 
         self.categories = {}
-        for cat, settings in self.config['categories'].items():
+        
+        # for cat, settings in self.config['categories'].items():
+        for cat, settings in self.config.setdefault('categories', {}).items():
             cat_instance = getattr(CATEGORY_MODULES, cat.capitalize())
             self.categories[cat] = cat_instance(self.process, settings)
 
@@ -36,7 +38,6 @@ class Model:
         upstream = []
         upstream.extend(self.connections.get("left", []))
         upstream.extend(self.connections.get("top", []))
-
         return upstream
     
     @property
@@ -44,7 +45,6 @@ class Model:
         downstream = []
         downstream.extend(self.connections.get("right", []))
         downstream.extend(self.connections.get("bottom", []))
-
         return downstream
 
     @property
@@ -56,6 +56,7 @@ class Model:
         """all outgoing flows, including waste flows"""
         return sum([conn.flow for conn in self.downstream_connections])
 
-    @property
-    def equations(self):
-        return []
+    # @property
+    # def equations(self):
+    #     return []
+

@@ -2,6 +2,7 @@ import pandas as pd
 
 class CategorySolver:
     def __init__(self, scenario: dict) -> None:
+        self.scenario = scenario
         self.models = scenario.models
 
     def solve(self):
@@ -21,5 +22,6 @@ class CategorySolver:
             total_rows.extend(model_rows)
 
         # combine all model-categories
-        df = pd.concat(total_rows, axis=1).T if len(total_rows) > 0 else None
-        return df
+        self.scenario.costfuncs = pd.concat(total_rows, axis=1).T if len(total_rows) > 0 else None
+        # df = pd.concat(total_rows, axis=1).T if len(total_rows) > 0 else None
+        # return df

@@ -16,15 +16,17 @@ class Solver:
 
         # 1 - solve mass balance
         mass_flows = self.mass_solver.solve()
+        
         # assign mass flows to connection
         for conn, flow in zip(self.connections.values(), mass_flows):
-            setattr(conn, "flow", flow)
+            setattr(conn, "mass_flow", flow)
         
         # 2 - solve chemistry
         self.chemical_solver.solve()
 
         # 3 - solve cost funcs
-        self.scenario.costfuncs = self.category_solver.solve()
+        # self.scenario.costfuncs = self.category_solver.solve()
+        self.category_solver.solve()
 
     
 

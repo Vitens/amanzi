@@ -1,6 +1,7 @@
 from .model import Model
+from .submodels.balance import Balance
 
-class Plateaeration(Model):
+class Plateaeration(Model, Balance):
     def __init__(self, config: dict = {}) -> None:
         super().__init__(config)
         self.config = config
@@ -17,12 +18,3 @@ class Plateaeration(Model):
     #     air_composition = {'Ntg(g)':0.79, 'O2(g)': 0.208,'CO2(g)':0.002}
     #     air_volume = self.inflow * self.RQ
     #     return self.pp.add_gas(air_composition, volume = air_volume)
-
-
-
-    @property
-    def equations(self):
-        # all ingoing streams must match all outgoing streams
-        return [[[c.eq(1) for c in self.connections['left']]+[c.eq(-1) for c in self.connections['right']], 0]]
-
-    
