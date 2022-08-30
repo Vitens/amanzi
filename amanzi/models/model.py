@@ -11,14 +11,11 @@ class Model:
         self.uid = config['uid']
         self.type = config["type"]
         self.name = self.type.capitalize()
-<<<<<<< HEAD
         self.process = self.type
         self.connections = {}
         self.costfuncs = None
         self.init_categories()
-=======
         self.connections = {'top': [], 'bottom': [], 'left': [], 'right': []}
->>>>>>> main
 
     def init_categories(self) -> None:
         """Uses the configuration categorial settings
