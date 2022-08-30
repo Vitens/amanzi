@@ -12,7 +12,6 @@ class Model:
         self.type = config["type"]
         self.name = self.type.capitalize()
         self.process = self.type
-        self.connections = {}
         self.costfuncs = None
         self.init_categories()
         self.connections = {'top': [], 'bottom': [], 'left': [], 'right': []}
