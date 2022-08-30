@@ -1,9 +1,9 @@
 from .model import Model
 
-class Filter(Model):
+class Sandfiltration(Model):
     def __init__(self, config, loss=0.1):
         super().__init__(config)
-        self.loss = loss
+        self.loss = config['configuration'].get('loss', 0.1)
 
     @property
     def equations(self):

@@ -14,6 +14,8 @@ class Project:
             for s, scenario in enumerate(self.config['scenarios'], 1)}
         
     def load_file(self, file):
+        if isinstance(file, dict):
+            return file
         with open(file) as slm:
             output = json.load(slm)
         return output

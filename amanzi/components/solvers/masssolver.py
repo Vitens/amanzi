@@ -59,6 +59,8 @@ class MassSolver:
                 all_equations.append(eq)
                 results.append(mass)
         
+        print(all_equations)
+        
         # construct matrix
         matrix = np.zeros((len(all_equations), len(results)))
         
