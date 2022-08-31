@@ -9,12 +9,19 @@ class Connection:
         self.to_model = models[config['tgt']]
         self.to_anchor = config['tgtAnchor']
 
-        self.blocked = False # options: False, block-level 1, block-level 2, block-level 3
+        self.type = config['type']
+
+        # self.blocked = False # options: False, block-level 1, block-level 2, block-level 3
+        self.mass_flow = 0
         self.solution = False
 
     def assign_to_models(self):
         self.from_model.connections.setdefault(self.from_anchor, []).append(self)
         self.to_model.connections.setdefault(self.to_anchor, []).append(self)
+
+    def reset_solution(self):
+        self.previous_solution = self.solution
+        self.solution = False
 
     def eq(self,factor):
         return [self, factor]        
@@ -25,5 +32,6 @@ class Connection:
     
     def __repr__(self):
         return "<connection {} -> {} >".format(self.from_model.uid, self.to_model.uid)
-    
-    
+
+# class Solution:
+#     def __init__(self)
