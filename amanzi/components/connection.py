@@ -11,15 +11,24 @@ class Connection:
 
         self.type = config['type']
 
+        self.iteration = 0
+
         # self.blocked = False # options: False, block-level 1, block-level 2, block-level 3
         self.mass_flow = 0
         self.solution = False
+
+
 
     def assign_to_models(self):
         self.from_model.connections.setdefault(self.from_anchor, []).append(self)
         self.to_model.connections.setdefault(self.to_anchor, []).append(self)
 
     def reset_solution(self):
+        try:
+            print(f"{self.id} - {self.type} - {self.solution.total('Na')}")
+        except:
+            pass
+        self.iteration += 1
         self.previous_solution = self.solution
         self.solution = False
 
@@ -32,6 +41,18 @@ class Connection:
     
     def __repr__(self):
         return "<connection {} -> {} >".format(self.from_model.uid, self.to_model.uid)
+
+    @property
+    def blocked(self):
+        """Blocks connections for calculations in ChemicalSolver"""
+        if self.type == 'product':
+            return False
+        elif self.type == 'flush' and self.iteration > 0:
+            return False
+        elif self.type == 'waste' and self.iteration > 1:
+            return False
+        else:
+            return True
 
 # class Solution:
 #     def __init__(self)

@@ -19,7 +19,7 @@ class Model:
 
         self.previous_inflow = None
         self.previous_mixture = None
-        self.iteration = 0
+        # self.iteration = 0
 
     def init_categories(self) -> None:
         """Uses the configuration categorial settings
@@ -41,8 +41,8 @@ class Model:
             else:
                 mixture[conn.solution.number] = normalized_flow
 
-        print("mixture")
-        print(mixture)
+        # print("mixture")
+        # print(mixture)
 
         # cache mixture to enhance performance during iterations
         # (e.g. during flushing the system during start-up)
@@ -59,8 +59,8 @@ class Model:
 
     def run(self):
         if self.emitter:
-            for c in self.downstream_connections:
-                c.solution = self.emitter_solution
+            for conn in self.downstream_connections:
+                conn.solution = self.emitter_solution
             return
 
         # prepare  the model inputs
@@ -72,20 +72,17 @@ class Model:
         effluent = self.run_model(influent)
 
         for conn in self.downstream_connections:
-            conn.solution = effluent
+            # print(f"{conn.id} - {conn.type} - {conn.blocked}")            
+            if not conn.blocked:
+                conn.solution = effluent
 
     def run_model(self, influent):
-        print(f"Running model {self.name}")
-        effluent = influent
+        # print(f"Running model {self.name}")
+        effluent = influent.copy()
         return effluent
-
-        
 
     def solve(self):
         pass
-    # def solve(self, influent = None):
-    #     influent = pp.add_solution({})
-    #     self.effluent = influent
 
     @property
     def upstream_connections(self):
@@ -105,17 +102,18 @@ class Model:
     def flow(self):
         return sum([conn.mass_flow for conn in self.upstream_connections])
 
-    # @property
-    # def outflow(self):
-    #     """all outgoing flows, including waste flows"""
-    #     return sum([conn.flow for conn in self.downstream_connections])
-
-    
     @property
     def ready(self):
         """ check if the model is ready for calculation """
-        return all(conn.solution is not False for conn in self.upstream_connections)
-    # @property
-    # def equations(self):
-    #     return []
+        # filtered_connections = []
+        # for conn in self.upstream_connections:
+        #     if not conn.blocked:
+        #         filtered_connections.append(conn.solution)
 
+        relevant_connections = [conn for conn in self.upstream_connections if not conn.blocked]
+        return all(conn.solution is not False for conn in relevant_connections)
+
+
+
+
+        return all(conn.solution is not False for conn in self.upstream_connections)

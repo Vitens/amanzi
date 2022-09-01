@@ -10,7 +10,7 @@ class Solver:
         # init solvers
         self.mass_solver = MassSolver(scenario)
         self.chemical_solver = ChemicalSolver(scenario)
-        self.category_solver = CategorySolver(scenario)        
+        self.category_solver = CategorySolver(scenario)
 
     def solve(self):
 
@@ -20,6 +20,10 @@ class Solver:
         # assign mass flows to connection
         for conn, flow in zip(self.connections.values(), mass_flows):
             setattr(conn, "mass_flow", flow)
+
+        print("NU PAS CHEMISCH BEREKENEN")
+        print("""CHANGES: ONLY BLOCK A WASTE STREAM IF ITS DEPENDENT ON A FLUSH STEP (LIKE A SANDFILTER).
+                ELSE THE WASTE STREAM KAN ALREADY BECALCULATED IN ITERATION STEP=0""")
         
         # 2 - solve chemistry
         self.chemical_solver.solve()

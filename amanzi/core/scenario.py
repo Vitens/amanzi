@@ -27,14 +27,6 @@ class Scenario:
     def run_scenario(self):
         self.solver.solve()
 
-
-        ##### IN DE MODELCLASS EEN ITERATE COUTNER MAKEN, 
-        # DIE HOUDT BIJ OF i=0 e.d. WANT DNA HOEVEN WASTE STREAMS ENZ NIET MEE TE DOEN.
-        #  CHECK HIERVOOR WEL OF EEN WASTE STREAM NIET IN EEN CLOSED LOOP ZIT>
-        #  DIT KUN JE CHECKEN DOOR TE VERIFERIEN OF DE SRC EN ANCHOR 
-        # IN ELKAAR CIRCULAIR OVERLOPEN OID.
-        
-        
     def load_models(self):
         models = {}
         for model in self.config['models']:

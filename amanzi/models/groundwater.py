@@ -17,7 +17,6 @@ class Groundwater(Model):
     @property
     def emitter_solution(self):
         composition = self.config['configuration'].get('solution', {'Na':1, 'Cl':1})
-        print(self.name, composition)
         return self.pp.add_solution_simple(composition)
 
     @property
