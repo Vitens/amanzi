@@ -35,7 +35,7 @@ class Model:
     def mix_upstream_connections(self):
         mixture = {}
         for conn in self.upstream_connections:
-            normalized_flow = conn.mass_flow / self.flow
+            normalized_flow = conn.flow / self.flow
             if conn.solution.number in mixture.keys():
                 mixture[conn.solution.number] += normalized_flow
             else:
@@ -100,20 +100,10 @@ class Model:
 
     @property
     def flow(self):
-        return sum([conn.mass_flow for conn in self.upstream_connections])
+        return sum([conn.flow for conn in self.upstream_connections])
 
     @property
     def ready(self):
         """ check if the model is ready for calculation """
-        # filtered_connections = []
-        # for conn in self.upstream_connections:
-        #     if not conn.blocked:
-        #         filtered_connections.append(conn.solution)
-
         relevant_connections = [conn for conn in self.upstream_connections if not conn.blocked]
         return all(conn.solution is not False for conn in relevant_connections)
-
-
-
-
-        return all(conn.solution is not False for conn in self.upstream_connections)

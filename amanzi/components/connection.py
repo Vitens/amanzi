@@ -13,8 +13,7 @@ class Connection:
 
         self.iteration = 0
 
-        # self.blocked = False # options: False, block-level 1, block-level 2, block-level 3
-        self.mass_flow = 0
+        self.flow = 0
         self.solution = False
 
 
@@ -54,5 +53,7 @@ class Connection:
         else:
             return True
 
-# class Solution:
-#     def __init__(self)
+class Solution:
+    """Replaces conn.solution. This class contains a phreeqpython solution and/or Reststoffen and such"""
+    def __init__(self):
+        pass

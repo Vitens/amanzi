@@ -4,11 +4,6 @@ class Groundwater(Model):
         super().__init__(config)
         self.constant = config['configuration'].get("production", 0)
         self.emitter = True
-    
-    # def run(self):
-    #     for conn in self.downstream_connections:
-    #         conn.solution = self.emitter_solution
-    #     return
 
     @property
     def equations(self):
@@ -16,9 +11,10 @@ class Groundwater(Model):
 
     @property
     def emitter_solution(self):
-        composition = self.config['configuration'].get('solution', {'Na':1, 'Cl':1})
+        composition = self.config['configuration'].get('solution', {'Na':1, 'Cl':1}) #tijdelijk omdat concentratie nog niet in front-end-config stond
         return self.pp.add_solution_simple(composition)
 
     @property
     def flow(self):
+        """override model-flow with constant"""
         return self.constant

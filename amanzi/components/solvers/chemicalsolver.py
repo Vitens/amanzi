@@ -30,6 +30,10 @@ class ChemicalSolver:
 
         # reset connections loop
         for conn in self.connections.values():
+            try:
+                print(f"Conn.id: {conn.id} -  'pH': {conn.solution.pH}")
+            except:
+                pass
             conn.reset_solution()
 
     def run_trace(self, model):
@@ -53,10 +57,3 @@ class ChemicalSolver:
     @property
     def emitters(self):
         return [model for model in self.models.values() if model.emitter]
-
-    # def solve(self):
-    #     for model in self.scenario.models.values():
-    #         model.solve(self.pp)
-    #         print(model.type, model.name)
-    #         print(model.effluent)
-

@@ -17,14 +17,10 @@ class Solver:
         # 1 - solve mass balance
         mass_flows = self.mass_solver.solve()
         
-        # assign mass flows to connection
+        # assign mass flows to connection, also ugly, revise needed
         for conn, flow in zip(self.connections.values(), mass_flows):
-            setattr(conn, "mass_flow", flow)
+            setattr(conn, "flow", flow)
 
-        print("NU PAS CHEMISCH BEREKENEN")
-        print("""CHANGES: ONLY BLOCK A WASTE STREAM IF ITS DEPENDENT ON A FLUSH STEP (LIKE A SANDFILTER).
-                ELSE THE WASTE STREAM KAN ALREADY BECALCULATED IN ITERATION STEP=0""")
-        
         # 2 - solve chemistry
         self.chemical_solver.solve()
 
