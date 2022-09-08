@@ -1,3 +1,4 @@
+import phreeqpython
 from .solver import Solver
 from .. import models
 from ..components import Connection
@@ -10,19 +11,22 @@ MODULES = sys.modules['amanzi.models']
 class Scenario:
     def __init__(self, project, config):
         self.config = config
+        self.pp = phreeqpython.PhreeqPython()
         
         project.assistant.parse_metadata(self)
+
+        # init solver
 
         # loading
         self.models = self.load_models()  
         self.connections = self.load_connections()
 
         self.costfuncs = None
-        
-        # init solver
-        self.solver = Solver(self)
 
-        self.run_scenario()
+        self.solver = Solver(self)
+        
+
+        # self.run_scenario()
 
     def run_scenario(self):
         self.solver.solve()
@@ -32,7 +36,7 @@ class Scenario:
         for model in self.config['models']:
             modeltype = model['type'].capitalize()
             model_class = getattr(MODULES, modeltype, "Model")
-            models[model["uid"]] = model_class(model)
+            models[model["uid"]] = model_class(model, self.pp)
             
         return models
 

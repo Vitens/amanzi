@@ -2,8 +2,8 @@ from .model import Model
 from .submodels.splitter import Splitter
 
 class Membrane(Model, Splitter):
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config, pp):
+        super().__init__(config, pp)
         self.split = config['configuration'].get('recovery', 0.8)
 
     def run_model(self, influent):

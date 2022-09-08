@@ -1,59 +1,50 @@
 from phreeqpython import PhreeqPython
 from dataclasses import dataclass
 
-
 class ChemicalSolver:
     def __init__(self, scenario):
         self.scenario = scenario
-        self.connections = scenario.connections
-        self.models = scenario.models
-        self.pp = PhreeqPython()
-
-    def solve(self):
-        ########################
-        #ugly, but temporarely
-        for model in self.models.values():
-            setattr(model, 'pp', self.pp) 
-        ########################
-
-        # emitters =  [model for model in self.models.values() if model.emitter]
-        
-        # run trace
-        flush_cycles = 3
-        for i in range(flush_cycles):  
-            print("Run step", i)
-            self.step()
-
-    def step(self):
-        for model in self.emitters:
-            self.run_trace(model)
-
-        # reset connections loop
-        for conn in self.connections.values():
-            try:
-                print(f"Conn.id: {conn.id} -  'pH': {conn.solution.pH}")
-            except:
-                pass
-            conn.reset_solution()
-
-    def run_trace(self, model):
-        # wait for all upstream nodes to be calculated
-        if not model.ready:
-            self.last_model = model
+        self.max_iterations = 10
+        self.precision = 0.0001
+    
+    def run_trace(self, model, stream_type):
+    
+        if not model.is_ready(stream_type):
             return
+        solution = model.run(stream_type)
+        
+        for c in model.downstream_connections.get(stream_type, []):
+            c.solution = solution
+            self.run_trace(c.to_model, stream_type)
+    
+    def solve(self):
 
-        # run model
-        try:
-            model.run()
-        except:
-            print("Run failed in model", model.uid)
-            raise
-
-        # run downstream models
-        for conn in model.downstream_connections:
-            if not conn.blocked:
-                self.run_trace(conn.to_model)
-
+        for _,c in self.scenario.connections.items():
+            c.solution = False
+            
+        order = ['product', 'flush', 'waste']
+        
+        for i in range(self.max_iterations):
+            for o in order:
+                for m in self.emitters[o]:
+                    self.run_trace(m, o)
+                    
+            if self.error < self.precision:
+                return
+        
+        raise Exception('Model did not converge')
+    
+    @property
+    def error(self):
+        return sum([m.mass for _,m in self.scenario.models.items()])
+        
     @property
     def emitters(self):
-        return [model for model in self.models.values() if model.emitter]
+        
+        emitters = {}
+        
+        for uid,m in self.scenario.models.items():
+            for etype, e in m.emitter_solutions.items():
+                emitters.setdefault(etype, []).append(m)
+                
+        return emitters

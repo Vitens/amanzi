@@ -55,6 +55,7 @@ class MassSolver:
         
         # collect equations from models
         for model in self.scenario.models.values():
+
             for eq, mass in model.equations:
                 all_equations.append(eq)
                 results.append(mass)
