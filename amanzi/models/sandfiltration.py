@@ -4,7 +4,8 @@ from .submodels.loss import Loss
 class Sandfiltration(Model, Loss):
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        self.loss = config['configuration'].get('loss', 0.1)
+        # self.loss = config['configuration'].get('loss', 0.5)
+        self.loss = 0.5
         self.load = 0
         self.waste_solution = None
     
@@ -21,12 +22,11 @@ class Sandfiltration(Model, Loss):
         # remove 90% 
         effluent = solution.remove('NaCl', 0.9*solution.total('Na'))
         # total load
+        effluent.add('CaSO4', 10)
 
-
+        # effluent.add('NaCl', 1)
         
         return effluent
-
-
 
     @property
     def emitter_solutions(self):

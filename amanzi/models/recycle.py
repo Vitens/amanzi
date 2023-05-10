@@ -7,7 +7,10 @@ class Recycle(Model, Splitter):
         self.split = config['configuration'].get('fraction', 0.8)
         self.product_solution = None
     
+
     def run_model(self, type, total_inflow, solution):
+
+        print(type)
 
         ## remove 95% of NaCl
         total = solution.total('Na')*total_inflow
@@ -22,3 +25,9 @@ class Recycle(Model, Splitter):
     @property
     def emitter_solutions(self):
         return {'product': self.product_solution}
+    
+    @property
+    def mass(self):
+        # recycle mass is 0 otherwise the model will not converge
+        return {}
+

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 class ChemicalSolver:
     def __init__(self, scenario):
         self.scenario = scenario
-        self.max_iterations = 10
+        self.max_iterations = 100
         self.precision = 0.0001
     
     def run_trace(self, model, stream_type):
@@ -29,14 +29,27 @@ class ChemicalSolver:
                 for m in self.emitters[o]:
                     self.run_trace(m, o)
                     
-            if self.error < self.precision:
+            # check convergence for all elements
+            failed = False
+
+            for e,c in self.error.items():
+                 if abs(c) > self.precision:
+                    failed = True
+            
+            if not failed:
                 return
-        
-        raise Exception('Model did not converge')
+
+        raise Exception('Model did not converge in {} iterations. Mass balance is {}'.format(self.max_iterations, self.error))
     
     @property
     def error(self):
-        return sum([m.mass for _,m in self.scenario.models.items()])
+        # gather all mass in the system
+        balance = {}
+        for m in self.scenario.models.values():
+            for e,c in m.mass.items():
+                balance[e] = balance.get(e, 0) + c
+        
+        return balance
         
     @property
     def emitters(self):

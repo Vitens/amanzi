@@ -89,4 +89,32 @@ class Model:
 
     @property
     def mass(self):
-        return 0
+        """
+        Calculates the mass balance of the model.
+
+        Returns:
+            A dictionary where the keys are element symbols (e.g. 'C', 'H', 'O')
+            and the values are the total mass balance for each element in the model
+            in millimoles (mmol).
+        """
+        balance = {}
+
+        # Iterate over all connections in the model
+        for connection in self.connections:
+            if not connection.solution:
+                continue
+
+            # Iterate over all elements and their mass fractions in the solution
+            for element, mass_fraction in connection.solution.elements.items():
+                # Determine the direction of the flow for the current connection
+                flow_direction = 1 if connection.from_model == self else -1
+
+                # Update the balance for the current element
+                balance[element] = balance.get(element, 0) + flow_direction * mass_fraction * connection.flow * 1e3
+
+        # Round small values to zero
+        for element, mass_balance in balance.items():
+            if abs(mass_balance) < 0.00001:
+                balance[element] = 0
+
+        return balance
