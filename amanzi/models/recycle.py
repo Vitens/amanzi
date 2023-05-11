@@ -9,9 +9,6 @@ class Recycle(Model, Splitter):
     
 
     def run_model(self, type, total_inflow, solution):
-
-        print(type)
-
         ## remove 95% of NaCl
         total = solution.total('Na')*total_inflow
 

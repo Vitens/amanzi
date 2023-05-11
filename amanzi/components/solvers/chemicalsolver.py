@@ -2,10 +2,14 @@ from phreeqpython import PhreeqPython
 from dataclasses import dataclass
 
 class ChemicalSolver:
+    # For debugging purposes
+    parent_loop_count = 0
+
     def __init__(self, scenario):
         self.scenario = scenario
         self.max_iterations = 100
         self.precision = 0.0001
+        self.data = {}
     
     def run_trace(self, model, stream_type):
     
@@ -18,14 +22,15 @@ class ChemicalSolver:
             self.run_trace(c.to_model, stream_type)
     
     def solve(self):
-
         for _,c in self.scenario.connections.items():
             c.solution = False
             
         order = ['product', 'flush', 'waste']
         
         for i in range(self.max_iterations):
+            print(i)
             for o in order:
+                print(o)
                 for m in self.emitters[o]:
                     self.run_trace(m, o)
                     
@@ -37,6 +42,7 @@ class ChemicalSolver:
                     failed = True
             
             if not failed:
+                print('Converged in {} iterations'.format(i))
                 return
 
         raise Exception('Model did not converge in {} iterations. Mass balance is {}'.format(self.max_iterations, self.error))
@@ -46,8 +52,12 @@ class ChemicalSolver:
         # gather all mass in the system
         balance = {}
         for m in self.scenario.models.values():
-            for e,c in m.mass.items():
+            for e, c in m.mass.items():
                 balance[e] = balance.get(e, 0) + c
+
+        # For debugging purposes
+        self.data[ChemicalSolver.parent_loop_count] = balance.copy()
+        ChemicalSolver.parent_loop_count += 1 # increment parent-loop count
         
         return balance
         

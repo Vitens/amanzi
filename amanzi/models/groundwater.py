@@ -2,17 +2,13 @@ from .model import Model
 class Groundwater(Model):
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        self.constant = config['configuration'].get("production", 0)
+        configuration = config.get('configuration', {})
+        self.constant = configuration.get("production", 10)
+        self.composition = configuration.get('solution', {'Na':1, 'Cl':1, 'Mg': 10, 'Ca': 10}) 
+        # self.composition = self.config['configuration'].get('solution', {'Na':1, 'Cl':1, 'Mg': 10, 'Ca': 10}) 
 
-        composition = self.config['configuration'].get('solution', {'Na':1, 'Cl':1, 'Mg': 10, 'Ca': 10}) 
-
-        self.solution = self.pp.add_solution_simple(composition)
+        self.solution = self.pp.add_solution_simple(self.composition)
         self.emitter = True
-    
-    # @property
-    # def mass(self):
-    #     outflow = sum([c.flow for c in self.downstream_connections['product']])
-    #     return self.solution.total('Na') * outflow
 
     @property
     def equations(self):

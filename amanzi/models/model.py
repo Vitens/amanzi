@@ -44,12 +44,21 @@ class Model:
 
         else:
             # run model for type
-            # get influent, 
-            total_inflow = sum([c.flow for c in self.upstream_connections.get(type,[]) if c.solution is not None])
-            mixture = {c.solution : c.flow/total_inflow for c in self.upstream_connections.get(type,[]) if c.solution is not None}
-            solution = self.pp.mix_solutions(mixture)
+            # get influent,
+            try:
+                total_inflow = sum([c.flow for c in self.upstream_connections.get(type,[]) if c.solution is not None])
+                mixture = {c.solution : c.flow/total_inflow for c in self.upstream_connections.get(type,[]) if c.solution is not None}
+                solution = self.pp.mix_solutions(mixture)
 
-            solution = self.run_model(type, total_inflow, solution)
+                solution = self.run_model(type, total_inflow, solution)
+            except:
+                print("IN EXCEPTION")
+                for c in self.upstream_connections.get(type, []):
+                    print("c.flow")
+                    print(c.name, c.flow)
+                print(self.upstream_connections)
+                print(mixture)
+                raise Exception('Model {} failed to run for type {}'.format(self.uid, type))
         
         self.solution = solution
 
@@ -87,6 +96,7 @@ class Model:
 
         return anchors
 
+
     @property
     def mass(self):
         """
@@ -109,8 +119,12 @@ class Model:
                 # Determine the direction of the flow for the current connection
                 flow_direction = 1 if connection.from_model == self else -1
 
+                # Extract the element name by ignoring the parenthesis part
+                # enables correct handling of redox states
+                element_name = element.split('(')[0]
+
                 # Update the balance for the current element
-                balance[element] = balance.get(element, 0) + flow_direction * mass_fraction * connection.flow * 1e3
+                balance[element_name] = balance.get(element_name, 0) + flow_direction * mass_fraction * connection.flow * 1e3
 
         # Round small values to zero
         for element, mass_balance in balance.items():
