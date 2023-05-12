@@ -2,18 +2,22 @@ from .model import Model
 from .submodels.loss import Loss
 
 class Sandfiltration(Model, Loss):
+    parent_loop_count = 0
     def __init__(self, config, pp):
         super().__init__(config, pp)
         # self.loss = config['configuration'].get('loss', 0.5)
         self.loss = 0.5
         self.load = 0
         self.waste_solution = None
+        self.waste_tracker = {}
     
     def run_model(self, type, total_inflow, solution):
 
         if(type == 'flush'):
             # add load to waste solution
             self.waste_solution = solution.copy().add('NaCl', self.load/total_inflow)
+            self.waste_tracker[Sandfiltration.parent_loop_count] = self.waste_solution
+            Sandfiltration.parent_loop_count += 1
             return
 
         # total filter load

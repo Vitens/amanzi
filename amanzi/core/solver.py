@@ -22,7 +22,7 @@ class Solver:
             setattr(conn, "flow", flow)
 
         # 2 - solve chemistry
-        # self.chemical_solver.solve()
+        self.chemical_solver.solve()
 
         # 3 - solve cost funcs
         # self.scenario.costfuncs = self.category_solver.solve()

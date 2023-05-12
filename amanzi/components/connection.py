@@ -26,6 +26,9 @@ class Connection:
 
     def eq(self,factor):
         return [self, factor]        
+    
+    def chem(self, key):
+        return self.solution.total(key)
 
     @property
     def name(self):
