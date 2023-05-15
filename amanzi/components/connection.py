@@ -35,4 +35,5 @@ class Connection:
         return "{} -> {} ({})".format(self.from_model.uid, self.to_model.uid, self.type)
     
     def __repr__(self):
-        return "<connection {} -> {} ({})>".format(self.from_model.uid, self.to_model.uid, self.type)
+        # return "<connection {} -> {} ({})>".format(self.from_model.uid, self.to_model.uid, self.type)
+        return "<connection {} -> {} ({})>".format(self.from_model.name, self.to_model.name, self.type)

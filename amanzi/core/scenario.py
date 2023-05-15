@@ -33,8 +33,12 @@ class Scenario:
 
     def load_models(self):
         models = {}
+        print("MODULES")
+        print(MODULES)
         for model in self.config['models']:
+            # print(model['name'])
             modeltype = model['type'].capitalize()
+            print(modeltype)
             model_class = getattr(MODULES, modeltype, "Model")
             models[model["uid"]] = model_class(model, self.pp)
             
@@ -43,6 +47,7 @@ class Scenario:
     def load_connections(self):
         connections = {}
         for id, conn in enumerate(self.config["connections"]):
+            print(id, conn, self.models)
             connection = Connection(id, conn, self.models)
             connection.assign_to_models()
             connections[id] = connection

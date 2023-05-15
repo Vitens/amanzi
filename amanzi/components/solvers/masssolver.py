@@ -54,16 +54,16 @@ class MassSolver:
         results = []
         
         # collect equations from models
+        counter = 0
         for model in self.scenario.models.values():
-
             for eq, mass in model.equations:
                 all_equations.append(eq)
                 results.append(mass)
+                counter += 1
 
         
         # construct matrix
         matrix = np.zeros((len(all_equations), len(results)))
-        
         # fill matrix
         for row, eq in enumerate(all_equations):
             for conn, weight in eq:

@@ -31,7 +31,7 @@ class ChemicalSolver:
             print(i)
             for o in order:
                 print(o)
-                for m in self.emitters[o]:
+                for m in self.emitters.get(o, []):
                     self.run_trace(m, o)
                     
             # check convergence for all elements

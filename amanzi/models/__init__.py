@@ -9,3 +9,4 @@ from .softening import Softening
 from .plateaeration import Plateaeration
 from .recycle import Recycle
 from .splitter import Splitter
+from .ionexchange import Ionexchange
