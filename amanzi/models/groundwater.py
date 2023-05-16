@@ -5,7 +5,7 @@ class Groundwater(Model):
         configuration = config.get('configuration', {})
         self.constant = configuration.get("production", 10)
         self.composition = configuration.get('solution', {'Na':1, 'Cl':1, 'Mg': 10, 'Ca': 10}) 
-        # self.composition = self.config['configuration'].get('solution', {'Na':1, 'Cl':1, 'Mg': 10, 'Ca': 10}) 
+        self.composition = {'Mtg': 0.5, 'Oxg': 0.1, 'CO2': 0.3}
 
         self.solution = self.pp.add_solution_simple(self.composition)
         self.emitter = True

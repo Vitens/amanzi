@@ -6,7 +6,7 @@ from .reservoir import Reservoir
 from .output import Output
 from .waste import Waste
 from .softening import Softening
-from .plateaeration import Plateaeration
+from .plate import Plate
 from .recycle import Recycle
 from .splitter import Splitter
 from .ionexchange import Ionexchange
