@@ -67,6 +67,23 @@ class Model:
     def run_model(self, type, total_inflow, solution):
         return solution
 
+    # calculate minor loss, either as percentage of inflow or as a fixed value
+    @property
+    def minorloss(self):
+        if self.config.get('minorloss_method', 'percentage') != 'percentage':
+            return float(self.config.get('minorloss', 0))
+        return 0
+    
+    @property
+    def minorloss_percentage(self):
+        if self.config.get('minorloss_method', 'percentage') == 'percentage':
+            return 1-float(self.config.get('minorloss', 0))
+        return 1
+
+        
+        
+
+
     @property
     def emitter_solutions(self):
         return {}

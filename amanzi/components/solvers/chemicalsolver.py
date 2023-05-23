@@ -19,7 +19,8 @@ class ChemicalSolver:
         
         for c in model.downstream_connections.get(stream_type, []):
             c.solution = solution
-            self.run_trace(c.to_model, stream_type)
+            if(c.flow > 0):
+                self.run_trace(c.to_model, stream_type)
     
     def solve(self):
         for _,c in self.scenario.connections.items():
@@ -28,9 +29,7 @@ class ChemicalSolver:
         order = ['product', 'flush', 'waste']
         
         for i in range(self.max_iterations):
-            print(i)
             for o in order:
-                print(o)
                 for m in self.emitters.get(o, []):
                     self.run_trace(m, o)
                     

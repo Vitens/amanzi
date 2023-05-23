@@ -31,6 +31,10 @@ class Connection:
         return self.solution.total(key)
 
     @property
+    def cid(self):
+        return "{} ({}) -> {} ({})".format(self.from_model.uid, self.from_anchor, self.to_model.uid, self.to_anchor)
+
+    @property
     def name(self):
         return "{} -> {} ({})".format(self.from_model.uid, self.to_model.uid, self.type)
     

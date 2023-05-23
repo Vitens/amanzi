@@ -13,10 +13,10 @@ class Reservoir(Model):
     @property
     def equations(self):
         # all ingoing streams must match all outgoing streams
-        return [[[c.eq(1) for c in self.upstream_connections['product']]+ 
+        return [[[c.eq(self.minorloss_percentage) for c in self.upstream_connections['product']]+ 
                  [c.eq(-1) for c in self.downstream_connections['product']] + 
                  [c.eq(-1) for c in self.downstream_connections.get('flush',[])] 
-                 , 0]]
+                 , self.minorloss]]
     
     @property
     def emitter_solutions(self):

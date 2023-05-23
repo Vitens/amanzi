@@ -4,8 +4,8 @@ from .submodels.loss import Loss
 class Sandfiltration(Model, Loss):
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        # self.loss = config['configuration'].get('loss', 0.5)
-        self.loss = 0.5
+        self.loss = config['configuration'].get('loss', 0.5)
+        # self.loss = 0.5
         self.load = 0
         self.waste_solution = None
     

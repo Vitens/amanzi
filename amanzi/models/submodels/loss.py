@@ -4,9 +4,9 @@ class Loss:
         equations = []
 
         # upstream equals downstream
-        eq1 = [c.eq(1) for c in self.upstream_connections['product']]
+        eq1 = [c.eq(self.minorloss_percentage) for c in self.upstream_connections['product']]
         eq2 = [c.eq(-1) for c in self.downstream_connections['product']]
-        equations.append([ eq1 + eq2, 0])
+        equations.append([ eq1 + eq2, self.minorloss])
         
         # backwash in equals loss times sum of inputs
         eq3 = [c.eq(self.loss) for c in self.upstream_connections['product']]
