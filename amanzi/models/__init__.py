@@ -10,3 +10,4 @@ from .plate import Plate
 from .recycle import Recycle
 from .splitter import Splitter
 from .ionexchange import Ionexchange
+from .vacuum import Vacuum

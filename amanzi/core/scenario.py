@@ -3,6 +3,7 @@ from .solver import Solver
 from .. import models
 from ..components import Connection
 from ..components import solvers
+from ..components import solution
 import sys
 
 

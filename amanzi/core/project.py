@@ -10,7 +10,6 @@ class Project:
         self.scenarios = self.load_scenarios()
          
     def load_scenarios(self):
-        print(self.config['scenarios'])
         return {s: Scenario(self, scenario) 
             for s, scenario in enumerate(self.config['scenarios'], 0)}
         
