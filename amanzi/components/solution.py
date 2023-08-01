@@ -104,6 +104,12 @@ def charge_balance(self):
 def balance_error(self):
     cat,an = self.calculate_total_charge()
     return 100*(cat-abs(an))/(cat+abs(an))
+
+@property
+def tds(self):
+    k_e = 0.67 #The value of kₑ increases along with the increase of ions in water. It ranges from 0.5 to 0.8, but usually, 0.67 is used. (https://www.omnicalculator.com/chemistry/tds)
+    return self.sc * k_e
+
   
 
 # extend class
@@ -118,3 +124,4 @@ Solution.m = m
 Solution.calculate_total_charge = calculate_total_charge
 Solution.charge_balance = charge_balance
 Solution.balance_error = balance_error
+Solution.tds = tds

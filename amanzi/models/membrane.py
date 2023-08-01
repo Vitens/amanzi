@@ -16,7 +16,7 @@ class Membrane(Model, Splitter):
     def __init__(self, config, pp):
         super().__init__(config, pp)
         self.configuration = config.get('configuration', {})
-        self.split = self.configuration.get('recovery', 80)/100
+        self.split = self.configuration.get('recovery', 0.8)
         self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
         self.retention = MEMBRANES_DATABASE[self.membrane].get('retention', {'Na': 0.9, 'Cl': 0.9, 'Mg': 0.5, 'Ca': 0.5})
         
@@ -28,8 +28,7 @@ class Membrane(Model, Splitter):
         modules = self.configuration.get('modules', 1)
         stages = self.configuration.get('stages', 1)
         vessels = self.configuration.get('vessels', 1)
-        module_surface_area = MEMBRANES_DATABASE[self.membrane]['surface']
-
+        module_surface_area = MEMBRANES_DATABASE[self.membrane].get('surface', 40)
         return modules * vessels * stages * module_surface_area * stacks
 
         
@@ -102,7 +101,9 @@ class Membrane(Model, Splitter):
 
 
         return {
-            'surface_area': self.surface_area,
+            'summary' : {
+                'surface_area': self.surface_area,
+                },
             'influent': {
                 'pH': self.influent.pH,
                 'na': self.influent.total('Na'),
@@ -124,6 +125,40 @@ class Membrane(Model, Splitter):
                 'ca': self.concentrate.total('Ca','mg'),
                 'mg': self.concentrate.total('Mg','mg'),
             },
+            'flows': {
+                1 : {
+                    'inlfuent' : 100,
+                    'effluent' : 100 * self.split,
+                    'concentrate' : 100 * (1 - self.split),
+                },
+                2 : {
+                    'inlfuent' : 100,
+                    'effluent' : 100 * self.split,
+                    'concentrate' : 100 * (1 - self.split),
+                },
+                3 : {
+                    'inlfuent' : 100,
+                    'effluent' : 100 * self.split,
+                    'concentrate' : 100 * (1 - self.split),
+                },                
+            },
+            'pressures': {
+                1 : {
+                    'inlfuent' : 100,
+                    'effluent' : 100 * self.split,
+                    'concentrate' : 100 * (1 - self.split),
+                },
+                2 : {
+                    'inlfuent' : 100,
+                    'effluent' : 100 * self.split,
+                    'concentrate' : 100 * (1 - self.split),
+                },
+                3 : {
+                    'inlfuent' : 100,
+                    'effluent' : 100 * self.split,
+                    'concentrate' : 100 * (1 - self.split),
+                },                
+            }
             # 'charts': {
             # 'pH': ph_data,
             # 'SI': si_data, 
