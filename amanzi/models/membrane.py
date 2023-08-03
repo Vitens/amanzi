@@ -1,6 +1,8 @@
 from .model import Model
 from .submodels.splitter import Splitter
 import pandas as pd
+from scipy.optimize import minimize, minimize_scalar
+import json
 
 
 # Temporary database hardcoded untill implemented globally
@@ -48,28 +50,57 @@ class Membrane(Model, Splitter):
         self.retention = MEMBRANES_DATABASE[self.membrane].get('retention', {'Na': 0.9, 'Cl': 0.9, 'Mg': 0.5, 'Ca': 0.5})
         self.pv_elements = self.configuration.get('modules', 6)
         self.membrane_surface = self.configuration.get('surface', 40)
-        self.stage_config = list(self.configuration['vessels'].values())
+        self.stacks = self.configuration.get('stacks', 3)
+        self.stack = None
         self.stages = self.configuration.get('stages', 3)
+        self.stage_config = list(self.configuration['vessels'].values())
+        self.stage_results = {}        
+        
+        self.spacer_height = 0.86e-3 # m
+        self.element_length = 1 # m
+        self.rho = 1000 # kg/m3
+        self.porosity = 0.85 # RO-porosity = 0.8-0.85 (Vrouwenvelder, 2009)
         
         self.concentrate = None
-        self.stage_results = {}        
 
-    def init_stack(self, total_inflow, Pf):
+    def velocity(self, Qf):
+        total_spacer_width = (self.membrane_surface/self.element_length)/2
+        A_effective = self.porosity * self.spacer_height * total_spacer_width
+        return (Qf / A_effective) / 3600 # convert m/h to m/s
+
+    def kinematic_viscostiy(self, T=25, T_ref=20):
+        kin_v_ref = 1.004e-6 #m2/s
+        # kin_v = kin_v_ref * ((T+273 + T_ref+273) / (T_ref+273)) * ((T+273 / T_ref+273))
+        return kin_v_ref # kin_v not correct yet, assume kin_v_ref for now
+
+    def head_loss(self, velocity):
+        reynolds = velocity * self.spacer_height / self.kinematic_viscostiy(T=25)
+        friction_factor = 6.23 * reynolds**-0.3 # p.195 of Water Treatment - Nanofiltration and reverse osmosis
+        friction_factor = friction_factor if friction_factor > 0 else 0
+
+        dP = friction_factor * self.element_length * self.rho * velocity**2 / (2 * self.spacer_height) #Pascal
+        return dP*1e-5 # convert Pa to bar
+
+    def init_stack(self, Pf):
         for stage in range(self.stages):
             vessels = self.stage_config[stage]
             df = pd.DataFrame(index=range(self.pv_elements))
 
             df['stage'] = stage
             df['vessels'] = vessels
-            df['dP_e'] = 0.2
+            # df['dP_e'] = 0.2
+            df['dP_e'] = pd.Series(dtype='float64')
             df['Qf_e'] = pd.Series(dtype='float64')
             df['Qc_e'] = pd.Series(dtype='float64')
             df['Qp_e'] = pd.Series(dtype='float64')    
             df['J_e'] = pd.Series(dtype='float64')        
+            df['v_e'] = pd.Series(dtype='float64')        
 
             if stage == 0:
                 # initialize first element of of first stage
-                df.at[0, "Qf_e"] = total_inflow / vessels
+                df.at[0, "Qf_e"] = self.stack_inflow / vessels
+                df.at[0, 'v_e'] = self.velocity(df.at[0, "Qf_e"])
+                df.at[0, 'dP_e'] = self.head_loss(df.at[0, 'v_e'])
                 df.at[0, "Pf_e"] = Pf
                 df.at[0, "Pc_e"] = Pf - df.at[0, "dP_e"]                
                 df.at[0, "NDP_e"] = df.at[0, "Pc_e"] # - minus osmotic pressures                
@@ -82,21 +113,24 @@ class Membrane(Model, Splitter):
                 # initialize first element based on previous stage            
                 prev_df = self.stage_results[stage-1]
                 df.at[0, "Qf_e"] = (prev_df.iloc[-1]["Qc_e"] * self.stage_config[stage-1]) / vessels
-#                 df.at[0, "Pf_e"] = (prev_df.iloc[-1]["Pc_e"] * self.stage_config[stage-1]) / vessels                 
+                df.at[0, 'v_e'] = self.velocity(df.at[0, "Qf_e"])
+                df.at[0, 'dP_e'] = self.head_loss(df.at[0, 'v_e'])
                 df.at[0, "Pf_e"] = prev_df.iloc[-1]["Pc_e"]
                 df.at[0, "Pc_e"] = df.at[0, "Pf_e"] - df.at[0, "dP_e"]               
                 df.at[0, "NDP_e"] = prev_df.iloc[-1]["NDP_e"] - prev_df.iloc[-1]["dP_e"]
                 df.at[0, "Qp_e"] = df.at[0, "NDP_e"] * self.membrane_surface * self.k_w() / 1000
                 df.at[0, "Qc_e"] = df.at[0, "Qf_e"] - df.at[0, "Qp_e"]
                 df.at[0, "R_e"] = (df.at[0, "Qp_e"] / df.at[0, "Qf_e"])*100
-                df.at[0, "J_e"] = df.at[0, "Qp_e"]*1000/self.membrane_surface        
-
+                df.at[0, "J_e"] = df.at[0, "Qp_e"]*1000/self.membrane_surface  
+                df.at[0, 'v_e'] = self.velocity(df.at[0, "Qf_e"])
 
             # Derive subsequent rows (elements) from first row (element)
             for i, row in df.iterrows():
                 if  i == 0:
                     continue
                 df.at[i, "Qf_e"] = df.at[i-1, "Qc_e"]
+                df.at[i, 'v_e'] = self.velocity(df.at[i, "Qf_e"])
+                df.at[i, 'dP_e'] = self.head_loss(df.at[i, 'v_e'])                
                 df.at[i, "Pf_e"] = df.at[i-1, "Pc_e"]
                 df.at[i, "Pc_e"] = df.at[i, "Pf_e"] - df.at[i, "dP_e"]               
                 df.at[i, "NDP_e"] = df.at[i-1, "NDP_e"] - df.at[i-1, "dP_e"]
@@ -104,17 +138,21 @@ class Membrane(Model, Splitter):
                 df.at[i, "Qc_e"] = df.at[i, "Qf_e"] - df.at[i, "Qp_e"]
                 df.at[i, "R_e"] = (df.at[i, "Qp_e"] / df.at[i, "Qf_e"])*100
                 df.at[i, "J_e"] = df.at[i, "Qp_e"]*1000/self.membrane_surface
+                df.at[i, 'v_e'] = self.velocity(df.at[i, "Qf_e"])
 
 
             df["Qp"] = df["Qp_e"] * vessels
-
+            df.index.name = 'element'
+            df.reset_index(inplace=True)
+            df = df.round(2)
+            df['stage'] = df['stage'] + 1
             self.stage_results[stage] = df
 
-        stack = pd.concat(self.stage_results.values())
-        stack.index.name = 'element'
-        stack = stack.reset_index()
-        self.stack = stack.round(2)
-        return stack
+        self.stack = pd.concat(self.stage_results.values())
+        # stack.index.name = 'element'
+        # stack = stack.reset_index()
+        # self.stack = stack.round(2)
+        return self.stack
     
     def k_w(self, T=25, Tref=25):
         """Permeability coefficient (L/m2 bar h)"""      
@@ -125,7 +163,7 @@ class Membrane(Model, Splitter):
         C_f_test = membrane_specs['test_conditions']['C_feed']
         P_f_test = membrane_specs['test_conditions']['P_feed']
 
-        C_c_test = (C_f_test*(1-(R_e_test*(1-(SR))))/(1-(R_e_test)))
+        C_c_test = (C_f_test*(1-(R_e_test*(1-SR)))/(1-(R_e_test)))
 
         osm_f_test = C_f_test * (osm_ratio/1000)
         osm_c_test = C_c_test * (osm_ratio/1000)
@@ -142,38 +180,44 @@ class Membrane(Model, Splitter):
         K_w = J_test/NDP_test # [m3/m3 bar h]
         
         dT = T-Tref        
-        K_w = K_w * (1+0.03*dT) # K_w changes 3% per degree (dT)
+        K_w = K_w * (1 + 0.03 * dT) # K_w changes 3% per degree (dT)
         return K_w
     
     @property
-    def production(self):
-        return self.stack["Qp"].sum()
-
-    @property
     def recovery(self):
-        Q_in = self.stack.iloc[0]["Qf_e"] * self.stack.iloc[0]["vessels"]
-        return 100*(self.production/Q_in)
-    
+        # Q_f = self.stack.iloc[0]["Qf_e"] * self.stack.iloc[0]["vessels"]
+        Q_p = self.stack["Qp"].sum()
+        return (Q_p/self.stack_inflow)*100
+
     @property
-    def flux_avg(self):
-        return self.stack['J_e'].mean()
+    def stack_inflow(self):
+        total_inflow = self.inflows['product'] * 1e6 / (365*24) # convert Mm3/year to m3/h
+        return total_inflow / self.stacks
+
+    def solve_staging(self, Pf, tolerance=1):
+        target_R = self.split * 100
+        def recovery_difference(Pf):
+            self.init_stack(Pf)
+            return abs(self.recovery - target_R)
+
+        result = minimize(recovery_difference, x0=Pf, method='Nelder-Mead', options={"fatol":tolerance})        
+        best_Pf = result.x
+        stack = self.init_stack(best_Pf)    
+        iterations = result.nfev  # The number of function evaluations used by the optimization algorithm  
+        # if abs(self.recovery - target_R) > tolerance and self.stack > 0:
+        if abs(self.recovery - target_R) > tolerance:
+            print("Tolerance exceeded, desired recovery not achieved, but approached.")
+        else:
+            print(f"Solved in {iterations} iterations")
         
-    
-    def solve_staging(self, total_inflow, Pf, target_R, tolerance=1, max_iterations=1000):
-        stack = self.init_stack(total_inflow, Pf)
-        iteration = 0
-
-        while abs(self.recovery - target_R) > tolerance and iteration < max_iterations:
-            diff = self.recovery - target_R
-            Pf += 0.1 if diff < 0 else -0.1
-            stack = self.init_stack(total_inflow, Pf)
-            iteration += 1
-
-        if iteration == max_iterations:
-            print("Maximum iterations reached, desired recovery not achieved.")
-        print(f"Solved in {iteration} iterations")
+        # add water quality data to qualitavely solved stack
+        # stack = self.add_water_quality(stack)
         return stack    
     
+    def add_water_quality(self, stack):
+        for s, df in self.stage_results.items():
+            pass
+
     @property
     def emitter_solutions(self):
         return {'waste': self.concentrate}
@@ -206,16 +250,37 @@ class Membrane(Model, Splitter):
 
         return permeate
 
+    def generate_chart_data(self, col1, col2):
+        datasets = []
+        for s, df in self.stage_results.items():
+            data = dict(zip(df[col1], df[col2]))
+            dataset = {
+                "label": f"Stage {s+1}",
+                "data": data
+            }
+            datasets.append(dataset)
+
+        return datasets
+    
     def design(self):
-        # print('design!', self.influent.pH)
-        # print('vacuum', self.pressure)
-        # print(self.configuration)
         print("Designin a Membrane")
-        self.solve_staging(100, 10, 80)
-        # effluent = self.run_model(None, None, self.influent)
+        #use test pressure to start iteration
+        P_f_test = membrane_specs['test_conditions']['P_feed'] 
+        self.solve_staging(P_f_test)
+        
         d = {
             "keys": self.stack.columns.tolist(),
-            "data": self.stack.to_dict(orient='records')
+            "data": self.stack.to_dict(orient='records'),
+            "results": {
+                "recovery": self.recovery,
+                "flux_avg": self.stack['J_e'].mean()
+                },
+            'charts': {
+                "recovery": self.generate_chart_data('element', 'R_e'),
+                "flux_rec": self.generate_chart_data('R_e','J_e'),
+                "head_loss": self.generate_chart_data('element','dP_e'),
+                "stage_flows": self.generate_chart_data('element','Qf_e'),
+            }
         }
         return d
         # pressures = np.linspace(0.03, 1.0, 200)

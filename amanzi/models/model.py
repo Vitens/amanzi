@@ -18,6 +18,7 @@ class Model:
         self.init_categories()
 
         self.solution = None
+        self.inflows = {}
 
         self.pp = pp
         # self.iteration = 0
@@ -48,6 +49,7 @@ class Model:
             # get influent,
             try:
                 total_inflow = sum([c.flow for c in self.upstream_connections.get(type,[]) if c.solution is not None])
+                self.inflows[type] = total_inflow
                 mixture = {c.solution : c.flow/total_inflow for c in self.upstream_connections.get(type,[]) if c.solution is not None}
                 solution = self.pp.mix_solutions(mixture)
                 self.influent = solution.copy()
