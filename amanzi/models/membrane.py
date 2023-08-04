@@ -3,7 +3,7 @@ from .submodels.splitter import Splitter
 import pandas as pd
 from scipy.optimize import minimize, minimize_scalar
 import json
-
+from phreeqpython import PhreeqPython
 
 # Temporary database hardcoded untill implemented globally
 MEMBRANES_DATABASE = { 
@@ -36,6 +36,7 @@ class Membrane(Model, Splitter):
     def __init__(self, config, pp):
         super().__init__(config, pp)
         self.configuration = config.get('configuration', {})
+        # self.pp = PhreeqPython(database="pitzer.dat")
         # self.configuration =  {
         #   "recovery": 0.8,
         #   "flux": 20,
@@ -47,7 +48,7 @@ class Membrane(Model, Splitter):
         # }        
         self.split = self.configuration.get('recovery', 0.8)
         self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
-        self.retention = MEMBRANES_DATABASE[self.membrane].get('retention', {'Na': 0.9, 'Cl': 0.9, 'Mg': 0.5, 'Ca': 0.5})
+        self.retention = MEMBRANES_DATABASE[self.membrane].get('retention', {'Na': 0.996, 'Cl': 0.996, 'Mg': 0.999, 'Ca': 0.999})
         self.pv_elements = self.configuration.get('modules', 6)
         self.membrane_surface = self.configuration.get('surface', 40)
         self.stacks = self.configuration.get('stacks', 3)
@@ -88,7 +89,6 @@ class Membrane(Model, Splitter):
 
             df['stage'] = stage
             df['vessels'] = vessels
-            # df['dP_e'] = 0.2
             df['dP_e'] = pd.Series(dtype='float64')
             df['Qf_e'] = pd.Series(dtype='float64')
             df['Qc_e'] = pd.Series(dtype='float64')
@@ -171,8 +171,9 @@ class Membrane(Model, Splitter):
         osm_p_test = OSM_SEAWATER_CONST * osm_fc_test
         d_osm_avg_test = osm_fc_test - osm_p_test
         P_p_test = 0
-        
-        dP_e = 0.2
+
+        test_velocity = self.velocity(Q_test)
+        dP_e = self.head_loss(test_velocity)
 
         NDP_test = P_f_test - dP_e/2 - d_osm_avg_test - P_p_test
 
@@ -182,6 +183,7 @@ class Membrane(Model, Splitter):
         dT = T-Tref        
         K_w = K_w * (1 + 0.03 * dT) # K_w changes 3% per degree (dT)
         return K_w
+ 
     
     @property
     def recovery(self):
@@ -204,19 +206,58 @@ class Membrane(Model, Splitter):
         best_Pf = result.x
         stack = self.init_stack(best_Pf)    
         iterations = result.nfev  # The number of function evaluations used by the optimization algorithm  
-        # if abs(self.recovery - target_R) > tolerance and self.stack > 0:
+
         if abs(self.recovery - target_R) > tolerance:
             print("Tolerance exceeded, desired recovery not achieved, but approached.")
         else:
             print(f"Solved in {iterations} iterations")
         
         # add water quality data to qualitavely solved stack
-        # stack = self.add_water_quality(stack)
+        qualities = self.solve_staging_qualities()
         return stack    
-    
-    def add_water_quality(self, stack):
+
+    def solve_staging_qualities(self):
+        def solve_qualities(feed, R):
+            permeate_composition = {}
+            concentrate_composition = {}
+            for el, val in feed.species.items():
+                ret = self.retention.get(el, 0.999)
+                permeate_composition[el] = val * (1-ret) * 1e3
+                concentrate_composition[el] = val * (1-(R/100)*(1-ret)) / (1-(R/100)) * 1e3
+            permeate = self.pp.add_solution_simple(permeate_composition, 'mol')
+            concentrate = self.pp.add_solution_simple(concentrate_composition, 'mol')
+            return concentrate.copy(), permeate.copy()
+
+        qualities = {}
         for s, df in self.stage_results.items():
-            pass
+            qualities[s] = {'Cf_e': [], 'Cc_e': [], 'Cp_e': []}
+            for index, stage_row in df.iterrows():
+
+                if index == 0 and s == 0:
+                    R = stage_row['R_e']
+                    Cf_e = self.influent.copy()
+                    qualities[s]['Cf_e'].append(Cf_e)
+
+                elif index == 0 and s > 0:
+                    R = stage_row['R_e']
+                    Cf_e = qualities[s-1]['Cc_e'][-1]
+                    qualities[s]['Cf_e'].append(Cf_e)
+                else:
+                    R = stage_row['R_e']
+                    Cf_e = qualities[s]['Cc_e'][-1]                    
+                    qualities[s]['Cf_e'].append(Cf_e)
+       
+                Cc_e, Cp_e = solve_qualities(Cf_e, R)
+                qualities[s]['Cc_e'].append(Cc_e)
+                qualities[s]['Cp_e'].append(Cp_e)
+
+            for key, ls in qualities[s].items():
+                self.stage_results[s][f"π_{key}"] = pd.Series([l.osmotic_pressure for l in ls])
+                self.stage_results[s][key] = pd.Series([l.total('Ca', 'mg') for l in ls])
+
+            self.stage_results[s][f"π_fc_e"] = (self.stage_results[s]["π_Cf_e"] + self.stage_results[s]["π_Cc_e"])/2
+            self.stage_results[s] = self.stage_results[s].round(2)
+        self.qualities = qualities
 
     @property
     def emitter_solutions(self):
@@ -250,6 +291,15 @@ class Membrane(Model, Splitter):
 
         return permeate
 
+    @property
+    def stream_species(self):
+        species = {}
+        for stage, streams in self.qualities.items():
+            species[stage] = {}
+            for stream, sols in streams.items():
+                species[stage][stream] = [s.species for s in sols]
+        return species
+
     def generate_chart_data(self, col1, col2):
         datasets = []
         for s, df in self.stage_results.items():
@@ -275,11 +325,16 @@ class Membrane(Model, Splitter):
                 "recovery": self.recovery,
                 "flux_avg": self.stack['J_e'].mean()
                 },
+            'keys2': self.stage_results[0].columns.tolist(),
+            'stage_results': pd.concat([df for df in self.stage_results.values()]).to_dict(orient='records'),
+            'stage_species': self.stream_species,
             'charts': {
                 "recovery": self.generate_chart_data('element', 'R_e'),
                 "flux_rec": self.generate_chart_data('R_e','J_e'),
                 "head_loss": self.generate_chart_data('element','dP_e'),
                 "stage_flows": self.generate_chart_data('element','Qf_e'),
+                "stage_conc": self.generate_chart_data('element','Cf_e'),
+                "osmotic_avg": self.generate_chart_data('element','π_fc_e'),
             }
         }
         return d
