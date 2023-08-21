@@ -1,73 +1,118 @@
 from .model import Model
 from .submodels.balance import Balance
 from math import log
+import numpy as np
 
 class Plate(Model, Balance):
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
         self.configuration = config.get('configuration', {})
 
-        # self.RQ = self.configuration.get('RQ', 0.4)
-        self.steps = self.configuration.get('steps', 10)
-        self.height = self.configuration.get('height', 0.6)     
+        self.rq = float(self.configuration.get('rq', 10))
+        self.recirculation = float(self.configuration.get('recirculation', 0)) / 100
+        self.efficiency = float(self.configuration.get('efficiency', 10)) / 100
 
-        self.gasses = ['Oxg', 'CO2', 'Mtg']
-        # self.air_composition = {'Ntg(g)':0.79, 'O2(g)': 0.208,'CO2(g)':0.002}
-        
         self.change_per_step = {}
+    
+    def aerate(self, influent, RQ, recirculation):
+
+        air_comps = {
+            'Oxg(g)': 0.208,
+            'Ntg(g)': 0.7916,
+            'CO2(g)': 0.0004,
+            'Mtg(g)': 0,
+            'H2Sg(g)': 0,
+            'H2O(g)': 0,
+        }
+
+        gas_comp = air_comps.copy()
+
+        iterations = 1 if recirculation == 0 else 3
+
+        RQ *= self.efficiency
+
+        for _ in range(iterations):
+            # copy influent
+            inf = influent.copy()
+            # process air
+            air = self.pp.add_gas(gas_comp, volume=RQ, pressure=1, fixed_pressure=True, fixed_volume=False)
+            # interact
+            inf.interact(air)
+
+            # amount of off gas
+            off_gas = air.fractions
+            off_gas_volume = air.volume
+        
+            # amount of fresh gas
+            fresh_gas_volume = RQ - off_gas_volume * recirculation
+            fresh_gas_fraction = fresh_gas_volume / RQ
+            off_gas_fraction = 1 - fresh_gas_fraction
+
+            # process air quality
+            for comp in gas_comp:
+                gas_comp[comp] = (air_comps[comp] * fresh_gas_fraction + off_gas[comp] * off_gas_fraction)
+        
+        return inf, air
+
 
     def run_model(self, type, total_inflow, solution):
-        # air_volume = total_inflow * self.RQ
-        # gas_phase = self.pp.add_gas(self.air_composition, volume = air_volume)
-        gas_change = {}
+        aerated, _ = self.aerate(solution, self.rq, self.recirculation)
+        return aerated
+    
+    def design(self):
+        print('plate', self.influent.number)
+        effluent, effluent_gas = self.aerate(self.influent, self.rq, self.recirculation)
 
-        for gas in self.gasses:
-            mw = self.gas_properties[gas]['MW']                 
-            c_in = solution.total(gas, 'mmol') * mw
-            self.change_per_step[gas] = self.gas_areation(gas, c_in) # Save gas concentration in liquid-phase at each step for plotting in UI-Design-fuction
-            gas_change[gas] = -1/mw*(c_in - self.change_per_step[gas][-1])
-        
-        effluent = solution.copy()
-        print("gas_change")
-        print(gas_change)
-        effluent.change(gas_change, 'mmol')        
-        return effluent
+        ph_data = []
+        si_data = []
 
-    def gas_areation(self, gas, c_in):
-        """Returns gas concentration in liquid-phase at each step"""
-        steps = range(1, self.steps+1)
-        k_X = self.gas_properties[gas]['k_eff']/100
-        c_s = self.gas_properties[gas]['c_sat']
-        
-        
-        # Calculate new concentration
-        concentrations = []        
-        for step in steps:
-            product = (c_s-c_in)*(1-(1-k_X) ** step)
-            effluent_per_step = c_in + product
-            concentrations.append(effluent_per_step)
+        ch4_data = []
+        co2_data = []
+        o2_data = []
 
-        return concentrations
 
-    @property
-    def gas_properties(self):
-        """Efficiency and saturation values per gas as function of fall height. Assumes T=10 degrees Celcius."""
+        RQs = np.linspace(1, 50, 100)
+        # sweep RQ
+        for rq in RQs:
+            eff, gas = self.aerate(self.influent, rq, self.recirculation)
+            ph_data.append({'x': rq, 'y': eff.pH})
+            si_data.append({'x': rq, 'y': eff.si('Calcite')})
+
+            ch4_data.append({'x': rq, 'y': eff.total('Mtg') * 16040})
+            co2_data.append({'x': rq, 'y': eff.total('CO2', 'mg')})
+            o2_data.append({'x': rq, 'y': eff.total('Oxg') * 32})
+
         return {
-            'Oxg':{
-                'k_eff': (28.85*log(self.height)+50.066),
-                'c_sat': 11.3,
-                'MW': 32
-                },
-            'CO2':{
-                'k_eff': (0.6832*log(self.height)+15.017),
-                'c_sat': 0.79,
-                'MW':44
-                },
-            'Mtg':{
-                'k_eff': (-19.196*self.height**2+75.161*self.height-0.3),
-                'c_sat': 0.023,
-                'MW': 16
-                } #CH4, interpolated at 10 degrees Celcius from solubility data in (Table 4, Duan and Mao, 2006)
+            'influent': {
+                'pH': self.influent.pH,
+                'ch4': self.influent.total('Mtg') * 16040,
+                'n2': self.influent.total('Ntg') * 28.0134,
+                'co2': self.influent.total('CO2', 'mg'),
+                'h2s': self.influent.total('H2S', 'mg'),
+                'o2': self.influent.total('Oxg') * 32,
+            },
+            'effluent': {
+                'pH': effluent.pH,
+                'ch4': effluent.total('Mtg') * 16040,
+                'n2': effluent.total('Ntg') * 28.0134,
+                'co2': effluent.total('CO2','mg'),
+                'h2s': effluent.total('H2S','mg'),
+                'o2': effluent.total('Oxg') * 32,
+            },
+            'gas': {
+                'ch4': effluent_gas.dry_fractions['Mtg(g)'] * 100,
+                'n2': effluent_gas.dry_fractions['Ntg(g)'] * 100,
+                'co2': effluent_gas.dry_fractions['CO2(g)'] * 100,
+                'o2': effluent_gas.dry_fractions['Oxg(g)'] * 100,
+                'h2s': effluent_gas.dry_fractions['H2Sg(g)'] * 100,
+                'volume': effluent_gas.volume / self.efficiency,
+            },
+            'charts': {
+                'pH': ph_data,
+                'SI': si_data,
+                'ch4': ch4_data,
+                'co2': co2_data,
+                'o2': o2_data,
             }
 
-
+        }

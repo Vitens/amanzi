@@ -28,7 +28,10 @@ class Groundwater(Model):
         nh4 = '[N-3]' if c.get('Zuurstof', 0) == 0 else 'N(-3)'
         no2 = '[N+3]' if c.get('Zuurstof', 0) == 0 else 'N(3)'
 
+        h2s_value = max(c.get('Waterstofsulfide', 0), 0.0000001)
+
         # create solution
+
         self.solution = self.pp.add_solution({
             'pH': c.get('pH', 7),
             'temp': c.get('temp', 10),
@@ -36,9 +39,10 @@ class Groundwater(Model):
             'pe': 4, # phreeqc default
             'redox': 'O(-2)/O(0)',
             'O(0)': oxg,
+            'Oxg': 0.0000001, # prevent phreeqc from crashing
             'Ntg': c.get('Stikstof', 0),
             'Mtg': c.get('Methaan', 0),
-            h2s: '{} as H2S'.format(c.get('Waterstofsulfide', 0)),
+            h2s: '{} as H2S'.format(h2s_value),
             fe: '{} as Fe'.format(c.get('IJzer', 0)),
             mn: '{} as Mn'.format(c.get('Mangaan', 0)),
             nh4: '{} as NH4'.format(c.get('Ammonium', 0)),
@@ -54,6 +58,8 @@ class Groundwater(Model):
             'P': '{} as PO4'.format(c.get('Fosfaat', 0)),
         })
         ## equalize solution
+        print('EQUALIZE SOLUTION')
+
         self.solution.equalize('Calcite', 1000, 0)
 
         self.emitter = True

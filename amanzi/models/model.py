@@ -39,6 +39,7 @@ class Model:
     
     def run(self, type):
 
+        print("RUNNING MODEL {} {}".format(self.uid, type))
 
         if type in self.emitter_solutions:
             solution = self.emitter_solutions[type]
@@ -50,7 +51,9 @@ class Model:
                 total_inflow = sum([c.flow for c in self.upstream_connections.get(type,[]) if c.solution is not None])
                 mixture = {c.solution : c.flow/total_inflow for c in self.upstream_connections.get(type,[]) if c.solution is not None}
                 solution = self.pp.mix_solutions(mixture)
-                self.influent = solution.copy()
+
+                if type == 'product':
+                    self.influent = solution.copy()
 
                 solution = self.run_model(type, total_inflow, solution)
             except:
