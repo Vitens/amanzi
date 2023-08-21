@@ -21,16 +21,11 @@ class Vacuum(Model, Balance):
       return degassed, gas_phase
 
     def run_model(self, type, total_inflow, solution):
-      print('run!')
       degassed, _ = self.degass(solution, self.pressure)
       return degassed
 
 
     def design(self):
-      print('design!', self.influent.pH)
-      print('vacuum', self.pressure)
-      print(self.configuration)
-
       effluent, effluent_gas = self.degass(self.influent, self.pressure)
 
       pressures = np.linspace(0.03, 1.0, 200)
@@ -44,6 +39,15 @@ class Vacuum(Model, Balance):
       volumes = []
       normal_volumes = []
 
+      dry_ch4 = []
+      dry_n2 = []
+      dry_co2 = []
+
+      wet_ch4 = []
+      wet_n2 = []
+      wet_co2 = []
+      wet_h2o = []
+
       for p in pressures:
         eff, gas = self.degass(self.influent, p)
 
@@ -53,24 +57,30 @@ class Vacuum(Model, Balance):
         n2_data.append({'x': p, 'y': eff.total('Ntg') * 28})
         co2_data.append({'x': p, 'y': eff.total('CO2','mg')})
         h2s_data.append({'x': p, 'y': eff.total('H2S','mg')})
-        normal_volumes.append({'x': p, 'y': gas.volume*self.pressure})
+
+        normal_volumes.append({'x': p, 'y': gas.volume*p})
         volumes.append({'x': p, 'y': gas.volume})
 
+        dry_ch4.append({'x': p, 'y': gas.dry_fractions['Mtg(g)'] * 100})
+        dry_n2.append({'x': p, 'y': gas.dry_fractions['Ntg(g)'] * 100})
+        dry_co2.append({'x': p, 'y': gas.dry_fractions['CO2(g)'] * 100})
 
-
-
+        wet_ch4.append({'x': p, 'y': gas.fractions['Mtg(g)'] * 100})
+        wet_n2.append({'x': p, 'y': gas.fractions['Ntg(g)'] * 100})
+        wet_co2.append({'x': p, 'y': gas.fractions['CO2(g)'] * 100})
+        wet_h2o.append({'x': p, 'y': gas.fractions['H2O(g)'] * 100})
 
       return {
          'influent': {
             'pH': self.influent.pH,
-            'ch4': self.influent.total('Mtg') * 16.04,
+            'ch4': self.influent.total('Mtg') * 16.04e3,
             'n2': self.influent.total('Ntg') * 28.0134,
             'co2': self.influent.total('CO2','mg'),
             'h2s': self.influent.total('H2S','mg'),
          },
          'effluent': {
             'pH': effluent.pH,
-            'ch4': effluent.total('Mtg') * 16,
+            'ch4': effluent.total('Mtg') * 16.04e3,
             'n2': effluent.total('Ntg') * 28,
             'co2': effluent.total('CO2','mg'),
             'h2s': effluent.total('H2S','mg'),
@@ -92,6 +102,13 @@ class Vacuum(Model, Balance):
             'h2s': h2s_data,
             'normal_volume': normal_volumes,
             'volume': volumes,
+            'dry_ch4': dry_ch4,
+            'dry_n2': dry_n2,
+            'dry_co2': dry_co2,
+            'wet_ch4': wet_ch4,
+            'wet_n2': wet_n2,
+            'wet_co2': wet_co2,
+            'wet_h2o': wet_h2o,
         }
 
       }
