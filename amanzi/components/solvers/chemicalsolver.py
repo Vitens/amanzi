@@ -53,10 +53,6 @@ class ChemicalSolver:
         for m in self.scenario.models.values():
             for e, c in m.mass.items():
                 balance[e] = balance.get(e, 0) + c
-
-        # For debugging purposes
-        self.data[ChemicalSolver.parent_loop_count] = balance.copy()
-        ChemicalSolver.parent_loop_count += 1 # increment parent-loop count
         
         return balance
         

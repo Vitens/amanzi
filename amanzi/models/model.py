@@ -59,12 +59,12 @@ class Model:
 
                 solution = self.run_model(type, total_inflow, solution)
             except:
-                print("IN EXCEPTION")
-                for c in self.upstream_connections.get(type, []):
-                    print("c.flow")
-                    print(c.name, c.flow)
-                print(self.upstream_connections)
-                print(mixture)
+                # print("IN EXCEPTION")
+                # for c in self.upstream_connections.get(type, []):
+                #     print("c.flow")
+                #     print(c.name, c.flow)
+                # print(self.upstream_connections)
+                # print(mixture)
                 raise Exception('Model {} failed to run for type {}'.format(self.uid, type))
         
         self.solution = solution

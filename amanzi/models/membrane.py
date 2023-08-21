@@ -322,12 +322,39 @@ class Membrane(Model, Splitter):
             control_volums[s] = {
                 "Qf": self.stack_inflow if s == 0 else data.iloc[0]['Qf_e'],
                 "Pf": data.iloc[0]['Pf_e'],
+                "EGVf": self.qualities[s]['Cf_e'][0].sc20 / 10,
                 "Qc": data.iloc[-1]['Qc_e'] * self.stage_config[s],
                 "Pc": data.iloc[-1]['Pc_e'],
+                "EGVc": self.qualities[s]['Cc_e'][-1].sc20 / 10,
                 "Qp": data['Qp_e'].sum() * self.stage_config[s],
                 "Pp": data.iloc[-1]['Pc_e'],
+                "EGVp": self.qualities[s]['Cp_e'][-1].sc20 / 10
             }
         return control_volums
+
+    @property
+    def d_influent(self):        
+        return self.qualities[0]['Cf_e'][0]
+    
+    @property
+    def d_concentrate(self):        
+        s = max(self.qualities.keys())
+        return self.qualities[s]['Cc_e'][-1]
+    
+    @property
+    def d_permeate(self):
+        permeate_mixture = {}
+        for s in self.stage_results.keys():
+            p_sols = self.qualities[s]['Cp_e']
+            p_flows = self.stage_results[s]['Qp_e'].tolist()
+            p_total = sum(p_flows)
+
+            mixture = {sol:flow/p_total for sol, flow in zip(p_sols, p_flows)}
+            int_permeate = self.pp.mix_solutions(mixture)
+            permeate_mixture[int_permeate] = p_total
+        return self.pp.mix_solutions(permeate_mixture)
+
+
 
     def design(self):
         print("Designin a Membrane")
@@ -362,154 +389,29 @@ class Membrane(Model, Splitter):
                 "stage_conc": self.generate_chart_data('element','Cf_e'),
                 "osmotic_avg": self.generate_chart_data('element','π_fc_e'),
             },
-            # 'influent': {
-            #     'pH': self.influent.pH,
-            #     'na': self.influent.total('Na'),
-            #     'cl': self.influent.total('Cl'),
-            #     'ca': self.influent.total('Ca','mg'),
-            #     'mg': self.influent.total('Mg','mg'),
-            # },
-            # 'effluent': {
-            #     'pH': effluent.pH,
-            #     'na': effluent.total('Na'),
-            #     'cl': effluent.total('Cl'),
-            #     'ca': effluent.total('Ca','mg'),
-            #     'mg': effluent.total('Mg','mg'),
-            # },
-            # 'concentrate': {
-            #     'pH': self.concentrate.pH,
-            #     'na': self.concentrate.total('Na'),
-            #     'cl': self.concentrate.total('Cl'),
-            #     'ca': self.concentrate.total('Ca','mg'),
-            #     'mg': self.concentrate.total('Mg','mg'),
-            # },
-            # 'flows': {
-            #     1 : {
-            #         'inlfuent' : 100,
-            #         'effluent' : 100 * self.split,
-            #         'concentrate' : 100 * (1 - self.split),
-            #     },
-            #     2 : {
-            #         'inlfuent' : 100,
-            #         'effluent' : 100 * self.split,
-            #         'concentrate' : 100 * (1 - self.split),
-            #     },
-            #     3 : {
-            #         'inlfuent' : 100,
-            #         'effluent' : 100 * self.split,
-            #         'concentrate' : 100 * (1 - self.split),
-            #     },                
-            # },
-            # 'pressures': {
-            #     1 : {
-            #         'inlfuent' : 100,
-            #         'effluent' : 100 * self.split,
-            #         'concentrate' : 100 * (1 - self.split),
-            #     },
-            #     2 : {
-            #         'inlfuent' : 100,
-            #         'effluent' : 100 * self.split,
-            #         'concentrate' : 100 * (1 - self.split),
-            #     },
-            #     3 : {
-            #         'inlfuent' : 100,
-            #         'effluent' : 100 * self.split,
-            #         'concentrate' : 100 * (1 - self.split),
-            #     },                
-            # }            
+            'influent': {
+                'pH': self.d_influent.pH,
+                'egv': self.d_influent.sc20/10,
+                'na': self.d_influent.total('Na', 'mg'),
+                'cl': self.d_influent.total('Cl', 'mg'),
+                'ca': self.d_influent.total('Ca','mg'),
+                'mg': self.d_influent.total('Mg','mg'),
+            },
+            'effluent': {
+                'pH': self.d_permeate.pH,
+                'egv': self.d_permeate.sc20/10,
+                'na': self.d_permeate.total('Na', 'mg'),
+                'cl': self.d_permeate.total('Cl', 'mg'),
+                'ca': self.d_permeate.total('Ca','mg'),
+                'mg': self.d_permeate.total('Mg','mg'),
+            },
+            'concentrate': {
+                'pH': self.d_concentrate.pH,
+                'egv': self.d_concentrate.sc20/10,
+                'na': self.d_concentrate.total('Na', 'mg'),
+                'cl': self.d_concentrate.total('Cl', 'mg'),
+                'ca': self.d_concentrate.total('Ca','mg'),
+                'mg': self.d_concentrate.total('Mg','mg'),
+            },        
         }
         return d
-        # pressures = np.linspace(0.03, 1.0, 200)
-
-        # ph_data = []
-        # si_data = []
-        # ch4_data = []
-        # n2_data = []
-        # co2_data = []
-        # h2s_data = []
-        # volumes = []
-        # normal_volumes = []
-
-        # for p in pressures:
-        #     eff, gas = self.degass(self.influent, p)
-
-        #     si_data.append({'x': p, 'y': eff.si('Calcite')})
-        #     ph_data.append({'x': p, 'y': eff.pH})
-        #     ch4_data.append({'x': p, 'y': eff.total('Mtg') * 16})
-        #     n2_data.append({'x': p, 'y': eff.total('Ntg') * 28})
-        #     co2_data.append({'x': p, 'y': eff.total('CO2','mg')})
-        #     h2s_data.append({'x': p, 'y': eff.total('H2S','mg')})
-        #     normal_volumes.append({'x': p, 'y': gas.volume*self.pressure})
-        #     volumes.append({'x': p, 'y': gas.volume})
-
-        # return {
-        #     'summary' : {
-        #         'surface_area': self.surface_area,
-        #         },
-        #     'influent': {
-        #         'pH': self.influent.pH,
-        #         'na': self.influent.total('Na'),
-        #         'cl': self.influent.total('Cl'),
-        #         'ca': self.influent.total('Ca','mg'),
-        #         'mg': self.influent.total('Mg','mg'),
-        #     },
-        #     'effluent': {
-        #         'pH': effluent.pH,
-        #         'na': effluent.total('Na'),
-        #         'cl': effluent.total('Cl'),
-        #         'ca': effluent.total('Ca','mg'),
-        #         'mg': effluent.total('Mg','mg'),
-        #     },
-        #     'concentrate': {
-        #         'pH': self.concentrate.pH,
-        #         'na': self.concentrate.total('Na'),
-        #         'cl': self.concentrate.total('Cl'),
-        #         'ca': self.concentrate.total('Ca','mg'),
-        #         'mg': self.concentrate.total('Mg','mg'),
-        #     },
-        #     'flows': {
-        #         1 : {
-        #             'inlfuent' : 100,
-        #             'effluent' : 100 * self.split,
-        #             'concentrate' : 100 * (1 - self.split),
-        #         },
-        #         2 : {
-        #             'inlfuent' : 100,
-        #             'effluent' : 100 * self.split,
-        #             'concentrate' : 100 * (1 - self.split),
-        #         },
-        #         3 : {
-        #             'inlfuent' : 100,
-        #             'effluent' : 100 * self.split,
-        #             'concentrate' : 100 * (1 - self.split),
-        #         },                
-        #     },
-        #     'pressures': {
-        #         1 : {
-        #             'inlfuent' : 100,
-        #             'effluent' : 100 * self.split,
-        #             'concentrate' : 100 * (1 - self.split),
-        #         },
-        #         2 : {
-        #             'inlfuent' : 100,
-        #             'effluent' : 100 * self.split,
-        #             'concentrate' : 100 * (1 - self.split),
-        #         },
-        #         3 : {
-        #             'inlfuent' : 100,
-        #             'effluent' : 100 * self.split,
-        #             'concentrate' : 100 * (1 - self.split),
-        #         },                
-        #     }
-            # 'charts': {
-            # 'pH': ph_data,
-            # 'SI': si_data, 
-            # 'ch4': ch4_data,
-            # 'n2': n2_data,
-            #     'co2': co2_data,
-            #     'h2s': h2s_data,
-            #     'normal_volume': normal_volumes,
-            #     'volume': volumes,
-            # }
-
-        # }
