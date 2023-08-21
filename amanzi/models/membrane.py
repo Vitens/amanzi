@@ -89,12 +89,12 @@ class Membrane(Model, Splitter):
 
             df['stage'] = stage
             df['vessels'] = vessels
-            df['dP_e'] = pd.Series(dtype='float64')
-            df['Qf_e'] = pd.Series(dtype='float64')
-            df['Qc_e'] = pd.Series(dtype='float64')
-            df['Qp_e'] = pd.Series(dtype='float64')    
-            df['J_e'] = pd.Series(dtype='float64')        
-            df['v_e'] = pd.Series(dtype='float64')        
+            # df['dP_e'] = pd.Series(dtype='float64')
+            # df['Qf_e'] = pd.Series(dtype='float64')
+            # df['Qc_e'] = pd.Series(dtype='float64')
+            # df['Qp_e'] = pd.Series(dtype='float64')    
+            # df['J_e'] = pd.Series(dtype='float64')        
+            # df['v_e'] = pd.Series(dtype='float64')        
 
             if stage == 0:
                 # initialize first element of of first stage
@@ -146,13 +146,11 @@ class Membrane(Model, Splitter):
             df.reset_index(inplace=True)
             df = df.round(2)
             df['stage'] = df['stage'] + 1
+            df['element'] = df['element'] + 1
             self.stage_results[stage] = df
 
         self.stack = pd.concat(self.stage_results.values())
-        # stack.index.name = 'element'
-        # stack = stack.reset_index()
-        # self.stack = stack.round(2)
-        return self.stack
+        # return self.stack
     
     def k_w(self, T=25, Tref=25):
         """Permeability coefficient (L/m2 bar h)"""      
@@ -204,17 +202,13 @@ class Membrane(Model, Splitter):
 
         result = minimize(recovery_difference, x0=Pf, method='Nelder-Mead', options={"fatol":tolerance})        
         best_Pf = result.x
-        stack = self.init_stack(best_Pf)    
+        self.init_stack(best_Pf)    
         iterations = result.nfev  # The number of function evaluations used by the optimization algorithm  
 
         if abs(self.recovery - target_R) > tolerance:
             print("Tolerance exceeded, desired recovery not achieved, but approached.")
         else:
             print(f"Solved in {iterations} iterations")
-        
-        # add water quality data to qualitavely solved stack
-        qualities = self.solve_staging_qualities()
-        return stack    
 
     def solve_staging_qualities(self):
         def solve_qualities(feed, R):
@@ -232,12 +226,10 @@ class Membrane(Model, Splitter):
         for s, df in self.stage_results.items():
             qualities[s] = {'Cf_e': [], 'Cc_e': [], 'Cp_e': []}
             for index, stage_row in df.iterrows():
-
                 if index == 0 and s == 0:
                     R = stage_row['R_e']
                     Cf_e = self.influent.copy()
                     qualities[s]['Cf_e'].append(Cf_e)
-
                 elif index == 0 and s > 0:
                     R = stage_row['R_e']
                     Cf_e = qualities[s-1]['Cc_e'][-1]
@@ -257,7 +249,9 @@ class Membrane(Model, Splitter):
 
             self.stage_results[s][f"π_fc_e"] = (self.stage_results[s]["π_Cf_e"] + self.stage_results[s]["π_Cc_e"])/2
             self.stage_results[s] = self.stage_results[s].round(2)
+        
         self.qualities = qualities
+        self.stack = pd.concat(self.stage_results.values())        
 
     @property
     def emitter_solutions(self):
@@ -300,6 +294,15 @@ class Membrane(Model, Splitter):
                 species[stage][stream] = [s.species for s in sols]
         return species
 
+    @property
+    def stream_elements(self):
+        species = {}
+        for stage, streams in self.qualities.items():
+            species[stage] = {}
+            for stream, sols in streams.items():
+                species[stage][stream] = [s.elements for s in sols]
+        return species
+
     def generate_chart_data(self, col1, col2):
         datasets = []
         for s, df in self.stage_results.items():
@@ -312,22 +315,45 @@ class Membrane(Model, Splitter):
 
         return datasets
     
+    @property
+    def overview(self):
+        control_volums = {}
+        for s, data in self.stage_results.items():
+            control_volums[s] = {
+                "Qf": self.stack_inflow if s == 0 else data.iloc[0]['Qf_e'],
+                "Pf": data.iloc[0]['Pf_e'],
+                "Qc": data.iloc[-1]['Qc_e'] * self.stage_config[s],
+                "Pc": data.iloc[-1]['Pc_e'],
+                "Qp": data['Qp_e'].sum() * self.stage_config[s],
+                "Pp": data.iloc[-1]['Pc_e'],
+            }
+        return control_volums
+
     def design(self):
         print("Designin a Membrane")
         #use test pressure to start iteration
         P_f_test = membrane_specs['test_conditions']['P_feed'] 
         self.solve_staging(P_f_test)
+        self.solve_staging_qualities()
         
         d = {
             "keys": self.stack.columns.tolist(),
             "data": self.stack.to_dict(orient='records'),
+            "overview": self.overview,
             "results": {
+                "Qf": self.stack_inflow,
+                "Cf": self.stack.iloc[0]["Cf_e"],
+                "Qc": self.stage_results[list(self.stage_results.keys())[-1]]["Qc_e"].sum(),
+                "Cc": 0, #use pp.mix_solutions to mix all outgoing concentrate streams of the latest stage with their weight,
+                "Qp": self.stack["Qp"].sum(),
+                "Cp": 0, #use pp.mix_solutions to mix all outgoing permeate streams with their weight,
                 "recovery": self.recovery,
                 "flux_avg": self.stack['J_e'].mean()
                 },
             'keys2': self.stage_results[0].columns.tolist(),
             'stage_results': pd.concat([df for df in self.stage_results.values()]).to_dict(orient='records'),
             'stage_species': self.stream_species,
+            'stage_elements': self.stream_elements,
             'charts': {
                 "recovery": self.generate_chart_data('element', 'R_e'),
                 "flux_rec": self.generate_chart_data('R_e','J_e'),
@@ -335,7 +361,62 @@ class Membrane(Model, Splitter):
                 "stage_flows": self.generate_chart_data('element','Qf_e'),
                 "stage_conc": self.generate_chart_data('element','Cf_e'),
                 "osmotic_avg": self.generate_chart_data('element','π_fc_e'),
-            }
+            },
+            # 'influent': {
+            #     'pH': self.influent.pH,
+            #     'na': self.influent.total('Na'),
+            #     'cl': self.influent.total('Cl'),
+            #     'ca': self.influent.total('Ca','mg'),
+            #     'mg': self.influent.total('Mg','mg'),
+            # },
+            # 'effluent': {
+            #     'pH': effluent.pH,
+            #     'na': effluent.total('Na'),
+            #     'cl': effluent.total('Cl'),
+            #     'ca': effluent.total('Ca','mg'),
+            #     'mg': effluent.total('Mg','mg'),
+            # },
+            # 'concentrate': {
+            #     'pH': self.concentrate.pH,
+            #     'na': self.concentrate.total('Na'),
+            #     'cl': self.concentrate.total('Cl'),
+            #     'ca': self.concentrate.total('Ca','mg'),
+            #     'mg': self.concentrate.total('Mg','mg'),
+            # },
+            # 'flows': {
+            #     1 : {
+            #         'inlfuent' : 100,
+            #         'effluent' : 100 * self.split,
+            #         'concentrate' : 100 * (1 - self.split),
+            #     },
+            #     2 : {
+            #         'inlfuent' : 100,
+            #         'effluent' : 100 * self.split,
+            #         'concentrate' : 100 * (1 - self.split),
+            #     },
+            #     3 : {
+            #         'inlfuent' : 100,
+            #         'effluent' : 100 * self.split,
+            #         'concentrate' : 100 * (1 - self.split),
+            #     },                
+            # },
+            # 'pressures': {
+            #     1 : {
+            #         'inlfuent' : 100,
+            #         'effluent' : 100 * self.split,
+            #         'concentrate' : 100 * (1 - self.split),
+            #     },
+            #     2 : {
+            #         'inlfuent' : 100,
+            #         'effluent' : 100 * self.split,
+            #         'concentrate' : 100 * (1 - self.split),
+            #     },
+            #     3 : {
+            #         'inlfuent' : 100,
+            #         'effluent' : 100 * self.split,
+            #         'concentrate' : 100 * (1 - self.split),
+            #     },                
+            # }            
         }
         return d
         # pressures = np.linspace(0.03, 1.0, 200)
