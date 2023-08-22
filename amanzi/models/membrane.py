@@ -6,49 +6,41 @@ import json
 from phreeqpython import PhreeqPython
 
 # Temporary database hardcoded untill implemented globally
-MEMBRANES_DATABASE = { 
+# MEMBRANES_DATABASE = { 
+#         "ESPA2-LD": {
+#           "name": "ESPA2-LD",
+#           "surface": 40,
+#           "size": "8x40 (inch * inch)",
+#           "retention": {
+#             "Na": 0.9, "Cl": 0.9, "Mg": 0.95, "Ca": 0.95}
+#         }
+#       }
+MEMBRANES_DATABASE =  {
         "ESPA2-LD": {
-          "name": "ESPA2-LD",
-          "surface": 40,
-          "size": "8x40 (inch * inch)",
-          "retention": {
-            "Na": 0.9, "Cl": 0.9, "Mg": 0.95, "Ca": 0.95}
-        }
-      }
-membrane_specs =  {
-        "nominal_flow": 27.3, #m3/day
-        "salt_rejection": 99.7, # %
-        "feed_flow_max": 17.0, #m3/h
-        "dP_max_element": 1.0, # bar
-        "flux_avg": 15., # L/m2h
-        "A_e": 40.9, # m2
-        "test_conditions": {
-            "C_feed": 32000, # mg/L NaCl
-            "P_feed": 55, # bar
-            "recovery": 10, # %
-            "temperature": 25, # C
+            "nominal_flow": 27.3, #m3/day
+            "salt_rejection": 99.7, # %
+            "retention": {"Na": 0.997, "Cl": 0.997},
+            "feed_flow_max": 17.0, #m3/h
+            "dP_max_element": 1.0, # bar
+            "flux_avg": 15., # L/m2h
+            "A_e": 40.9, # m2
+            "test_conditions": {
+                "C_feed": 32000, # mg/L NaCl
+                "P_feed": 55, # bar
+                "recovery": 10, # %
+                "temperature": 25, # C
+            }
         }
     }
 
-osm_ratio = 0.08
-OSM_SEAWATER_CONST = 0.01
 class Membrane(Model, Splitter):
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        self.configuration = config.get('configuration', {})
-        # self.pp = PhreeqPython(database="pitzer.dat")
-        # self.configuration =  {
-        #   "recovery": 0.8,
-        #   "flux": 20,
-        #   "stacks": 2,
-        #   "stages": 3,
-        #   "modules": 6,
-        #   "vessels": [8, 5, 2],
-        #   "membrane": "ESPA2-LD"
-        # }        
+        self.configuration = config.get('configuration', {}) 
         self.split = self.configuration.get('recovery', 0.8)
         self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
-        self.retention = MEMBRANES_DATABASE[self.membrane].get('retention', {'Na': 0.996, 'Cl': 0.996, 'Mg': 0.999, 'Ca': 0.999})
+        self.membrane_config = MEMBRANES_DATABASE[self.membrane]
+        self.retention = self.membrane_config.get('retention', {'Na': 0.996, 'Cl': 0.996, 'Mg': 0.999, 'Ca': 0.999})
         self.pv_elements = self.configuration.get('modules', 6)
         self.membrane_surface = self.configuration.get('surface', 40)
         self.stacks = self.configuration.get('stacks', 3)
@@ -86,15 +78,8 @@ class Membrane(Model, Splitter):
         for stage in range(self.stages):
             vessels = self.stage_config[stage]
             df = pd.DataFrame(index=range(self.pv_elements))
-
             df['stage'] = stage
-            df['vessels'] = vessels
-            # df['dP_e'] = pd.Series(dtype='float64')
-            # df['Qf_e'] = pd.Series(dtype='float64')
-            # df['Qc_e'] = pd.Series(dtype='float64')
-            # df['Qp_e'] = pd.Series(dtype='float64')    
-            # df['J_e'] = pd.Series(dtype='float64')        
-            # df['v_e'] = pd.Series(dtype='float64')        
+            df['vessels'] = vessels     
 
             if stage == 0:
                 # initialize first element of of first stage
@@ -154,17 +139,20 @@ class Membrane(Model, Splitter):
     
     def k_w(self, T=25, Tref=25):
         """Permeability coefficient (L/m2 bar h)"""      
-        Q_test = membrane_specs['nominal_flow'] / 24
-        SR = membrane_specs['salt_rejection']/100
+        Q_test = self.membrane_config['nominal_flow'] / 24
+        SR = self.membrane_config['salt_rejection']/100
 
-        R_e_test = membrane_specs['test_conditions']['recovery']/100
-        C_f_test = membrane_specs['test_conditions']['C_feed']
-        P_f_test = membrane_specs['test_conditions']['P_feed']
+        OSM_RATIO = 0.08
+        OSM_SEAWATER_CONST = 0.01
+
+        R_e_test = self.membrane_config['test_conditions']['recovery']/100
+        C_f_test = self.membrane_config['test_conditions']['C_feed']
+        P_f_test = self.membrane_config['test_conditions']['P_feed']
 
         C_c_test = (C_f_test*(1-(R_e_test*(1-SR)))/(1-(R_e_test)))
 
-        osm_f_test = C_f_test * (osm_ratio/1000)
-        osm_c_test = C_c_test * (osm_ratio/1000)
+        osm_f_test = C_f_test * (OSM_RATIO/1000)
+        osm_c_test = C_c_test * (OSM_RATIO/1000)
         osm_fc_test = (osm_f_test + osm_c_test)/2
         osm_p_test = OSM_SEAWATER_CONST * osm_fc_test
         d_osm_avg_test = osm_fc_test - osm_p_test
@@ -185,7 +173,6 @@ class Membrane(Model, Splitter):
     
     @property
     def recovery(self):
-        # Q_f = self.stack.iloc[0]["Qf_e"] * self.stack.iloc[0]["vessels"]
         Q_p = self.stack["Qp"].sum()
         return (Q_p/self.stack_inflow)*100
 
@@ -327,7 +314,7 @@ class Membrane(Model, Splitter):
                 "Pc": data.iloc[-1]['Pc_e'],
                 "EGVc": self.qualities[s]['Cc_e'][-1].sc20 / 10,
                 "Qp": data['Qp_e'].sum() * self.stage_config[s],
-                "Pp": data.iloc[-1]['Pc_e'],
+                "Pp": 0,
                 "EGVp": self.qualities[s]['Cp_e'][-1].sc20 / 10
             }
         return control_volums
@@ -359,11 +346,12 @@ class Membrane(Model, Splitter):
     def design(self):
         print("Designin a Membrane")
         #use test pressure to start iteration
-        P_f_test = membrane_specs['test_conditions']['P_feed'] 
+        P_f_test = self.membrane_config['test_conditions']['P_feed'] 
         self.solve_staging(P_f_test)
         self.solve_staging_qualities()
         
         d = {
+            "MEMBRANE_DB": list(MEMBRANES_DATABASE.keys()),
             "keys": self.stack.columns.tolist(),
             "data": self.stack.to_dict(orient='records'),
             "overview": self.overview,
