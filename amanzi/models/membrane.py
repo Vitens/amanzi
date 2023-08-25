@@ -3,65 +3,38 @@ from .submodels.splitter import Splitter
 import pandas as pd
 from scipy.optimize import minimize, minimize_scalar
 import json
-from phreeqpython import PhreeqPython
-
-MEMBRANES_DATABASE =  {
-        "ESPA2-LD": {
-            "nominal_flow": 27.3, #m3/day
-            "salt_rejection": 99.7, # %
-            "retention": {"Na": 0.997, "Cl": 0.997},
-            "feed_flow_max": 17.0, #m3/h
-            "dP_max_element": 1.0, # bar
-            "flux_avg": 15., # L/m2h
-            "A_e": 40.9, # m2
-            "test_conditions": {
-                "C_feed": 32000, # mg/L NaCl
-                "P_feed": 55, # bar
-                "recovery": 10, # %
-                "temperature": 25, # C
-            }
-        },
-        "ESPA2": {
-            "nominal_flow": 27.3, #m3/day
-            "salt_rejection": 95.7, # %
-            "retention": {"Na": 0.957, "Cl": 0.957},
-            "feed_flow_max": 19.0, #m3/h
-            "dP_max_element": 2.0, # bar
-            "flux_avg": 15., # L/m2h
-            "A_e": 35.9, # m2
-            "test_conditions": {
-                "C_feed": 32000, # mg/L NaCl
-                "P_feed": 55, # bar
-                "recovery": 10, # %
-                "temperature": 25, # C
-            }
-        }
-    }
-
+from phreeqpython import PhreeqPython, Solution
+from ..assets.membranes import MEMBRANE_DB
 
 class Membrane(Model, Splitter):
     def __init__(self, config, pp):
         super().__init__(config, pp)
         self.configuration = config.get('configuration', {}) 
         self.split = self.configuration.get('recovery', 0.8)
+
         self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
-        self.membrane_config = MEMBRANES_DATABASE[self.membrane]
+        self.membrane_config = MEMBRANE_DB[self.membrane]
         self.retention = self.membrane_config.get('retention', {'Na': 0.996, 'Cl': 0.996, 'Mg': 0.999, 'Ca': 0.999})
-        self.pv_elements = self.configuration.get('modules', 6)
-        self.membrane_surface = self.configuration.get('surface', 40)
+        self.membrane_surface = self.membrane_config.get('A_e', 40)
+
+        self.modules = self.configuration.get('modules', 6)
         self.stacks = self.configuration.get('stacks', 3)
-        self.stack = None
         self.stages = self.configuration.get('stages', 3)
-        self.stage_config = list(self.configuration['vessels'].values())
+        self.vessel_config = list(self.configuration['vessels'].values())
+        
+        self.stack = None
+        # self.concentrate = None
         self.stage_results = {}      
-        self.components = ['Ca', 'Cl', 'Fe', 'Fe', 'K', 'Mg', 'Mn', 'Mtg', 'N', 'Na', 'Ntg', 'Oxg', 'P', 'S']  
+        self.ready = False    
+
+        self.qualities = {}
         
         self.spacer_height = 0.86e-3 # m
         self.element_length = 1 # m
         self.rho = 1000 # kg/m3
         self.porosity = 0.85 # RO-porosity = 0.8-0.85 (Vrouwenvelder, 2009)
         
-        self.concentrate = None
+        # self.components = ['Ca', 'Cl', 'Fe', 'Fe', 'K', 'Mg', 'Mn', 'Mtg', 'N', 'Na', 'Ntg', 'Oxg', 'P', 'S']  
 
     def velocity(self, Qf):
         total_spacer_width = (self.membrane_surface/self.element_length)/2
@@ -113,23 +86,13 @@ class Membrane(Model, Splitter):
         dT = T-Tref        
         K_w = K_w * (1 + 0.03 * dT) # K_w changes 3% per degree (dT)
         return K_w
- 
-    
-    @property
-    def recovery(self):
-        Q_p = self.stack["Qp"].sum()
-        return (Q_p/self.stack_inflow)*100
-
-    @property
-    def stack_inflow(self):
-        total_inflow = self.inflows['product'] * 1e6 / (365*24) # convert Mm3/year to m3/h
-        return total_inflow / self.stacks    
 
     def init_stack(self, Pf):
         for stage in range(self.stages):
-            vessels = self.stage_config[stage]
-            df = pd.DataFrame(index=range(self.pv_elements))
+            df = pd.DataFrame(index=range(self.modules))
             df['stage'] = stage
+
+            vessels = self.vessel_config[stage]
             df['vessels'] = vessels     
 
             if stage == 0:
@@ -148,7 +111,7 @@ class Membrane(Model, Splitter):
             else:
                 # initialize first element based on previous stage            
                 prev_df = self.stage_results[stage-1]
-                df.at[0, "Qf_e"] = (prev_df.iloc[-1]["Qc_e"] * self.stage_config[stage-1]) / vessels
+                df.at[0, "Qf_e"] = (prev_df.iloc[-1]["Qc_e"] * self.vessel_config[stage-1]) / vessels
                 df.at[0, 'v_e'] = self.velocity(df.at[0, "Qf_e"])
                 df.at[0, 'dP_e'] = self.head_loss(df.at[0, 'v_e'])
                 df.at[0, "Pf_e"] = prev_df.iloc[-1]["Pc_e"]
@@ -205,10 +168,10 @@ class Membrane(Model, Splitter):
             print(f"Solved in {iterations} iterations")
 
     def solve_staging_qualities(self):
-        def solve_qualities(feed, R):
+        def solve_qualities(influent, R):
             permeate_composition = {}
             concentrate_composition = {}
-            for el, val in feed.species.items():
+            for el, val in influent.species.items():
                 ret = self.retention.get(el, 0.999)
                 permeate_composition[el] = val * (1-ret) * 1e3
                 concentrate_composition[el] = val * (1-(R/100)*(1-ret)) / (1-(R/100)) * 1e3
@@ -218,52 +181,57 @@ class Membrane(Model, Splitter):
 
         qualities = {}
         for s, df in self.stage_results.items():
-            qualities[s] = {'Cf_e': [], 'Cc_e': [], 'Cp_e': []}
+            qualities[s] = {'influent': [], 'concentrate': [], 'permeate': []}
             for index, stage_row in df.iterrows():
                 if index == 0 and s == 0:
-                    R = stage_row['R_e']
+                    # R = stage_row['R_e']
                     Cf_e = self.influent.copy()
-                    qualities[s]['Cf_e'].append(Cf_e)
+                    qualities[s]['influent'].append(Cf_e)
                 elif index == 0 and s > 0:
-                    R = stage_row['R_e']
-                    Cf_e = qualities[s-1]['Cc_e'][-1]
-                    qualities[s]['Cf_e'].append(Cf_e)
+                    # R = stage_row['R_e']
+                    Cf_e = qualities[s-1]['concentrate'][-1]
+                    qualities[s]['influent'].append(Cf_e)
                 else:
-                    R = stage_row['R_e']
-                    Cf_e = qualities[s]['Cc_e'][-1]                    
-                    qualities[s]['Cf_e'].append(Cf_e)
+                    Cf_e = qualities[s]['concentrate'][-1]                    
+                    qualities[s]['influent'].append(Cf_e)
        
-                Cc_e, Cp_e = solve_qualities(Cf_e, R)
-                qualities[s]['Cc_e'].append(Cc_e)
-                qualities[s]['Cp_e'].append(Cp_e)
+                R = stage_row['R_e']
+                conc, perm = solve_qualities(Cf_e, R)
+                qualities[s]['concentrate'].append(conc)
+                qualities[s]['permeate'].append(perm)
 
             for key, ls in qualities[s].items():
                 self.stage_results[s][f"π_{key}"] = pd.Series([l.osmotic_pressure for l in ls])
                 # self.stage_results[s][key] = pd.Series([l.total('Ca', 'mg') for l in ls])
 
-            self.stage_results[s][f"π_fc_e"] = (self.stage_results[s]["π_Cf_e"] + self.stage_results[s]["π_Cc_e"])/2
+            self.stage_results[s][f"π_mean"] = (self.stage_results[s]["π_influent"] + self.stage_results[s]["π_concentrate"])/2
             self.stage_results[s] = self.stage_results[s].round(2)
         
         self.qualities = qualities
-        self.stack = pd.concat(self.stage_results.values())        
+        self.stack = pd.concat(self.stage_results.values())   
+        self.ready = True     
 
     @property
     def emitter_solutions(self):
         return {'waste': self.concentrate}
 
     def run_model(self, type, total_inflow, solution):
-        permeate = solution.copy()
-        ion_removal = {}
+        specsheet_pressure = self.membrane_config['test_conditions']['P_feed'] #use test pressure to start iteration
+        self.solve_staging(specsheet_pressure)
+        self.solve_staging_qualities()
 
-        ion_removal = {}
-        for ion, ret in self.retention.items():
-            ion_removal[ion] = solution.total(ion, 'mmol') * ret  * -0.99999
+        # permeate = solution.copy()
+        # ion_removal = {}
+
+        # ion_removal = {}
+        # for ion, ret in self.retention.items():
+        #     ion_removal[ion] = solution.total(ion, 'mmol') * ret  * -0.99999
         
-        permeate.change(ion_removal, 'mmol')
+        # permeate.change(ion_removal, 'mmol')
 
-        # Calculate Concentrate:
-        ion_removal.update((x, y*-1) for x, y in ion_removal.items())
-        concentrate_composition = ion_removal
+        # # Calculate Concentrate:
+        # ion_removal.update((x, y*-1) for x, y in ion_removal.items())
+        # concentrate_composition = ion_removal
         # concentrate_composition.update({'-units': 'mmol/l', 'temp': 10})
 
         # #Rewrite HCO3 and SO4 in terms that PhreeqPython understands
@@ -275,27 +243,17 @@ class Membrane(Model, Splitter):
         # del concentrate_composition['SO4']
         
         #Create new concentrate solution
-        self.concentrate = self.pp.add_solution_simple(concentrate_composition)
+        # self.concentrate = self.pp.add_solution_simple(concentrate_composition)
 
-        return permeate
+        return self.permeate
+    
+    @property
+    def concentrate(self):
+        return self.get_solution('concentrate') if len(self.qualities) else None
 
-    # @property
-    # def stream_species(self):
-    #     species = {}
-    #     for stage, streams in self.qualities.items():
-    #         species[stage] = {}
-    #         for stream, sols in streams.items():
-    #             species[stage][stream] = [s.species for s in sols]
-    #     return species
-
-    # @property
-    # def stream_elements(self):
-    #     species = {}
-    #     for stage, streams in self.qualities.items():
-    #         species[stage] = {}
-    #         for stream, sols in streams.items():
-    #             species[stage][stream] = [s.elements for s in sols]
-    #     return species
+    @property
+    def permeate(self):
+        return self.get_solution('permeate') if len(self.qualities) else None
 
     def generate_chart_data(self, col1, col2):
         datasets = []
@@ -306,141 +264,177 @@ class Membrane(Model, Splitter):
                 "data": data
             }
             datasets.append(dataset)
-
         return datasets
     
     @property
+    def stack_quantities(self):
+        d = {
+            "influent": self.stack_inflow,
+            "concentrate": self.stack.iloc[-1]["Qc_e"] * self.vessel_config[-1],
+            "permeate": sum([data['Qp'] for s, data in self.stage_quantities.items()])
+        }
+        return d
+    
+    @property
     def stage_quantities(self):
-        control_volums = {}
+        d = {}
         for s, data in self.stage_results.items():
-            control_volums[s] = {
-                "Qf": self.stack_inflow if s == 0 else data.iloc[0]['Qf_e'],
+            qf = self.stack_inflow if s == 0 else data.iloc[0]['Qf_e'] * self.vessel_config[s]
+            qp = data['Qp_e'].sum() * self.vessel_config[s]
+            d[s] = {
+                "Qf": qf,
                 "Pf": data.iloc[0]['Pf_e'],
-                "Qc": data.iloc[-1]['Qc_e'] * self.stage_config[s],
+                "Qc": data.iloc[-1]['Qc_e'] * self.vessel_config[s],
                 "Pc": data.iloc[-1]['Pc_e'],
-                "Qp": data['Qp_e'].sum() * self.stage_config[s],
+                "Qp": qp,
                 "Pp": 0,
+                "recovery": round(100 * qp/qf, 0)
             }
-        return control_volums
+        return d 
+    
+    def get_solution(self, stream, stage=None, module=None):
+        """
+        Get the solution-elements for any stream.
+        If no stage or module is specified, the solution for the entire stack is returned.
+        """
+        if stage and not module:
+            return self.stage_solutions[stage][stream]
+        elif stage and module:
+            return self.module_solutions[stage][stream][module]
+        elif not stage and module:
+            raise Exception("Module solution requested without stage specification.")
+        else:
+            return self.stack_solutions[stream]     
 
-    @property
-    def d_influent(self):        
-        return self.qualities[0]['Cf_e'][0]
-    
-    @property
-    def d_concentrate(self):        
-        s = max(self.qualities.keys())
-        return self.qualities[s]['Cc_e'][-1]
-    
-    @property
-    def d_permeate(self):
-        permeate_mixture = {}
-        for s in self.stage_results.keys():
-            p_sols = self.qualities[s]['Cp_e']
-            p_flows = self.stage_results[s]['Qp_e'].tolist()
-            p_total = sum(p_flows)
-
-            mixture = {sol:flow/p_total for sol, flow in zip(p_sols, p_flows)}
-            int_permeate = self.pp.mix_solutions(mixture)
-            permeate_mixture[int_permeate] = p_total
-        return self.pp.mix_solutions(permeate_mixture)
-    
-    @property
-    def stack_solutions(self):
-        # aggregate solutions based on scope (overiew of stages)
-        d = {}
-        d['influent'] = self.aggregate_components(self.qualities[0]['Cf_e'][0])
-        s = max(self.qualities.keys())        
-        d['concentrate'] = self.aggregate_components(self.qualities[s]['Cc_e'][-1])
-        permeate_mixture = {}
-        for s in self.stage_results.keys():
-            p_sols = self.qualities[s]['Cp_e']
-            p_flows = self.stage_results[s]['Qp_e'].tolist()
-            p_total = sum(p_flows)
-
-            mixture = {sol:flow/p_total for sol, flow in zip(p_sols, p_flows)}
-            int_permeate = self.pp.mix_solutions(mixture)
-            permeate_mixture[int_permeate] = p_total
-        d['permeate'] = self.aggregate_components(self.pp.mix_solutions(permeate_mixture))
-        return d
-    
-    @property
-    def stage_solutions(self):
-        # aggregate solutions based on scope (overiew of stages)
-        d = {}
-        for stage, streamsol in self.qualities.items():
-            d[stage] = {}
-            #influent
-            d[stage]['influent'] = self.aggregate_components(streamsol['Cf_e'][0])
-            #concentrate
-            d[stage]['concentrate'] = self.aggregate_components(streamsol['Cc_e'][-1])
-            #permeate
-            p_sols = streamsol['Cp_e']
-            p_flows = self.stage_results[stage]['Qp_e'].tolist()
-            p_total = sum(p_flows)
-
-            mixture = {sol:flow/p_total for sol, flow in zip(p_sols, p_flows)}
-            d[stage]['permeate'] = self.aggregate_components(self.pp.mix_solutions(mixture))
-        return d
-    
-    def aggregate_components(self, solution):
+    def _serialize_solution(self, data):
+        if isinstance(data, dict):
+            new_dict = {}
+            for key, value in data.items():
+                new_value = self._serialize_solution(value)
+                new_dict[key] = new_value
+            return new_dict
+        elif isinstance(data, list):
+            return [self._solution_elements(sol) for sol in data]        
+        elif isinstance(data, Solution):
+            return self._solution_elements(data)
+        else:
+            return data
+        
+    def _solution_elements(self, solution):
         elements = {}
         for element, mass_fraction in solution.elements.items():
             # Extract the element name by ignoring the parenthesis part enables correct handling of redox states
             element_name = element.split('(')[0]
             elements[element_name] = elements.get(element_name, 0) + mass_fraction * 1e3 #convert to mmol.
             elements[element_name] = round(elements[element_name], 2)
+
+        # add misc parameters
         elements['pH'] = round(solution.pH, 2)
-        elements['egv'] = round(solution.sc20/10, 2)
+        elements['EGV'] = round(solution.sc20/10, 2)
         return elements
+    
+    @property
+    def stack_solutions(self):
+        # aggregate solutions based on scope (overview, stages, or modules)
+        d = {}
+        d['influent'] = self.qualities[0]['influent'][0]      
+        d['concentrate'] = self.qualities[self.stages-1]['concentrate'][-1]
+        permeate_mixture = {}
+        for s in self.stage_results.keys():
+            p_sols = self.qualities[s]['permeate']
+            p_flows = self.stage_results[s]['Qp_e'].tolist()
+            p_total = sum(p_flows)
+
+            mixture = {sol:flow/p_total for sol, flow in zip(p_sols, p_flows)}
+            int_permeate = self.pp.mix_solutions(mixture)
+            permeate_mixture[int_permeate] = p_total
+        d['permeate'] = self.pp.mix_solutions(permeate_mixture)
+        return d
+    
+    @property
+    def stage_solutions(self):
+        # aggregate solutions based on scope (overview, stages or modules)
+        d = {}
+        for stage, streamsol in self.qualities.items():
+            d[stage] = {}
+            d[stage]['influent'] = streamsol['influent'][0]
+            d[stage]['concentrate'] = streamsol['concentrate'][-1]
+            p_sols = streamsol['permeate']
+            p_flows = self.stage_results[stage]['Qp_e'].tolist()
+            mixture = {sol:flow/sum(p_flows) for sol, flow in zip(p_sols, p_flows)}
+            d[stage]['permeate'] = self.pp.mix_solutions(mixture)
+        return d
+    
+    @property
+    def module_solutions(self):
+        solutions = {}
+        for s, streamdata in self.qualities.items():
+            solutions[s] = {}
+            for stream, sols in streamdata.items():
+                solutions[s][stream] = sols    
+        return solutions
+
+    @property
+    def stack_inflow(self):
+        total_inflow = self.inflows['product'] * 1e6 / (365*24) # convert Mm3/year to m3/h
+        return total_inflow / self.stacks
+    
+    @property
+    def recovery(self):
+        # Q_p = self.stack["Qp"].sum()
+        # return (Q_p/self.stack_inflow)*100    
+        return 100 * self.stack_quantities['permeate'] / self.stack_quantities['influent']
+    
+    @property
+    def flux_mean(self):
+        return self.stack["J_e"].mean()
+    
+    @property
+    def stack_summary(self):
+        summary = {
+            'recovery': self.recovery,
+            'flux_mean': self.flux_mean
+        }
+        return summary
+    
+    # @property
+    # def permeate(self):
+    #     return self.get_solution('permeate') if self.ready else None
+    
+    # @property
+    # def concentrate(self):
+    #     return self.get_solution('concentrate') if self.ready else None
 
 
     def design(self):
-        print("Designin a Membrane")
-        #use test pressure to start iteration
-        P_f_test = self.membrane_config['test_conditions']['P_feed'] 
-        self.solve_staging(P_f_test)
-        self.solve_staging_qualities()
-        # self.stack_inst = Stack(self.stack)
+        print("Designing a Membrane")
+        # specsheet_pressure = self.membrane_config['test_conditions']['P_feed'] #use test pressure to start iteration
+        # self.solve_staging(specsheet_pressure)
+        # self.solve_staging_qualities()
+        self.run_model(None, None, None)
         
         d = {
-            "MEMBRANE_DB": list(MEMBRANES_DATABASE.keys()),
-            # 'components': self.components,
-            "stack_solutions": self.stack_solutions,
-            "stage_solutions": self.stage_solutions,
-            # "module_solutions": self.module_solutions,
+            "membranes": list(MEMBRANE_DB.keys()),
+            'table': self.stack.to_dict(orient='records'),
+            
+            #solutions per scope-level
+            "stack_solutions": self._serialize_solution(self.stack_solutions),
+            "stage_solutions": self._serialize_solution(self.stage_solutions),
+            "module_solutions": self._serialize_solution(self.module_solutions),
+
+            #quantities per scope-level (flow & pressure)
+            "stack_quantities": self.stack_quantities,
             "stage_quantities": self.stage_quantities,
-            'stage_results': pd.concat([df for df in self.stage_results.values()]).to_dict(orient='records'),
+
+            #summary
+            "stack_summary": self.stack_summary,            
+
             'charts': {
                 "recovery": self.generate_chart_data('element', 'R_e'),
                 "flux_rec": self.generate_chart_data('R_e','J_e'),
                 "head_loss": self.generate_chart_data('element','dP_e'),
                 "stage_flows": self.generate_chart_data('element','Qf_e'),
-                "osmotic_avg": self.generate_chart_data('element','π_fc_e'),
-            },
-            'influent': {
-                'pH': self.d_influent.pH,
-                'egv': self.d_influent.sc20/10,
-                'na': self.d_influent.total('Na', 'mg'),
-                'cl': self.d_influent.total('Cl', 'mg'),
-                'ca': self.d_influent.total('Ca','mg'),
-                'mg': self.d_influent.total('Mg','mg'),
-            },
-            'effluent': {
-                'pH': self.d_permeate.pH,
-                'egv': self.d_permeate.sc20/10,
-                'na': self.d_permeate.total('Na', 'mg'),
-                'cl': self.d_permeate.total('Cl', 'mg'),
-                'ca': self.d_permeate.total('Ca','mg'),
-                'mg': self.d_permeate.total('Mg','mg'),
-            },
-            'concentrate': {
-                'pH': self.d_concentrate.pH,
-                'egv': self.d_concentrate.sc20/10,
-                'na': self.d_concentrate.total('Na', 'mg'),
-                'cl': self.d_concentrate.total('Cl', 'mg'),
-                'ca': self.d_concentrate.total('Ca','mg'),
-                'mg': self.d_concentrate.total('Mg','mg'),
-            },        
+                "osmotic_avg": self.generate_chart_data('element','π_mean'),
+            },   
         }
         return d
