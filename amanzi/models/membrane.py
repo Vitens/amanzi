@@ -220,31 +220,6 @@ class Membrane(Model, Splitter):
         self.solve_staging(specsheet_pressure)
         self.solve_staging_qualities()
 
-        # permeate = solution.copy()
-        # ion_removal = {}
-
-        # ion_removal = {}
-        # for ion, ret in self.retention.items():
-        #     ion_removal[ion] = solution.total(ion, 'mmol') * ret  * -0.99999
-        
-        # permeate.change(ion_removal, 'mmol')
-
-        # # Calculate Concentrate:
-        # ion_removal.update((x, y*-1) for x, y in ion_removal.items())
-        # concentrate_composition = ion_removal
-        # concentrate_composition.update({'-units': 'mmol/l', 'temp': 10})
-
-        # #Rewrite HCO3 and SO4 in terms that PhreeqPython understands
-        # concentrate_composition['Alkalinity'] = str(concentrate_composition['HCO3']) + " as HCO3"
-        # concentrate_composition['S(6)'] = str(concentrate_composition['SO4']) + " as SO4"
-
-        # #Delete dormant keys
-        # del concentrate_composition['HCO3']
-        # del concentrate_composition['SO4']
-        
-        #Create new concentrate solution
-        # self.concentrate = self.pp.add_solution_simple(concentrate_composition)
-
         return self.permeate
     
     @property
@@ -266,29 +241,70 @@ class Membrane(Model, Splitter):
             datasets.append(dataset)
         return datasets
     
+    # @property
+    # def stack_quantities(self):
+    #     d = {
+    #         "influent": self.stack_inflow,
+    #         "concentrate": self.stack.iloc[-1]["Qc_e"] * self.vessel_config[-1],
+    #         "permeate": sum([data['Qp'] for s, data in self.stage_quantities.items()])
+    #     }
+    #     return d
+
     @property
     def stack_quantities(self):
+        qp = sum([data['Qp'] for s, data in self.stage_quantities.items()])
         d = {
-            "influent": self.stack_inflow,
-            "concentrate": self.stack.iloc[-1]["Qc_e"] * self.vessel_config[-1],
-            "permeate": sum([data['Qp'] for s, data in self.stage_quantities.items()])
+            "Qf": self.stack_inflow,
+            "Qc": self.stack.iloc[-1]['Qc_e'] * self.vessel_config[-1],
+            "Qp": qp,
+            "Pf": self.stack.iloc[0]['Pf_e'],
+            "Pc": self.stack.iloc[-1]['Pc_e'],
+            "Pp": 0,
+            "dP_mean": self.stack['dP_e'].mean(),
+            "dP_max": self.stack['dP_e'].max(),            
+            "recovery": 100 * qp/self.stack_inflow,
+            "flux_mean": self.stack['J_e'].mean(),
+            "flux_max": self.stack['J_e'].max()                
         }
         return d
+
+    
+    # @property
+    # def fluxes(self):
+    #     fluxes = {
+    #         s: {
+    #             'mean': df['J_e'].mean(),
+    #             'max': df['J_e'].max()
+    #         }
+    #         for s, df in self.stage_results.items()
+    #     }
+    #     fluxes['total'] = {
+    #         'mean': self.stack['J_e'].mean(),
+    #         'max': self.stack['J_e'].max()
+    #     }
+    #     return fluxes    
     
     @property
     def stage_quantities(self):
         d = {}
+        qp_summed = 0
         for s, data in self.stage_results.items():
             qf = self.stack_inflow if s == 0 else data.iloc[0]['Qf_e'] * self.vessel_config[s]
-            qp = data['Qp_e'].sum() * self.vessel_config[s]
+            qp = (data['Qp_e'] * self.vessel_config[s]).sum()
+            qp_summed += qp
+            # print(s, qp_summed)
             d[s] = {
                 "Qf": qf,
-                "Pf": data.iloc[0]['Pf_e'],
                 "Qc": data.iloc[-1]['Qc_e'] * self.vessel_config[s],
-                "Pc": data.iloc[-1]['Pc_e'],
                 "Qp": qp,
+                "Pf": data.iloc[0]['Pf_e'],
+                "Pc": data.iloc[-1]['Pc_e'],
                 "Pp": 0,
-                "recovery": round(100 * qp/qf, 0)
+                "dP_mean": data['dP_e'].mean(),
+                "dP_max": data['dP_e'].max(),
+                "recovery": round(100 * qp/qf, 0),
+                "flux_mean": data['J_e'].mean(),
+                "flux_max": data['J_e'].max(),
             }
         return d 
     
@@ -381,36 +397,32 @@ class Membrane(Model, Splitter):
     
     @property
     def recovery(self):
-        # Q_p = self.stack["Qp"].sum()
-        # return (Q_p/self.stack_inflow)*100    
-        return 100 * self.stack_quantities['permeate'] / self.stack_quantities['influent']
-    
-    @property
-    def flux_mean(self):
-        return self.stack["J_e"].mean()
-    
-    @property
-    def stack_summary(self):
-        summary = {
-            'recovery': self.recovery,
-            'flux_mean': self.flux_mean
-        }
-        return summary
-    
-    # @property
-    # def permeate(self):
-    #     return self.get_solution('permeate') if self.ready else None
-    
-    # @property
-    # def concentrate(self):
-    #     return self.get_solution('concentrate') if self.ready else None
+        return 100 * self.stack_quantities['Qp'] / self.stack_quantities['Qf']
 
+    @property
+    def summary_table(self):
+        #Combine stage & stack data
+        data = self.stage_quantities.copy()
+        data['total'] = self.stack_quantities.copy()
+        df = pd.DataFrame(data).round(1)
 
+        #Format data to table-dict
+        df['Eenheid'] = ['m3/h','m3/h','m3/h','bar','bar','bar','bar','bar', '%', 'l/m2h', 'l/m2h']
+        df.reset_index(inplace=True)
+        df.columns = ['','Stage 1','Stage 2', 'Stage 3', 'Stack Total','Eenheid']
+
+        #Add membrane-specific thresholds
+        # qf_max = self.membrane_config['Qf_max']
+        # qc_min = self.membrane_config['Qc_min']
+        # nominal = round(self.membrane_config['nominal_flow']/24,1)
+        # p_max = self.membrane_config['P_max']
+        # dp_max = self.membrane_config['dP_max']
+        # df['Limiet'] = [f"< {qf_max}", f"> {qc_min}", f"< {nominal}", f"< {p_max}", '-','-',f"< {dp_max}", f"< {dp_max}", '-', '-','-']
+                    
+        return df.to_dict(orient='records')
+    
     def design(self):
         print("Designing a Membrane")
-        # specsheet_pressure = self.membrane_config['test_conditions']['P_feed'] #use test pressure to start iteration
-        # self.solve_staging(specsheet_pressure)
-        # self.solve_staging_qualities()
         self.run_model(None, None, None)
         
         d = {
@@ -425,9 +437,10 @@ class Membrane(Model, Splitter):
             #quantities per scope-level (flow & pressure)
             "stack_quantities": self.stack_quantities,
             "stage_quantities": self.stage_quantities,
-
+            "recovery" : self.recovery,
             #summary
-            "stack_summary": self.stack_summary,            
+            # "stack_summary": self.stack_summary,            
+            "summary_table": self.summary_table,
 
             'charts': {
                 "recovery": self.generate_chart_data('element', 'R_e'),

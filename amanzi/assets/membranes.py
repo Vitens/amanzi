@@ -3,8 +3,10 @@ MEMBRANE_DB =  {
         "nominal_flow": 27.3, #m3/day
         "salt_rejection": 99.7, # %
         "retention": {"Na": 0.997, "Cl": 0.997},
-        "feed_flow_max": 17.0, #m3/h
-        "dP_max_element": 1.0, # bar
+        "Qf_max": 17.0, #m3/h
+        "Qc_min": 2.7, #m3/h
+        "dP_max": 1.0, # bar
+        "P_max": 41.4, # bar
         "flux_avg": 15., # L/m2h
         "A_e": 40.9, # m2
         "test_conditions": {
@@ -18,8 +20,8 @@ MEMBRANE_DB =  {
         "nominal_flow": 27.3, #m3/day
         "salt_rejection": 95.7, # %
         "retention": {"Na": 0.957, "Cl": 0.957},
-        "feed_flow_max": 19.0, #m3/h
-        "dP_max_element": 2.0, # bar
+        "Qf_max": 19.0, #m3/h
+        "dP_max": 2.0, # bar
         "flux_avg": 15., # L/m2h
         "A_e": 35.9, # m2
         "test_conditions": {
