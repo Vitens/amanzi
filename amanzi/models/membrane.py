@@ -10,6 +10,8 @@ class Membrane(Model, Splitter):
     def __init__(self, config, pp):
         super().__init__(config, pp)
         self.configuration = config.get('configuration', {}) 
+        print("config")
+        print(config)
         self.split = self.configuration.get('recovery', 0.8)
 
         self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
@@ -267,22 +269,6 @@ class Membrane(Model, Splitter):
             "flux_max": self.stack['J_e'].max()                
         }
         return d
-
-    
-    # @property
-    # def fluxes(self):
-    #     fluxes = {
-    #         s: {
-    #             'mean': df['J_e'].mean(),
-    #             'max': df['J_e'].max()
-    #         }
-    #         for s, df in self.stage_results.items()
-    #     }
-    #     fluxes['total'] = {
-    #         'mean': self.stack['J_e'].mean(),
-    #         'max': self.stack['J_e'].max()
-    #     }
-    #     return fluxes    
     
     @property
     def stage_quantities(self):
