@@ -31,6 +31,32 @@ class Groundwater(Model):
         h2s_value = max(c.get('Waterstofsulfide', 0), 0.0000001)
 
         # create solution
+        print("SOLUTION")
+        print ({
+            'pH': c.get('pH', 7),
+            'temp': c.get('temp', 10),
+            'units': 'mg/l',
+            'pe': 4, # phreeqc default
+            'redox': 'O(-2)/O(0)',
+            'O(0)': oxg,
+            'Oxg': 0.0000001, # prevent phreeqc from crashing
+            'Ntg': c.get('Stikstof', 0),
+            'Mtg': c.get('Methaan', 0),
+            h2s: '{} as H2S'.format(h2s_value),
+            fe: '{} as Fe'.format(c.get('IJzer', 0)),
+            mn: '{} as Mn'.format(c.get('Mangaan', 0)),
+            nh4: '{} as NH4'.format(c.get('Ammonium', 0)),
+            'Ca': c.get('Calcium', 0),
+            'Mg': c.get('Magnesium', 0),
+            'Na': c.get('Natrium', 0),
+            'K': c.get('Kalium', 0),
+            'Alkalinity': '{} as HCO3'.format(c.get('Bicarbonaat', 0)),
+            'Cl': c.get('Chloride', 0),
+            'N(5)': '{} as NO3'.format(c.get('Nitraat', 0)),
+            no2: '{} as NO2'.format(c.get('Nitriet', 0)),
+            'S(6)': '{} as SO4'.format(c.get('Sulfaat', 0)),
+            'P': '{} as PO4'.format(c.get('Fosfaat', 0)),
+        })
 
         self.solution = self.pp.add_solution({
             'pH': c.get('pH', 7),
