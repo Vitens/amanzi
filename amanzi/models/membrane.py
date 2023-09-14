@@ -10,9 +10,8 @@ class Membrane(Model, Splitter):
     def __init__(self, config, pp):
         super().__init__(config, pp)
         self.configuration = config.get('configuration', {}) 
-        print("config")
-        print(config)
         self.split = self.configuration.get('recovery', 0.8)
+        self.capacity = self.configuration.get('capacity', 300)
 
         self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
         self.membrane_config = MEMBRANE_DB[self.membrane]
@@ -36,6 +35,7 @@ class Membrane(Model, Splitter):
         self.rho = 1000 # kg/m3
         self.porosity = 0.85 # RO-porosity = 0.8-0.85 (Vrouwenvelder, 2009)
         
+
         # self.components = ['Ca', 'Cl', 'Fe', 'Fe', 'K', 'Mg', 'Mn', 'Mtg', 'N', 'Na', 'Ntg', 'Oxg', 'P', 'S']  
 
     def velocity(self, Qf):
@@ -88,6 +88,8 @@ class Membrane(Model, Splitter):
         dT = T-Tref        
         K_w = K_w * (1 + 0.03 * dT) # K_w changes 3% per degree (dT)
         return K_w
+    
+
 
     def init_stack(self, Pf):
         for stage in range(self.stages):
@@ -378,6 +380,10 @@ class Membrane(Model, Splitter):
 
     @property
     def stack_inflow(self):
+        return self.capacity / self.split 
+
+    @property
+    def mass_balance_inflow(self):
         total_inflow = self.inflows['product'] * 1e6 / (365*24) # convert Mm3/year to m3/h
         return total_inflow / self.stacks
     
@@ -395,7 +401,6 @@ class Membrane(Model, Splitter):
         #Format data to table-dict
         df['Eenheid'] = ['m3/h','m3/h','m3/h','bar','bar','bar','bar','bar', '%', 'l/m2h', 'l/m2h']
         df.reset_index(inplace=True)
-        # df.columns = ['','Stage 1','Stage 2', 'Stage 3', 'Stack Total','Eenheid']
         
         cols = ['']
         stage_names = [f"Stage {s+1}" for s in range(self.stages)]
