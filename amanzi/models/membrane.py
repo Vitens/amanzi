@@ -395,7 +395,13 @@ class Membrane(Model, Splitter):
         #Format data to table-dict
         df['Eenheid'] = ['m3/h','m3/h','m3/h','bar','bar','bar','bar','bar', '%', 'l/m2h', 'l/m2h']
         df.reset_index(inplace=True)
-        df.columns = ['','Stage 1','Stage 2', 'Stage 3', 'Stack Total','Eenheid']
+        # df.columns = ['','Stage 1','Stage 2', 'Stage 3', 'Stack Total','Eenheid']
+        
+        cols = ['']
+        stage_names = [f"Stage {s+1}" for s in range(self.stages)]
+        cols.extend(stage_names)
+        cols.extend(['Stack Total','Eenheid'])
+        df.columns = cols
 
         #Add membrane-specific thresholds
         # qf_max = self.membrane_config['Qf_max']
