@@ -209,6 +209,8 @@ class Membrane(Model, Splitter):
                 # self.stage_results[s][key] = pd.Series([l.total('Ca', 'mg') for l in ls])
 
             self.stage_results[s][f"π_mean"] = (self.stage_results[s]["π_influent"] + self.stage_results[s]["π_concentrate"])/2
+            self.stage_results[s][f"Beta"] = self.stage_results[s]["π_concentrate"] / self.stage_results[s]["π_influent"]
+            self.stage_results[s][f"Beta_mean"] = self.stage_results[s]["π_mean"] / self.stage_results[s]["π_influent"]
             self.stage_results[s] = self.stage_results[s].round(2)
         
         self.qualities = qualities
@@ -335,6 +337,9 @@ class Membrane(Model, Splitter):
         # add misc parameters
         elements['pH'] = round(solution.pH, 2)
         elements['EGV'] = round(solution.sc20/10, 2)
+        elements['TDS'] = round(solution.tds, 2)
+        # elements['NaCl'] = round(solution.total('NaCl', 'mmol'), 2)
+        
         return elements
     
     @property

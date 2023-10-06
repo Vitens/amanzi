@@ -1,4 +1,20 @@
 MEMBRANE_DB =  {
+    "SUEZ AK-400H": {
+        "nominal_flow": 41.6, #m3/day
+        "salt_rejection": 99.65, # %
+        "retention": {"Na": 0.9965, "Cl": 0.9965},
+        # "Qf_max": 17.0, #m3/h
+        "dP_max": 1.03, # bar
+        "P_max": 27.56, # bar
+        "flux_avg": 25., # L/m2h
+        "A_e": 40.9, # m2
+        "test_conditions": {
+            "C_feed": 500, # mg/L NaCl
+            "P_feed": 7.93, # bar
+            "recovery": 15, # %
+            "temperature": 25, # C
+        }
+    },
     "ESPA2-LD": {
         "nominal_flow": 27.3, #m3/day
         "salt_rejection": 99.7, # %
