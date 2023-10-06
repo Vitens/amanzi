@@ -17,11 +17,12 @@ class Membrane(Model, Splitter):
         self.membrane_config = MEMBRANE_DB[self.membrane]
         self.retention = self.membrane_config.get('retention', {'Na': 0.996, 'Cl': 0.996, 'Mg': 0.999, 'Ca': 0.999})
         self.membrane_surface = self.membrane_config.get('A_e', 40)
+        self.optiflux = self.configuration.get('optiflux', False)
 
-        self.modules = self.configuration.get('modules', 6)
+        # self.modules = self.configuration.get('modules', 6)
         self.stacks = self.configuration.get('stacks', 3)
         self.stages = self.configuration.get('stages', 3)
-        self.vessel_config = list(self.configuration['vessels'].values())
+        # self.vessel_config = list(self.configuration['vessels'].values())
         
         self.stack = None
         # self.concentrate = None
@@ -34,9 +35,21 @@ class Membrane(Model, Splitter):
         self.element_length = 1 # m
         self.rho = 1000 # kg/m3
         self.porosity = 0.85 # RO-porosity = 0.8-0.85 (Vrouwenvelder, 2009)
+        print("OPTIFLUX =", self.optiflux)
         
 
-        # self.components = ['Ca', 'Cl', 'Fe', 'Fe', 'K', 'Mg', 'Mn', 'Mtg', 'N', 'Na', 'Ntg', 'Oxg', 'P', 'S']  
+    @property
+    def vessel_config(self):
+        if self.optiflux:
+            return [x*2 for x in list(self.configuration['vessels'].values())]
+        else:
+            return list(self.configuration['vessels'].values())
+
+    @property
+    def modules(self):
+        modules = self.configuration.get('modules', 6)/2 if self.optiflux else self.configuration.get('modules', 6)
+        return int(modules)
+
 
     def velocity(self, Qf):
         total_spacer_width = (self.membrane_surface/self.element_length)/2
@@ -339,7 +352,7 @@ class Membrane(Model, Splitter):
         elements['EGV'] = round(solution.sc20/10, 2)
         elements['TDS'] = round(solution.tds, 2)
         # elements['NaCl'] = round(solution.total('NaCl', 'mmol'), 2)
-        
+
         return elements
     
     @property
