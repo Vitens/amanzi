@@ -2,9 +2,12 @@ from .model import Model
 from .submodels.splitter import Splitter
 import pandas as pd
 from scipy.optimize import minimize, minimize_scalar
+import numpy as np
 import json
 from phreeqpython import PhreeqPython, Solution
 from ..assets.membranes import MEMBRANE_DB
+
+KP = 0.99 #Hydraunotics constant for permeate flux (p. 258 from https://www.researchgate.net/publication/351606477)
 
 class Membrane(Model, Splitter):
     def __init__(self, config, pp):
@@ -222,8 +225,10 @@ class Membrane(Model, Splitter):
                 # self.stage_results[s][key] = pd.Series([l.total('Ca', 'mg') for l in ls])
 
             self.stage_results[s][f"π_mean"] = (self.stage_results[s]["π_influent"] + self.stage_results[s]["π_concentrate"])/2
-            self.stage_results[s][f"Beta"] = self.stage_results[s]["π_concentrate"] / self.stage_results[s]["π_influent"]
-            self.stage_results[s][f"Beta_mean"] = self.stage_results[s]["π_mean"] / self.stage_results[s]["π_influent"]
+            # self.stage_results[s][f"Beta"] = self.stage_results[s]["π_concentrate"] / self.stage_results[s]["π_influent"]
+            # self.stage_results[s][f"Beta_mean"] = self.stage_results[s]["π_mean"] / self.stage_results[s]["Q"]
+            self.stage_results[s]["Qfc_e"] = (self.stage_results[s]["Qc_e"] + self.stage_results[s]["Qf_e"])/2
+            self.stage_results[s]["Beta"] = KP * np.exp( self.stage_results[s]["Qp_e"] / self.stage_results[s]["Qfc_e"])
             self.stage_results[s] = self.stage_results[s].round(2)
         
         self.qualities = qualities
@@ -348,6 +353,7 @@ class Membrane(Model, Splitter):
             elements[element_name] = round(elements[element_name], 2)
 
         # add misc parameters
+        elements['Hardheid'] = round(solution.hardness, 2)
         elements['pH'] = round(solution.pH, 2)
         elements['EGV'] = round(solution.sc20/10, 2)
         elements['TDS'] = round(solution.tds, 2)
@@ -441,8 +447,11 @@ class Membrane(Model, Splitter):
         self.run_model(None, None, None)
         
         d = {
+            #parameters
+            "recovery" : self.recovery,
             "membranes": list(MEMBRANE_DB.keys()),
             'table': self.stack.to_dict(orient='records'),
+            "summary_table": self.summary_table,
             
             #solutions per scope-level
             "stack_solutions": self._serialize_solution(self.stack_solutions),
@@ -452,10 +461,7 @@ class Membrane(Model, Splitter):
             #quantities per scope-level (flow & pressure)
             "stack_quantities": self.stack_quantities,
             "stage_quantities": self.stage_quantities,
-            "recovery" : self.recovery,
-            #summary
-            # "stack_summary": self.stack_summary,            
-            "summary_table": self.summary_table,
+
 
             'charts': {
                 "recovery": self.generate_chart_data('element', 'R_e'),
@@ -463,6 +469,7 @@ class Membrane(Model, Splitter):
                 "head_loss": self.generate_chart_data('element','dP_e'),
                 "stage_flows": self.generate_chart_data('element','Qf_e'),
                 "osmotic_avg": self.generate_chart_data('element','π_mean'),
+                "beta": self.generate_chart_data('element','Beta'),
             },   
         }
         return d
