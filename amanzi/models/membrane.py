@@ -264,7 +264,20 @@ class Membrane(Model, Splitter):
             }
             datasets.append(dataset)
         return datasets
-    
+
+    # def generate_chart_data(self, *cols):
+    #     datasets = []
+    #     for s, df in self.stage_results.items():
+    #         data = {}
+    #         for col in cols:
+    #             data[col] = df[col].tolist()
+    #         dataset = {
+    #             "label": f"Stage {s+1}",
+    #             "data": data
+    #         }
+    #         datasets.append(dataset)
+    #     return datasets
+      
     # @property
     # def stack_quantities(self):
     #     d = {
@@ -349,15 +362,19 @@ class Membrane(Model, Splitter):
         for element, mass_fraction in solution.elements.items():
             # Extract the element name by ignoring the parenthesis part enables correct handling of redox states
             element_name = element.split('(')[0]
-            elements[element_name] = elements.get(element_name, 0) + mass_fraction * 1e3 #convert to mmol.
-            elements[element_name] = round(elements[element_name], 2)
+            try:
+                elements[element_name] = round(solution.total(element_name, 'mg'), 1)
+            except:
+                print("Membrane failed to process element:", element_name)
+                pass
+                # elements[element_name] = elements.get(element_name, 0) + mass_fraction * 1e3 #convert to mmol.
+                # elements[element_name] = round(elements[element_name], 2)
 
         # add misc parameters
         elements['Hardheid'] = round(solution.hardness, 2)
         elements['pH'] = round(solution.pH, 2)
         elements['EGV'] = round(solution.sc20/10, 2)
         elements['TDS'] = round(solution.tds, 2)
-        # elements['NaCl'] = round(solution.total('NaCl', 'mmol'), 2)
 
         return elements
     
@@ -464,8 +481,11 @@ class Membrane(Model, Splitter):
 
 
             'charts': {
+                # "pressure": self.pressure_chart('element', 'Pf_e', 'Pc_e', 'Pp_e'),
                 "recovery": self.generate_chart_data('element', 'R_e'),
+                "flux": self.generate_chart_data('element','J_e'),
                 "flux_rec": self.generate_chart_data('R_e','J_e'),
+                "feed_pressure": self.generate_chart_data('element','Pf_e'),
                 "head_loss": self.generate_chart_data('element','dP_e'),
                 "stage_flows": self.generate_chart_data('element','Qf_e'),
                 "osmotic_avg": self.generate_chart_data('element','π_mean'),
