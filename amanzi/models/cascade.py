@@ -8,9 +8,6 @@ class Cascade(Model, Balance):
         super().__init__(config, pp)
         self.configuration = config.get('configuration', {})
 
-        # self.rq = float(self.configuration.get('rq', 10))
-        # self.recirculation = float(self.configuration.get('recirculation', 0)) / 100
-        # self.efficiency = float(self.configuration.get('efficiency', 10)) / 100
         self.steps = int(self.configuration.get('steps', 3))
         self.step_height = float(self.configuration.get('stepheight', 0.5))
 
@@ -59,34 +56,65 @@ class Cascade(Model, Balance):
         co2 = []
         o2 = []
         ch4 = []
+
+        co2_eff = []
+        ch4_eff = []
+        o2_eff = []
+
+        ## calculate o2 saturation
+        air_comp = {
+            'Oxg(g)': 0.208,
+            'Ntg(g)': 0.7916,
+            'CO2(g)': 0.0004,
+            'Mtg(g)': 0,
+            'H2Sg(g)': 0,
+            'H2O(g)': 0,
+        }
+        air = self.pp.add_gas(air_comp, volume=1000, pressure=1, fixed_pressure=True, fixed_volume=False)
+        oxg_saturation = self.influent.copy().interact(air).total('Oxg', 'mmol') # solution saturated with air
+
+
         # gas-transfer at constant height & different stepsizes
-        for steps in range(16): # 16 is the maximum number of steps
+        for steps in range(1,9): # 16 is the maximum number of steps
             inf = self.influent.copy()
             design_effluents = self.aerate(inf, steps)
             ph.append({'x': steps, 'y': design_effluents.pH})
             co2.append({'x': steps, 'y': design_effluents.total("CO2", "mg")})
             o2.append({'x': steps, 'y': design_effluents.total("Oxg", "mmol") * 32})            
             ch4.append({'x': steps, 'y': design_effluents.total("Mtg", "mmol") * 16})
+            ## calculate removal/transfer efficiency
+            ## removal percentage = (1 - (effluent conc / influent conc)) * 100
+            co2_eff.append({'x': steps, 'y': (1 - (design_effluents.total("CO2", "mg") / self.influent.total("CO2", "mg"))) * 100})
+            ch4_eff.append({'x': steps, 'y': max(0,(1 - (design_effluents.total("Mtg", "mmol") / self.influent.total("Mtg", "mmol"))) * 100)})
+
+            ## oxygen saturation efficiency
+            o2_eff.append({'x': steps, 'y': ((design_effluents.total("Oxg", "mmol") / oxg_saturation)) * 100})
+
+
+
 
         return {
             'influent': {
                 'pH': self.influent.pH,
-                'ch4': self.influent.total('Mtg') * 16,
-                'n2': self.influent.total('Ntg') * 28.0134,
-                'co2': self.influent.total('CO2', 'mg'),
-                'o2': self.influent.total('Oxg') * 32,
+                'CH4': self.influent.total('Mtg') * 16,
+                'N2': self.influent.total('Ntg') * 28.0134,
+                'CO2': self.influent.total('CO2', 'mg'),
+                'O2': self.influent.total('Oxg') * 32,
             },
             'effluent': {
                 'pH': effluent.pH,
-                'ch4': effluent.total('Mtg') * 16,
-                'co2': effluent.total('CO2','mg'),
-                'o2': effluent.total('Oxg') * 32,
+                'CH4': effluent.total('Mtg') * 16,
+                'CO2': effluent.total('CO2','mg'),
+                'O2': effluent.total('Oxg') * 32,
             },
             'charts': {
                 'pH': ph,
-                'ch4': ch4,
-                'co2': co2,
-                'o2': o2,
+                'CH4': ch4,
+                'CO2': co2,
+                'O2': o2,
+                'CO2_eff': co2_eff,
+                'CH4_eff': ch4_eff,
+                'O2_eff': o2_eff,
             }
 
         }    

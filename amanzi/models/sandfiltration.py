@@ -1,3 +1,4 @@
+from pprint import pprint as pprint
 from .model import Model
 from .submodels.loss import Loss
 
@@ -27,7 +28,6 @@ class Sandfiltration(Model, Loss):
         # replace inert oxygen with free oxygen
         influent.change({"O2": influent.total("Oxg"), "Oxg": -influent.total("Oxg")*0.99999})
 
-    
         # oxidize methane
         after_ch4 = self.oxidize(influent, "Mtg", "C-4", 0.5)
         # oxidize iron

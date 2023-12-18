@@ -21,7 +21,7 @@ def ccpp(self, temperature=None):
       tmp.change_temperature(temperature)
   ca_pre = tmp.total_element('Ca')
   # use saturate instead of desaturate to allow dissolution in addition to precipitation
-  tmp.desaturate('Calcite',0.0)
+  tmp.equalize('Calcite',0.0)
   # calculate tacc
   ccpp = ca_pre - tmp.total_element('Ca')
   # cleanup

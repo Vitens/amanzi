@@ -48,7 +48,8 @@ class Softening(Model, Balance):
         return effluent, [dosed, softened, mixed, neutralized]
 
     def run_model(self, type, total_inflow, solution):
-        return solution.copy()
+        s, _ = self.soften(solution, self.base_chemical, self.base_dosing, self.acid_chemical, self.acid_dosing, self.bypass)
+        return s
 
     def design(self):
 

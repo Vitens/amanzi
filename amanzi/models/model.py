@@ -40,8 +40,6 @@ class Model:
     
     def run(self, type):
 
-        print("RUNNING MODEL {} {}".format(self.uid, type))
-
         if type in self.emitter_solutions:
             solution = self.emitter_solutions[type]
 
