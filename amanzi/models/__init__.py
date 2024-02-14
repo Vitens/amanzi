@@ -14,3 +14,4 @@ from .vacuum import Vacuum
 from .cascade import Cascade
 from .dosing import Dosing
 from .membranedegassing import Membranedegassing
+from .toweraeration import Toweraeration

@@ -35,7 +35,6 @@ class Scenario:
     def load_models(self):
         models = {}
         for model in self.config['models']:
-            # print(model['name'])
             modeltype = model['type'].capitalize()
             model_class = getattr(MODULES, modeltype, "Model")
             models[model["uid"]] = model_class(model, self.pp)
