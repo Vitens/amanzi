@@ -3,18 +3,49 @@ from .submodels.balance import Balance
 from math import log
 import numpy as np
 
+from .tower.onda import run_onda
+from .tower.engelstichlmair import engelstichlmair
+
+
 class Toweraeration(Model, Balance):
 
-    def aerate(self, solution):
-        ## Aeration implementation
-        return solution
+    def __init__(self, config, pp: dict = {}) -> None:
+        super().__init__(config, pp)
+
+        self.configuration = config.get('configuration', {})
+
+        self.rq = float(self.configuration.get('RQ', 50))
+        self.diameter = self.configuration.get('diameter', 2)
+        self.packing_type = self.configuration.get('packing_type', 'raflux50')
+        self.packing_height = self.configuration.get('packing_height', 2.5)
+        self.capacity = self.configuration.get('nominal_capacity', 100)
+
+        print('RQ is', self.rq)
+
+
+    def calculate_efficiency(method='Onda', flow=150, packing_height=5, packing='RAFLUX50', RQ=50, component='CO2', c_in=10, c_gas=0):
+        ## run onda model
+        efficiency = run_onda(flow, packing_height, packing, RQ, component, c_in, c_gas)
+
+        return efficiency
+
+
+
 
     def run_model(self, type, total_inflow, solution):
-        effluent = self.aerate(solution)
-        return effluent
+        ## gets called by solver
+        co2_removal = self.calculate_efficiency(component='CO2', c_in=solution.total('CO2', 'mmol'), c_gas=0, flow=self.capacity, packing_height=self.packing_height, packing=self.packing_type, RQ=self.rq)
+        ch4_removal = self.calculate_efficiency(component='CH4', c_in=solution.total('Mtg', 'mmol'), c_gas=0, flow=self.capacity, packing_height=self.packing_height, packing=self.packing_type, RQ=self.rq)
+
+        solution.remove_fraction('CO2', co2_removal)
+        solution.remove_fraction('Mtg', ch4_removal)
+
+        return solution
+
 
 
     def design(self):
+        ## gets called by design GUI
 
         ## Charts
         ph = []
@@ -40,16 +71,16 @@ class Toweraeration(Model, Balance):
 
         return {
             'influent': {
-                'pH': 7,
+                'pH': self.influent.pH,
                 'O2': 0,
-                'CO2': 15,
-                'CH4': 5,
+                'CO2': self.influent.total('CO2', 'mg'),
+                'CH4': self.influent.total('Mtg') * 16,
             },
             'effluent': {
-                'pH': 7,
+                'pH': self.solution.pH,
                 'O2': 0,
-                'CO2': 15,
-                'CH4': 5
+                'CO2': self.solution.total('CO2', 'mg'),
+                'CH4': self.solution.total('Mtg') * 16 
             },
             'model': {
                 'F': 1.4,
