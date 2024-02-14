@@ -4,4 +4,14 @@ from math import log
 import numpy as np
 
 class TowerAerator(Model, Balance):
-    pass
+    def run_onda():
+        ## onda calculation here please
+        pass
+
+    def run_mackowiac():
+        ## mackowiack implementation
+        pass
+
+    def do_something():
+        ## whatefs
+        pass
