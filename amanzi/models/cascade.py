@@ -49,7 +49,6 @@ class Cascade(Model, Balance):
         return effluent
     
     def design(self):
-        print("Designing Cascade")
         effluent = self.run_model(None, None, self.influent)
         
         ph = []

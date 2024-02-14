@@ -13,3 +13,4 @@ from .ionexchange import Ionexchange
 from .vacuum import Vacuum
 from .cascade import Cascade
 from .dosing import Dosing
+from .membranedegassing import Membranedegassing

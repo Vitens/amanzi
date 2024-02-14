@@ -29,14 +29,14 @@ class Sandfiltration(Model, Loss):
         influent.change({"O2": influent.total("Oxg"), "Oxg": -influent.total("Oxg")*0.99999})
 
         # oxidize methane
-        after_ch4 = self.oxidize(influent, "Mtg", "C-4", 0.5)
+        after_ch4 = self.oxidize(influent, "Mtg", "C-4", 2)
         # oxidize iron
-        after_fe = self.oxidize(after_ch4, "[Fe+2]", "Fe+2", 0.5).desaturate("Fe(OH)3(a)", 0)
+        after_fe = self.oxidize(after_ch4, "[Fe+2]", "Fe+2", 0.25).desaturate("Fe(OH)3(a)", 0)
         # oxidize h2
-        after_h2s = self.oxidize(after_fe, "[S-2]", "S-2", 0.5)
+        after_h2s = self.oxidize(after_fe, "[S-2]", "S-2", 2)
         after_nh4 = self.oxidize(after_h2s, "[N-3]", "N-3", 2)
         after_no2 = self.oxidize(after_nh4, "[N+3]", "N+3", 2)
-        after_mn = self.oxidize(after_no2, "[Mn+2]", "Mn+2", 4).desaturate("Manganite", to_si=0)
+        after_mn = self.oxidize(after_no2, "[Mn+2]", "Mn+2", 0.5).desaturate("Manganite", to_si=0)
 
         effluent = after_mn.copy()
 
