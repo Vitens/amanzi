@@ -4,7 +4,10 @@ from math import log
 import numpy as np
 
 from .tower.onda import run_onda
-from .tower.engelstichlmair import engelstichlmair
+from .tower.engelstichlmair import run_engelstichlmair
+from .tower.water_properties import water
+from .tower.air_properties import air
+
 
 
 class Toweraeration(Model, Balance):
@@ -23,20 +26,21 @@ class Toweraeration(Model, Balance):
         print('RQ is', self.rq)
 
 
-    def calculate_efficiency(method='Onda', flow=150, packing_height=5, packing='RAFLUX50', RQ=50, component='CO2', c_in=10, c_gas=0):
+    def calculate_efficiency(method='Engel', flow=150, packing_height=5, packing='RAFLUX50', RQ=50, component='CO2', c_in=10, c_gas=0):
         ## run onda model
-        efficiency = run_onda(flow, packing_height, packing, RQ, component, c_in, c_gas)
-
-        return efficiency
+        #efficiency = run_onda(flow, packing_height, packing, RQ, component, c_in, c_gas)
+        efficiency_engel = run_engelstichlmair(flow, packing_height, packing, RQ, component, c_in, c_gas)
+        return efficiency_engel
 
 
 
 
     def run_model(self, type, total_inflow, solution):
         ## gets called by solver
-        co2_removal = self.calculate_efficiency(component='CO2', c_in=solution.total('CO2', 'mmol'), c_gas=0, flow=self.capacity, packing_height=self.packing_height, packing=self.packing_type, RQ=self.rq)
-        ch4_removal = self.calculate_efficiency(component='CH4', c_in=solution.total('Mtg', 'mmol'), c_gas=0, flow=self.capacity, packing_height=self.packing_height, packing=self.packing_type, RQ=self.rq)
-
+        #co2_removal = self.calculate_efficiency(component='CO2', c_in=solution.total('CO2', 'mmol'), c_gas=0, flow=self.capacity, packing_height=self.packing_height, packing=self.packing_type, RQ=self.rq)
+        #ch4_removal = self.calculate_efficiency(component='CH4', c_in=solution.total('Mtg', 'mmol'), c_gas=0, flow=self.capacity, packing_height=self.packing_height, packing=self.packing_type, RQ=self.rq)
+        co2_removal=0.5
+        ch4_removal=0.5
         solution.remove_fraction('CO2', co2_removal)
         solution.remove_fraction('Mtg', ch4_removal)
 
@@ -46,7 +50,8 @@ class Toweraeration(Model, Balance):
 
     def design(self):
         ## gets called by design GUI
-
+        test= self.calculate_efficiency()
+        print(test)
         ## Charts
         ph = []
         co2 = []
