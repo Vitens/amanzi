@@ -1,5 +1,5 @@
-from .water_properties import water
-from .air_properties import air
+from .water_properties import Water
+from .air_properties import Air
 import math
 import numpy as np
 
@@ -72,4 +72,5 @@ def run_engelstichlmair(flow, packing_height, packing, RQ, component, c_in, c_ga
   RQ=50 # Gas to liquid ratio
   g = 9.81 #m/s²  Earth acceleration
   operating_point(u_l)
+  
   return T
