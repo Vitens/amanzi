@@ -33,4 +33,6 @@ class Water:
         T_c = 647.15 #K
         surface_tension =(1+b3*(T_c-self.temperature_in_K)/T_c)*B2*((T_c-self.temperature_in_K)/T_c)**mue #N/m
         return surface_tension
-                             
+
+    def mol_mass(self):
+        return 0.018 # kg/mol                  

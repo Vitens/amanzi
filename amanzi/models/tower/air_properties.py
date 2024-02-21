@@ -14,7 +14,13 @@ class Air:
     
     def dyn_viscosity(self):
         #Power law for dynamic viscosity
-        mue_273K = 17.15e-6 #
+        mue_273K = 17.15e-6 # Pa*s
         mue_T = mue_273K*(self.temperature_in_K/273.15)**(2/3)
         return mue_T
     
+    def kin_viscosity(self):
+        kinetic_viscosity = self.dyn_viscosity()/self.density()    # m²/s
+        return kinetic_viscosity
+
+    def mol_mass(self):
+        return 0.029 # kg/mol
