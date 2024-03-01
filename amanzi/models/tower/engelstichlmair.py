@@ -2,75 +2,116 @@ from .water_properties import Water
 from .air_properties import Air
 import math
 import numpy as np
+from .packing_properties import packing
+from scipy.optimize import minimize
 
+class run_engelstichlmair:
+  def __init__(self, T, packing_type):
+    self.temperature = T
+    self.temperature_in_K = float(T)+273.15
+    self.packing_type = packing_type
+    self.pressure = 1.013e5
 
-def run_engelstichlmair(flow, packing_height, packing, RQ, component, c_in, c_gas):
-  def loading(T,u_l):
-    water_surf_tension=water(T)[3]
-    water_density= water(T)[2]
-    water_dyn_viscosity= water(T)[0]
-    p=1.023
-    air_density=air(T, p)[0]
-    air_dynamic_viscosity= air(T,p)[1]
+  def loading(self,u_l):
+    liquid = Water(self.temperature)
+    rho_l = liquid.density()        # kg/m³
+    sigma_l = liquid.tension()      # N/m
+    mue_l = liquid.dyn_viscosity()  
+    g = 9.81
+    a_geo =packing()[self.packing_type]['ageo']
     
     #static holdup  Engel/Stichlmair Eq.2
-    h_stat=0.033*math.exp(-0.22*water_density*g/water_surf_tension/(a_geo**2)) #has to be value between 0-1
+    h_stat=0.033*math.exp(-0.22*rho_l*g/sigma_l/(a_geo**2)) #has to be value between 0-1
     
     #dynamic holdup  Engel/Stichlmair Eq.4 
-    A1 = ((u_l/(3600))*a_geo**0.5)/(g**0.5)     #u_l in m³/m²/h need to be converted to seconds
-    A2 = water_dyn_viscosity*(a_geo**1.5)/(water_density*g**0.5)
-    A3 = water_surf_tension*(a_geo**2)/water_density/g
+    A1 = (u_l*a_geo**0.5)/(g**0.5)     #u_l in m³/m²/h need to be converted to seconds
+    A2 = mue_l*(a_geo**1.5)/(rho_l*g**0.5)
+    A3 = sigma_l*(a_geo**2)/rho_l/g
     h_dyn_0 = 3.6*(A1**0.66)*(A2**0.25)*(A3**0.1)  #has to be value between 0-1
+
     return h_dyn_0, h_stat
+  def flooding_factor(self, dp_dry,u_l,rho_l,rho_g):
+      cap_liq = u_l*math.sqrt(rho_l/(rho_l-rho_g))
+      _, dp_dry_fl = self.flooding_line(cap_liq,1)
 
+      flooding_factor= math.sqrt(dp_dry/dp_dry_fl)
 
-  def operating_point(u_l):
-      water_surf_tension=water(T)[3]
-      water_density= water(T)[2]
-      water_dyn_viscosity= water(T)[0]
-      p=1.023
-      air_density=air(T, p)[0]
-      air_dynamic_viscosity= air(T,p)[1]
+      return flooding_factor
+                        
 
-      u_g=u_l*RQ/3600   #m/s
-      eta=void_fraction
-      F=u_g*math.sqrt(air_density)
-      d_l=0.4*np.sqrt(6*water_surf_tension/g/(water_density-air_density))
-      #alternative for dp_dry
-      #dp_dry = 10**b*F**a
-      d_p=6*(1-void_fraction)/a_geo
-      Re = d_p*u_g*air_density/(air_dynamic_viscosity*(1-void_fraction))
-      #Friction factor
-      f=150/Re+1.75
-      dp_dry=(f*a_geo*air_density*u_g**2)/(8*void_fraction**4.65)
-      h_dyn_0,h_stat=loading(T,u_l)
+  def operating_point(self,liq_in,RQ,d):
+      liquid = Water(self.temperature)
+      rho_l = liquid.density()        # kg/m³
+      sigma_l = liquid.tension()      # N/m
+      g = 9.81
+      gas = Air(self.temperature,self.pressure)
+      rho_g = gas.density()           # kg/m³
+      a_geo =packing()[self.packing_type]['ageo']
+      eta=packing()[self.packing_type]['void']
+      u_l =liq_in/(math.pi*0.25*d**2)/3600  #m/s
+      u_g=u_l*RQ                            #m/s
+
+      F=u_g*math.sqrt(rho_g)
+      d_l=0.4*math.sqrt(6*sigma_l/g/(rho_l-rho_g))
+
+      a=packing()[self.packing_type]['a'] 
+      b=packing()[self.packing_type]['b']
+      F=u_g*math.sqrt(rho_g) 
+      dp_dry = 10**b*F**a
+     
+      h_dyn_0,h_stat=self.loading(u_l)
       h_dyn = h_dyn_0
-      dp_tot=0
+      dp_tot = 0
+
       for i in range(10):
           dp_tot = (((6*h_dyn)/d_l + a_geo) / (a_geo) * (eta/(eta-h_dyn))**4.65) * dp_dry
-          h_dyn = h_dyn_0 * (1+36*((dp_tot)/(water_density*g))**2)
-      h_tot=h_dyn+h_stat    
-      print(f"Dry Pressure Drop: \t\t {dp_dry/100:.5f} mbar/m")
-      print(f"Operationg Pressure Drop: \t {dp_tot/100:.5f} mbar/m")
-      print(f"F-factor: \t\t\t {F:.2f} ")
-      print(f"Liquid Holdup: \t\t\t {h_tot*100:.2f}%")
-      return dp_dry, dp_tot, h_dyn
-  ## Packing
-  a_geo = 110 #m²/m³  specific area of packing
-  void_fraction=0.93 #[-] Void fraction of packing
-  a = 2.0177 # A-factor
-  b = 1.533 # B-factor
+          h_dyn = h_dyn_0 * (1+36*((dp_tot)/(rho_l*g))**2)
+      h_tot=h_dyn+h_stat 
+      flooding_factor = self.flooding_factor(dp_dry,u_l,rho_l,rho_g)
 
-  ## Column dimensions
-  d=120 #mm column diameter
-  Area=0.25*1e-6*np.pi*d**2 #m² Crosssection area
-  V_liq=1 #m³/h Volumeflowrate of water
-  u_l=V_liq/Area #m³/m²/h liquid load
-
-  ## Operating conditions
-  T=5 #C Temperature
-  RQ=50 # Gas to liquid ratio
-  g = 9.81 #m/s²  Earth acceleration
-  operating_point(u_l)
+      return dp_dry, dp_tot, h_tot, F ,flooding_factor
   
-  return T
+  def flooding_line(self, cap_liq, flooding_factor):
+      def Capacity_gas(u_g):
+        return u_g*math.sqrt(rho_g/(rho_l-rho_g))
+  
+      def convert_cap_to_u_l(cap_liq):
+        return cap_liq/math.sqrt(rho_l/(rho_l-rho_g))
+      
+      liquid = Water(self.temperature)
+      rho_l = liquid.density()        # kg/m³
+      sigma_l = liquid.tension()      # N/m
+      gas = Air(self.temperature,self.pressure)
+      rho_g = gas.density()           # kg/m³
+      g= 9.81
+
+      u_l = convert_cap_to_u_l(cap_liq)               # m³/m²/s gas loading
+      #Packing properties
+      a_geo= packing()[self.packing_type]['ageo']   # m²/m³
+      eta = packing()[self.packing_type]['void']    #void fraction
+      a=packing()[self.packing_type]['a']  # Raflux 50
+      b=packing()[self.packing_type]['b']
+
+      d_l=0.4*math.sqrt(6*sigma_l/g/(rho_l-rho_g))      
+      h_dyn_0,h_stat=self.loading(u_l)
+      
+      ## Operating Point
+      X=3600*eta+186480*h_dyn_0*eta+32280*d_l*a_geo*eta+191844*h_dyn_0**2+95028*d_l*a_geo*h_dyn_0+10609*d_l**2*a_geo**2
+      dp_tot_fl =(rho_l*g*(249*h_dyn_0*((X**0.5)-60*eta-558*h_dyn_0-103*d_l*a_geo))**0.5)/(2988*h_dyn_0) #Pa/m             
+      
+      #dynamic liquid holdup at flooding, Engel/Stichlmair Eq.15                   
+      h_dyn_flooding=h_dyn_0*(1+(6*dp_tot_fl/rho_l/g)**2)   
+      #fictive dry pressure drop at flooding, Engel/Stichlmair Eq.15 
+      dp_dry_fl = dp_tot_fl *a_geo *(1-(h_dyn_flooding/eta))**4.65/((6*h_dyn_flooding/d_l)+a_geo) #Pa/m
+      
+      dp_dry= dp_dry_fl*(flooding_factor**2)
+
+      F=(dp_dry/10**b)**(1/a)
+      u_g=F/math.sqrt(rho_g) 
+
+      cap_g=Capacity_gas(u_g)
+      return cap_g, dp_dry_fl
+
+
+  
+  

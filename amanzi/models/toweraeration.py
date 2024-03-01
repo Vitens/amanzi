@@ -2,14 +2,17 @@ from .model import Model
 from .submodels.balance import Balance
 import math
 import numpy as np
+from scipy.optimize import fsolve
 
 from .tower.onda import run_onda
 from .tower.engelstichlmair import run_engelstichlmair
-from .tower import run_mackoviak
+from .tower.mackoviak import run_mackoviak
 from .tower.water_properties import Water
 from .tower.air_properties import Air
 from .tower.packing_properties import packing
 from .tower.compounds import Chemical
+
+
 
 
 class Toweraeration(Model, Balance):
@@ -20,96 +23,70 @@ class Toweraeration(Model, Balance):
         self.configuration = config.get('configuration', {})
 
         self.rq = float(self.configuration.get('RQ', 50))
-        self.diameter = self.configuration.get('diameter', 2)
+        self.diameter = float(self.configuration.get('diameter', 2))
         self.packing_type = self.configuration.get('packing_type', 'Raflux50')
         self.packing_height = float(self.configuration.get('packing_height', 2.5))
-        self.capacity = self.configuration.get('nominal_capacity', 100)
+        self.capacity = float(self.configuration.get('nominal_capacity', 100))
         self.compound = self.configuration.get('model_component', 'CO2')
-
-        print('RQ is', self.rq)
-
-    def run_mackoviak2(self,compound,RQ, H):
-        T=self.influent.temperature
-        p= 1.023e5
-        liquid = Water(T)
-        rho_l = liquid.density()        # kg/m³
-        sigma_l = liquid.tension()      # N/m
-        M_l = liquid.mol_mass()         # kg/mol
-
-        gas = Air(T,p)
-        rho_g = gas.density()           # kg/m³
-        nue_g = gas.kin_viscosity()     # m²/s 
-        M_g = gas.mol_mass()            # kg/mol molar weight
-        g=9.81
-
-        #Packing properties
-        a_geo= packing()[self.packing_type]['ageo']   # m²/m³
-        eta = packing()[self.packing_type]['void']    #void fraction
-        form_factor = packing()[self.packing_type]['form']              # packing dependent
-        # Column Properties
-        d=float(self.diameter)          # m
-        Area= math.pi*d**2/4            # m² d in m
-        #H=  #float(self.packing_height)   # m 
-        # Column operation
-        V_l = int(self.capacity)        # m³/h
-        u_l = V_l/Area/3600             # m³/m²/s liquid loading
-        u_v = u_l*RQ               # m³/m²/s gas loading
-        # solved compounds
-        comp=Chemical(T,p)
-        D_l = comp.properties()[compound]['Diff_water']    # compound specific connection to C02 or CH4 necessary
-        D_g= comp.properties()[compound]['Diff_air']      #  compound specific connection to C02 or CH4 necessary
-        m_yx = comp.properties()[compound]['Henry']      # dimensionless Henry-volatility coeficcient Hcc_v
-        # Empirical parameters from Mackoviak
-        C_v= 0.0285
-        n=1
-        m=6
-
-        # calculating HTU based on Mackoviak 2015
-        d_h = 4*eta/a_geo               #m hydraulic equivilant diameter
-        beta_l_a_e =15.1*(D_l*(rho_l-rho_g)*g/sigma_l)**0.5*(a_geo/g)**(1/6)*u_l**(5/6)/((1-form_factor)**(1/3)*d_h**0.25)
-        h_l = 0.57*(a_geo*u_l**2/g)**(1/3)      # m³/m³ liquid holdup
-        u_r = u_v/(eta-h_l)+u_l/h_l             # m/s relative vapour velocity
-        d_t = (sigma_l/((rho_l-rho_g)*g))**0.5  # m droplet diameter
-        Re_t = u_r * d_t/nue_g                  # dimensionless    
-        Sc_g= nue_g/D_g  # calculate Schmidt number
-        Sh_g = 2+C_v*Re_t**n*Sc_g**(1/3)
-        beta_g = Sh_g*D_g/d_t               #m/s
-        beta_g_real = beta_g*(1-h_l/eta)**6 #m/s
-        a_e=6*h_l/d_t                       #m²/m³
-        l_g_ratio = (V_l*rho_l/M_l)/(V_l*RQ*rho_g/M_g) # molar ratio of liquid to gas stream
-
-        HTU_og = u_v/beta_g_real/a_e+m_yx*u_l/l_g_ratio/beta_l_a_e
         
-        # calculating liquid outflow concentration
-        c_l_in = self.influent.total(self.compound, units='mmol')    # user input for choice of Compound
-        c_g_in = 0.000001                                           # user input or fixed values
-        A=l_g_ratio/m_yx                                            # stripping factor
-        z= np.exp((H*(A-1))/HTU_og/A)
-        c_g_out = c_g_in-((A*(z-1))/(A*z-1))*(c_g_in-(c_l_in*m_yx))
-        c_l_out = c_l_in-(1/l_g_ratio)*(c_g_out-c_g_in)
 
-        efficiency = ((c_l_in-c_l_out)/c_l_in)
-        return efficiency  
+    
       
-    def calculate_efficiency(self,compound, RQ,H): 
-        ## run onda model  method='Engel', flow=150, packing_height=5, packing='RAFLUX50', RQ=50, component='CO2', c_in=10, c_gas=0 
-        #k= self.influent.temperature
-        #efficiency = run_onda(flow, packing_height, packing, RQ, component, c_in, c_gas)
-        efficiency_mackoviak= self.run_mackoviak2(compound,RQ,H)
+    def get_NTU(self,T,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov) :
+        comp=Chemical(T)
+        Hc= comp.properties()[compound]['Henry'] #dimensionless Henry
+        Sf=Hc*RQ
+        #Calculate efficiency
+        z = np.exp((packing_height*(Sf-1))/(HTU_ov*Sf))
+        c_out_eq=c_gas/Hc # ist l, c+in ist p
+        c_out = (Sf*c_out_eq*z-Sf*c_out_eq+Sf*c_in-c_in)/(Sf*z-1)
+        efficiency= ((c_in-c_out)/c_in)
+        c_g_o=c_gas+(c_in-c_out)/RQ
+        NTU_ov=(Sf/(Sf-1)) * np.log((c_in-c_gas/Hc)*(Sf-1)/((c_out-c_gas/Hc)*Sf)+(1/Sf))
+        # Af=RQ*Hc 
+        # z2= np.exp((packing_height*(Af-1))/(HTU_ov*Af))
+        # c_h20= rho_l/M_l       # mol H20/ m³ H20
+        # c_air = rho_g/M_g*RQ   # mol Air / m³ H20
+        # gas_loading_in= 0       #mol CO2 / mol Air
+        # liquid_loading_in=(c_in)/c_h20  #mol Co2 / mol H20
 
-        #efficiency_engel = run_engelstichlmair(flow, packing_height, packing, RQ, component, c_in, c_gas)
-        return efficiency_mackoviak
+        # cg_eq_out = Hc*liquid_loading_in*(c_h20/c_air) # gas loading at equilibrium of outflow
+
+        # gas_loading_out =(Af*cg_eq_out*z2-Af*cg_eq_out+Af*gas_loading_in-gas_loading_in)/(Af*z2-1)
+        # liquid_loading_out = liquid_loading_in-(c_air/c_h20)*(gas_loading_out-gas_loading_in)
+        
+        # efficiency2= ((liquid_loading_in-liquid_loading_out)/liquid_loading_in)
+        # print(f"c_g out for Onda is {c_g_o} ")
+        # print(f"c_g out for Mackoviak is {gas_loading_out*c_air} ")
+        
+        return efficiency
+
+    def calculate_efficiency(self,compound, RQ, packing_height): 
+        #run onda model  method='Engel', flow=150, packing_height=5, packing='RAFLUX50', RQ=50, component='CO2', c_in=10, c_gas=0 
+        T= self.influent.temperature
+        flow = self.capacity
+        packing = self.packing_type
+        c_in = self.influent.total(self.compound, units='mmol')
+        c_in=0.0002
+        if self.compound != 'CO2' and self.compound != 'Mtg':
+            c_in=0.0002
+        
+        
+        c_gas=0
+        diameter=self.diameter
+        HTU_ov = run_onda(T,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas)
+        efficiency= self.get_NTU(T,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov)
+        
+        return efficiency
+
 
 
 
 
     def run_model(self, type, total_inflow, solution):
         ## gets called by solver
-        #co2_removal = self.calculate_efficiency(component='CO2', c_in=solution.total('CO2', 'mmol'), c_gas=0, flow=self.capacity, packing_height=self.packing_height, packing=self.packing_type, RQ=self.rq)
-        #ch4_removal = self.calculate_efficiency(component='CH4', c_in=solution.total('Mtg', 'mmol'), c_gas=0, flow=self.capacity, packing_height=self.packing_height, packing=self.packing_type, RQ=self.rq)
-        
         co2_removal= self.calculate_efficiency('CO2',self.rq, self.packing_height)
-        ch4_removal= self.calculate_efficiency('CH4',self.rq, self.packing_height)
+        ch4_removal= self.calculate_efficiency('Mtg',self.rq, self.packing_height)
         solution.remove_fraction('CO2', co2_removal)
         solution.remove_fraction('Mtg', ch4_removal)
 
@@ -119,36 +96,52 @@ class Toweraeration(Model, Balance):
 
     def design(self):
         ## gets called by design GUI
-        
-        test= self.calculate_efficiency(self.compound, self.rq, self.packing_height)
-        print(f"Efficiency is {test*100} %")
-        ## Charts
-        ph = []
-        co2 = []
 
+        liquid = Water(self.influent.temperature)
+        rho_l = liquid.density()        # kg/m³
+
+        p=1.023e5
+        gas = Air(self.influent.temperature,p)
+        rho_g = gas.density()           # kg/m³
+        d=float(self.diameter)          # m
+        Area= math.pi*d**2/4            # m² d in m
+        # Column operation
+        u_l = self.capacity/Area/3600             # m³/m²/s liquid loading
         ## flooding and operating charts
-        xx = np.linspace(0, 0.1, 50)
-        flooding = [{'x': x, 'y': 0.1-10*x**2} for x in xx]
-        operating = [{'x': x, 'y': 0.08-11*x**2} for x in xx]
-        #print(flooding)
-        ## Efficiency loading and height charts
-        xx = np.linspace(10,2000, 50)
+        def Capacity_gas(u_g):
+            return u_g*math.sqrt(rho_g/(rho_l-rho_g))
+        def Capacity_liq(u_l):
+            return u_l*math.sqrt(rho_l/(rho_l-rho_g))
+        werkpunt_hydro = [{'x': Capacity_liq(u_l), 'y': Capacity_gas(u_l*self.rq)}]
 
-        heights = [1,2,3] #[1, 2, 3, 4, 5]
+
+        Liquid_capacity= np.linspace(0.01, 0.1, 50)#capacity liquid m/s
+        eng_stickl = run_engelstichlmair(self.influent.temperature, self.packing_type)
+        Gas_capacity_flooding, _=eng_stickl.flooding_line(Liquid_capacity,1)
+        Gas_capacity_loading, _=eng_stickl.flooding_line(Liquid_capacity,0.65)
+
+        flooding = [{'x':Liquid_capacity[x] , 'y': Gas_capacity_flooding[x]} for x in range(len(Liquid_capacity))]
+        operating = [{'x': Liquid_capacity[x] , 'y': Gas_capacity_loading[x]} for x in range(len(Liquid_capacity))]
+
+        ## Efficiency loading and height charts
+        Rq = np.linspace(0.1,100, 500)
+
+        heights = [1,2,3,4, self.packing_height]
 
         loading_charts = []
-        height_charts = []
+        height_charts = {}
 
         for h in heights:
             intermediary =[]
-            for k in xx:
-                intermediary.append({'x': k, 'y':self.calculate_efficiency('CO2',k,h)})
-            height_charts.append(intermediary)
+            for k in Rq:
+                intermediary.append({'x': k, 'y':self.calculate_efficiency(self.compound,k,h)})
+            height_charts[h] = intermediary
+       
 
-            
-        print(height_charts)
-
-
+        liq_load = self.capacity/(math.pi*0.25*self.diameter**2)
+        dp_dry, dp_tot, h_tot ,F, flooding_factor= eng_stickl.operating_point(self.capacity, self.rq, self.diameter)
+        werkpunt_quality =[{'x': self.rq, 'y': self.calculate_efficiency(self.compound,self.rq,self.packing_height)}]
+        
         return {
             'influent': {
                 'pH': self.influent.pH,
@@ -163,18 +156,19 @@ class Toweraeration(Model, Balance):
                 'CH4': self.solution.total('Mtg') * 16 
             },
             'model': {
-                'F': 1.4,
-                'liquid_load': 88,
-                'flooding_factor': 61,
-                'liquid_holdup': 15,
-                'pressure_drop': 1.5,
+                'F': F,
+                'liquid_load': liq_load,
+                'flooding_factor': flooding_factor*100,
+                'liquid_holdup': h_tot*100,
+                'pressure_drop': dp_tot/100,
             },
             'charts': {
                 'flooding': flooding,
                 'operating': operating,
-                'working_point': [{'x': 0.04, 'y': 0.05}],
+                'working_point': werkpunt_hydro,
                 'efficiency_loading': loading_charts,
-                'efficiency_height': height_charts
+                'efficiency_height': height_charts,
+                'efficiency_workpoint': werkpunt_quality
             }
         }
 
