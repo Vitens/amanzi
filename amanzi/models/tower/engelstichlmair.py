@@ -6,11 +6,11 @@ from .packing_properties import packing
 from scipy.optimize import minimize
 
 class run_engelstichlmair:
-  def __init__(self, T, packing_type):
-    self.temperature = T
-    self.temperature_in_K = float(T)+273.15
+  def __init__(self, T_liq,T_gas, packing_type):
+    self.temperature = T_liq
     self.packing_type = packing_type
     self.pressure = 1.013e5
+    self.temperature_gas = T_gas
 
   def loading(self,u_l):
     liquid = Water(self.temperature)
@@ -44,7 +44,7 @@ class run_engelstichlmair:
       rho_l = liquid.density()        # kg/m³
       sigma_l = liquid.tension()      # N/m
       g = 9.81
-      gas = Air(self.temperature,self.pressure)
+      gas = Air(self.temperature_gas,self.pressure)
       rho_g = gas.density()           # kg/m³
       a_geo =packing()[self.packing_type]['ageo']
       eta=packing()[self.packing_type]['void']
@@ -81,7 +81,7 @@ class run_engelstichlmair:
       liquid = Water(self.temperature)
       rho_l = liquid.density()        # kg/m³
       sigma_l = liquid.tension()      # N/m
-      gas = Air(self.temperature,self.pressure)
+      gas = Air(self.temperature_gas,self.pressure)
       rho_g = gas.density()           # kg/m³
       g= 9.81
 
