@@ -12,7 +12,7 @@ class Solver:
         self.chemical_solver = ChemicalSolver(scenario)
         self.category_solver = CategorySolver(scenario)
 
-    def solve(self):
+    def solve(self, until=None):
 
         # 1 - solve mass balance
         mass_flows = self.mass_solver.solve()
@@ -22,7 +22,7 @@ class Solver:
             setattr(conn, "flow", flow)
 
         # 2 - solve chemistry
-        self.chemical_solver.solve()
+        self.chemical_solver.solve(until)
 
         # 3 - solve cost funcs
         # self.scenario.costfuncs = self.category_solver.solve()

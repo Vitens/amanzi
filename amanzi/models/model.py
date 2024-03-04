@@ -75,14 +75,14 @@ class Model:
     # calculate minor loss, either as percentage of inflow or as a fixed value
     @property
     def minorloss(self):
-        if self.config.get('minorloss_method', 'percentage') != 'percentage':
-            return float(self.config.get('minorloss', 0))
+        if self.config.get('configuration', {}).get('minorloss_method', 'percentage') != 'percentage':
+            return float(self.config.get('configuration', {}).get('minorloss', 0))
         return 0
     
     @property
     def minorloss_percentage(self):
-        if self.config.get('minorloss_method', 'percentage') == 'percentage':
-            return 1-float(self.config.get('minorloss', 0))
+        if self.config.get('configuration', {}).get('minorloss_method', 'percentage') == 'percentage':
+            return 1-float(self.config.get('configuration', {}).get('minorloss', 0))
         return 1
 
         

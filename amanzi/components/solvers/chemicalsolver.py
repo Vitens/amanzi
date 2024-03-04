@@ -10,19 +10,29 @@ class ChemicalSolver:
         self.max_iterations = 100
         self.precision = 0.0001
         self.data = {}
+        self.stop_at_model = None
+        self.interrupted = False
     
     def run_trace(self, model, stream_type):
     
         if not model.is_ready(stream_type):
             return
         solution = model.run(stream_type)
+        if self.stop_at_model and model.uid == self.stop_at_model:
+            print('Interrupted at model {}'.format(model.uid))
+            self.interrupted = True # interrupt the solver
+            return
         
         for c in model.downstream_connections.get(stream_type, []):
             c.solution = solution
             if(c.flow > 0):
                 self.run_trace(c.to_model, stream_type)
     
-    def solve(self):
+    def solve(self, until=None):
+
+        self.stop_at_model = until
+        self.interrupted = False
+
         for _,c in self.scenario.connections.items():
             c.solution = False
             
@@ -32,6 +42,8 @@ class ChemicalSolver:
             for o in order:
                 for m in self.emitters.get(o, []):
                     self.run_trace(m, o)
+                if self.interrupted:
+                    return
                     
             # check convergence for all elements
             failed = False

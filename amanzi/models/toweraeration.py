@@ -90,6 +90,8 @@ class Toweraeration(Model, Balance):
         solution.remove_fraction('CO2', co2_removal)
         solution.remove_fraction('Mtg', ch4_removal)
 
+        solution.add('O2', 11-solution.total('O2', 'mg'), 'mg')
+
         return solution
 
 
@@ -145,13 +147,13 @@ class Toweraeration(Model, Balance):
         return {
             'influent': {
                 'pH': self.influent.pH,
-                'O2': 0,
+                'O2': self.influent.total('O2', 'mg'),
                 'CO2': self.influent.total('CO2', 'mg'),
                 'CH4': self.influent.total('Mtg') * 16,
             },
             'effluent': {
                 'pH': self.solution.pH,
-                'O2': 0,
+                'O2': self.solution.total('O2', 'mg'),
                 'CO2': self.solution.total('CO2', 'mg'),
                 'CH4': self.solution.total('Mtg') * 16 
             },

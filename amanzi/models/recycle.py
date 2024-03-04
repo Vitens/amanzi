@@ -10,14 +10,8 @@ class Recycle(Model, Splitter):
 
     def run_model(self, type, total_inflow, solution):
         ## remove 95% of NaCl
-        total = solution.total('Na')*total_inflow
-
-        in_waste = (total*0.95) / ((1-self.split) * total_inflow)
-        in_product = (total*0.05) / (self.split * total_inflow)
-
-        self.product_solution = solution.copy().remove('NaCl', solution.total('Na') - in_product)
-
-        return solution.add('NaCl', in_waste - solution.total('Na'))
+        self.product_solution = solution.copy()
+        return solution
 
     @property
     def emitter_solutions(self):

@@ -365,7 +365,7 @@ class Membrane(Model, Splitter):
             try:
                 elements[element_name] = round(solution.total(element_name, 'mg'), 1)
             except:
-                print("Membrane failed to process element:", element_name)
+                # print("Membrane failed to process element:", element_name)
                 pass
                 # elements[element_name] = elements.get(element_name, 0) + mass_fraction * 1e3 #convert to mmol.
                 # elements[element_name] = round(elements[element_name], 2)
