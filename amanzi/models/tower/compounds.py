@@ -1,20 +1,20 @@
 import numpy as np
 from .water_properties import Water
 class Chemical:
-    def __init__(self,T):
-        self.temperature = T
-        self.temperature_in_K = float(T)+273.15
+    def __init__(self,T_liq,T_gas):
+        self.temperature_in_K_liq = float(T_liq)+273.15
+        self.temperature_in_K_gas = float(T_gas)+273.15
 
     def D_in_water(self,para):
-        return 10**(para[0]+para[1]/(self.temperature_in_K))
+        return 10**(para[0]+para[1]/(self.temperature_in_K_liq))
     def D_in_air(self,para): #for 1 atm
-        return para[0]+para[1]*(self.temperature_in_K)+para[2]*(self.temperature_in_K)**2
+        return para[0]+para[1]*(self.temperature_in_K_gas)+para[2]*(self.temperature_in_K_gas)**2
     
     def henry_conversion(self,Hcp_s,H_dt):
             T_ref=298.15 # K
             R = 8.314 #Gas constant
-            Henry_coefficient = Hcp_s*np.exp(H_dt*((1/self.temperature_in_K)-(1/T_ref)))
-            return 1/(Henry_coefficient*R*self.temperature_in_K)
+            Henry_coefficient = Hcp_s*np.exp(H_dt*((1/self.temperature_in_K_liq)-(1/T_ref)))
+            return 1/(Henry_coefficient*R*self.temperature_in_K_liq)
 
     def carbon_dioxide(self):
         Para_water=[-1.37281,-997.66]

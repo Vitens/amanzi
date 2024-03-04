@@ -5,14 +5,14 @@ from .compounds import Chemical
 from .water_properties import Water
 from .air_properties import Air
 
-def run_onda(T,flow,diameter, packing_height, packing_type, RQ, compound, c_in, c_gas):
-  liquid = Water(T)
+def run_onda(T_liq,T_gas,flow,diameter, packing_height, packing_type, RQ, compound, c_in, c_gas):
+  liquid = Water(T_liq)
   rho_l = liquid.density()        # kg/m³
   sigma_l = liquid.tension()      # N/m
   mue_l = liquid.dyn_viscosity()
   M_l = liquid.mol_mass() 
   p=1.023e5
-  gas = Air(T,p)
+  gas = Air(T_gas,p)
   rho_g = gas.density()           # kg/m³
   mue_g = gas.dyn_viscosity()     # 
   M_g = gas.mol_mass()            # kg/mol molar weight
@@ -23,7 +23,7 @@ def run_onda(T,flow,diameter, packing_height, packing_type, RQ, compound, c_in, 
   m_g_flux = (rho_g*flow*RQ/3600)/column_area
   a_geo =packing()[packing_type]['ageo']
   size =packing()[packing_type]['size']
-  comp=Chemical(T)
+  comp=Chemical(T_liq,T_gas)
   D_l =comp.properties()[compound]['Diff_water']*1e4
   D_g =comp.properties()[compound]['Diff_air'] *1e4
   Hc= comp.properties()[compound]['Henry'] #dimensionless Henry

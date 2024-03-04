@@ -28,12 +28,12 @@ class Toweraeration(Model, Balance):
         self.packing_height = float(self.configuration.get('packing_height', 2.5))
         self.capacity = float(self.configuration.get('nominal_capacity', 100))
         self.compound = self.configuration.get('model_component', 'CO2')
-        
+        self.temp_g = float(self.configuration.get('air_temp', 50))
 
     
       
-    def get_NTU(self,T,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov) :
-        comp=Chemical(T)
+    def get_NTU(self,T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov) :
+        comp=Chemical(T_liq,T_gas)
         Hc= comp.properties()[compound]['Henry'] #dimensionless Henry
         Sf=Hc*RQ
         #Calculate efficiency
@@ -63,7 +63,8 @@ class Toweraeration(Model, Balance):
 
     def calculate_efficiency(self,compound, RQ, packing_height): 
         #run onda model  method='Engel', flow=150, packing_height=5, packing='RAFLUX50', RQ=50, component='CO2', c_in=10, c_gas=0 
-        T= self.influent.temperature
+        T_liq= self.influent.temperature
+        T_gas= self.temp_g
         flow = self.capacity
         packing = self.packing_type
         c_in = self.influent.total(self.compound, units='mmol')
@@ -74,8 +75,8 @@ class Toweraeration(Model, Balance):
         
         c_gas=0
         diameter=self.diameter
-        HTU_ov = run_onda(T,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas)
-        efficiency= self.get_NTU(T,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov)
+        HTU_ov = run_onda(T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas)
+        efficiency= self.get_NTU(T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov)
         
         return efficiency
 
@@ -87,7 +88,14 @@ class Toweraeration(Model, Balance):
         ## gets called by solver
         co2_removal= self.calculate_efficiency('CO2',self.rq, self.packing_height)
         ch4_removal= self.calculate_efficiency('Mtg',self.rq, self.packing_height)
+        #dict1 =solution.species
+        #print(solution.species)
+        #print(co2_removal)
+        print(self.temp_g)
         solution.remove_fraction('CO2', co2_removal)
+        #dict2 =solution.species 
+        #print(solution.species)
+        #print({key: dict1[key] - dict2.get(key, 0) for key in dict1.keys()})
         solution.remove_fraction('Mtg', ch4_removal)
 
         return solution
@@ -101,7 +109,7 @@ class Toweraeration(Model, Balance):
         rho_l = liquid.density()        # kg/m³
 
         p=1.023e5
-        gas = Air(self.influent.temperature,p)
+        gas = Air(self.temp_g,p)
         rho_g = gas.density()           # kg/m³
         d=float(self.diameter)          # m
         Area= math.pi*d**2/4            # m² d in m
@@ -116,7 +124,7 @@ class Toweraeration(Model, Balance):
 
 
         Liquid_capacity= np.linspace(0.01, 0.1, 50)#capacity liquid m/s
-        eng_stickl = run_engelstichlmair(self.influent.temperature, self.packing_type)
+        eng_stickl = run_engelstichlmair(self.influent.temperature,self.temp_g, self.packing_type)
         Gas_capacity_flooding, _=eng_stickl.flooding_line(Liquid_capacity,1)
         Gas_capacity_loading, _=eng_stickl.flooding_line(Liquid_capacity,0.65)
 
