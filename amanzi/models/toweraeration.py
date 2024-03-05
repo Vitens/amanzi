@@ -137,16 +137,20 @@ class Toweraeration(Model, Balance):
         Rq = np.linspace(0.1,100, 500)
 
         heights = [1,2,3,4, self.packing_height]
-
+        
         loading_charts = []
         height_charts = {}
 
-        for h in heights:
+        for h in range(len(heights)):
             intermediary =[]
             for k in Rq:
-                intermediary.append({'x': k, 'y':self.calculate_efficiency(self.compound,k,h)})
-            height_charts[h] = intermediary
-       
+                intermediary.append({'x': k, 'y':self.calculate_efficiency(self.compound,k,heights[h])})
+            if h == len(heights)-1:
+                height_charts['Werkpunt: '+ str(heights[h])]=intermediary
+            else:
+                height_charts[heights[h]] =intermediary  
+            
+        
 
         liq_load = self.capacity/(math.pi*0.25*self.diameter**2)
         dp_dry, dp_tot, h_tot ,F, flooding_factor= eng_stickl.operating_point(self.capacity, self.rq, self.diameter)
