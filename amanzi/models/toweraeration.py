@@ -2,8 +2,6 @@ from .model import Model
 from .submodels.balance import Balance
 import math
 import numpy as np
-from scipy.optimize import fsolve
-
 from .tower.onda import run_onda
 from .tower.engelstichlmair import run_engelstichlmair
 from .tower.mackoviak import run_mackoviak
@@ -43,37 +41,31 @@ class Toweraeration(Model, Balance):
         efficiency= ((c_in-c_out)/c_in)
         c_g_o=c_gas+(c_in-c_out)/RQ
         NTU_ov=(Sf/(Sf-1)) * np.log((c_in-c_gas/Hc)*(Sf-1)/((c_out-c_gas/Hc)*Sf)+(1/Sf))
-        # Af=RQ*Hc 
-        # z2= np.exp((packing_height*(Af-1))/(HTU_ov*Af))
-        # c_h20= rho_l/M_l       # mol H20/ m³ H20
-        # c_air = rho_g/M_g*RQ   # mol Air / m³ H20
-        # gas_loading_in= 0       #mol CO2 / mol Air
-        # liquid_loading_in=(c_in)/c_h20  #mol Co2 / mol H20
-
-        # cg_eq_out = Hc*liquid_loading_in*(c_h20/c_air) # gas loading at equilibrium of outflow
-
-        # gas_loading_out =(Af*cg_eq_out*z2-Af*cg_eq_out+Af*gas_loading_in-gas_loading_in)/(Af*z2-1)
-        # liquid_loading_out = liquid_loading_in-(c_air/c_h20)*(gas_loading_out-gas_loading_in)
-        
-        # efficiency2= ((liquid_loading_in-liquid_loading_out)/liquid_loading_in)
-        # print(f"c_g out for Onda is {c_g_o} ")
-        # print(f"c_g out for Mackoviak is {gas_loading_out*c_air} ")
-        
+       
         return efficiency
 
-    def calculate_efficiency(self,compound, RQ, packing_height): 
+    def calculate_efficiency(self,compound, RQ, packing_height,solution=0): 
         #run onda model  method='Engel', flow=150, packing_height=5, packing='RAFLUX50', RQ=50, component='CO2', c_in=10, c_gas=0 
         T_liq= self.influent.temperature
         T_gas= self.temp_g
         flow = self.capacity
         packing = self.packing_type
-        c_in = self.influent.total(self.compound, units='mmol')
-        c_in=0.0002
-        if self.compound != 'CO2' and self.compound != 'Mtg':
+        c_gas = 0
+        if self.compound != 'CO2' and self.compound != 'Mtg' and self.compound != 'Oxg':
             c_in=0.0002
-        
-        
-        c_gas=0
+        else:
+            c_in = self.influent.total(self.compound, units='mmol') 
+        if compound == 'Oxg':
+            solution = self.influent.copy()
+            oxg_in = self.influent.total("Oxg", "mmol")
+            o2_in = self.influent.total("O2", "mmol")
+ 
+            delta = o2_in - oxg_in        
+            solution.add('Oxg', delta, 'mmol')
+            c_in =solution.total("Oxg", "mmol")
+            c_gas =0.208*101325/(8.31446*(273.15+T_gas)) #9.4
+        if c_gas > 0:
+            print(c_gas)
         diameter=self.diameter
         HTU_ov = run_onda(T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas)
         efficiency= self.get_NTU(T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov)
@@ -81,24 +73,25 @@ class Toweraeration(Model, Balance):
         return efficiency
 
 
-
+    def oxygen_transfer(self, solution):
+        o2_in_gas = 9.4 # mol/m³
+        o2_in = self.influent.total("O2", "mmol")
+        o2_efficiency = self.calculate_efficiency('Oxg', self.rq,self.packing_height)      
+        c_O2_out =-(o2_efficiency*o2_in-o2_in)
+        c_o2_change = abs(o2_in-c_O2_out)
+        print(o2_efficiency)
+        return c_o2_change
+       
 
 
     def run_model(self, type, total_inflow, solution):
         ## gets called by solver
         co2_removal= self.calculate_efficiency('CO2',self.rq, self.packing_height)
         ch4_removal= self.calculate_efficiency('Mtg',self.rq, self.packing_height)
-        #dict1 =solution.species
-        #print(solution.species)
-        #print(co2_removal)
-        print(self.temp_g)
+        o2_change = self.oxygen_transfer(self.influent)
         solution.remove_fraction('CO2', co2_removal)
-        #dict2 =solution.species 
-        #print(solution.species)
-        #print({key: dict1[key] - dict2.get(key, 0) for key in dict1.keys()})
         solution.remove_fraction('Mtg', ch4_removal)
-
-        solution.add('O2', 11-solution.total('O2', 'mg'), 'mg')
+        solution.add('O2',o2_change , 'mmol')
 
         return solution
 
@@ -134,7 +127,7 @@ class Toweraeration(Model, Balance):
         operating = [{'x': Liquid_capacity[x] , 'y': Gas_capacity_loading[x]} for x in range(len(Liquid_capacity))]
 
         ## Efficiency loading and height charts
-        Rq = np.linspace(0.1,100, 500)
+        Rq = np.linspace(0.1,100, 100)
 
         heights = [1,2,3,4, self.packing_height]
         

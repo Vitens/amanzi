@@ -24,8 +24,8 @@ def run_onda(T_liq,T_gas,flow,diameter, packing_height, packing_type, RQ, compou
   a_geo =packing()[packing_type]['ageo']
   size =packing()[packing_type]['size']
   comp=Chemical(T_liq,T_gas)
-  D_l =comp.properties()[compound]['Diff_water']*1e4
-  D_g =comp.properties()[compound]['Diff_air'] *1e4
+  D_l =comp.properties()[compound]['Diff_water']*1e4  # cm²/s
+  D_g =comp.properties()[compound]['Diff_air'] *1e4   # cm²/s
   Hc= comp.properties()[compound]['Henry'] #dimensionless Henry
 
   k_g =5.23*(m_g_flux/(a_geo*mue_g))**0.7*(mue_g/(rho_g*(D_g/10000)))**(1/3)*(a_geo*size/1000)**(-2) * (a_geo*D_g/10000) 

@@ -1,9 +1,8 @@
 from .water_properties import Water
 from .air_properties import Air
 import math
-import numpy as np
 from .packing_properties import packing
-from scipy.optimize import minimize
+
 
 class run_engelstichlmair:
   def __init__(self, T_liq,T_gas, packing_type):
