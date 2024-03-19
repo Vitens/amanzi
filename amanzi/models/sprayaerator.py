@@ -16,9 +16,8 @@ class Sprayaerator(Model, Balance):
         super().__init__(config, pp)
 
         self.configuration = config.get('configuration', {})
-        self.capacity = float(self.configuration.get('nominal_capacity', 100))
-        self.rq = float(self.configuration.get('RQ', 50))
-        self.fall_height = float(self.configuration.get('fall_height', 2))
+        self.sauter = float(self.configuration.get('sauter_diameter', 0.00002))
+        self.fall_height = float(self.configuration.get('fall_height', 1))
         self.compound = self.configuration.get('model_component', 'CO2')
 
 
@@ -43,10 +42,10 @@ class Sprayaerator(Model, Balance):
         solution = self.influent.copy()
         h = self.fall_height
         RQ=1
-        effciency = self.calculate_efficiency('CO2', RQ, self.fall_height)
-        if effciency >1:
-            effciency = 1
-        solution.remove_fraction('CO2', effciency)
+        effciency_co2 = self.calculate_efficiency('CO2', RQ, self.fall_height, self.sauter)
+        effciency_ch4 = self.calculate_efficiency('Mtg', RQ, self.fall_height,self.sauter)
+        solution.remove_fraction('CO2', effciency_co2)
+        solution.remove_fraction('Mtg', effciency_ch4)
         return solution
 
 
@@ -55,7 +54,7 @@ class Sprayaerator(Model, Balance):
         height =np.linspace(0.01, 4, 50)
         d_sauter = np.linspace(0.000001, 0.001, 500)
         RQ=1
-        height_charts = [{'x': h, 'y': self.calculate_efficiency('CO2', RQ, h)} for h in height]
+        height_charts = [{'x': h, 'y': self.calculate_efficiency(self.compound, RQ, h,self.sauter)} for h in height]
         
         sauter_charts ={}
         h = [0.5,1,1.5,2]
