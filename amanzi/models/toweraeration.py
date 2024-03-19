@@ -26,7 +26,7 @@ class Toweraeration(Model, Balance):
         self.packing_height = float(self.configuration.get('packing_height', 2.5))
         self.capacity = float(self.configuration.get('nominal_capacity', 100))
         self.compound = self.configuration.get('model_component', 'CO2')
-        self.temp_g = float(self.configuration.get('air_temp', 50))
+        self.temp_g = float(self.configuration.get('air_temp', 15))
 
     
       
@@ -45,7 +45,6 @@ class Toweraeration(Model, Balance):
         return efficiency
 
     def calculate_efficiency(self,compound, RQ, packing_height,solution=0): 
-        #run onda model  method='Engel', flow=150, packing_height=5, packing='RAFLUX50', RQ=50, component='CO2', c_in=10, c_gas=0 
         T_liq= self.influent.temperature
         T_gas= self.temp_g
         flow = self.capacity
@@ -99,10 +98,8 @@ class Toweraeration(Model, Balance):
 
     def design(self):
         ## gets called by design GUI
-
         liquid = Water(self.influent.temperature)
         rho_l = liquid.density()        # kg/m³
-
         p=1.023e5
         gas = Air(self.temp_g,p)
         rho_g = gas.density()           # kg/m³
@@ -118,6 +115,7 @@ class Toweraeration(Model, Balance):
 
         werkpunt_hydro = [{'x': Capacity_liq(u_l), 'y': Capacity_gas(u_l*self.rq)}]
 
+        werkpunt_quality =[{'x': self.rq, 'y': self.calculate_efficiency(self.compound,self.rq,self.packing_height)}]
 
 
 
@@ -127,16 +125,13 @@ class Toweraeration(Model, Balance):
         Gas_capacity_flooding, _=eng_stickl.flooding_line(Liquid_capacity,1)
         Gas_capacity_loading, _=eng_stickl.flooding_line(Liquid_capacity,0.65)
 
-
         flooding = [{'x':Liquid_capacity[x] , 'y': Gas_capacity_flooding[x]} for x in range(len(Liquid_capacity))]
         operating = [{'x': Liquid_capacity[x] , 'y': Gas_capacity_loading[x]} for x in range(len(Liquid_capacity))]
 
         ## Efficiency loading and height charts
-        Rq = np.linspace(0.1,100, 100)
+        Rq = np.linspace(0.1,100,100)
 
         heights = [1,2,3,4, self.packing_height]
-        
-        loading_charts = []
         height_charts = {}
 
         for h in range(len(heights)):
@@ -148,9 +143,6 @@ class Toweraeration(Model, Balance):
             else:
                 height_charts[heights[h]] =intermediary  
             
-        
-
-        liq_load = self.capacity/(math.pi*0.25*self.diameter**2)
         column_is_flooding = False
         try:
             dp_dry,dp_tot, h_tot ,F, flooding_factor= eng_stickl.operating_point(self.capacity, self.rq, self.diameter)
@@ -158,14 +150,10 @@ class Toweraeration(Model, Balance):
                 raise ValueError("dp_tot is a complex number.")
             if isinstance(h_tot, complex):
                 raise ValueError("h_tot is a complex number.")
-
         except Exception as e:
             print(f"An error occurred : {e}")
             dp_dry,dp_tot, h_tot ,F, flooding_factor = 0, 0, 0, 0,0
             column_is_flooding = True
-
-  
-        werkpunt_quality =[{'x': self.rq, 'y': self.calculate_efficiency(self.compound,self.rq,self.packing_height)}]
         
         return {
             'influent': {
@@ -182,7 +170,7 @@ class Toweraeration(Model, Balance):
             },
             'model': {
                 'F': F,
-                'liquid_load': liq_load,
+                'liquid_load': u_l*3600,
                 'flooding_factor': flooding_factor*100,
                 'liquid_holdup': h_tot*100,
                 'pressure_drop': dp_tot/100,
@@ -191,7 +179,6 @@ class Toweraeration(Model, Balance):
                 'flooding': flooding,
                 'operating': operating,
                 'working_point': werkpunt_hydro,
-                'efficiency_loading': loading_charts,
                 'efficiency_height': height_charts,
                 'efficiency_workpoint': werkpunt_quality,
                 'column_is_flooding': column_is_flooding

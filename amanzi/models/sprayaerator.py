@@ -16,20 +16,22 @@ class Sprayaerator(Model, Balance):
         super().__init__(config, pp)
 
         self.configuration = config.get('configuration', {})
+        self.capacity = float(self.configuration.get('nominal_capacity', 100))
         self.rq = float(self.configuration.get('RQ', 50))
         self.fall_height = float(self.configuration.get('fall_height', 2))
         self.compound = self.configuration.get('model_component', 'CO2')
 
 
-    def calculate_efficiency(self,compound, RQ, fall_height):
-        g=9.81
-        d_sauter = 0.00025 # m sauter diameter function of presure/ nozzle/ volume flow.
+    def calculate_efficiency(self,compound, RQ, fall_height, d_sauter=0.00025):
+        #d_sauter = 0.00025 # m sauter diameter function of presure/ nozzle/ volume flow.
         A = math.pi*(d_sauter**2)/4
         V = math.pi*(d_sauter**3)/6
         g=9.81
-        c_v= 0.95 # nozzle sprecific parameter
-        alpha = 45 # angle of the nozzle outflow
-        t =np.sqrt(2*fall_height/g) #2*c_v * math.sin(alpha)*np.sqrt(4*fall_height/g)# exposure time   
+        # c_v= 0.95 # nozzle sprecific parameter
+        # alpha = 45 # angle of the nozzle outflow
+        # t = 2*c_v * math.sin(alpha)*np.sqrt(4*fall_height/g)
+
+        t =np.sqrt(2*fall_height/g) ## exposure time, simple   
         
         comp=Chemical(self.influent.temperature,20)
         D_comp= comp.properties()[compound]['Diff_water']#diffusion coefficient
@@ -41,7 +43,9 @@ class Sprayaerator(Model, Balance):
         solution = self.influent.copy()
         h = self.fall_height
         RQ=1
-        effciency = self.calculate_efficiency('CO2', RQ, self.fall_height)#-0.299*h**4 + 1.4589**h**3 - 2.6619*h**2 + 2.2924*h - 0.0127
+        effciency = self.calculate_efficiency('CO2', RQ, self.fall_height)
+        if effciency >1:
+            effciency = 1
         solution.remove_fraction('CO2', effciency)
         return solution
 
@@ -49,11 +53,18 @@ class Sprayaerator(Model, Balance):
     def design(self):
         effluent = self.run_model(None, None, self.influent)
         height =np.linspace(0.01, 4, 50)
-        def effciency(h):
-            return -0.299*h**4 + 1.4589**h**3 - 2.6619*h**2 + 2.2924*h - 0.0127
+        d_sauter = np.linspace(0.000001, 0.001, 500)
         RQ=1
-        height_charts = [{'x': h, 'y': self.calculate_efficiency(self.compound, RQ, h)} for h in height]
-        print(height_charts)
+        height_charts = [{'x': h, 'y': self.calculate_efficiency('CO2', RQ, h)} for h in height]
+        
+        sauter_charts ={}
+        h = [0.5,1,1.5,2]
+        for i in h:
+            intermediary =[]
+            for k in d_sauter:
+                intermediary.append({'x': k, 'y':self.calculate_efficiency(self.compound,RQ,i,k)})
+            sauter_charts[i] =intermediary 
+        
         return {
             'influent': {
                 'pH': self.influent.pH,
@@ -69,7 +80,7 @@ class Sprayaerator(Model, Balance):
             },
             'efficiency': {
                 'Height': height_charts,
-                'Height2': height_charts
+                'Sauter': sauter_charts
 
             }
         }
