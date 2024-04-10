@@ -215,7 +215,7 @@ class Chemical:
         Dwater_C3H6Cl2,Dair_C3H6Cl2, H_C3H6Cl2 = self.dichloropropane1_2()
 
         return {
-                'Oxg':{'Diff_water': Dwater_O2, 'Diff_air': Dair_O2,'Henry': H_O2 ,'MW':44}, #o2
+                'Oxg':{'Diff_water': Dwater_O2, 'Diff_air': Dair_O2,'Henry': H_O2 ,'MW':32}, #o2
                 'CO2':{'Diff_water': Dwater_CO2, 'Diff_air': Dair_CO2,'Henry': H_CO2 ,'MW':44}, #CO2
                 'Mtg':{'Diff_water': Dwater_CH4, 'Diff_air': Dair_CH4,'Henry': H_CH4 ,'MW':16 },
                 'C2Cl4':{'Diff_water': Dwater_C2Cl4, 'Diff_air': Dair_C2Cl4,'Henry': H_C2Cl4 ,'MW':16 },

@@ -16,3 +16,4 @@ from .dosing import Dosing
 from .membranedegassing import Membranedegassing
 from .toweraeration import Toweraeration
 from .sprayaerator import Sprayaerator
+from .activatedcarbon import Activatedcarbon
