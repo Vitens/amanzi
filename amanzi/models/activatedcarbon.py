@@ -81,13 +81,27 @@ class Activatedcarbon(Model, Balance):
         volume_flow_rate = self.volumeflow/3600 #m³/s
         height = self.packing_height            #m
         crosssection = math.pi * (self.dimension/2)**2  #m²
-        filmdiffusion =  Chemical(20,20).properties()['CO2']['Diff_water']*1000#m²/s should be m/s thats why *1000
+        filmdiffusion =  Chemical(20,20).properties()['CO2']['Diff_water']*1000 #m²/s should be m/s thats why *1000
         freundlich_k = self.freundlich_k
         freundlich_n = self.freundlich_n
                 
         cadet_model = CADETMODEL()
         model=cadet_model.create_and_run_model(t_in_seconds, c_feed,  resolution, volume_flow_rate, height, crosssection, filmdiffusion,freundlich_k, freundlich_n)
-        eff= [{'x': (model.root.output.solution.solution_times[i]/(3600*24)) , 'y': (model.root.output.solution.unit_001.solution_outlet[i][0]/c_feed[0]) }for i in range(len(model.root.output.solution.solution_times))]
+        def c_quotient(i):
+            return model.root.output.solution.unit_001.solution_outlet[i][0]/c_feed[0]
+        model_timesteps=model.root.output.solution.solution_times
+        
+        timestep=0
+        for i in range(len(model.root.output.solution.solution_times)):
+            if c_quotient(i) > 0.5:
+                t_50 = model.root.output.solution.solution_times[i]
+                timestep = i
+                break
+      
+        regeration =  model_timesteps[timestep]-((model_timesteps[timestep]-model_timesteps[timestep-1])/(c_quotient(timestep)-c_quotient(timestep-1)))*(c_quotient(timestep)-0.5)
+
+
+        eff= [{'x': (model.root.output.solution.solution_times[i]/(3600*24)) , 'y': c_quotient(i) }for i in range(len(model.root.output.solution.solution_times))]
 
         return {
             'influent': {
@@ -103,7 +117,7 @@ class Activatedcarbon(Model, Balance):
                 'CH4': self.solution.total('Mtg') * 16 
             },
             'model': {
-                'regeneration': 5,
+                'regeneration': regeration/(3600*24*365),
                 'EBCT' : self.packing_volume/(self.volumeflow/60),
                 'Efficiency':effciency_chart,
                 'Volume': self.packing_volume,
