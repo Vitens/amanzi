@@ -21,67 +21,45 @@ class Groundwater(Model):
 
         # pprint.pprint(c)
 
-        oxg = c.get('Zuurstof', 0) if c.get('Zuurstof', 0) > 0 else 0.00001
-        h2s = 'Sg' if c.get('Zuurstof', 0) == 0 else 'S(-2)'
-        fe = '[Fe+2]' if c.get('Zuurstof', 0) == 0 else 'Fe'
-        mn = '[Mn+2]' if c.get('Zuurstof', 0) == 0 else 'Mn'
-        nh4 = '[N-3]' if c.get('Zuurstof', 0) == 0 else 'N(-3)'
-        no2 = '[N+3]' if c.get('Zuurstof', 0) == 0 else 'N(3)'
+        oxg = c.get('oxygen', 0) if c.get('oxygen', 0) > 0 else 0.00001
+        h2s = 'Sg' if c.get('oxygen', 0) == 0 else 'S(-2)'
+        fe = '[Fe+2]' if c.get('oxygen', 0) == 0 else 'Fe'
+        mn = '[Mn+2]' if c.get('oxygen', 0) == 0 else 'Mn'
+        nh4 = '[N-3]' if c.get('oxygen', 0) == 0 else 'N(-3)'
+        no2 = '[N+3]' if c.get('oxygen', 0) == 0 else 'N(3)'
 
-        h2s_value = max(c.get('Waterstofsulfide', 0), 0.0000001)
+        h2s_value = max(c.get('hydrogen-sulfide', 0), 0.0000001)
 
-        # create solution
-        # print("SOLUTION")
-        # print ({
-        #     'pH': c.get('pH', 7),
-        #     'temp': c.get('temp', 10),
-        #     'units': 'mg/l',
-        #     'pe': 4, # phreeqc default
-        #     'redox': 'O(-2)/O(0)',
-        #     'O(0)': oxg,
-        #     'Oxg': 0.0000001, # prevent phreeqc from crashing
-        #     'Ntg': c.get('Stikstof', 0),
-        #     'Mtg': c.get('Methaan', 0),
-        #     h2s: '{} as H2S'.format(h2s_value),
-        #     fe: '{} as Fe'.format(c.get('IJzer', 0)),
-        #     mn: '{} as Mn'.format(c.get('Mangaan', 0)),
-        #     nh4: '{} as NH4'.format(c.get('Ammonium', 0)),
-        #     'Ca': c.get('Calcium', 0),
-        #     'Mg': c.get('Magnesium', 0),
-        #     'Na': c.get('Natrium', 0),
-        #     'K': c.get('Kalium', 0),
-        #     'Alkalinity': '{} as HCO3'.format(c.get('Bicarbonaat', 0)),
-        #     'Cl': c.get('Chloride', 0),
-        #     'N(5)': '{} as NO3'.format(c.get('Nitraat', 0)),
-        #     no2: '{} as NO2'.format(c.get('Nitriet', 0)),
-        #     'S(6)': '{} as SO4'.format(c.get('Sulfaat', 0)),
-        #     'P': '{} as PO4'.format(c.get('Fosfaat', 0)),
-        # })
 
         self.solution = self.pp.add_solution({
             'pH': c.get('pH', 7),
-            'temp': c.get('Temperatuur', 10),
+            'temp': c.get('temperature', 10),
             'units': 'mg/l',
             'pe': 4, # phreeqc default
             'redox': 'O(-2)/O(0)',
             'O(0)': oxg,
             'Oxg': 0.0000001, # prevent phreeqc from crashing
-            'Ntg': c.get('Stikstof', 0),
-            'Mtg': c.get('Methaan', 0),
+            'Ntg': c.get('nitrogen', 0),
+            'Mtg': c.get('methane', 0),
             h2s: '{} as H2S'.format(h2s_value),
-            fe: '{} as Fe'.format(c.get('IJzer', 0)),
-            mn: '{} as Mn'.format(c.get('Mangaan', 0)),
-            nh4: '{} as NH4'.format(c.get('Ammonium', 0)),
-            'Ca': c.get('Calcium', 0),
-            'Mg': c.get('Magnesium', 0),
-            'Na': c.get('Natrium', 0),
-            'K': c.get('Kalium', 0),
-            'Alkalinity': '{} as HCO3'.format(c.get('Bicarbonaat', 0)),
-            'Cl': c.get('Chloride', 0),
-            'N(5)': '{} as NO3'.format(c.get('Nitraat', 0)),
-            no2: '{} as NO2'.format(c.get('Nitriet', 0)),
-            'S(6)': '{} as SO4'.format(c.get('Sulfaat', 0)),
-            'P': '{} as PO4'.format(c.get('Fosfaat', 0)),
+            fe: '{} as Fe'.format(c.get('iron', 0)),
+            mn: '{} as Mn'.format(c.get('manganese', 0)),
+            nh4: '{} as NH4'.format(c.get('ammonium', 0)),
+            'Ca': c.get('calcium', 0),
+            'Mg': c.get('magnesium', 0),
+            'Na': c.get('sodium', 0),
+            'K': c.get('potassium', 0),
+            'Alkalinity': '{} as HCO3'.format(c.get('bicarbonate', 0)),
+            'Cl': c.get('chloride', 0),
+            'N(5)': '{} as NO3'.format(c.get('nitrate', 0)),
+            no2: '{} as NO2'.format(c.get('nitrite', 0)),
+            'S(6)': '{} as SO4'.format(c.get('sulfate', 0)),
+            'P': '{} as PO4'.format(c.get('phosphate', 0)),
+        },
+        # extraneous properties (i.e. untracked by PHREEQC)
+        {
+            'TOC': c.get('total-organic-carbon', 0),
+            'Color': c.get('color', 0),
         })
         ## equalize solution
         self.solution.equalize('Calcite', 1000, 0)

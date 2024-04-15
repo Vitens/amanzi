@@ -10,6 +10,7 @@ class Output(Model):
     def quality_table(self):
         ## return table of quality
         print(self.solution.elements)
+        print(self.solution.extraneous)
 
         parameters = [
         {'name': 'pH', 'll': 6.5, 'lt': 7.7, 'ut': 8.3, 'ul': 9.5, 'value': lambda s: s.pH, 'units': '-'},
@@ -23,6 +24,8 @@ class Output(Model):
         {'name': 'NH4', 'ut': 0.05, 'ul': 0.20, 'value': lambda s: s.total('[N-3]', 'mmol')*18, 'units': 'mg/l'},
         {'name': 'Na', 'ul': 100, 'value': lambda s: s.total('Na')*22.99, 'units': 'mg/l'},
         {'name': 'Cl', 'ut': 100, 'ul': 150, 'value': lambda s: s.total('Cl')*35.45, 'units': 'mg/l'},
+        {'name': 'Color', 'ut': 10, 'ul': 15, 'value': lambda s: s.extraneous['Color'], 'units': 'mg/l'},
+
         ]
     
         output = []
