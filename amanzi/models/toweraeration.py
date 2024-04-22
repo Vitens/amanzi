@@ -27,10 +27,12 @@ class Toweraeration(Model, Balance):
         self.capacity = float(self.configuration.get('nominal_capacity', 100))
         self.compound = self.configuration.get('model_component', 'CO2')
         self.temp_g = float(self.configuration.get('air_temp', 15))
+        
 
     
       
     def get_NTU(self,T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov) :
+
         comp=Chemical(T_liq,T_gas)
         Hc= comp.properties()[compound]['Henry'] #dimensionless Henry
         Sf=Hc*RQ
@@ -39,6 +41,7 @@ class Toweraeration(Model, Balance):
         c_out_eq=c_gas/Hc # ist l, c+in ist p
         c_out = (Sf*c_out_eq*z-Sf*c_out_eq+Sf*c_in-c_in)/(Sf*z-1)
         efficiency= ((c_in-c_out)/c_in)
+        
         c_g_o=c_gas+(c_in-c_out)/RQ
         NTU_ov=(Sf/(Sf-1)) * np.log((c_in-c_gas/Hc)*(Sf-1)/((c_out-c_gas/Hc)*Sf)+(1/Sf))
        
@@ -49,24 +52,34 @@ class Toweraeration(Model, Balance):
         T_gas= self.temp_g
         flow = self.capacity
         packing = self.packing_type
-        c_gas = 0
+        c_gas = 0 # assuming no gas phase concentrations of compounds
+
         if self.compound != 'CO2' and self.compound != 'Mtg' and self.compound != 'Oxg':
-            c_in=0.0002
+            if self.influent.extraneous[self.compound] >0:
+                c_in=self.influent.extraneous[self.compound]
+            else:
+                c_in =0.0000001
+
+
         else:
-            c_in = self.influent.total(self.compound, units='mmol') 
+            c_in = self.influent.total(self.compound, units='mmol')
+
         if compound == 'Oxg':
             solution = self.influent.copy()
             oxg_in = self.influent.total("Oxg", "mmol")
             o2_in = self.influent.total("O2", "mmol")
- 
+
             delta = o2_in - oxg_in        
             solution.add('Oxg', delta, 'mmol')
             c_in =solution.total("Oxg", "mmol")
             c_gas =0.208*101325/(8.31446*(273.15+T_gas)) #9.4
-        if c_gas > 0:
-            print(c_gas)
+
+
+        #if c_gas > 0:
+            #print(c_gas)
         diameter=self.diameter
         HTU_ov = run_onda(T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas)
+        
         efficiency= self.get_NTU(T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov)
         
         return efficiency
@@ -78,7 +91,7 @@ class Toweraeration(Model, Balance):
         o2_efficiency = self.calculate_efficiency('Oxg', self.rq,self.packing_height)      
         c_O2_out =-(o2_efficiency*o2_in-o2_in)
         c_o2_change = abs(o2_in-c_O2_out)
-        #print(o2_efficiency)
+        #print(c_o2_change)
         return c_o2_change
        
 
@@ -90,6 +103,7 @@ class Toweraeration(Model, Balance):
         o2_change = self.oxygen_transfer(self.influent)
         solution.remove_fraction('CO2', co2_removal)
         solution.remove_fraction('Mtg', ch4_removal)
+        #print(o2_change)
         solution.add('O2',o2_change , 'mmol')
 
         return solution
@@ -116,9 +130,7 @@ class Toweraeration(Model, Balance):
         werkpunt_hydro = [{'x': Capacity_liq(u_l), 'y': Capacity_gas(u_l*self.rq)}]
 
         werkpunt_quality =[{'x': self.rq, 'y': self.calculate_efficiency(self.compound,self.rq,self.packing_height)}]
-
-
-
+        
         Liquid_capacity= np.linspace(0.01, 0.1, 30)#capacity liquid m/s
         eng_stickl = run_engelstichlmair(self.influent.temperature,self.temp_g, self.packing_type)
 
@@ -127,16 +139,20 @@ class Toweraeration(Model, Balance):
 
         flooding = [{'x':Liquid_capacity[x] , 'y': Gas_capacity_flooding[x]} for x in range(len(Liquid_capacity))]
         operating = [{'x': Liquid_capacity[x] , 'y': Gas_capacity_loading[x]} for x in range(len(Liquid_capacity))]
-
         ## Efficiency loading and height charts
         Rq = np.linspace(0.1,100,100)
 
         heights = [1,2,3,4, self.packing_height]
         height_charts = {}
+        if self.compound != 'CO2' and self.compound != 'Mtg' and self.influent.extraneous[self.compound] >0:            
+            VOC_c =[{'x': rq, 'y': (1-self.calculate_efficiency(self.compound,rq,self.packing_height))*self.influent.extraneous[self.compound]} for rq in Rq]
+        else:
+            VOC_c = None
 
         for h in range(len(heights)):
             intermediary =[]
             for k in Rq:
+                p=1
                 intermediary.append({'x': k, 'y':self.calculate_efficiency(self.compound,k,heights[h])})
             if h == len(heights)-1:
                 height_charts['Werkpunt: '+ str(heights[h])]=intermediary
@@ -155,12 +171,14 @@ class Toweraeration(Model, Balance):
             dp_dry,dp_tot, h_tot ,F, flooding_factor = 0, 0, 0, 0,0
             column_is_flooding = True
         
+
         return {
             'influent': {
                 'pH': self.influent.pH,
                 'O2': self.influent.total('O2', 'mg'),
                 'CO2': self.influent.total('CO2', 'mg'),
                 'CH4': self.influent.total('Mtg') * 16,
+                
             },
             'effluent': {
                 'pH': self.solution.pH,
@@ -181,7 +199,10 @@ class Toweraeration(Model, Balance):
                 'working_point': werkpunt_hydro,
                 'efficiency_height': height_charts,
                 'efficiency_workpoint': werkpunt_quality,
-                'column_is_flooding': column_is_flooding
+                'column_is_flooding': column_is_flooding,
+                'VOC_concentration': VOC_c
             }
         }
+
+
 

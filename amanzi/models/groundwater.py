@@ -60,6 +60,36 @@ class Groundwater(Model):
         {
             'TOC': c.get('total-organic-carbon', 0),
             'Color': c.get('color', 0),
+            'Perchloroethylene':        c.get('Perchloroethylene', 0),
+            'Trichloroethylene':        c.get('Trichloroethylene', 0),
+            'cis-1,2-Dichlooretheen':   c.get('cis-1,2-Dichlooretheen', 0),
+            'Vinylchloride':            c.get('Vinylchloride', 0),
+            '1,1,1-Trichloroethane  ':  c.get('1,1,1-Trichloroethane', 0),
+            '1,1-Dichloroethane':       c.get('1,1-Dichloroethane', 0),
+            '1,2-Dichloroethane': c.get('1,2-Dichloroethane', 0),
+            'Tetrachlormethane': c.get('Tetrachlormethane', 0),
+            'Trichloromethane': c.get('Trichloromethane', 0),
+            'Dichloromethane': c.get('Dichloromethane', 0),
+            '1,2-Dichloropropane': c.get('1,2-Dichloropropane', 0),
+            'PFBS' : c.get('PFBS', 0),
+            'PFPeS': c.get('PFPeS', 0),
+            'PFHxS': c.get('PFHxS', 0),
+            'PFHpS': c.get('PFHpS', 0),
+            'PFOS' : c.get('PFOS', 0),
+            'PFDS' : c.get('PFDS', 0),
+            'TFA' : c.get('TFA', 0),
+            'PFBA' : c.get('PFBA', 0),
+            'PFPeA': c.get('PFPeA', 0),
+            'PFHxA': c.get('PFHxA', 0),
+            'PFHpA': c.get('PFHpA', 0),
+            'PFOA' : c.get('PFOA', 0),
+            'PFDA' : c.get('PFDA', 0),
+            'PFUnDA': c.get('PFUnDA', 0),
+            'PFDoDA': c.get('PFDoDA', 0),
+            'PFTrDA': c.get('PFTrDA', 0),
+            'PFTeDA': c.get('PFTeDA', 0)
+
+
         })
         ## equalize solution
         self.solution.equalize('Calcite', 1000, 0)

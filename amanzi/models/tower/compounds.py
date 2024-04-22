@@ -203,7 +203,7 @@ class Chemical:
         Dwater_CH4, Dair_CH4, H_CH4 =self.methane()
         Dwater_CO2, Dair_CO2, H_CO2 =self.carbon_dioxide()
         Dwater_C2Cl4,Dair_C2Cl4, H_C2Cl4 = self.perchloroethylene()
-        Dwater_C2HCl3,Dair_C2HCl3, H_C2HCl3 = self.perchloroethylene()
+        Dwater_C2HCl3,Dair_C2HCl3, H_C2HCl3 = self.trichloroethylene()
         Dwater_C2H2Cl2,Dair_C2H2Cl2, H_C2H2Cl2 = self.cis_1_2_Dichlooretheen()
         Dwater_C2H3Cl,Dair_C2H3Cl, H_C2H3Cl = self.vinylchloride()
         Dwater_C2H3Cl3,Dair_C2H3Cl3, H_C2H3Cl3 = self.trichloroethane()
@@ -218,17 +218,17 @@ class Chemical:
                 'Oxg':{'Diff_water': Dwater_O2, 'Diff_air': Dair_O2,'Henry': H_O2 ,'MW':32}, #o2
                 'CO2':{'Diff_water': Dwater_CO2, 'Diff_air': Dair_CO2,'Henry': H_CO2 ,'MW':44}, #CO2
                 'Mtg':{'Diff_water': Dwater_CH4, 'Diff_air': Dair_CH4,'Henry': H_CH4 ,'MW':16 },
-                'C2Cl4':{'Diff_water': Dwater_C2Cl4, 'Diff_air': Dair_C2Cl4,'Henry': H_C2Cl4 ,'MW':16 },
-                'C2HCl3':{'Diff_water': Dwater_C2HCl3, 'Diff_air': Dair_C2HCl3,'Henry': H_C2HCl3 ,'MW':16 },
-                'C2H2Cl2':{'Diff_water': Dwater_C2H2Cl2, 'Diff_air': Dair_C2H2Cl2,'Henry': H_C2H2Cl2 ,'MW':16 },              
-                'C2H3Cl':{'Diff_water': Dwater_C2H3Cl, 'Diff_air': Dair_C2H3Cl,'Henry': H_C2H3Cl ,'MW':16 },               
-                'C2H3Cl3':{'Diff_water': Dwater_C2H3Cl3, 'Diff_air': Dair_C2H3Cl3,'Henry': H_C2H3Cl3,'MW':16 },
-                'C2H4Cl2_1_1':{'Diff_water': Dwater_C2H4Cl2_1_1, 'Diff_air': Dair_C2H4Cl2_1_1,'Henry': H_C2H4Cl2_1_1 ,'MW':16 },
-                'C2H4Cl2_1_2':{'Diff_water': Dwater_C2H4Cl2_1_2, 'Diff_air': Dair_C2H4Cl2_1_2,'Henry': H_C2H4Cl2_1_2 ,'MW':16 },
-                'CCl4':{'Diff_water': Dwater_CCl4, 'Diff_air': Dair_CCl4,'Henry': H_CCl4 ,'MW':16 },
-                'CHCl3':{'Diff_water': Dwater_CHCl3, 'Diff_air': Dair_CHCl3,'Henry': H_CHCl3 ,'MW':16 },
-                'CH2Cl2':{'Diff_water': Dwater_CH2Cl2, 'Diff_air': Dair_CH2Cl2,'Henry': H_CH2Cl2 ,'MW':16 },
-                'C3H6Cl2':{'Diff_water': Dwater_C3H6Cl2, 'Diff_air': Dair_C3H6Cl2,'Henry': H_C3H6Cl2 ,'MW':16 }
+                'Perchloroethylene':{'Diff_water': Dwater_C2Cl4, 'Diff_air': Dair_C2Cl4,'Henry': H_C2Cl4 ,'MW':16 },
+                'Trichloroethylene':{'Diff_water': Dwater_C2HCl3, 'Diff_air': Dair_C2HCl3,'Henry': H_C2HCl3 ,'MW':16 },
+                'cis-1,2-Dichlooretheen':{'Diff_water': Dwater_C2H2Cl2, 'Diff_air': Dair_C2H2Cl2,'Henry': H_C2H2Cl2 ,'MW':16 },              
+                'Vinylchloride':{'Diff_water': Dwater_C2H3Cl, 'Diff_air': Dair_C2H3Cl,'Henry': H_C2H3Cl ,'MW':16 },               
+                '1,1,1-Trichloroethane':{'Diff_water': Dwater_C2H3Cl3, 'Diff_air': Dair_C2H3Cl3,'Henry': H_C2H3Cl3,'MW':16 },
+                '1,1-Dichloroethane':{'Diff_water': Dwater_C2H4Cl2_1_1, 'Diff_air': Dair_C2H4Cl2_1_1,'Henry': H_C2H4Cl2_1_1 ,'MW':16 },
+                '1,2-Dichloroethane':{'Diff_water': Dwater_C2H4Cl2_1_2, 'Diff_air': Dair_C2H4Cl2_1_2,'Henry': H_C2H4Cl2_1_2 ,'MW':16 },
+                'Tetrachlormethane':{'Diff_water': Dwater_CCl4, 'Diff_air': Dair_CCl4,'Henry': H_CCl4 ,'MW':16 },
+                'Trichloromethane':{'Diff_water': Dwater_CHCl3, 'Diff_air': Dair_CHCl3,'Henry': H_CHCl3 ,'MW':16 },
+                'Dichloromethane':{'Diff_water': Dwater_CH2Cl2, 'Diff_air': Dair_CH2Cl2,'Henry': H_CH2Cl2 ,'MW':16 },
+                '1,2-Dichloropropane':{'Diff_water': Dwater_C3H6Cl2, 'Diff_air': Dair_C3H6Cl2,'Henry': H_C3H6Cl2 ,'MW':16 }
 
                 
                 }
