@@ -17,6 +17,14 @@ class Ionexchange(Model, Balance):
         self.regenerations = 0
         
     def run_model(self, type, total_inflow, solution):
+        for i in self.scenario['metaData']['customMicroComponents']['PFAS']:
+            name= i['name']
+            removal_efficiency = i['removalIEX']
+            if name in solution.extraneous['PFAS']:
+                solution.extraneous['PFAS'][name]*(1-float(removal_efficiency))
+
+
+
         solution_change = {}
         for (water_ion, resin_ion, molratio, eff) in self.iex_coefficients:
             # Ion change in water

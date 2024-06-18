@@ -21,6 +21,7 @@ class Model:
         self.inflows = {}
 
         self.pp = pp
+        self.scenario = {}
         # self.iteration = 0
 
     def init_categories(self) -> None:
