@@ -130,7 +130,7 @@ class PSDM():
         '''
         self.project_name = kw.get('project_name','PSDM')
         
-        #collocation initilazation
+        #collocation initialization
         self.nc = kw.get('nr', 14) #set number of radial points, or 8
         self.mc = kw.get('nz', 19) #set number of axial points, or 11
         self.nz = self.mc * 1

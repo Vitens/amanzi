@@ -60,7 +60,7 @@ class Groundwater(Model):
         {'PFAS':{}, 'VOC':{}, 'Other':{}}
            )
 
-
+        #print(c.get('PFAS', {}).items())
         for key,value in c.get('PFAS', {}).items():
             if key != "" and key != '':
                 testsolution = self.pp.add_solution({},{

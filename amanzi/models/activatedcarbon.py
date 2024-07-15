@@ -59,16 +59,7 @@ class Activatedcarbon(Model, Balance):
         
 
         os.chdir(srt_dir)
-
-        fn = 'C:/Users/ZickermannN/Documents/projects/amanzi/amanzi/models/PSDM/Example_Multi.xlsx'
-
-        chem_data = PSDM_functions.process_input_data(fn, sheet_name='Properties') 
-        k_data = pd.read_excel(fn, sheet_name='Kdata',index_col=0) # K & 1/n 
-        raw_data, column_info,\
-        compounds, carbons, = PSDM_functions.process_input_file(fn,\
-                                                    data_sheet='data',\
-                                                    column_sheet='columnSpecs'
-                                                    )            
+         
         water_type = 'Organic Free'
         chem_type = 'halogenated alkenes'
         nr=4
@@ -92,6 +83,7 @@ class Activatedcarbon(Model, Balance):
         data = {    'name': ['carbonID', 'rad', 'epor', 'psdfr', 'rhop', 'rhof', 'L', 'wt', 'flrt', 'diam', 'tortu', 'influentID', 'effluentID'],	
                     'value': ['F400', particleRadius, 0.641,    5,     apparentD,   particleD,  length, massGAC, flowrate,   diameter,    1, 'influent', 'effluent'],
                 } 
+        #default time is days
 
         # data = {    'name': ['carbonID', 'rad', 'flrt','epor', 'psdfr', 'rhop', 'rhof', 'L', 'wt',  'diam', 'tortu', 'influentID', 'effluentID', 'units', 'time','mass_mul' ,'t_mult', 'flow_mult', 'flow_type'],	
         # 'value': ['F400', 0.0513,1892705.892, 0.641, 5, 0.803, 0.62, 180, 8500000,  366, 1, 'influent', 'effluent', 'ug', 'days', 1.0, 1440, 0.001, 'ml'],
@@ -206,6 +198,8 @@ class Activatedcarbon(Model, Balance):
         return solution
     
     def advancedExtraneousRemoval(self, solution):
+        # Calculation of average effluent concentration for each compound
+        # Using the regeneration of the GAC filter assuming equal distatnces between each regeneration of a filter
         PSDMcalculation = self.PSDMcalculation(self.influent)
         solEffluent=solution.extraneous['PFAS']
         for key in PSDMcalculation:
@@ -214,6 +208,7 @@ class Activatedcarbon(Model, Balance):
                 divider = self.renewal/(j+1)
                 pos=self.find_closest(idx,divider)
                 linFactor= (divider-idx[pos])/divider
+                #linear interpolation 
                 Effluentconc=PSDMcalculation[key](idx)[pos]+PSDMcalculation[key](idx)[pos]*linFactor
                 if j == 0:
                     solEffluent[key]= Effluentconc*(1/(self.filternumber))
@@ -222,9 +217,10 @@ class Activatedcarbon(Model, Balance):
         return solution
     
     def unitcheck(self,solution):
-        # ng/l is the default unit for influent and effluent
+        # ng/l is the default unit for PFAS influent and effluent
         for i in self.scenario['metaData']['customMicroComponents']['PFAS']:
             if i['name'] in solution.extraneous['PFAS']:
+                print(f"PFAS: {i['name']} {solution.extraneous['PFAS'][i['name']]}")
                 if i['unit'] == 'mg/l':
                     solution.extraneous['PFAS'][i['name']] = self.influent.extraneous['PFAS'][i['name']]*1000000
                 elif i['unit'] == 'μg/l':
@@ -234,6 +230,7 @@ class Activatedcarbon(Model, Balance):
 
     def run_model(self, type, total_inflow,solution):
         solution = self.unitcheck(solution.copy())
+
         if self.advanced == False:
             solution = self.simpleExtraneousRemoval(solution.copy())
 
@@ -284,23 +281,20 @@ class Activatedcarbon(Model, Balance):
             peq1=[0] * len(PSDMcalculation[dict_keys[0]].x)
             sum4=[0] * len(PSDMcalculation[dict_keys[0]].x)
             sum20=[0] * len(PSDMcalculation[dict_keys[0]].x)
+            length= self.packing_height*100 #cm
+            diameter= self.dimension*100 #cm
+            bedporosity=0.4
+            massGAC=bedporosity* 0.5*length*math.pi*(diameter/2)**2
+            flowrate= self.capacity*1e6/60 #ml/min
+            volumebed= length*math.pi*(diameter/2)**2 #cm³
+            volumeflow = flowrate*60*24 # ml/day
+            bedvolumesPerDay=volumeflow/volumebed
             for key in PSDMcalculation:
 
                 idx = PSDMcalculation[key].x
                 #print(PSDMcalculation[key](idx))               
-                eff[key] = [{'x': idx[k] , 'y': PSDMcalculation[key](idx)[k]/self.influent.extraneous['PFAS'][key] } for k in range(len(PSDMcalculation[key].x))]
-                
-                # for j in range(self.filternumber):
-                #     divider = self.renewal/(j+1)
-                #     pos=self.find_closest(idx,divider)
-                #     linFactor= (divider-idx[pos])/divider
-                #     Effluentconc=PSDMcalculation[key](idx)[pos]+PSDMcalculation[key](idx)[pos]*linFactor
-                #     if j == 0:
-                #         solEffluent[key]= Effluentconc*(1/(self.filternumber))
-                #     else:
-                #         solEffluent[key]= solEffluent[key]+Effluentconc*(1/(self.filternumber))
+                eff[key] = [{'x': idx[k]*bedvolumesPerDay , 'y': PSDMcalculation[key](idx)[k]/self.influent.extraneous['PFAS'][key] } for k in range(len(PSDMcalculation[key].x))]
 
-                
                 for k in range(len(PSDMcalculation[key].x)):
                     if key == dict_keys[0]:
                         peq1[k] = PSDMcalculation[key](idx)[k]*peq2[key]
@@ -311,9 +305,9 @@ class Activatedcarbon(Model, Balance):
                     if key in ['PFOA', 'PFOS', 'PFHxS', 'PFHpS', 'PFHxS', 'PFHpS', 'PFDS', 'PFBA', 'PFPeA', 'PFHxA', 'PFHpA', 'PFOA', 'PFDA', 'PFUnDA', 'PFDoDA', 'PFTrDA', 'PFTeDA']:
                         sum20[k] = sum20[k]+PSDMcalculation[key](idx)[k]*peq2[key]
 
-            peqPFAS = [{'x': idx[k] , 'y': peq1[k] } for k in range(len(PSDMcalculation[key].x))]
-            sum4= [{'x': idx[k] , 'y': sum4[k] } for k in range(len(PSDMcalculation[key].x))]
-            sum20= [{'x': idx[k] , 'y': sum20[k] } for k in range(len(PSDMcalculation[key].x))]
+            peqPFAS = [{'x': idx[k]*bedvolumesPerDay , 'y': peq1[k] } for k in range(len(PSDMcalculation[key].x))]
+            sum4= [{'x': idx[k]*bedvolumesPerDay , 'y': sum4[k] } for k in range(len(PSDMcalculation[key].x))]
+            sum20= [{'x': idx[k]*bedvolumesPerDay , 'y': sum20[k] } for k in range(len(PSDMcalculation[key].x))]
 
 
             
@@ -340,7 +334,7 @@ class Activatedcarbon(Model, Balance):
         relevantInfluent.update(self.influent.extraneous['Other'])
         relevantEffluent = self.solution.extraneous['PFAS'].copy()
         relevantEffluent.update(self.solution.extraneous['Other'])
-        print(relevantEffluent)
+        #print(relevantEffluent)
 
 
 

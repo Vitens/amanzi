@@ -31,7 +31,7 @@ class Toweraeration(Model, Balance):
 
     
       
-    def get_NTU(self,T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov) :
+    def get_NTU(self,T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov):
 
         comp=Chemical(T_liq,T_gas)
         Hc= comp.properties()[compound]['Henry'] #dimensionless Henry
@@ -57,14 +57,14 @@ class Toweraeration(Model, Balance):
         else:
             c_gas=0
 
-        if self.compound != 'CO2' and self.compound != 'Mtg' and self.compound != 'Oxg':
-            if self.influent.extraneous['VOC'][self.compound] >0:
-                c_in=self.influent.extraneous['VOC'][self.compound]
+        if compound != 'CO2' and compound != 'Mtg' and compound != 'Oxg':
+            if self.influent.extraneous['VOC'][compound] >0 :
+                c_in=self.influent.extraneous['VOC'][compound]
             else:
                 c_in =0.0000001
 
         else:
-            c_in = self.influent.total(self.compound, units='mmol')
+            c_in = self.influent.total(compound, units='mmol')
 
         if compound == 'Oxg':
             solution = self.influent.copy()
@@ -97,7 +97,7 @@ class Toweraeration(Model, Balance):
         #print(c_o2_change)
         return c_o2_change
     def unitcheck(self,solution):
-        # mg/l is the default unit for influent and effluent
+        # mg/l is the default unit for  VOC influent and effluent
         for i in self.scenario['metaData']['customMicroComponents']['VOC']:
             if i['name'] in solution.extraneous['VOC']:
                 if i['unit'] == 'ng/l':
@@ -109,8 +109,7 @@ class Toweraeration(Model, Balance):
 
     def run_model(self, type, total_inflow, solution):
         solution = self.unitcheck(solution.copy())
-        print(self.influent.extraneous['VOC'])
-        print(solution.extraneous['VOC'])
+
         ## gets called by solver
         co2_removal= self.calculate_efficiency('CO2',self.rq, self.packing_height)
         ch4_removal= self.calculate_efficiency('Mtg',self.rq, self.packing_height)
@@ -129,6 +128,8 @@ class Toweraeration(Model, Balance):
 
 
     def design(self):
+        print(self.influent.extraneous['VOC'])
+        self.configuration['influent'] = self.influent.extraneous['VOC']
         ## gets called by design GUI
         liquid = Water(self.influent.temperature)
         rho_l = liquid.density()        # kg/m³
@@ -165,7 +166,7 @@ class Toweraeration(Model, Balance):
         if self.compound != 'CO2' and self.compound != 'Mtg' and self.influent.extraneous['VOC'][self.compound] >0:            
             VOC_c =[{'x': rq, 'y': (1-self.calculate_efficiency(self.compound,rq,self.packing_height))*self.influent.extraneous['VOC'][self.compound]} for rq in Rq]
         else:
-            VOC_c = None
+            VOC_c = [{'x': 0, 'y': 0} for rq in Rq]
 
         for h in range(len(heights)):
             intermediary =[]
@@ -197,6 +198,7 @@ class Toweraeration(Model, Balance):
                 'CO2': self.influent.total('CO2', 'mg'),
                 'CH4': self.influent.total('Mtg') * 16,
                 
+                
             },
             'effluent': {
                 'pH': self.solution.pH,
@@ -218,7 +220,8 @@ class Toweraeration(Model, Balance):
                 'efficiency_height': height_charts,
                 'efficiency_workpoint': werkpunt_quality,
                 'column_is_flooding': column_is_flooding,
-                'VOC_concentration': VOC_c
+                'VOC_concentration': VOC_c,
+                'VOC': self.influent.extraneous['VOC']
             }
         }
 
