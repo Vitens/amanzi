@@ -3,9 +3,12 @@ from .submodels.balance import Balance
 import numpy as np
 
 class Softening(Model, Balance):
+
+    parametric_model = ['model', 'softening']
+
     def __init__(self, config, pp) -> None:
         super().__init__(config, pp)
-        config = config.get('configuration', {})
+        config = config.get('parameters', {})
 
         self.base_chemical = config.get('base_chemical', 'Ca(OH)2')
         self.acid_chemical = config.get('acid_chemical', 'CO2')

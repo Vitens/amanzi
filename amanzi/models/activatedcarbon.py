@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 
 from .PSDM import PSDM
 from .PSDM import PSDM_functions
+#from .CADET.modelsetup import CADETMODEL
 
 
 

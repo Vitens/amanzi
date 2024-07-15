@@ -1,0 +1,37 @@
+parameters:
+  design:
+    general:
+      units:
+        default: 1
+        uom: "-"
+        range: [1, 40]
+      minimal_capacity:
+        uom: m3/h
+        default: 50
+        range: [1, 10000]
+      nominal_capacity:
+        uom: m3/h
+        default: 100
+        range: [1, 10000]
+      maximal_capacity:
+        uom: m3/h
+        default: 200
+        range: [1, 10000]
+    hydraulic_line:
+      inlet_elevation:
+        uom: m
+        default: 5
+        range: [0, 20]
+      outlet_elevation:
+        uom: m
+        default: 0
+        range: [0, 20]
+      influent_pressure_loss:
+        uom: kPa
+        default: 0.0
+        range: [0.0, 10.0]
+      effluent_atmospheric:
+        default: true
+      
+      
+      

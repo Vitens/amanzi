@@ -1,5 +1,4 @@
 from .scenario import Scenario
-from ..components.assistant import Assistant
 import json
 
 

@@ -1,5 +1,5 @@
 import numpy as np
-from ..components.solvers import MassSolver, ChemicalSolver, CategorySolver
+from ..components.solvers import MassSolver, ChemicalSolver
 
 class Solver:
     def __init__(self, scenario):
@@ -10,7 +10,6 @@ class Solver:
         # init solvers
         self.mass_solver = MassSolver(scenario)
         self.chemical_solver = ChemicalSolver(scenario)
-        self.category_solver = CategorySolver(scenario)
 
     def solve(self, until=None):
 
@@ -23,10 +22,6 @@ class Solver:
 
         # 2 - solve chemistry
         self.chemical_solver.solve(until)
-
-        # 3 - solve cost funcs
-        # self.scenario.costfuncs = self.category_solver.solve()
-        # self.category_solver.solve()
 
     
 

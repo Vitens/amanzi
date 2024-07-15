@@ -13,11 +13,6 @@ class Scenario:
     def __init__(self, project, config):
         self.config = config
         self.pp = phreeqpython.PhreeqPython()
-        
-        #project.assistant.parse_metadata(self)
-
-        # init solver
-
         # loading
         self.models = self.load_models()  
         self.connections = self.load_connections()
@@ -25,7 +20,6 @@ class Scenario:
         self.costfuncs = None
 
         self.solver = Solver(self)
-        
 
         # self.run_scenario()
 

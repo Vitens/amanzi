@@ -1,0 +1,86 @@
+parameters:
+  design:
+    num_stages:
+      name: Aantal Stages
+      description: "Aantal ontgassingsstages"
+      default: 2
+      range: [1, 2]
+    membranes_per_stage:
+      name: Aantal membranen per stage
+      description: "Aantal membranen per ontgassingsstage"
+      default: 4
+      range: [1, 10]
+    membrane_type:
+      name: Membraan Type
+      description: "Type ontgassingsmembraan"
+      default: EXF14x40
+      options: ['EXF14x40', 'EXF14x28']
+    vacuum_type:
+      name: Vacuümsysteem
+      description: "Type vacuümsysteem"
+      default: liquid-ring 
+      options: ['liquid-ring', 'screw']
+    nitrogen_source:
+      name: Stikstofbron
+      description: "Type stikstofbron"
+      default: cryogenic
+      options: ['cryogenic', 'PSA']
+    nitrogen_purity:
+      name: Stikstofzuiverheidsklasse
+      description: "Zuiverheid van de stikstof"
+      default: 4
+      uom: '-'
+      range: [1, 5]
+  operational:
+    vacuum_stage_1:
+      name: Onderdruk Stage 1
+      description: "Vacuüm in stage 1"
+      default: 0.10
+      uom: bara
+      range: [0.01, 1.0]
+    vacuum_stage_2:
+      name: Onderdruk Stage 2
+      description: "Vacuüm in stage 2"
+      default: 0.10
+      uom: bara
+      range: [0.01, 1.0]
+    n2_rq_stage_1:
+      name: RQ N2 stage 1
+      description: "N2 RQ stage 1"
+      default: 0.002
+      uom: Nm3/m3
+      range: [0.0, 1.0]
+    n2_rq_stage_2:
+      name: RQ N2 stage 2
+      description: "N2 RQ stage 2"
+      default: 0.03
+      uom: Nm3/m3
+      range: [0.0, 1.0]
+    co2_rq_stage_1:
+      name: RQ CO2 stage 1
+      description: "CO2 RQ stage 1"
+      default: 0.002
+      uom: Nm3/m3
+      range: [0.0, 1.0]
+    co2_rq_stage_2:
+      name: RQ CO2 stage 2
+      description: "CO2 RQ stage 2"
+      default: 0.03
+      uom: Nm3/m3
+      range: [0.0, 1.0]
+
+outputs:
+  design:
+    total_membranes:
+      name: Totaal aantal membranen
+      description: "Totaal aantal membranen in het ontwerp"
+      uom: '-'
+      equation: "num_stages * membranes_per_stage"
+
+  chemicals:
+    total_nitrogen_stage_1:
+      name: Totaal N2 stage 1
+      description: "Totaal N2 in stage 1 per unit"
+      uom: Nm3/h
+      equation: "n2_rq_stage_1 * capacity"
+  
