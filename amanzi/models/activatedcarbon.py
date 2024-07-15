@@ -3,7 +3,7 @@ from .submodels.balance import Balance
 import math
 import numpy as np
 from .tower.compounds import Chemical
-from .CADET.modelsetup import CADETMODEL
+#from .CADET.modelsetup import CADETMODEL
 
 
 

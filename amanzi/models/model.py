@@ -1,12 +1,13 @@
 from ..components import Connection
+from .parametric import ParametricModel
 import sys
 import pandas as pd
-from .. import categories
 
-CATEGORY_MODULES = sys.modules['amanzi.categories']
+class Model(ParametricModel):
+    parametric_model = [] # default to no parametric model
 
-class Model:
     def __init__(self, config, pp):
+        super().__init__(config)
         self.config = config
         self.uid = config['uid']
         self.type = config["type"]
@@ -14,25 +15,11 @@ class Model:
         self.process = self.type
         self.emitter = False
         self.connections = []
-        self.costfuncs = None
-        self.init_categories()
 
         self.solution = None
         self.inflows = {}
 
         self.pp = pp
-        # self.iteration = 0
-
-    def init_categories(self) -> None:
-        """Uses the configuration categorial settings
-        to initialize all categories via their respective instances"""
-
-        self.categories = {}
-        
-        # for cat, settings in self.config['categories'].items():
-        for cat, settings in self.config.setdefault('categories', {}).items():
-            cat_instance = getattr(CATEGORY_MODULES, cat.capitalize())
-            self.categories[cat] = cat_instance(self.process, settings)
     
     def is_ready(self, type):
         # a model is ready when all it's upstream connections have a solution assigned
@@ -57,18 +44,13 @@ class Model:
 
                 solution = self.run_model(type, total_inflow, solution)
             except:
-                # print("IN EXCEPTION")
-                # for c in self.upstream_connections.get(type, []):
-                #     print("c.flow")
-                #     print(c.name, c.flow)
-                # print(self.upstream_connections)
-                # print(mixture)
                 raise Exception('Model {} failed to run for type {}'.format(self.uid, type))
         
         self.solution = solution
 
         return solution
     
+    # placeholder for model quality run
     def run_model(self, type, total_inflow, solution):
         return solution
 
@@ -84,10 +66,6 @@ class Model:
         if self.config.get('configuration', {}).get('minorloss_method', 'percentage') == 'percentage':
             return 1-float(self.config.get('configuration', {}).get('minorloss', 0))
         return 1
-
-        
-        
-
 
     @property
     def emitter_solutions(self):
