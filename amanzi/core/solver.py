@@ -22,6 +22,3 @@ class Solver:
 
         # 2 - solve chemistry
         self.chemical_solver.solve(until)
-
-    
-

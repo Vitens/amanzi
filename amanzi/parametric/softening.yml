@@ -3,16 +3,13 @@ parameters:
     general:
       bypass_capacity:
         uom: m3/h
-        default: 20
-        range: [1, 1000]
+        default: 100
+        range: [0, 1000]
 
     reactor:
-      nils:
-        default: 'demo'
-        uom: 'Zmann'
       reactor_shape:
-        default: funneled
-        options: [cylindrical, funneled]
+        default: funnel
+        options: [cylindrical, funnel]
       height_cylindrical:
         default: 5.0
         uom: m
@@ -22,15 +19,18 @@ parameters:
         uom: m
         range: [0.1, 10.0]
       height_funnel:
-        if: "reactor_shape == 'funneled'"
+        if: 
+          reactor_shape: funnel
         default: 4.0
         uom: m
         range: [1.0, 10.0]
       diameter_funnel:
-        if: "reactor_shape == 'funneled'"
+        if:
+          reactor_shape: funnel
         default: 3.0
         uom: m
         range: [diameter_cylindrical, 10.0]
+        range: [0.1, 10.0]
   chemicals:
     seed:
       seed_material:
@@ -42,22 +42,27 @@ parameters:
         range: [0.1, 10.0]
     chemicals:
       base_chemical:
-        default: lye
-        options: [lye, lime]
+        default: NaOH
+        options: [NaOH, Ca(OH)2]
       acid_chemical:
         default: CO2
         options: [CO2, HCl]
       lime_type:
-        if: "base_chemical == 'lime'"
+        if: 
+          base_chemical: Ca(OH)2
         default: quicklime
         options: [quicklime, hydrated_lime, milk_of_lime]
       base_concentration:
-        if: "base_chemical == 'lye' or lime_type == 'milk_of_lime'"
+        if: 
+          or:
+            base_chemical: NaOH
+            lime_type: milk_of_lime
         default: 25
         uom: "%"
         range: [0, 100]
       acid_concentration:
-        if: "acid_chemical != 'CO2'"
+        if: 
+          acid_chemical: HCl
         default: 5
         uom: "%"
         range: [0, 100]
@@ -75,7 +80,7 @@ parameters:
         uom: mmol/L
         range: [0.0, 5.0]
     flows:
-      bypass_ratio:
+      bypass:
         default: 20
         uom: "%"
         range: [0, 100]
@@ -96,63 +101,34 @@ parameters:
     
 outputs:
   design:
-    total_reactor_height:
-      uom: m
-      equation: "height_cylindrical + height_funnel"
-    funnel_angle:
-      if: "reactor_shape == 'funneled'"
-      uom: degrees
-      equation: "math.atan((diameter_funnel-diameter_cylindrical) / height_funnel) * 180 / math.pi"
-    bottom_surface_area:
-      uom: m2
-      equation: "1/4 * math.pi * diameter_cylindrical**2"
-    top_surface_area:
-      if: "reactor_shape == 'funneled'"
-      uom: m2
-      equation: "1/4 * math.pi * diameter_funnel**2"
-    velocity_cylindrical:
-      uom: m/s
-      equation: "capacity / bottom_surface_area"
-    velocity_top:
-      if: "reactor_shape == 'funneled'"
-      uom: m/s
-      equation: "capacity / top_surface_area"
-
-  pellet_bed:
-    pellet_bed_volume:
-      uom: m3
-      equation: "bottom_surface_area * static_bed_height"
-    seed_material_density:
-      uom: kg/m3
-      equation: "{'quartz_sand': 2650, 'garnet_sand': 4100, 'calcite': 2710}[seed_material]"
-    calcite_density:
-      uom: kg/m3
-      equation: "2710"
-    pellet_volume:
-      uom: mm3
-      equation: "(math.pi * average_pellet_diameter**3) / 6"
-    seed_volume:
-      uom: mm3
-      equation: "(math.pi * average_seed_diameter**3) / 6"
-    pellet_mass:
-      uom: mg
-      equation: "((pellet_volume-seed_volume) * calcite_density + seed_volume * seed_material_density) / 1e3" 
-    pellet_density:
-      uom: kg/m3
-      equation: "pellet_mass / pellet_volume * 1e3"
-    expanded_porosity:
-      uom: "-"
-      equation: "porosity(average_pellet_diameter, pellet_density, velocity_cylindrical)"
-    bed_expansion:
-      uom: "-"
-      equation: "(1-static_bed_porosity) / (1-expanded_porosity)"
-    expanded_bed_height:
-      uom: m
-      equation: "static_bed_height * bed_expansion"
-    max_head_loss:
-      uom: m
-      equation: "(1-static_bed_porosity) * static_bed_height * (pellet_density - 998) / (998)"
-    specific_surface:
-      uom: m2/m3
-      equation: "1 / (average_pellet_diameter * expanded_porosity)"
-    
+    reactor_shape:
+      total_reactor_height:
+        uom: m
+        equation: "height_cylindrical + height_funnel"
+        parameters:
+          base_height:
+            uom: m
+            equation: "height_cylindrical"
+          funnel_height:
+            uom: m
+            if: "reactor_shape == 'funnel'"
+            equation: "height_funnel"
+      funnel_angle:
+        if: "reactor_shape == 'funnel'"
+        uom: degrees
+        equation: "math.atan((diameter_funnel-diameter_cylindrical) / height_funnel) * 180 / math.pi"
+      bottom_surface_area:
+        uom: m2
+        equation: "1/4 * math.pi * diameter_cylindrical**2"
+      top_surface_area:
+        if: "reactor_shape == 'funnel'"
+        uom: m2
+        equation: "1/4 * math.pi * diameter_funnel**2"
+    velocities:
+      velocity_cylindrical:
+        uom: m/s
+        equation: "capacity / bottom_surface_area"
+      velocity_top:
+        if: "reactor_shape == 'funnel'"
+        uom: m/s
+        equation: "capacity / top_surface_area"
