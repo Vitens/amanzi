@@ -57,7 +57,9 @@ class Groundwater(Model):
             'P': '{} as PO4'.format(c.get('phosphate', 0)),
         },
         # extraneous properties (i.e. untracked by PHREEQC)
-        {'PFAS':{}, 'VOC':{}, 'Other':{}}
+        {'Color': c.get('color', 0),
+         'TOC': c.get('total-organic-carbon', 0),
+            'PFAS':{}, 'VOC':{}, 'Other':{}}
            )
 
         #print(c.get('PFAS', {}).items())
