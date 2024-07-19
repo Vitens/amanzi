@@ -8,6 +8,7 @@ class Softening(Model, Balance):
 
     def __init__(self, config, pp) -> None:
         super().__init__(config, pp)
+        config = config.get('configuration', {})
         config = config.get('parameters', {})
 
         self.base_chemical = config.get('base_chemical', 'Ca(OH)2')
@@ -15,12 +16,18 @@ class Softening(Model, Balance):
         self.base_dosing = float(config.get('base_dosage', 0))
         self.acid_dosing = float(config.get('acid_dosage', 0))
 
-        self.acid_position = config.get('acid_position', 'effluent')
-        self.bypass = float(config.get('bypass', 0.2))
+        self.acid_position = config.get('acid_position', 'reactor-outlet')
 
-    
+        bypass_open = float(config.get('bypass', 20))
+        reactor_capacity = float(config.get('nominal_capacity', 100))
+        bypass_capacity = float(config.get('bypass_capacity', 100))
+
+        bypass_flow = bypass_open / 100 * bypass_capacity
+
+        self.total_flow = reactor_capacity + bypass_flow
+        self.bypass = bypass_flow / self.total_flow
+
     def soften(self, solution, base_chemical, base_dosing, acid_chemical, acid_dosing, bypass):
-
 
         reactor_in = solution.copy() # reactor influent
 
@@ -32,21 +39,21 @@ class Softening(Model, Balance):
         softened = dosed.copy().desaturate('Calcite', to_si=0.6)
 
         # if acid_position is product or bypass, then acidify
-        if self.acid_position == 'product':
+        if self.acid_position == 'reactor-outlet':
             neutralized = softened.copy().add(acid_chemical, acid_dosing, 'mmol')
         elif self.acid_position == 'bypass':
             neutralized = bypass_in.copy().add(acid_chemical, acid_dosing, 'mmol')
 
         bypass_solution = bypass_in if self.acid_position != 'bypass' else neutralized
-        softened_solution = softened if self.acid_position != 'product' else neutralized
+        softened_solution = softened if self.acid_position != 'reactor_outlet' else neutralized
 
         # effluent is mixture of softened and bypass
         mixed = softened_solution * (1-bypass) + bypass_solution * (bypass)
 
-        if self.acid_position == 'effluent':
+        if self.acid_position == 'after-bypass':
             neutralized = mixed.copy().add(acid_chemical, acid_dosing, 'mmol')
         
-        effluent = mixed if self.acid_position != 'effluent' else neutralized
+        effluent = mixed if self.acid_position != 'after-bypass' else neutralized
         
         return effluent, [dosed, softened, mixed, neutralized]
 
@@ -106,6 +113,11 @@ class Softening(Model, Balance):
         
         resp['charts'] = charts
         
+        resp['massbalance'] = {
+            'influent': { 'Na': 123, 'Ca': 100, 'Mg': 20},
+            'effluent': { 'Na': 120, 'Ca': 100, 'Mg': 20},
+        }
+
         return resp
 
 

@@ -112,6 +112,17 @@ class Model(ParametricModel):
 
         return anchors
 
+    def design(self):
+        # boilerplate
+        return {}
+
+    def run_design(self):
+        # run model for design
+        designData = self.design()
+        designData['parameters'] = self.calculate_outputs()
+        designData['tables'] = self.generate_tables()
+        return designData
+
 
     @property
     def mass(self):
