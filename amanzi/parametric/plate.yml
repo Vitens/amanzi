@@ -111,21 +111,21 @@ outputs:
     
   
   ## calculations are per unit at standard capacity
-  energy:
-    general:
-      supply_fan_power:
-        name: Supply Fan Power
-        description: Power of the supply fan
-        uom: kW
-        equation: "blower_power(supply_fan_flow, supply_fan_pressure)"
-      recirculation_fan_power:
-        name: Recirculation Fan Power
-        show: "recirculation"
-        description: Power of the recirculation fan
-        uom: kW
-        equation: "blower_power(recirculation_fan_flow, recirculation_fan_pressure)"
-      exhaust_fan_power:
-        name: Exhaust Fan Power
-        description: Power of the exhaust fan
-        uom: kW
-        equation: "blower_power(exhaust_fan_flow, exhaust_fan_pressure)"
+  # energy:
+  #   general:
+  #     supply_fan_power:
+  #       name: Supply Fan Power
+  #       description: Power of the supply fan
+  #       uom: kW
+  #       equation: "blower_power(supply_fan_flow, supply_fan_pressure)"
+  #     recirculation_fan_power:
+  #       name: Recirculation Fan Power
+  #       show: "recirculation"
+  #       description: Power of the recirculation fan
+  #       uom: kW
+  #       equation: "blower_power(recirculation_fan_flow, recirculation_fan_pressure)"
+  #     exhaust_fan_power:
+  #       name: Exhaust Fan Power
+  #       description: Power of the exhaust fan
+  #       uom: kW
+  #       equation: "blower_power(exhaust_fan_flow, exhaust_fan_pressure)"

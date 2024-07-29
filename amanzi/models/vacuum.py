@@ -4,7 +4,7 @@ import numpy as np
 from math import log
 
 class Vacuum(Model, Balance):
-    parametric_model = ['model', 'vacuumdegassing']
+    parametric_model = ['model', 'vacuum']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
         config = config.get('configuration', {})

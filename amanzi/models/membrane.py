@@ -13,13 +13,13 @@ class Membrane(Model, Splitter):
     parametric_model = ['model', 'membrane']
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        self.configuration = config.get('configuration', {}) 
+        #self.configuration = config.get('configuration', {}) 
         config = config.get('configuration', {})
         config = config.get('parameters', {})
         #print(config)
         self.split = config.get('recovery', 0.8)
         #self.split = self.configuration.get('recovery', 0.8)
-        self.capacity = 300#self.configuration.get('capacity', 300)
+        self.capacity = 100#self.configuration.get('capacity', 300)
 
         #self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
         self.membrane_config = MEMBRANE_DB["SUEZ AK-400H"]

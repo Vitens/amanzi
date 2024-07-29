@@ -20,6 +20,23 @@ parameters:
         uom: '-'
       optiflux:
         default: false
+      stage1_vessels:
+        default: 3
+        range: [1, 20]
+        uom: '-'
+      stage2_vessels:
+        if: 
+          number_of_stages > 1
+        default: 3
+        range: [1, 20]
+        uom: '-'
+      stage3_vessels:
+        if: 
+          number_of_stages > 2
+        default: 3
+        range: [1, 20]
+        uom: '-'
+
   operational:
     general:
       recovery:
