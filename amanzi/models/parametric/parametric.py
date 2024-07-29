@@ -106,6 +106,8 @@ class ParametricModel():
             }
         if not output.get('hidden', False):
           section['parameters'].append(output)
+          # apply namespace to section for i18n
+          section['namespace'] = output['namespace']
 
 
     sections.append(section)
