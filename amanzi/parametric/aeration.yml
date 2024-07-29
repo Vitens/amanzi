@@ -1,7 +1,32 @@
+parameters: 
+  design:
+    operational:
+      rq:
+        name: RQ
+        description: "RQ of the system"
+        default: 10
+        uom: Nm3/m3
+        range: [0.1, 100]
+      recirculation:
+        name: Recirculation
+        description: "Recirculation of the system"
+        default: 0.5
+        uom: m3/m3
+        range: [0.1, 1.0]
+      efficiency:
+        name: Efficiency
+        description: "Efficiency of the system"
+        default: 0.9
+        uom: "-"
+        range: [0.1, 1.0]
+      
+
+
 outputs:
-  demo:
-    test:
-      name: test
-      equation: "1 + 1"
-      uom: "-"
-      description: test
+  design:
+    general:
+      test:
+        name: test
+        equation: "1 + 1"
+        uom: "-"
+        description: test

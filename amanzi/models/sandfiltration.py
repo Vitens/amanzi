@@ -3,15 +3,19 @@ from .model import Model
 from .submodels.loss import Loss
 
 class Sandfiltration(Model, Loss):
+    parametric_model = ['model', 'filtration']
+
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        self.loss = config['configuration'].get('loss', 0.5)
-        self.configuration = config.get('configuration', {})
-        # self.loss = 0.5
+        #self.loss = config['configuration'].get('loss', 0.5)
+        config = config.get('configuration', {})
+        config = config.get('parameters', {})
+
+        self.loss = 0.5
         self.load = 0
         self.waste_solution = None
-        self.SupressIronRemoval = self.configuration.get('supressionIronRemoval', False)
-        self.SupressManganeseRemoval = self.configuration.get('supressionManganeseRemoval', False)
+        #self.SupressIronRemoval = self.configuration.get('supressionIronRemoval', False)
+        #self.SupressManganeseRemoval = self.configuration.get('supressionManganeseRemoval', False)
 
     def oxidize(self, solution, from_element, to_element, oxygen_consumption):
         solution = solution.copy()
@@ -33,13 +37,13 @@ class Sandfiltration(Model, Loss):
 
         # oxidize methane
         after_ch4 = self.oxidize(influent, "Mtg", "C-4", 2)
-        print( self.SupressIronRemoval)
-        # oxidize iron
-        if self.SupressIronRemoval:
-            after_fe = after_ch4
+        # print( self.SupressIronRemoval)
+        # # oxidize iron
+        # if self.SupressIronRemoval:
+        #     after_fe = after_ch4
             
-        else:
-            after_fe = self.oxidize(after_ch4, "[Fe+2]", "Fe+2", 0.25).desaturate("Fe(OH)3(a)", 0)
+        # else:
+        after_fe = self.oxidize(after_ch4, "[Fe+2]", "Fe+2", 0.25).desaturate("Fe(OH)3(a)", 0)
         
         # oxidize h2
         after_h2s = self.oxidize(after_fe, "[S-2]", "S-2", 2)

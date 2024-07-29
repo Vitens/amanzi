@@ -4,12 +4,14 @@ from math import log
 import numpy as np
 
 class Cascade(Model, Balance):
+    parametric_model = ['model', 'cascade']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
-        self.configuration = config.get('configuration', {})
+        config = config.get('configuration', {})
+        config = config.get('parameters', {})
 
-        self.steps = int(self.configuration.get('steps', 3))
-        self.step_height = float(self.configuration.get('stepheight', 0.5))
+        self.steps = int(config.get('number_of_steps', 3))
+        self.step_height = float(config.get('step_height', 0.5))
 
     
     @property

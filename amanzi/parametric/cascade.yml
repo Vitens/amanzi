@@ -1,0 +1,20 @@
+parameters:
+  design:
+    general:
+      number_of_steps:
+        default: 3
+        range: [1, 10]
+        uom: '-'
+      step_height:
+        default: 1.0
+        range: [0.1, 10.0]
+        uom: m
+
+outputs:
+  design:
+    general:
+      total_height:
+        name: Total Height
+        description: "Total height of the cascade"
+        uom: m
+        equation: "number_of_steps * step_height"

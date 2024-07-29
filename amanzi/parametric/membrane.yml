@@ -1,0 +1,97 @@
+parameters:
+  design:
+    general:
+      number_of_stages:
+        default: 3
+        range: [1, 3]
+        uom: '-'
+  stack_configuration:
+    general:  
+      membranetype:
+        default: spiral
+        options: [spiral, hollow_fiber]
+      number_of_stacks:
+        default: 3
+        range: [1, 10]
+        uom: '-'
+      modules_per_stage:
+        default: 3
+        range: [1, 10]
+        uom: '-'
+      optiflux:
+        default: false
+  operational:
+    general:
+      recovery:
+        default: 0.5
+        range: [0.1, 1.0]
+        uom: '-'
+
+outputs:
+  design:
+    general:
+      total_modules:
+        name: Total Modules
+        description: "Total number of modules in the stack"
+        equation: "number_of_stages * modules_per_stage"
+        uom: '-'
+      membrane_area:
+        name: Membrane Area
+        description: "Total membrane area in the stack"
+        equation: "total_modules * 10"
+        uom: m2
+      membrane_length:
+        name: Membrane Length
+        description: "Total membrane length in the stack"
+        equation: "total_modules * 10"
+        uom: m
+      membrane_volume:
+        name: Membrane Volume
+        description: "Total membrane volume in the stack"
+        equation: "total_modules * 10"
+        uom: m3
+      membrane_mass:
+        name: Membrane Mass
+        description: "Total membrane mass in the stack"
+        equation: "total_modules * 10"
+        uom: kg
+      membrane_cost:
+        name: Membrane Cost
+        description: "Total membrane cost in the stack"
+        equation: "total_modules * 10"
+        uom: USD
+      membrane_lifetime:
+        name: Membrane Lifetime
+        description: "Total membrane lifetime in the stack"
+        equation: "total_modules * 10"
+        uom: years
+      membrane_energy:
+        name: Membrane Energy
+        description: "Total membrane energy in the stack"
+        equation: "total_modules * 10"
+        uom: kWh
+      membrane_pressure:
+        name: Membrane Pressure
+        description: "Total membrane pressure in the stack"
+        equation: "total_modules * 10"
+        uom: atm
+      membrane_temperature:
+        name: Membrane Temperature
+        description: "Total membrane temperature in the stack"
+        equation: "total_modules * 10"
+        uom: K
+      membrane_flux:
+        name: Membrane Flux
+        description: "Total membrane flux in the stack"
+        equation: "total_modules * 10"
+        uom: m3/m2/day
+      membrane_rejection:
+        name: Membrane Rejection
+        description: "Total membrane rejection in the stack"
+        equation: "total_modules * 10"
+        uom: '%'
+      membrane_recovery:
+        name: Membrane Recovery
+        description: "Total membrane recovery in the stack"
+        equation: "total_modules * 10"
+        uom: '%'

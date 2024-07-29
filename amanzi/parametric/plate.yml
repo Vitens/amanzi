@@ -1,0 +1,131 @@
+name: Plaatbeluchting
+metadata:
+  version: 1.0.0
+  description: Plate Aeration
+
+## Input parameters:
+parameters:
+  design:
+    general:
+      type:
+        name: Aerator Type
+        description: Type of plate aeration (metal or foil)
+        options: ['Metal', 'Foil']
+        default: Metal
+      length:
+        name: Length
+        description: Length of the plate aeration
+        uom: m
+        default: 1.0
+        range: [0.1, 10.0]
+      width:
+        name: Width
+        description: Width of the plate aeration
+        uom: m
+        default: 1.0
+        range: [0.1, 10.0]
+      hole_diameter:
+        name: Hole Diameter
+        description: The size of the holes in the plate
+        uom: mm
+        default: 1.5
+        range: [0.5, 3.0]
+      recirculation:
+        name: Recirculation Factor
+        description: Percentage of air that is recirculated
+        default: 0.0
+        uom: '%'
+        range: [0.0, 1.0]
+  operational:
+    general:
+      RQ:
+        name: Air-Water Ratio
+        description: Ratio between air and water (RQ)
+        uom: '-'
+        default: 50
+        range: [0, 100]
+      endplate_height:
+        name: End Plate Height
+        description: Height of the end plate
+        uom: m
+        default: 0.3
+        range: [0.25, 0.4]
+      supply_fan_pressure:
+        name: Supply Fan Pressure
+        description: Pressure of the supply fan
+        uom: Pa
+        default: 1000
+        range: [500, 2000]
+      exhaust_fan_pressure:
+        name: Exhaust Fan Pressure
+        description: Pressure of the exhaust fan
+        uom: Pa
+        default: 100
+        range: [100, 2000]
+      recirculation_fan_pressure:
+        name: Recirculation Fan Pressure
+        description: Pressure of the recirculation fan
+        uom: Pa
+        default: 1000
+        range: [500, 2000]
+  
+    
+## Output parameters:
+outputs:
+  design:
+    general:
+      surface:
+        name: Surface Area
+        description: Surface area of the plate aeration
+        uom: m2
+        equation: "length * width"
+      surface_load:
+        name: Surface Load
+        description: The surface load of the plate aeration
+        uom: m3/m2
+        equation: "surface / capacity"
+        max: 
+          limit: 20
+          description: "Maximum surface load is 20 m3/m2"
+      air_flow:
+        name: Process Air Flow
+        description: Air flow through the plate aeration
+        uom: m3/h
+        equation: "capacity * RQ"  
+      supply_fan_flow:
+        name: Supply Fan Air Flow
+        description: Air flow through the fan
+        uom: m3/h
+        equation: "air_flow * (1 - recirculation) if recirculation > 0 else air_flow"
+      recirculation_fan_flow:
+        name: Recirculation Fan Air Flow
+        show: "recirculation"
+        description: Air flow through the recirculation fan
+        uom: m3/h
+        equation: "air_flow * recirculation"
+      exhaust_fan_flow:
+        name: Exhaust Fan Air Flow
+        description: Air flow through the exhaust fan
+        uom: m3/h
+        equation: "air_flow * 1.05"
+    
+  
+  ## calculations are per unit at standard capacity
+  energy:
+    general:
+      supply_fan_power:
+        name: Supply Fan Power
+        description: Power of the supply fan
+        uom: kW
+        equation: "blower_power(supply_fan_flow, supply_fan_pressure)"
+      recirculation_fan_power:
+        name: Recirculation Fan Power
+        show: "recirculation"
+        description: Power of the recirculation fan
+        uom: kW
+        equation: "blower_power(recirculation_fan_flow, recirculation_fan_pressure)"
+      exhaust_fan_power:
+        name: Exhaust Fan Power
+        description: Power of the exhaust fan
+        uom: kW
+        equation: "blower_power(exhaust_fan_flow, exhaust_fan_pressure)"
