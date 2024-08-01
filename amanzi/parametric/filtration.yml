@@ -1,108 +1,110 @@
 parameters:
   design:
-    length:
-      name: Lengte
-      description: "Lengte van de filter"
-      default: 10.0
-      uom: m
-      range: [1.0, 10.0]
-    width:
-      name: Breedte
-      description: "Breedte van de filter"
-      default: 2.5
-      uom: m
-      range: [0.5, 5.0]
-    dual_media:
-      name: Dubbel medium
-      description: "Filter met dubbel medium"
-      default: false
-      uom: '-'
-    height_sand:
-      name: Hoogte zand
-      description: "Hoogte van het zand"
-      default: 1.0
-      uom: m
-      range: [0.5, 2.0]
-    height_anthracite:
-      name: Hoogte antraciet
-      description: "Hoogte van het antraciet"
-      default: 0.5
-      if: "dual_media"
-      uom: m
-      range: [0.1, 1.0]
-    basement_volume:
-      name: Inhoud filtraatkelder
-      description: "Inhoud van de filtraatkelder"
-      default: 5.0
-      if: "height_sand > 0.7"
-      uom: m3
-      range: [1.0, 10.0]
+    general:
+      length:
+        name: Length
+        description: "Length of the filter"
+        default: 10.0
+        uom: m
+        range: [1.0, 10.0]
+      width:
+        name: Width
+        description: "Width of the filter"
+        default: 2.5
+        uom: m
+        range: [0.5, 5.0]
+      dual_media:
+        name: Dual media
+        description: "Filter with dual media"
+        default: false
+        uom: '-'
+      height_sand:
+        name: Sand height
+        description: "Height of the sand"
+        default: 1.0
+        uom: m
+        range: [0.5, 2.0]
+      height_anthracite:
+        name: Anthracite height
+        description: "Height of the anthracite"
+        default: 0.5
+        if: "dual_media"
+        uom: m
+        range: [0.1, 1.0]
+      basement_volume:
+        name: Filtrate basement volume
+        description: "Volume of the filtrate basement"
+        default: 5.0
+        if: "height_sand > 0.7"
+        uom: m3
+        range: [1.0, 10.0]
   operational:
-    runtime:
-      name: Looptijd
-      description: "Looptijd van het filter"
-      default: 24.0
-      uom: h
-      range: [1.0, 72.0]
-    flush_velocity:
-      name: Spoelsnelheid
-      description: "Snelheid van het spoelwater"
-      default: 40.0
-      uom: m/h
-      range: [1.0, 100.0]
-    flush_time:
-      name: Spoeltijd
-      description: "Tijd van het spoelen"
-      default: 10.0
-      uom: min
-      range: [1.0, 60.0]
+    general:
+      runtime:
+        name: Runtime
+        description: "Runtime of the filter"
+        default: 24.0
+        uom: h
+        range: [1.0, 72.0]
+      flush_velocity:
+        name: Flush velocity
+        description: "Velocity of the flush water"
+        default: 40.0
+        uom: m/h
+        range: [1.0, 100.0]
+      flush_time:
+        name: Flush time
+        description: "Time of the flush"
+        default: 10.0
+        uom: min
+        range: [1.0, 60.0]
 
 outputs:
   design:
-    surface_area:
-      name: Oppervlakte
-      description: "Oppervlakte van een filter"
-      uom: m2
-      equation: "length * width"
-    total_surface:
-      name: Totale oppervlakte
-      description: "Totale oppervlakte van de filters"
-      uom: m2
-      equation: "surface_area * units"
-    bed_height:
-      name: Bedhoogte
-      description: "Hoogte van het filterbed"
-      uom: m
-      equation: "height_sand + height_anthracite"
-    filtration_velocity:
-      name: Filtratie snelheid
-      description: "Snelheid van het water door het filterbed"
-      uom: m/h
-      equation: "capacity / surface_area"
-    EBCT:
-      name: EBCT
-      description: "Empty Bed Contact Time"
-      uom: min
-      equation: "bed_height / filtration_velocity * 60"
-  flush:
-    runtime_volume:
-      name: Loopvolume
-      description: "Loopvolume filter"
-      uom: m3
-      equation: "runtime * capacity"
-    flush_flow:
-      name: Spoelwater debiet
-      description: "Debiet van het spoelwater"
-      uom: m3/h
-      equation: "flush_velocity * surface_area"
-    flush_volume:
-      name: Spoelwater volume
-      description: "Volume van het spoelwater"
-      uom: m3
-      equation: "flush_flow * flush_time / 60"
-    water_loss:
-      name: Waterverlies
-      description: "Spoelverlies"
-      uom: "%" 
-      equation: "flush_volume / runtime_volume * 100"
-    
+    general:
+      surface_area:
+        name: Surface area
+        description: "Surface area of a filter"
+        uom: m2
+        equation: "length * width"
+      total_surface:
+        name: Total surface area
+        description: "Total surface area of the filters"
+        uom: m2
+        equation: "surface_area * units"
+      bed_height:
+        name: Bed height
+        description: "Height of the filter bed"
+        uom: m
+        equation: "height_sand + height_anthracite"
+      filtration_velocity:
+        name: Filtration velocity
+        description: "Velocity of water through the filter bed"
+        uom: m/h
+        equation: "capacity / surface_area"
+      EBCT:
+        name: EBCT
+        description: "Empty Bed Contact Time"
+        uom: min
+        equation: "bed_height / filtration_velocity * 60"
+    flush:
+      runtime_volume:
+        name: Runtime volume
+        description: "Volume of the filter runtime"
+        uom: m3
+        equation: "runtime * capacity"
+      flush_flow:
+        name: Flush water flow
+        description: "Flow rate of the flush water"
+        uom: m3/h
+        equation: "flush_velocity * surface_area"
+      flush_volume:
+        name: Flush water volume
+        description: "Volume of the flush water"
+        uom: m3
+        equation: "flush_flow * flush_time / 60"
+      water_loss:
+        name: Water loss
+        description: "Flush water loss"
+        uom: "%" 
+        equation: "flush_volume / runtime_volume * 100"

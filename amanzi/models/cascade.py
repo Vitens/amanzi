@@ -4,12 +4,14 @@ from math import log
 import numpy as np
 
 class Cascade(Model, Balance):
+    parametric_model = ['model', 'cascade']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
-        self.configuration = config.get('configuration', {})
+        config = config.get('configuration', {})
+        config = config.get('parameters', {})
 
-        self.steps = int(self.configuration.get('steps', 3))
-        self.step_height = float(self.configuration.get('stepheight', 0.5))
+        self.steps = int(config.get('number_of_steps', 3))
+        self.step_height = float(config.get('step_height', 0.5))
 
     
     @property
@@ -74,7 +76,7 @@ class Cascade(Model, Balance):
 
 
         # gas-transfer at constant height & different stepsizes
-        for steps in range(1,9): # 16 is the maximum number of steps
+        for steps in range(1,9): # 8 is the maximum number of steps
             inf = self.influent.copy()
             design_effluents = self.aerate(inf, steps)
             ph.append({'x': steps, 'y': design_effluents.pH})
@@ -88,7 +90,9 @@ class Cascade(Model, Balance):
 
             ## oxygen saturation efficiency
             o2_eff.append({'x': steps, 'y': ((design_effluents.total("Oxg", "mmol") / oxg_saturation)) * 100})
-
+        print('mass balance')
+        print(self.mass)
+        #print(self.masslues())
 
 
 

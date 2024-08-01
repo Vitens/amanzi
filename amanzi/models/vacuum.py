@@ -4,10 +4,12 @@ import numpy as np
 from math import log
 
 class Vacuum(Model, Balance):
+    parametric_model = ['model', 'vacuum']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
-        self.configuration = config.get('configuration', {})
-        self.pressure = float(self.configuration.get('vacuum', 0.2))
+        config = config.get('configuration', {})
+        config = config.get('parameters', {})
+        self.pressure = float(config.get('vacuum_pressure', 0.2))
 
     def degass(self, solution, pressure):
       # make gas phase

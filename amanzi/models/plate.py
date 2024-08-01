@@ -4,13 +4,15 @@ from math import log
 import numpy as np
 
 class Plate(Model, Balance):
+    parametric_model = ['model', 'plate']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
-        self.configuration = config.get('configuration', {})
+        config = config.get('configuration', {})
+        config = config.get('parameters', {})
 
-        self.rq = float(self.configuration.get('rq', 10))
-        self.recirculation = float(self.configuration.get('recirculation', 0)) / 100
-        self.efficiency = float(self.configuration.get('efficiency', 10)) / 100
+        self.rq = float(config.get('RQ', 10))
+        self.recirculation = float(config.get('recirculation', 0)) #/ 100
+        self.efficiency = 0.5#float(config.get('efficiency', 10)) #/ 100
 
         self.change_per_step = {}
     
@@ -30,14 +32,20 @@ class Plate(Model, Balance):
         iterations = 1 if recirculation == 0 else 3
 
         RQ *= self.efficiency
-
+        print(f"RQ is {RQ}")
         for _ in range(iterations):
             # copy influent
             inf = influent.copy()
+            print(inf.species)
             # process air
-            air = self.pp.add_gas(gas_comp, volume=RQ, pressure=1, fixed_pressure=True, fixed_volume=False)
+            print(f"RQ is {RQ}")
+            air = self.pp.add_gas(gas_comp,  pressure=1, volume=RQ, fixed_pressure=True, fixed_volume=False)
+            print(air.volume)
             # interact
             inf.interact(air)
+            print(inf.species)
+            print(air.volume)
+
 
             # amount of off gas
             off_gas = air.fractions

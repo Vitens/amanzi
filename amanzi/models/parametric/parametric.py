@@ -25,10 +25,16 @@ class ParametricModel():
     for category, params in model.get('parameters', {}).items():
       for section, values in params.items():
             for name, param in values.items():
-                self.input_parameters[name] = param
-                self.input_parameters[name]['section'] = section
-                self.input_parameters[name]['category'] = category
-                self.input_parameters[name]['namespace'] = filename
+                if name in self.input_parameters:
+                  # merge parameters
+                  self.input_parameters[name].update(param)
+
+                else:
+                  # create new parameter
+                  self.input_parameters[name] = param
+                  self.input_parameters[name]['section'] = section
+                  self.input_parameters[name]['category'] = category
+                  self.input_parameters[name]['namespace'] = filename
 
   def process_outputs(self, model, filename):
     for category, outputs in model.get('outputs', {}).items():
@@ -55,30 +61,42 @@ class ParametricModel():
         'math': math
      }
 
+  @property
+  def values(self):
+    return {
+      'product_flow': self.inflows.get('product', 0)
+    }
+
   def calculate_outputs(self):
 
     inputs = self.config['configuration'].get('parameters', {})
 
     outputs = self.output_parameters
 
+    # calculate results for minimal, nominal, and maximal capacity
     for capacity in ['minimal_capacity', 'nominal_capacity', 'maximal_capacity']:
       values = {}
       label = capacity[:3]
       inputs['capacity'] = inputs.get(capacity, 0)
 
       for output in outputs:
-        name = output['name']
-        if 'if' in output and not eval(output['if'], inputs | values):
-            output['hidden'] = True
-            continue
-        
-        try:
-            equation_result = eval(output["equation"], self.methods, inputs | values)
-            output[label] = equation_result
+        for o in output.get('inner',[]) + [output]:
+          name = o['name']
+          if 'if' in o and not eval(o['if'], inputs | values):
+              o['hidden'] = True
+              continue
+          
+          try:
+              equation_result = eval(o["equation"], self.methods, inputs | values | self.values)
+              o[label] = equation_result
 
-            values[name] = equation_result
-        except:
-          raise
+              values[name] = equation_result
+
+              if 'validation' in o and not eval(o['validation'], inputs | values):
+                o[label + '_invalid'] = True
+
+          except:
+            raise
     
 
     return outputs
@@ -91,33 +109,56 @@ class ParametricModel():
 
     # generate design
     # filter for design outputs
-    design = [o for o in outputs if o['category'] == 'design']
+    tables = []
 
-    sections = []
-    section = {}
+    for c,summation,precision in [['design', None, 0], ['energy', 'kWh/m3', 3]]:
 
-    for output in design:
-        if output['section'] != section.get('name',''):
-            if section:
-                sections.append(section)
-            section = {
-                'name': output['section'],
-                'parameters': []
-            }
-        if not output.get('hidden', False):
-          section['parameters'].append(output)
-          # apply namespace to section for i18n
-          section['namespace'] = output['namespace']
+      design = [o for o in outputs if o['category'] == c]
+
+      sections = []
+      section = {}
+
+      for output in design:
+          if output['section'] != section.get('name',''):
+              if section.get('name', ''):
+                  sections.append(section)
+              section = {
+                  'name': output['section'],
+                  'parameters': [],
+                  'precision': precision,
+              }
+              if summation:
+                # add summation fields
+                section.update({'nom': 0, 'min': 0, 'max': 0, 'uom': summation})
+
+          if not output.get('hidden', False):
+            section['parameters'].append(output)
+            # apply namespace to section for i18n
+            section['namespace'] = output['namespace']
+
+            if summation and output['uom'] == summation:
+              section['nom'] += output['nom']
+              section['min'] += output['min']
+              section['max'] += output['max']
+
+      sections.append(section)
 
 
-    sections.append(section)
+      table = {
+        'name': c,
+        'sections': sections
+      }
+      if summation:
+        table['totals'] = {
+          'nom': sum([s['nom'] for s in sections]),
+          'min': sum([s['min'] for s in sections]),
+          'max': sum([s['max'] for s in sections]),
+          'uom': summation
+        }
 
-    table = {
-       'name': 'design_calculations',
-       'sections': sections
-    }
+      tables.append(table)
 
-    return [table]
+    return tables
 
 
 

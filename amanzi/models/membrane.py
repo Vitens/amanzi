@@ -10,21 +10,26 @@ from ..assets.membranes import MEMBRANE_DB
 KP = 0.99 #Hydraunotics constant for permeate flux (p. 258 from https://www.researchgate.net/publication/351606477)
 
 class Membrane(Model, Splitter):
+    parametric_model = ['model', 'membrane']
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        self.configuration = config.get('configuration', {}) 
-        self.split = self.configuration.get('recovery', 0.8)
-        self.capacity = self.configuration.get('capacity', 300)
+        #self.configuration = config.get('configuration', {}) 
+        config = config.get('configuration', {})
+        config = config.get('parameters', {})
+        #print(config)
+        self.split = config.get('recovery', 0.8)
+        #self.split = self.configuration.get('recovery', 0.8)
+        self.capacity = 100#self.configuration.get('capacity', 300)
 
-        self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
-        self.membrane_config = MEMBRANE_DB[self.membrane]
+        #self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
+        self.membrane_config = MEMBRANE_DB["SUEZ AK-400H"]
         self.retention = self.membrane_config.get('retention', {'Na': 0.996, 'Cl': 0.996, 'Mg': 0.999, 'Ca': 0.999})
         self.membrane_surface = self.membrane_config.get('A_e', 40)
-        self.optiflux = self.configuration.get('optiflux', False)
+        self.optiflux = config.get('optiflux', False)
 
         # self.modules = self.configuration.get('modules', 6)
-        self.stacks = self.configuration.get('stacks', 3)
-        self.stages = self.configuration.get('stages', 3)
+        self.stacks = config.get('number_of_stacks', 3)
+        self.stages = config.get('number_of_stages', 3)
         # self.vessel_config = list(self.configuration['vessels'].values())
         
         self.stack = None
@@ -43,14 +48,17 @@ class Membrane(Model, Splitter):
 
     @property
     def vessel_config(self):
+        vessel={"1":12, "2":6, "3":3}
+        #fix pls
         if self.optiflux:
             return [x*2 for x in list(self.configuration['vessels'].values())]
         else:
-            return list(self.configuration['vessels'].values())
+            return list(vessel.values())
 
     @property
     def modules(self):
-        modules = self.configuration.get('modules', 6)/2 if self.optiflux else self.configuration.get('modules', 6)
+        modules = 6
+        # modules = self.configuration.get('modules', 6)/2 if self.optiflux else self.configuration.get('modules', 6)
         return int(modules)
 
 

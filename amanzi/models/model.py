@@ -63,9 +63,12 @@ class Model(ParametricModel):
 
         return solution
     
+
+    
     # placeholder for model quality run
     def run_model(self, type, total_inflow, solution):
         return solution
+    
 
     # calculate minor loss, either as percentage of inflow or as a fixed value
     @property
@@ -155,4 +158,7 @@ class Model(ParametricModel):
             if abs(mass_balance) < 0.00001:
                 balance[element] = 0
 
+ 
+            
+            
         return balance

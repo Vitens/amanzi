@@ -1,7 +1,0 @@
-outputs:
-  demo:
-    test:
-      name: test
-      equation: "1 + 1"
-      uom: "-"
-      description: test
