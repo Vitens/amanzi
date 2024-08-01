@@ -5,8 +5,16 @@ from .model import Model
 
 
 class Groundwater(Model):
+    parametric_model = ['groundwater']
+
     def __init__(self, config, pp):
         super().__init__(config, pp)
+
+        if not pp:
+            # if no phreeqpython instance is passed, we can't do anything
+            # this happens when the model is instantiated for input parameter generation
+            return
+
         configuration = config.get('configuration', {})
         self.constant = float(configuration.get("production", 10))
 

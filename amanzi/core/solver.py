@@ -22,3 +22,8 @@ class Solver:
 
         # 2 - solve chemistry
         self.chemical_solver.solve(until)
+
+        # # 3 - Run design calculations
+        # for m in self.models.values():
+        #     m.run_design()
+        
