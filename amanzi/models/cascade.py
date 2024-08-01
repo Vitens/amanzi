@@ -76,7 +76,7 @@ class Cascade(Model, Balance):
 
 
         # gas-transfer at constant height & different stepsizes
-        for steps in range(1,9): # 16 is the maximum number of steps
+        for steps in range(1,9): # 8 is the maximum number of steps
             inf = self.influent.copy()
             design_effluents = self.aerate(inf, steps)
             ph.append({'x': steps, 'y': design_effluents.pH})
