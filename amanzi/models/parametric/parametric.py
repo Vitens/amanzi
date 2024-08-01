@@ -66,10 +66,19 @@ class ParametricModel():
     return {
       'product_flow': self.inflows.get('product', 0)
     }
+  
+  def load_defaults(self):
+    defaults = {}
+    for name, param in self.input_parameters.items():
+      defaults[name] = param.get('default', 0)
+    return defaults
 
   def calculate_outputs(self):
 
     inputs = self.config['configuration'].get('parameters', {})
+    defaults = self.load_defaults()
+    defaults.update(inputs)
+    inputs = defaults
 
     outputs = self.output_parameters
 
@@ -96,6 +105,8 @@ class ParametricModel():
                 o[label + '_invalid'] = True
 
           except:
+            print(values)
+            print('Error in equation for output {}'.format(name))
             raise
     
 
@@ -150,9 +161,9 @@ class ParametricModel():
       }
       if summation:
         table['totals'] = {
-          'nom': sum([s['nom'] for s in sections]),
-          'min': sum([s['min'] for s in sections]),
-          'max': sum([s['max'] for s in sections]),
+          'nom': sum([s.get('nom',0) for s in sections]),
+          'min': sum([s.get('min',0) for s in sections]),
+          'max': sum([s.get('max',0) for s in sections]),
           'uom': summation
         }
 
