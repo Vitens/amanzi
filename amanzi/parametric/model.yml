@@ -15,23 +15,92 @@ parameters:
         range: [1, 10000]
       maximal_capacity:
         uom: m3/h
-        default: 200
+        default: 150
         range: [1, 10000]
     hydraulic_line:
       inlet_elevation:
         uom: m
-        default: 5
-        range: [0, 20]
-      outlet_elevation:
-        uom: m
-        default: 0
+        default: 15.0
         range: [0, 20]
       influent_pressure_loss:
-        uom: kPa
+        uom: m
         default: 0.0
         range: [0.0, 10.0]
-      effluent_atmospheric:
-        default: true
+      pressurized:
+        default: false
       
       
-      
+outputs:
+  design:
+    hydraulic_load:
+      installed_capacity:
+        uom: 'm3/h'
+        equation: "units * capacity"
+        precision: 0
+      average_day:
+        uom: 'm3/h'
+        equation: "product_flow * 1e6 / 24 / 365"
+        precision: 0
+      max_day:
+        uom: 'm3/h'
+        equation: "product_flow * 1e6 / 24 / 365 * 1.2"
+        precision: 0
+      average_day_load:
+        uom: "%"
+        equation: "average_day / (units*capacity)"
+        validation: "average_day_load < 1"
+        precision: 0
+        parameters:
+          max_missing_units_average_day:
+            uom: "-"
+            equation: "max(0,math.floor(((units * capacity) - average_day) / capacity))"
+            precision: 0
+            validation: "max_missing_units_average_day > 0"
+      max_day_load:
+        uom: "%"
+        equation: "max_day / (units*capacity)"
+        validation: "max_day_load < 1"
+        precision: 0
+        parameters:
+          max_missing_units_max_day:
+            uom: "-"
+            equation: "max(0,math.floor(((units * capacity) - max_day) / capacity))"
+            validation: "max_missing_units_max_day > 0"
+            precision: 0
+  energy:
+    hydraulic_energy:
+      hydraulic_energy_loss:
+        uom: "kWh/m3"
+        equation: "1/3600 * delta_head * 9.81 * 1/(pump_efficiency)"
+        precision: 3
+        parameters:
+          inlet_head:
+            uom: m
+            equation: "10"
+            precision: 1
+          outlet_head:
+            uom: m
+            equation: "5"
+            precision: 1
+          delta_head:
+            uom: m
+            equation: "inlet_head - outlet_head"
+            precision: 1
+          pump_efficiency:
+            uom: "%"
+            equation: "0.80"
+            precision: 0
+      booster_energy_consumption:
+        uom: "kWh/m3"
+        equation: "1/3600 * delta_booster * 9.81 * 1/(booster_efficiency)"
+        precision: 3
+        parameters:
+          delta_booster:
+            uom: m
+            equation: "80"
+            precision: 0
+          booster_efficiency:
+            uom: "%"
+            equation: "0.80"
+            precision: 0
+        
