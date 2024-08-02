@@ -39,24 +39,25 @@ parameters:
         uom: m3
         range: [1.0, 10.0]
   operational:
-    runtime:
-      name: Runtime
-      description: "Runtime of the filter"
-      default: 24.0
-      uom: h
-      range: [1.0, 72.0]
-    flush_velocity:
-      name: Flush velocity
-      description: "Velocity of the flush water"
-      default: 40.0
-      uom: m/h
-      range: [1.0, 100.0]
-    flush_time:
-      name: Flush time
-      description: "Time of the flush"
-      default: 10.0
-      uom: min
-      range: [1.0, 60.0]
+    general:
+      runtime:
+        name: Runtime
+        description: "Runtime of the filter"
+        default: 24.0
+        uom: h
+        range: [1.0, 72.0]
+      flush_velocity:
+        name: Flush velocity
+        description: "Velocity of the flush water"
+        default: 40.0
+        uom: m/h
+        range: [1.0, 100.0]
+      flush_time:
+        name: Flush time
+        description: "Time of the flush"
+        default: 10.0
+        uom: min
+        range: [1.0, 60.0]
 
 outputs:
   design:
