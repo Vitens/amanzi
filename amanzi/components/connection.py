@@ -13,23 +13,21 @@ class Connection:
 
         self.iteration = 0
 
+        # flow in the connection, set by quantity solver
         self.flow = 0
+        # solution in the connection, set by quality solver
         self.solution = False
-
 
     def assign_to_models(self):
         self.from_model.connections.append(self)
         self.to_model.connections.append(self)
 
-    def reset_solution(self):
-        self.solution = False
-
     def eq(self,factor):
         return [self, factor]        
     
-    def chem(self, key):
-        return self.solution.total(key)
-
+    """ connection id 
+    composed of from_model.uid, from_anchor, to_model.uid, to_anchor
+    """
     @property
     def cid(self):
         return "{} ({}) -> {} ({})".format(self.from_model.uid, self.from_anchor, self.to_model.uid, self.to_anchor)

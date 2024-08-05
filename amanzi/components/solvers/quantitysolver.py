@@ -1,10 +1,9 @@
-from dataclasses import dataclass
 import numpy as np
+from .solver import Solver
 
-@dataclass
-class MassSolver:
+class QuantitySolver(Solver):
     """
-    A class to solve all linear equations in a process.
+    A class to solve all linear equations in a scenario.
 
     ...
 
@@ -19,9 +18,7 @@ class MassSolver:
         Solve the linear matrix equation.
     """
 
-    scenario: dict
-
-    def solve(self) -> list: 
+    def solve(self, until=None) -> list: 
         """
         Solve the linear matrix equation.
 
@@ -72,4 +69,27 @@ class MassSolver:
         # solve matrix
         mass_flows = np.linalg.solve(matrix, results)
         
-        return mass_flows
+        # assign mass flows to connection
+        for conn, flow in zip(self.scenario.connections.values(), mass_flows):
+            conn.flow = flow
+            # setattr(conn, "flow", flow)
+            # update inflow and outflow of models
+            conn.from_model.quantity.outflow[conn.type] += flow
+            conn.to_model.quantity.inflow[conn.type] += flow
+        
+    
+    def summary(self):
+        """
+        generate a summary of the solver
+        """
+
+        production = sum([m.outflow.get('product', 0) for _,m in self.scenario.models.items() if m.upstream_connections == {}])
+
+        distribution = sum([m.inflow.get('product', 0) for _,m in self.scenario.models.items() if m.downstream_connections == {}])
+
+        return {
+            'total_production': production,
+            'total_distribution': distribution,
+            'loss': production - distribution,
+            'loss_percentage': (production - distribution) / production * 100
+        }

@@ -1,2 +1,3 @@
-from .chemicalsolver import ChemicalSolver
-from .masssolver import MassSolver
+from .solver import Solver
+from .qualitysolver import QualitySolver
+from .quantitysolver import QuantitySolver

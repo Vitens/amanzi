@@ -1,7 +1,5 @@
-from ..components import Connection
+from dotmap import DotMap
 from .parametric import ParametricModel
-import sys
-import pandas as pd
 
 class Model(ParametricModel):
     parametric_model = [] # default to no parametric model
@@ -16,57 +14,21 @@ class Model(ParametricModel):
         self.emitter = False
         self.connections = []
 
-        self.solution = None
-        self.inflows = {}
-
         self.pp = pp
         self.scenario = {}
-        # self.iteration = 0
 
-    def init_categories(self) -> None:
-        """Uses the configuration categorial settings
-        to initialize all categories via their respective instances"""
-
-        self.categories = {}
-        
-        # for cat, settings in self.config['categories'].items():
-        for cat, settings in self.config.setdefault('categories', {}).items():
-            cat_instance = getattr(CATEGORY_MODULES, cat.capitalize())
-            self.categories[cat] = cat_instance(self.process, settings)
-    
-    def is_ready(self, type):
-        # a model is ready when all it's upstream connections have a solution assigned
-        return all([c.solution is not False for c in self.upstream_connections.get(type, [])])
-    
-    def run(self, type):
-
-        if type in self.emitter_solutions:
-            solution = self.emitter_solutions[type]
-
-        else:
-            # run model for type
-            # get influent,
-            try:
-                total_inflow = sum([c.flow for c in self.upstream_connections.get(type,[]) if c.solution is not None])
-                self.inflows[type] = total_inflow
-                mixture = {c.solution : c.flow/total_inflow for c in self.upstream_connections.get(type,[]) if c.solution is not None}
-                solution = self.pp.mix_solutions(mixture)
-
-                if type == 'product':
-                    self.influent = solution.copy()
-
-                solution = self.run_model(type, total_inflow, solution)
-            except:
-                raise Exception('Model {} failed to run for type {}'.format(self.uid, type))
-        
-        self.solution = solution
-
-        return solution
-    
-
+        """ Solver namespace parameters """
+        self.quantity = DotMap({
+            'inflow': { 'product': 0, 'waste': 0, 'flush': 0 },
+            'outflow': { 'product': 0, 'waste': 0, 'flush': 0 }
+        })
+        self.quality = DotMap({
+            'influent': { 'product': None, 'waste': None, 'flush': None },
+            'effluent': { 'product': None, 'waste': None, 'flush': None }
+        })
     
     # placeholder for model quality run
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
         return solution
     
 
@@ -123,42 +85,3 @@ class Model(ParametricModel):
         designData['tables'] = self.generate_tables()
         return designData
 
-
-    @property
-    def mass(self):
-        """
-        Calculates the mass balance of the model.
-
-        Returns:
-            A dictionary where the keys are element symbols (e.g. 'C', 'H', 'O')
-            and the values are the total mass balance for each element in the model
-            in millimoles (mmol).
-        """
-        balance = {}
-
-        # Iterate over all connections in the model
-        for connection in self.connections:
-            if not connection.solution:
-                continue
-
-            # Iterate over all elements and their mass fractions in the solution
-            for element, mass_fraction in connection.solution.elements.items():
-                # Determine the direction of the flow for the current connection
-                flow_direction = 1 if connection.from_model == self else -1
-
-                # Extract the element name by ignoring the parenthesis part
-                # enables correct handling of redox states
-                element_name = element.split('(')[0]
-
-                # Update the balance for the current element
-                balance[element_name] = balance.get(element_name, 0) + flow_direction * mass_fraction * connection.flow * 1e3
-
-        # Round small values to zero
-        for element, mass_balance in balance.items():
-            if abs(mass_balance) < 0.00001:
-                balance[element] = 0
-
- 
-            
-            
-        return balance

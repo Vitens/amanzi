@@ -106,16 +106,41 @@ def balance_error(self):
     return 100*(cat-abs(an))/(cat+abs(an))
 
 @property
+def aggCO2(self):
+    return -1 * min(0, self.ccpp()) * 44.01
+
+@property
 def tds(self):
     k_e = 0.67 #The value of kₑ increases along with the increase of ions in water. It ranges from 0.5 to 0.8, but usually, 0.67 is used. (https://www.omnicalculator.com/chemistry/tds)
     return self.sc * k_e
 
-  
+
+# return dict with solution summary
+@property
+def summary(self):
+    parameters = [
+        {'name': 'pH', 'value': self.pH, 'uom': '-'},
+        {'name': 'sc20', 'value': self.sc20/10, 'uom': 'mS/m'},
+        {'name': 'o2', 'value': self.total('Oxg')*32 + self.total('O2')*32, 'uom': 'mg/l'},
+        {'name': 'hco3', 'value': self.total('HCO3', 'mg'), 'uom': 'mg/l'},
+        {'name': 'hardness', 'value': self.hardness, 'uom': 'mmol/l'},
+        {'name': 'ccpp90', 'value': self.ccpp90, 'uom': 'mmol/l'},
+        {'name': 'aggco2', 'value': self.aggCO2, 'uom': 'mg/l'},
+        {'name': 'Fe', 'value': self.total('Fe', 'mg'), 'uom': 'mg/l'},
+        {'name': 'Mn', 'value': self.total('Mn', 'mg'), 'uom': 'mg/l'},
+        {'name': 'NH4', 'value': self.total('[N-3]', 'mmol')*18, 'uom': 'mg/l'},
+        {'name': 'Na', 'value': self.total('Na', 'mg'), 'uom': 'mg/l'},
+        {'name': 'Cl', 'value': self.total('Cl', 'mg'), 'uom': 'mg/l'}
+    ]
+    return parameters
+
+
 
 # extend class
 Solution.si90 = si90
 Solution.ccpp = ccpp
 Solution.ccpp90 = ccpp90
+Solution.aggCO2 = aggCO2
 Solution.hardness = hardness
 Solution.sc20 = sc20
 Solution.osmotic_pressure = osmotic_pressure
@@ -125,3 +150,4 @@ Solution.calculate_total_charge = calculate_total_charge
 Solution.charge_balance = charge_balance
 Solution.balance_error = balance_error
 Solution.tds = tds
+Solution.summary = summary

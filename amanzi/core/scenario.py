@@ -1,11 +1,10 @@
 import phreeqpython
-from .solver import Solver
+from collections import OrderedDict
+from ..components.solvers import QuantitySolver, QualitySolver
 from .. import models
-from ..components import Connection
-from ..components import solvers
-from ..components import solution
-import sys
+from ..components import Connection, solution
 
+import sys
 
 MODULES = sys.modules['amanzi.models']
 
@@ -17,14 +16,16 @@ class Scenario:
         self.models = self.load_models()  
         self.connections = self.load_connections()
 
-        self.costfuncs = None
+        # list of solvers
+        self.solvers = OrderedDict({
+            'quantity': QuantitySolver(self),
+            'quality': QualitySolver(self)
+        })
 
-        self.solver = Solver(self)
-
-        # self.run_scenario()
-
-    def run_scenario(self):
-        self.solver.solve()
+    def run_scenario(self, until=None):
+        # run all solvers in order
+        for _,solver in self.solvers.items():
+            solver.solve(until)
 
     def load_models(self):
         models = {}
@@ -42,37 +43,3 @@ class Scenario:
             connection.assign_to_models()
             connections[id] = connection
         return connections
-
-    @property
-    def water_efficiency(self):
-        return round((((self.inflow - self.waste) / self.inflow)*100), 2)
-
-    @property
-    def inflow(self):
-        """Sum all incoming flows, if available."""
-        return sum([getattr(model, 'inflow', 0) for model in self.models.values()])
-
-    @property
-    def outflow(self):
-        """Sum all outgoing flows (including waste), if available."""
-        return sum([getattr(model, 'inflow', 0) for model in self.models.values()])
-
-    @property
-    def waste(self):
-        """Sum all waste flows, if available."""
-        return sum([getattr(model, 'waste', 0) for model in self.models.values()])
-
-    @property
-    def cost(self):
-        """Sum all costs, if available."""
-        return sum([getattr(model, 'cost', 0) for model in self.models.values()])
-
-    @property
-    def emission(self):
-        """Sum all emissions, if available."""
-        return sum([getattr(model, 'emission', 0) for model in self.models.values()])
-
-    @property    
-    def energy(self):
-        """Sum all energy consumptions, if available."""
-        return sum([getattr(model, 'energy', 0) for model in self.models.values()])

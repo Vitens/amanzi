@@ -1,8 +1,5 @@
-import pprint
 import numpy as np
 from .model import Model
-
-
 
 class Groundwater(Model):
     parametric_model = ['groundwater']
@@ -120,6 +117,9 @@ class Groundwater(Model):
     def flow(self):
         """override model-flow with constant"""
         return self.constant
+    
+    def run_quality(self, stream_type, total_inflow, solution):
+        return self.solution
 
 
     def design(self):

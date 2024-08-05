@@ -45,7 +45,7 @@ class Cascade(Model, Balance):
         solution.add('Oxg', delta, 'mmol') # As soon as ANYTHING is adjusted to the solution, a lot of O2 dissapears/oxidates? Needs review.
         return solution
     
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
         sol = self.oxygen_cheat(solution.copy()) #temporary?
         effluent = self.aerate(sol, self.steps)
         return effluent

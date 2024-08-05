@@ -1,11 +1,10 @@
 from .scenario import Scenario
 import json
 
-
 class Project:
-    def __init__(self, slm = "inputs/projectC.slm", debug=True):                
+    def __init__(self, slm = "", debug=True):                
+
         self.config = self.load_file(slm)
-        #self.assistant = Assistant(self)
         self.scenarios = self.load_scenarios()
          
     def load_scenarios(self):
