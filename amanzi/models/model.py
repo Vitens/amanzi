@@ -18,6 +18,7 @@ class Model(ParametricModel):
 
         self.solution = None
         self.inflows = {}
+        self.info = {}
 
         self.pp = pp
         self.scenario = {}

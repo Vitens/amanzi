@@ -32,6 +32,15 @@ parameters:
         default: 4
         uom: '-'
         range: [1, 5]
+    hydraulic_line:
+      integrated_booster:
+        if: "pressurized"
+        default: false
+      pump_elevation:
+        if: "integrated_booster"
+        uom: m
+        default: 1.0
+        range: [0, 10]
   operational:
     base:
       vacuum_stage_1:
@@ -70,6 +79,7 @@ parameters:
         default: 0.03
         uom: Nm3/m3
         range: [0.0, 1.0]
+
 
 outputs:
   design:

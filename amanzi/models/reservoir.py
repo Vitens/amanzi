@@ -1,6 +1,7 @@
 from .model import Model
 
 class Reservoir(Model):
+    parametric_model = ['model']
 
     def __init__(self, config, pp):
         super().__init__(config, pp)

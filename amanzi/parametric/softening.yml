@@ -93,11 +93,11 @@ parameters:
         default: 0.4
         uom: "-"
         range: [0.1, 0.9]
-
       average_pellet_diameter:
         default: 0.5
         uom: mm
         range: [0.1, 10.0]
+
     
 outputs:
   design:

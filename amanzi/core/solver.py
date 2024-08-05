@@ -1,5 +1,5 @@
 import numpy as np
-from ..components.solvers import MassSolver, ChemicalSolver
+from ..components.solvers import MassSolver, ChemicalSolver, HydraulicSolver
 
 class Solver:
     def __init__(self, scenario):
@@ -10,6 +10,7 @@ class Solver:
         # init solvers
         self.mass_solver = MassSolver(scenario)
         self.chemical_solver = ChemicalSolver(scenario)
+        self.hydraulic_solver = HydraulicSolver(scenario)
 
     def solve(self, until=None):
 
@@ -26,4 +27,7 @@ class Solver:
         # # 3 - Run design calculations
         # for m in self.models.values():
         #     m.run_design()
+
+        # # 4 - Run hydraulic calculations
+        self.hydraulic_solver.solve()
         

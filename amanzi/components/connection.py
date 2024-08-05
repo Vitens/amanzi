@@ -15,6 +15,12 @@ class Connection:
 
         self.flow = 0
         self.solution = False
+        self.h_loss = 0
+        self.efficiency = 0
+        self.booster = False
+        self.booster_head = 0
+
+
 
 
     def assign_to_models(self):

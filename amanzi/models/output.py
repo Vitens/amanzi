@@ -1,7 +1,7 @@
 from .model import Model
 
 class Output(Model):
-
+    parametric_model = ['model']
     @property
     def equations(self):
         return []
