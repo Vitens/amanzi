@@ -1,4 +1,5 @@
 import numpy as np
+import logging
 from .model import Model
 
 class Groundwater(Model):

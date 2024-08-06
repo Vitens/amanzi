@@ -36,6 +36,8 @@ class QualitySolver(Solver):
         """
         if not self._is_model_ready(model, stream_type):
             return
+
+        logging.debug(f'Running trace for model {model.uid} with stream type {stream_type}')
         
         total_inflow = model.quantity.inflow[stream_type]
         influent = self._calculate_influent(model, stream_type, total_inflow)

@@ -28,8 +28,7 @@ parameters:
         range: [0.0, 10.0]
       pressurized:
         default: false
-      
-      
+
 outputs:
   design:
     hydraulic_load:
@@ -39,11 +38,11 @@ outputs:
         precision: 0
       average_day:
         uom: 'm3/h'
-        equation: "product_flow * 1e6 / 24 / 365"
+        equation: "quantity.inflow.product * 1e6 / 24 / 365"
         precision: 0
       max_day:
         uom: 'm3/h'
-        equation: "product_flow * 1e6 / 24 / 365 * 1.2"
+        equation: "quantity.inflow.product * 1e6 / 24 / 365 * 1.2"
         precision: 0
       average_day_load:
         uom: "%"
