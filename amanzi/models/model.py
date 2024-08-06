@@ -6,16 +6,14 @@ class Model(ParametricModel):
 
     def __init__(self, config, pp):
         super().__init__(config)
-        self.config = config
         self.uid = config['uid']
         self.type = config["type"]
         self.name = self.type.capitalize()
-        self.process = self.type
         self.emitter = False
+
         self.connections = []
 
         self.pp = pp
-        self.scenario = {}
 
         """ Solver namespace parameters """
         self.quantity = DotMap({
@@ -81,7 +79,7 @@ class Model(ParametricModel):
     def run_design(self):
         # run model for design
         designData = self.design()
-        designData['parameters'] = self.calculate_outputs()
-        designData['tables'] = self.generate_tables()
+        designData['parameters'] = self.parameters
+        designData['tables'] = {'design': self.generate_tables()}
         return designData
 

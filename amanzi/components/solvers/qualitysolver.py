@@ -43,7 +43,7 @@ class QualitySolver(Solver):
         influent = self._calculate_influent(model, stream_type, total_inflow)
 
         solution = model.run_quality(stream_type, total_inflow, influent)
-        model.quality['effluent'][stream_type] = influent
+        model.quality['effluent'][stream_type] = solution
 
         if self.stop_at_model and model.uid == self.stop_at_model:
             logging.info(f'Interrupted at model {model.uid}')

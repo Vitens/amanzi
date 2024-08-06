@@ -80,10 +80,10 @@ parameters:
         uom: mmol/L
         range: [0.0, 5.0]
     flows:
-      bypass:
-        default: 20
+      bypass_open:
+        default: 0.2
         uom: "%"
-        range: [0, 100]
+        range: [0, 1]
     pellet_bed:
       static_bed_height:
         default: 1.0

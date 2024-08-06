@@ -8,21 +8,19 @@ class Softening(Model, Balance):
 
     def __init__(self, config, pp) -> None:
         super().__init__(config, pp)
-        config = config.get('configuration', {})
-        config = config.get('parameters', {})
 
-        self.base_chemical = config.get('base_chemical', 'Ca(OH)2')
-        self.acid_chemical = config.get('acid_chemical', 'CO2')
-        self.base_dosing = float(config.get('base_dosage', 0))
-        self.acid_dosing = float(config.get('acid_dosage', 0))
+        self.base_chemical = self.parameters['base_chemical']
+        self.acid_chemical = self.parameters['acid_chemical']
+        self.base_dosing = float(self.parameters['base_dosage'])
+        self.acid_dosing = float(self.parameters['acid_dosage'])
 
-        self.acid_position = config.get('acid_position', 'reactor-outlet')
+        self.acid_position = self.parameters['acid_position']
 
-        bypass_open = float(config.get('bypass', 20))
-        reactor_capacity = float(config.get('nominal_capacity', 100))
-        bypass_capacity = float(config.get('bypass_capacity', 100))
+        bypass_open = float(self.parameters['bypass_open'])
+        reactor_capacity = float(self.parameters['nominal_capacity'])
+        bypass_capacity = float(self.parameters['bypass_capacity'])
 
-        bypass_flow = bypass_open / 100 * bypass_capacity
+        bypass_flow = bypass_open * bypass_capacity
 
         self.total_flow = reactor_capacity + bypass_flow
         self.bypass = bypass_flow / self.total_flow
@@ -45,7 +43,7 @@ class Softening(Model, Balance):
             neutralized = bypass_in.copy().add(acid_chemical, acid_dosing, 'mmol')
 
         bypass_solution = bypass_in if self.acid_position != 'bypass' else neutralized
-        softened_solution = softened if self.acid_position != 'reactor_outlet' else neutralized
+        softened_solution = softened if self.acid_position != 'reactor-outlet' else neutralized
 
         # effluent is mixture of softened and bypass
         mixed = softened_solution * (1-bypass) + bypass_solution * (bypass)
@@ -63,9 +61,11 @@ class Softening(Model, Balance):
 
     def design(self):
 
-        effluent, steps = self.soften(self.influent, self.base_chemical, self.base_dosing, self.acid_chemical, self.acid_dosing, self.bypass)
+        influent = self.quality.influent.product
 
-        steps = [self.influent] + steps + [effluent]
+        effluent, steps = self.soften(influent, self.base_chemical, self.base_dosing, self.acid_chemical, self.acid_dosing, self.bypass)
+
+        steps = [influent] + steps + [effluent]
 
         values = {
             'pH': lambda s: s.pH,
@@ -99,7 +99,7 @@ class Softening(Model, Balance):
             chemcharts = {'dosed_pH': [], 'softened_pH': [], 'softened_hh': [], 'softened_hco3': [], 'softened_sc': []}
 
             for d in dosage:
-                effluent, [dosed, softened, mixed, neutralized] = self.soften(self.influent, chemical, d, self.acid_chemical, self.acid_dosing, self.bypass)
+                effluent, [dosed, softened, mixed, neutralized] = self.soften(influent, chemical, d, self.acid_chemical, self.acid_dosing, self.bypass)
 
                 chemcharts['dosed_pH'].append({'x': d, 'y': dosed.pH})
                 chemcharts['softened_pH'].append({'x': d, 'y': softened.pH})

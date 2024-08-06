@@ -48,6 +48,10 @@ outputs:
       total_width:
         uom: m
         equation: "number_of_steps * trough_width"
+      methane_removal:
+        uom: "g/m3"
+        precision: 2
+        equation: "(quality.influent.product.total('Mtg') - quality.effluent.product.total('Mtg'))*16.04"
   
   energy:
     blowers:

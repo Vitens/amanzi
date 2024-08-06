@@ -9,9 +9,6 @@ class Output(Model):
     @property
     def quality_table(self):
         ## return table of quality
-        print(self.solution.elements)
-        print(self.solution.extraneous)
-
         parameters = [
         {'name': 'pH', 'll': 6.5, 'lt': 7.7, 'ut': 8.3, 'ul': 9.5, 'value': lambda s: s.pH, 'units': '-'},
         {'name': 'EGV 20°C', 'ut': 80, 'ul': 130, 'value': lambda s: s.sc20/10, 'units': 'mS/m'},
@@ -30,7 +27,7 @@ class Output(Model):
     
         output = []
         for p in parameters:
-            p['value'] = p['value'](self.solution)
+            p['value'] = p['value'](self.quality.influent.product)
     
         return parameters
         
