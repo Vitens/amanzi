@@ -4,6 +4,7 @@ import numpy as np
 from amanzi.models.model import Model
 from amanzi.components.connection import Connection
 import phreeqpython as pp
+import logging
 
 
 class HydraulicSolver:
@@ -39,7 +40,6 @@ class HydraulicSolver:
 
       start_nodes = [conn for conn  in connections2.values() if not models[conn.from_uid].upstream_connections and conn.type == 'product']
       leaf_nodes = [conn for conn in connections2.values() if not models[conn.to_uid].downstream_connections and conn.type == 'product']
-      print(connections2)
 
       for i in models.values():
         for j in self.scenario.config['models']:
@@ -49,10 +49,7 @@ class HydraulicSolver:
     #models
       def walk_backwards(from_node):
           current_model = models[from_node.to_uid]
-          upstream_model= models[from_node.from_uid]
-          print(current_model)
-          print(upstream_model)
-          
+          upstream_model= models[from_node.from_uid]          
 
           if 'integral_pump' in upstream_model.info:
               upstream_model.info['inlet_elevation'] = upstream_model.info['pump_z']
@@ -68,8 +65,6 @@ class HydraulicSolver:
               upstream_model.info['outlet_elevation']= upstream_model.info['inlet_elevation'] - upstream_model.info.get('influent_pressure_loss', 0)
               required_head = current_model.info['inlet_elevation']
               if 'outlet_elevation' in upstream_model.info and required_head > upstream_model.info['outlet_elevation']:
-                  # assign booster to connection
-                  print('This is called')
                   from_node.booster = True
                   from_node.booster_head = required_head - upstream_model.info['outlet_elevation']
           upstream_connection = [c for c in connections2.values() if c.to_uid == from_node.from_uid]
@@ -114,11 +109,3 @@ class HydraulicSolver:
       for node in start_nodes:
         walk_forward(node, pump_efficiency)
 
-      for connection in connections2.values():
-          pprint.pprint(vars(connection))
-
-      #vars(connection))
-      print('---')
-
-      for m in models:
-        print(m.type, models[m].info)

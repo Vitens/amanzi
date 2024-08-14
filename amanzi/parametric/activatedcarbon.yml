@@ -1,0 +1,77 @@
+parameters:
+  design:
+    general:
+      diameter:
+        uom: m
+        default: 1.0
+        range: [0.1, 10]
+      bed_height:
+        uom: m
+        default: 2.0
+        range: [0.1, 10]
+      replacement_interval:
+        uom: days
+        default: 1000
+        range: [1, 10000]
+      filternumber:
+        uom: "-"
+        default: 1
+        range: [1, 20]
+
+    operational:
+      staggered_replacement:
+        default: true
+      replacement_loading:
+        uom: "%"
+        default: 0.5
+        range: [0.01, 1]
+      backwash_interval:
+        uom: days
+        default: 30
+        range: [1, 1000]
+      backwash_duration:
+        uom: hours
+        default: 2
+        range: [0.1, 24]
+      backwash_flowrate:
+        uom: m3/h
+        default: 10
+        range: [0.1, 1000]
+      
+
+
+
+outputs:
+  design:
+    activated_carbon:
+      volume:
+        uom: m3
+        equation: "math.pi * (diameter/2)**2 * bed_height"
+        precision: 2
+      replacement:
+        uom: days
+        equation: "replacement_interval"
+        precision: 0
+      total_volume:
+        uom: m3
+        equation: "volume * filternumber"
+        precision: 2
+      staggered_replacement:
+        default: "staggered_replacement"
+        precision: 0
+        parameters:
+          staggered_replacement_interval:
+            uom: days
+            equation: "replacement_interval / filternumber"
+            precision: 0
+            validation: "staggered_replacement_interval > 0"
+          staggered_replacement_volume:
+            uom: m3
+            equation: "volume * staggered_replacement_interval"
+            precision: 2
+            validation: "staggered_replacement_volume < volume"
+          staggered_replacement_total_volume:
+            uom: m3
+            equation: "total_volume * staggered_replacement_interval"
+            precision: 2
+            validation: "staggered_replacement_total_volume < total_volume"

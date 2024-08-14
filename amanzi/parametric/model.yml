@@ -24,7 +24,7 @@ parameters:
         range: [0, 20]
       influent_pressure_loss:
         uom: m
-        default: 0.0
+        default: 1.0
         range: [0.0, 10.0]
       pressurized:
         default: false

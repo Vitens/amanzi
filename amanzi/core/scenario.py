@@ -33,7 +33,7 @@ class Scenario:
             model_class = getattr(MODULES, modeltype, "Model")
             models[model["uid"]] = model_class(model, self.pp)
             models[model["uid"]].scenario = self.config # please make a more consistent way of accessing the whole file from a model!
-            print(model)
+
         return models
 
     def load_connections(self):

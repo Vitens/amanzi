@@ -1,4 +1,5 @@
 from .model import Model
+import logging
 
 class Output(Model):
     parametric_model = ['model']
@@ -9,8 +10,8 @@ class Output(Model):
     @property
     def quality_table(self):
         ## return table of quality
-        print(self.solution.elements)
-        print(self.solution.extraneous)
+        logging.info(self.solution.elements)
+        logging.info(self.solution.extraneous)
 
         parameters = [
         {'name': 'pH', 'll': 6.5, 'lt': 7.7, 'ut': 8.3, 'ul': 9.5, 'value': lambda s: s.pH, 'units': '-'},
