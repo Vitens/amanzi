@@ -19,6 +19,7 @@ from .PSDM import PSDM_functions
 
 
 class Activatedcarbon(Model, Balance):
+    parametric_models = ['model','activatedcarbon']
 
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
