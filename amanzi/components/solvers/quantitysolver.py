@@ -71,7 +71,7 @@ class QuantitySolver(Solver):
         
         # assign mass flows to connection
         for conn, flow in zip(self.scenario.connections.values(), mass_flows):
-            conn.flow = flow
+            conn.quantity.flow = flow
             # setattr(conn, "flow", flow)
             # update inflow and outflow of models
             conn.from_model.quantity.outflow[conn.type] += flow

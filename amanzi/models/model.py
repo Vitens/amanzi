@@ -1,5 +1,6 @@
 from dotmap import DotMap
 from .parametric import ParametricModel
+import logging
 
 class Model(ParametricModel):
     parametric_model = [] # default to no parametric model
@@ -8,12 +9,14 @@ class Model(ParametricModel):
         super().__init__(config)
         self.uid = config['uid']
         self.type = config["type"]
-        self.name = self.type.capitalize()
+        self.name = config.get("name", "")
         self.emitter = False
 
         self.connections = []
 
         self.pp = pp
+
+        self.index = None # index of the model in the scenario, set by quality solver during solve pass
 
         """ Solver namespace parameters """
         self.quantity = DotMap({
@@ -24,11 +27,23 @@ class Model(ParametricModel):
             'influent': { 'product': None, 'waste': None, 'flush': None },
             'effluent': { 'product': None, 'waste': None, 'flush': None }
         })
+        self.hydraulics = DotMap({
+            'head_in': 0, # head at the inlet
+            'head_out': 0, # head at the outlet
+            'booster_head': 0, # head supplied by the integrated booster pump
+            'efficiency': 0, # efficiency of the booster pump
+        })
+
+        self.energy = DotMap({
+            'model_specific_consumption': 0, # energy consumption per m3 produced by model (kWh/m3)
+            'specific_consumption': 0, # energy consumption per m3 produced by the treatment plant (kWh/m3)
+            'total_consumption': 0 # total energy consumption per year (kWh/year)
+        })
     
     # placeholder for model quality run
     def run_quality(self, type, total_inflow, solution):
+        logging.warning(f'Quality not implemented for {self.type}')
         return solution
-    
 
     # calculate minor loss, either as percentage of inflow or as a fixed value
     @property
@@ -80,6 +95,7 @@ class Model(ParametricModel):
         # run model for design
         designData = self.design()
         designData['parameters'] = self.parameters
-        designData['tables'] = {'design': self.generate_tables()}
+        designData['tables'] = self.generate_tables()
         return designData
+
 

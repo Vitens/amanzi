@@ -2,13 +2,17 @@ from .model import Model
 
 class Reservoir(Model):
 
+    parametric_model = ['reservoir']
+
     def __init__(self, config, pp):
         super().__init__(config, pp)
         self.reservoir_solution = None
 
-    def run_model(self, type, total_inflow, solution):
-        self.reservoir_solution = solution.copy()
-        return solution
+    def run_quality(self, type, total_inflow, solution):
+        if type == 'product':
+            self.reservoir_solution = solution.copy()
+
+        return self.reservoir_solution.copy()
 
     @property
     def equations(self):

@@ -23,14 +23,14 @@ parameters:
         default: 15.0
         range: [0, 20]
       influent_pressure_loss:
-        uom: m
+        uom: mH2O
         default: 0.0
         range: [0.0, 10.0]
       pressurized:
         default: false
 
 outputs:
-  design:
+  hydraulic:
     hydraulic_load:
       installed_capacity:
         uom: 'm3/h'
@@ -66,6 +66,55 @@ outputs:
             equation: "max(0,math.floor(((units * capacity) - max_day) / capacity))"
             validation: "max_missing_units_max_day > 0"
             precision: 0
+    hydraulic_line:
+      inlet_height:
+        uom: m
+        equation: "inlet_elevation"
+        precision: 1
+      outlet_height:
+        uom: m
+        equation: "inlet_elevation - headloss_model if not pressurized else inlet_elevation"
+        if: "outlet_height != inlet_elevation"
+        precision: 1
+      integrated_booster:
+        uom: "-"
+        if: "False"
+        equation: "0"
+        precision: 0
+      total_headloss:
+        uom: mH2O
+        equation: "headloss_influent + headloss_model"
+        precision: 1
+        parameters:
+          headloss_influent:
+            uom: mH2O
+            equation: "influent_pressure_loss"
+            precision: 1
+          headloss_model:
+            uom: mH2O
+            if: "headloss_model > 0"
+            equation: "0"
+            precision: 1
+      minimal_pump_head:
+        uom: mH2O
+        equation: "1"
+        precision: 1
+        if: "integrated_booster"
+      minimal_head:
+        uom: mH2O
+        equation: "inlet_height + influent_pressure_loss if inlet_height > outlet_height else outlet_height + total_headloss if not integrated_booster else inlet_height + minimal_pump_head"
+        precision: 1  
+      calculated_head_in:
+        uom: mH2O
+        equation: "hydraulics.head_in"
+      calculated_head_out:
+        uom: mH2O
+        equation: "hydraulics.head_out"
+      calculated_booster_head:
+        uom: mH2O
+        equation: "hydraulics.booster_head"
+        if: "integrated_booster"
+
   energy:
     hydraulic_energy:
       hydraulic_energy_loss:
@@ -73,33 +122,25 @@ outputs:
         equation: "1/3600 * delta_head * 9.81 * 1/(pump_efficiency)"
         precision: 3
         parameters:
-          inlet_head:
-            uom: m
-            equation: "10"
-            precision: 1
-          outlet_head:
-            uom: m
-            equation: "5"
-            precision: 1
           delta_head:
-            uom: m
-            equation: "inlet_head - outlet_head"
+            uom: mH2O
+            equation: "total_headloss - calculated_booster_head"
             precision: 1
           pump_efficiency:
             uom: "%"
-            equation: "0.80"
+            equation: "hydraulics.efficiency"
             precision: 0
       booster_energy_consumption:
         uom: "kWh/m3"
         equation: "1/3600 * delta_booster * 9.81 * 1/(booster_efficiency)"
         precision: 3
+        if: "integrated_booster"
         parameters:
           delta_booster:
-            uom: m
-            equation: "80"
+            uom: mH2O
+            equation: "calculated_booster_head - calculated_head_out"
             precision: 0
           booster_efficiency:
             uom: "%"
             equation: "0.80"
             precision: 0
-        

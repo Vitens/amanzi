@@ -1,89 +1,83 @@
 parameters:
   design:
-    general:
+    membrane_degassing:
       num_stages:
-        name: Number of Stages
-        description: "Number of degassing stages"
         default: 2
         range: [1, 2]
       membranes_per_stage:
-        name: Number of Membranes per Stage
-        description: "Number of membranes per degassing stage"
         default: 4
         range: [1, 10]
       membrane_type:
-        name: Membrane Type
-        description: "Type of degassing membrane"
         default: EXF14x40
         options: [EXF14x40, EXF14x28]
       vacuum_type:
-        name: Vacuum System
-        description: "Type of vacuum system"
         default: liquid-ring 
         options: ['liquid-ring', 'screw']
       nitrogen_source:
-        name: Nitrogen Source
-        description: "Type of nitrogen source"
         default: cryogenic
         options: ['cryogenic', 'PSA']
       nitrogen_purity:
-        name: Nitrogen Purity Class
-        description: "Purity class of nitrogen"
         default: 4
         uom: '-'
         range: [1, 5]
+    hydraulic_line:
+      inlet_elevation:
+        default: 0
+      pressurized:
+        default: true
+        hidden: true
   operational:
     base:
       vacuum_stage_1:
-        name: Vacuum Stage 1
-        description: "Vacuum in stage 1"
         default: 0.10
         uom: bar
         range: [0.01, 1.0]
       vacuum_stage_2:
-        name: Vacuum Stage 2
-        description: "Vacuum in stage 2"
         default: 0.10
         uom: bar
         range: [0.01, 1.0]
       n2_rq_stage_1:
-        name: N2 RQ Stage 1
-        description: "N2 RQ in stage 1"
         default: 0.002
         uom: Nm3/m3
         range: [0.0, 1.0]
       n2_rq_stage_2:
-        name: N2 RQ Stage 2
-        description: "N2 RQ in stage 2"
         default: 0.03
         uom: Nm3/m3
         range: [0.0, 1.0]
       co2_rq_stage_1:
-        name: CO2 RQ Stage 1
-        description: "CO2 RQ in stage 1"
         default: 0.002
         uom: Nm3/m3
         range: [0.0, 1.0]
       co2_rq_stage_2:
-        name: CO2 RQ Stage 2
-        description: "CO2 RQ in stage 2"
         default: 0.03
         uom: Nm3/m3
         range: [0.0, 1.0]
 
 outputs:
+  hydraulic:
+    hydraulic_line:
+      headloss_model:
+        equation: "8"
+
+      integrated_booster:
+        uom: '-'
+        equation: "1"
   design:
     general:
       total_membranes:
-        name: Total Number of Membranes
-        description: "Total number of membranes in the design"
         uom: '-'
         equation: "num_stages * membranes_per_stage"
 
-  chemicals:
-    general:
-      total_nitrogen_stage_1:
-        name: Total N2 in Stage 1
-        description: "Total N2 in stage 1 per unit"
-        uom: Nm3/h
-        equation: "n2_rq_stage_1 * capacity"
+  energy:
+    vacuum_pumps:
+      stage_1:
+        uom: kWh/m3
+        equation: "0.01"
+      stage_2:
+        uom: kWh/m3
+        equation: "0.01"
+    production:
+      generator:
+        uom: kWh/m3
+        equation: "-0.01"
+    

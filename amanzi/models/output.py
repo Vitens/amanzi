@@ -1,6 +1,7 @@
 from .model import Model
 
 class Output(Model):
+    parametric_model = ['output']
 
     @property
     def equations(self):
@@ -22,7 +23,6 @@ class Output(Model):
         {'name': 'Na', 'ul': 100, 'value': lambda s: s.total('Na')*22.99, 'units': 'mg/l'},
         {'name': 'Cl', 'ut': 100, 'ul': 150, 'value': lambda s: s.total('Cl')*35.45, 'units': 'mg/l'},
         # {'name': 'Color', 'ut': 10, 'ul': 15, 'value': lambda s: s.extraneous['Color'], 'units': 'mg/l'},
-
         ]
     
         output = []

@@ -35,7 +35,7 @@ class ParametricModel():
       self.process_outputs(model, filename)
 
   def process_parameters(self, model, filename):
-    for name, section, category, param in self._flatten(model.get('parameters', {})):
+    for name, section, category, param, _ in self._flatten(model.get('parameters', {})):
       if name in self.input_parameters:
         # merge parameters
         self.input_parameters[name].update(param)
@@ -50,20 +50,26 @@ class ParametricModel():
       })
 
   def process_outputs(self, model, filename):
-    for name, section, category, param in self._flatten(model.get('outputs', {})):
-      self.output_parameters[name] = Output(name, section, category, filename, param)
-      if 'parameters' in param:
-        for iname, inneroutput in param['parameters'].items():
-          self.output_parameters[iname] = Output(iname, section, category, filename, inneroutput, True)
+    for name, section, category, param, parent in self._flatten(model.get('outputs', {})):
+      if name in self.output_parameters:
+        self.output_parameters[name].update(filename, param)
+      else:
+        if parent:
+          parent = self.output_parameters[parent]
+        self.output_parameters[name] = Output(name, section, category, filename, param, parent)
+    
     
   @staticmethod
   def _flatten(parameters):
-    return [
-      (name, section, category, param)
-      for category, sections in parameters.items()
-      for section, values in sections.items()
-      for name, param in values.items()
-    ]
+    flattened = []
+    for category, sections in parameters.items():
+      for section, values in sections.items():
+        for name, param in values.items():
+          flattened.append((name, section, category, param, None))
+          if 'parameters' in param:
+            for iname, innerparam in param['parameters'].items():
+              flattened.append((iname, section, category, innerparam, name))
+    return flattened
   
   @property
   # default methods
@@ -71,50 +77,84 @@ class ParametricModel():
     return {
       'test': lambda x: x**2,
     }
+  
+  def get_output(self, name, default=None):
+    if name in self.parameters:
+      return self.parameters[name]
+
+    if name not in self.output_parameters:
+      return default
+
+    output = self.output_parameters.get(name)
+    ctx = self.context
+    if 'nominal_capacity' in self.parameters:
+      ctx = ctx | {'capacity': self.parameters['nominal_capacity']}
+
+    return output.calculate(ctx)
+    
 
   
   @property
   # calculation context for parameters
   def context(self):
-    return self.parameters | self.methods | {'quantity': self.quantity, 'quality': self.quality} | self.output_parameters
-  
+    return self.parameters | self.methods | {'quantity': self.quantity, 'quality': self.quality, 'hydraulics': self.hydraulics} | self.output_parameters
 
   def generate_tables(self):
 
-    outputs = [o for o in self.output_parameters.values() if o.category == 'design']
+    tables = []
 
-    sections = []
-    section = ""
-    for o in outputs:
-      if o.section != section:
-        section = o.section
-        sections.append({'name': section, 'namespace': o.namespace})
-    
-    values = {o.name: {} for o in outputs}
-    invalid = {o.name: {} for o in outputs}
+    for c,summarize,precision in [['design',None,0], ['hydraulic',None,0], ['energy','kWh/m3',3]]:
+      outputs = [o for o in self.output_parameters.values() if o.category == c]
 
-    for capacity in ['minimal_capacity', 'nominal_capacity', 'maximal_capacity']:
-      # reset outputs
+      sections = []
+      section = ""
       for o in outputs:
-        o.reset()
-
-      label = capacity[:3]
-      capacity = self.parameters.get(capacity, 0)
+        if o.section != section:
+          section = o.section
+          sections.append({'name': section, 'namespace': o.namespace, 'precision': precision, 'uom': summarize})
       
-      # calculate outputs
-      for o in outputs:
-        values[o.name][label] = o.calculate(self.context | {'capacity': capacity})
-        invalid[o.name][label+'_invalid'] = int(not o.validate(self.context | {'capacity': capacity}))
+      values = {o.name: {} for o in outputs}
+      invalid = {o.name: {} for o in outputs}
 
-    return {
-      'outputs':
-        [{'name': o.name,
-        'uom': o.uom,
-        'indent': o.indent,
-        'namespace': o.namespace,
-        'section': o.section,
-        'precision': o.precision,
-        } | values[o.name] | invalid[o.name]
-        for o in outputs if not o.hidden(self.context)],
-      'sections': sections
-    }
+      for capacity in ['minimal_capacity', 'maximal_capacity', 'nominal_capacity']:
+        # reset outputs
+        for o in outputs:
+          o.reset()
+        
+
+
+        label = capacity[:3]
+        capacity = self.parameters.get(capacity, 0)
+        
+        # calculate outputs
+        for o in outputs:
+          values[o.name][label] = o.calculate(self.context | {'capacity': capacity})
+          invalid[o.name][label+'_invalid'] = int(not o.validate(self.context | {'capacity': capacity}))
+        
+          if summarize and o.uom == summarize and not o.hidden(self.context):
+            # find relevant section
+            section = next((s for s in sections if s['name'] == o.section), None)
+            section[label] = section.get(label, 0) + values[o.name][label]
+
+      totals = {'uom': summarize}
+      if summarize:
+        # calculate totals from sections
+        for s in sections:
+          for label in ['min', 'max', 'nom']:
+            totals[label] = totals.get(label, 0) + s.get(label, 0)
+
+      tables.append({
+        'name': c,
+        'outputs':
+          [{'name': o.name,
+          'uom': o.uom,
+          'indent': True if o.parent else False,
+          'namespace': o.namespace,
+          'section': o.section,
+          'precision': o.precision,
+          } | values[o.name] | invalid[o.name]
+          for o in outputs if not o.hidden(self.context)],
+        'sections': sections,
+        'totals': totals if summarize else None
+    })
+    return tables

@@ -10,7 +10,7 @@ class VariableVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 class Output:
-    def __init__(self, name, section, category, namespace, param, indent=False):
+    def __init__(self, name, section, category, namespace, param, parent=None):
         """
         Initialize the Output object with metadata, parameter information, and dependencies.
 
@@ -19,16 +19,18 @@ class Output:
         :param category: Category the parameter belongs to
         :param namespace: Namespace the parameter belongs to
         :param param: Dictionary containing parameter details including the equation
+        :param parent: Parent output
         """
         self.name = name
         self.section = section
         self.category = category
         self.namespace = namespace
         self.param = param
-        self.indent = indent
+        self.parent = parent
 
         # Cached value for the evaluated expression
-        self.value = None
+        self._value = None
+        self._hidden = None
 
         # Allowed built-ins and libraries for expression evaluation
         self.allowed_builtins = {
@@ -42,8 +44,14 @@ class Output:
             'math': math,
         }
 
+    def update(self, namespace, param):
+        """ 
+        Update the namespace and parameter details, happens when the parameter is overridden by a child model.
+        """
+        self.namespace = namespace
+        self.param.update(param)
+    
         # Parse the expression and extract dependencies
-
     def _parse_expression(self, expression):
         """
         Parse the equation using AST to extract variables and compile it for evaluation.
@@ -75,10 +83,10 @@ class Output:
         :return: Evaluated result
         :raises ValueError: If a dependency is missing in the context
         """
-        if self.value is not None:
-            return self.value
-        self.value = self._calculate_expression(self.param['equation'], context,evaluation_stack=evaluation_stack)
-        return self.value
+        if self._value is not None:
+            return self._value
+        self._value = self._calculate_expression(self.param['equation'], context,evaluation_stack=evaluation_stack)
+        return self._value
 
     def _calculate_expression(self, expression, context, evaluation_stack=None):
         """
@@ -140,9 +148,17 @@ class Output:
 
         :return: True if hidden, False otherwise
         """
+        if self._hidden is not None:
+            return self._hidden
+        
+        if self.parent and self.parent.hidden(context):
+            self._hidden = True
+            return True
+
         if 'if' in self.param:
-            return not self._calculate_expression(self.param['if'], context)
-        return False
+            self._hidden = not self._calculate_expression(self.param['if'], context)
+
+        return self._hidden
 
     @property
     def uom(self):
@@ -166,4 +182,5 @@ class Output:
         """
         Reset the cached value to allow re-evaluation if needed.
         """
-        self.value = None
+        self._value = None
+        self._hidden = None

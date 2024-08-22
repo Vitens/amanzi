@@ -3,6 +3,10 @@ parameters:
     general:
       units:
         default: 2 # overwrite default value
+    hydraulic_line:
+      pressurized:
+        default: false
+        hidden: true
     cascade:
       number_of_steps:
         default: 3
@@ -19,6 +23,9 @@ parameters:
 
 outputs:
   design:
+    hydraulic_line:
+      headloss_model:
+        equation: "number_of_steps * step_height"
     general:
       wier_load:
         uom: m3/m/h 

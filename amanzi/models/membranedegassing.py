@@ -6,21 +6,17 @@ class Membranedegassing(Model, Balance):
 
   def __init__(self, config, pp: dict = {}) -> None:
     super().__init__(config, pp)
-    self.configuration = config.get('configuration', {})
-    config = config.get('configuration', {})
-    config = config.get('parameters', {})
 
-    self.RQstage1 = [float(config.get('n2_rq_stage_1',0)), float(config.get('co2_rq_stage_1',0))]
-    self.RQstage2 = [float(config.get('n2_rq_stage_2',0)), float(config.get('co2_rq_stage_2',0))]
+    self.RQstage1 = [self.parameters['n2_rq_stage_1'], self.parameters['co2_rq_stage_1']]
+    self.RQstage2 = [self.parameters['n2_rq_stage_2'], self.parameters['co2_rq_stage_2']]
 
-    self.vacuum1 = float(config.get('vacuum_stage_1',0))
-    self.vacuum2 = float(config.get('vacuum_stage_2',0))
+    self.vacuum1 = self.parameters['vacuum_stage_1']
+    self.vacuum2 = self.parameters['vacuum_stage_2']
   
 
   def degass(self, solution, rq1=[0,0], vacuum1=0.1, rq2=[0,0], vacuum2=0.1):
 
     total1 = rq1[0] + rq1[1]
-
 
     gas1 = self.pp.add_gas({
       'Ntg(g)': (rq1[0]/total1 * vacuum1 if total1 > 0 else 0), 
@@ -28,7 +24,6 @@ class Membranedegassing(Model, Balance):
       'Mtg(g)': 0, 
       'H2O(g)': 0, 
     }, pressure = vacuum1, fixed_pressure = True, fixed_volume = False, volume = ((rq1[0] + rq1[1]) / vacuum1))
-    print(gas1.volume, gas1.dry_fractions['CO2(g)'], gas1.dry_fractions['Ntg(g)'])
 
     total2 = rq2[0] + rq2[1]
 
@@ -45,33 +40,18 @@ class Membranedegassing(Model, Balance):
 
     return effluent1, effluent2, gas1, gas2
 
-  def run_model(self, type, total_inflow, solution):
-
-    # rq1 = [float(self.configuration['stages'][0]['nitrogen_rq']), float(self.configuration['stages'][0]['carbon_dioxide_rq'])]
-    # rq2 = [float(self.configuration['stages'][1]['nitrogen_rq']), float(self.configuration['stages'][1]['carbon_dioxide_rq'])]
-
-    # vacuum1 = float(self.configuration['stages'][0]['vacuum'])
-    # vacuum2 = float(self.configuration['stages'][1]['vacuum'])
+  def run_quality(self, type, total_inflow, solution):
 
     effluent1, effluent2, gas1, gas2 = self.degass(solution,self.RQstage1, self.vacuum1, self.RQstage2, self.vacuum2)
 
-    if(self.configuration.get('num_stages', 1) == 1):
+    if(self.parameters['num_stages'] == 1):
       return effluent1
     return effluent2
 
 
   def design(self):
 
-    # rq1 = [float(self.configuration['stages'][0]['nitrogen_rq']), float(self.configuration['stages'][0]['carbon_dioxide_rq'])]
-    # rq2 = [float(self.configuration['stages'][1]['nitrogen_rq']), float(self.configuration['stages'][1]['carbon_dioxide_rq'])]
-
-    # vacuum1 = float(self.configuration['stages'][0]['vacuum'])
-    # vacuum2 = float(self.configuration['stages'][1]['vacuum'])
-    print(self.RQstage1, self.vacuum1, self.RQstage2, self.vacuum2)
-
-    effluent1, effluent2, gas1, gas2 = self.degass(self.influent ,self.RQstage1, self.vacuum1, self.RQstage2, self.vacuum2)
-
-    print(gas1.volume, gas1.dry_fractions['CO2(g)'], gas1.dry_fractions['Ntg(g)'])
+    effluent1, effluent2, gas1, gas2 = self.degass(self.quality.influent.product ,self.RQstage1, self.vacuum1, self.RQstage2, self.vacuum2)
 
     values = {
       'pH': lambda s: s.pH,
@@ -91,7 +71,7 @@ class Membranedegassing(Model, Balance):
 
 
     return {
-      'influent': {n: v(self.influent) for n,v in values.items()},
+      'influent': {n: v(self.quality.influent.product) for n,v in values.items()},
       'effluent1': {n: v(effluent1) for n,v in values.items()},
       'effluent2': {n: v(effluent2) for n,v in values.items()},
       'gas1': {n: v(gas1) for n,v in gas_values.items()},

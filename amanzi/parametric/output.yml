@@ -1,0 +1,31 @@
+parameters:
+  design:
+    hydraulic_line:
+      integrated_booster:
+        default: false
+      inlet_elevation:
+        default: 0.0
+        uom: m
+        range: [0, 100.0]
+      required_pressure:
+        default: 35.0
+        uom: m
+        range: [10, 100.0]
+
+outputs:
+  hydraulic:
+    hydraulic_line:
+      calculated_head_in:
+        equation: "hydraulics.head_in"
+        uom: m
+      calculated_head_out:
+        equation: "hydraulics.head_out"
+        uom: m
+      total_headloss:
+        equation: "required_pressure + inlet_elevation"
+      pump_head:
+        equation: "hydraulics.booster_head"
+        uom: m
+      minimal_head:
+        equation: "inlet_elevation + 1 if integrated_booster else 0"
+        uom: m

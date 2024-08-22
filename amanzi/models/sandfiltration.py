@@ -56,7 +56,7 @@ class Sandfiltration(Model, Loss):
         return effluent, [influent, after_ch4, after_fe, after_h2s, after_nh4, after_no2, after_mn]
 
 
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
 
         if(type == 'flush'):
             # add load to waste solution
@@ -84,7 +84,7 @@ class Sandfiltration(Model, Loss):
         }
 
 
-        effluent, steps = self.filtrate(self.influent)
+        effluent, steps = self.filtrate(self.quality.influent.product)
 
         results = {}
 
@@ -111,20 +111,3 @@ class Sandfiltration(Model, Loss):
 
 
         return {}
-    
-    @property
-    def emitter_solutions(self):
-        return {'waste': self.waste_solution}
-
-
-    @property
-    def cost(self):
-        return 250_000 # €
-
-    @property
-    def emission(self):
-        return 500_000 # CO2eq
-
-    @property    
-    def energy(self):
-        return 350_000 # kWh        

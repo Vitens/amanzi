@@ -1,0 +1,53 @@
+parameters:
+  design:
+    general:
+      reservoir_capacity:
+        uom: m3
+        default: 1000
+        range: [100, 10000]
+      reservoir_shape:
+        default: rectangular
+        options: [rectangular, cylindrical]
+      reservoir_height:
+        default: 5.0
+        uom: m
+        range: [1.0, 10.0]
+      inlet_weir_height:
+        default: 4.5
+        uom: m
+        range: [0.1, 10.0]
+      
+    hydraulic_line:
+      elevation:
+        uom: m
+        default: 1.0
+        range: [0, 80]
+      pressurized:
+        default: false
+        hidden: true
+      mean_water_level:
+        default: 3.0
+        uom: m
+        range: [1.0, 10.0]
+
+outputs:
+  hydraulic:
+    hydraulic_line:
+      minimal_head:
+        equation: "elevation + inlet_weir_height"
+        uom: m
+      total_headloss:
+        equation: "inlet_weir_height - mean_water_level"
+        uom: m
+      head_out:
+        equation: "hydraulics.head_out"
+        uom: m
+      head_out_check:
+        equation: "elevation + mean_water_level"
+        uom: m
+      head_in:
+        equation: "hydraulics.head_in"
+        uom: m
+      head_in_check:
+        equation: "elevation + inlet_weir_height"
+        uom: m

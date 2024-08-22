@@ -1,3 +1,5 @@
+from dotmap import DotMap
+
 class Connection:
     def __init__(self, id, config, models):
         self.id = id
@@ -14,9 +16,18 @@ class Connection:
         self.iteration = 0
 
         # flow in the connection, set by quantity solver
-        self.flow = 0
-        # solution in the connection, set by quality solver
-        self.solution = False
+        self.quantity = DotMap({
+            'flow': 0
+        })
+        self.quality = DotMap({
+            'solution': False
+        })
+        self.hydraulics = DotMap({
+            'booster': False,
+            'booster_head': 0,
+            'efficiency': 0,
+            'headloss': 0
+        })
 
     def assign_to_models(self):
         self.from_model.connections.append(self)

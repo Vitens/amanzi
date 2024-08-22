@@ -1,10 +1,30 @@
 parameters:
   design:
     general:
+      minimal_capacity:
+        uom: m3/h
+        default: 300
+        range: [0, 1000]
+      maximal_capacity:
+        uom: m3/h
+        default: 300
+        range: [0, 1000]
+      nominal_capacity:
+        uom: m3/h
+        default: 300
+        range: [0, 1000]
       bypass_capacity:
         uom: m3/h
         default: 100
         range: [0, 1000]
+    
+    hydraulic_line:
+      inlet_elevation:
+        uom: m
+        default: 1.0
+        range: [-10, 20]
+      pressurized:
+        default: false
 
     reactor:
       reactor_shape:
@@ -36,10 +56,6 @@ parameters:
       seed_material:
         default: quartz_sand
         options: [quartz_sand, garnet_sand, calcite]
-      average_seed_diameter:
-        default: 0.1
-        uom: mm
-        range: [0.1, 10.0]
     chemicals:
       base_chemical:
         default: NaOH
@@ -86,37 +102,51 @@ parameters:
         range: [0, 1]
     pellet_bed:
       static_bed_height:
-        default: 1.0
+        default: 3.0
         uom: m
         range: [0.1, 10.0]
       static_bed_porosity:
         default: 0.4
         uom: "-"
         range: [0.1, 0.9]
-
+      average_seed_diameter:
+        default: 0.1
+        uom: mm
+        range: [0.1, 2.0]
       average_pellet_diameter:
         default: 0.5
         uom: mm
-        range: [0.1, 10.0]
+        range: [0.1, 5.0]
     
 outputs:
+  hydraulic:
+    hydraulic_line:
+      outlet_height:
+        equation: "inlet_elevation + total_reactor_height"
+      total_headloss:
+        parameters:
+          headloss_model:
+            equation: "bed_headloss"
+      
+
   design:
     reactor_shape:
       total_reactor_height:
         uom: m
-        equation: "height_cylindrical + height_funnel"
+        equation: "height_cylindrical + height_funnel if reactor_shape == 'funnel' else height_cylindrical"
         parameters:
           base_height:
             uom: m
             equation: "height_cylindrical"
+            if: "reactor_shape == 'funnel'"
           funnel_height:
             uom: m
             if: "reactor_shape == 'funnel'"
             equation: "height_funnel"
       funnel_angle:
         if: "reactor_shape == 'funnel'"
-        uom: degrees
-        equation: "math.atan((diameter_funnel-diameter_cylindrical) / height_funnel) * 180 / math.pi"
+        uom: "°"
+        equation: "math.atan((diameter_funnel - diameter_cylindrical) / 2 / height_funnel) * 180 / math.pi"
       bottom_surface_area:
         uom: m2
         equation: "1/4 * math.pi * diameter_cylindrical**2"
@@ -126,9 +156,103 @@ outputs:
         equation: "1/4 * math.pi * diameter_funnel**2"
     velocities:
       velocity_cylindrical:
-        uom: m/s
+        uom: m/h
         equation: "capacity / bottom_surface_area"
+        validation: "velocity_cylindrical >= 70 and velocity_cylindrical <= 100"
       velocity_top:
         if: "reactor_shape == 'funnel'"
-        uom: m/s
+        uom: m/h
         equation: "capacity / top_surface_area"
+    pellet_bed:
+      pellet_bed_volume:
+        uom: m3
+        equation: "bottom_surface_area * static_bed_height"
+      seed_material_density:
+        uom: kg/m3
+        equation: "{'quartz_sand': 2650, 'garnet_sand': 3650, 'calcite': 2710}[seed_material]"
+        precision: 0
+        if: "False" # hide by default
+      calcite_density:
+        uom: kg/m3
+        equation: "2710"
+        precision: 0
+        if: "False" # hide by default
+      pellet_density:
+        uom: kg/m3
+        precision: 0
+        equation: "pellet_mass / pellet_volume * 1e3"
+        parameters:
+          pellet_volume:
+            uom: mm3
+            precision: 2
+            equation: "(math.pi * average_pellet_diameter**3) / 6"
+          seed_volume:
+            uom: mm3
+            precision: 2
+            equation: "(math.pi * average_seed_diameter**3) / 6"
+          calcite_volume:
+            uom: mm3
+            precision: 2
+            equation: "pellet_volume - seed_volume"
+          pellet_mass:
+            uom: mg
+            equation: "((pellet_volume - seed_volume) * calcite_density + seed_volume * seed_material_density) / 1e3"
+      expanded_bed_height:
+        uom: m
+        equation: "static_bed_height * bed_expansion"
+        parameters:
+          bed_expansion:
+            uom: "-"
+            equation: "max((1-static_bed_porosity) / (1-expanded_bed_porosity), 1)"
+          expanded_bed_porosity:
+            uom: "-"
+            equation: "max(static_bed_porosity, porosity(average_pellet_diameter / 1000, pellet_density, velocity_cylindrical/3600))"
+      bed_headloss:
+        uom: mH2O
+        equation: "130 * (velocity_cylindrical/3600)**1.2 / 9.81 * ((1-expanded_bed_porosity)**1.8)/(expanded_bed_porosity**3)*(1.3e-6)**0.8/(average_pellet_diameter/1000)**1.8 * expanded_bed_height"
+
+    pellet_production:
+      delta_hardness:
+        uom: mmol/l
+        precision: 2
+        equation: "quality.influent.product.hardness - quality.effluent.product.hardness"
+      calcite_production:
+        uom: g/m3
+        equation: "(delta_hardness * 2 if base_chemical == 'Ca(OH)2' else delta_hardness) * 100.0869"
+      n_pellets:
+        uom: '-'
+        equation: "calcite_production / (calcite_volume * 1e-6 * calcite_density)"
+        hidden: true # hide by default
+      pellet_production:
+        uom: g/m3
+        equation: "n_pellets * pellet_mass * 1e-3"
+        parameters:
+          pellet_production_per_hour:
+            uom: kg/h
+            equation: "pellet_production * average_day / 1000"
+          pellet_production_per_day:
+            uom: kg/d
+            equation: "pellet_production * average_day * 24 / 1000"
+          pellet_production_per_year:
+            uom: ton/y
+            equation: "pellet_production * average_day * 24 * 365 / 1e6"
+      seed_consumption:
+        uom: g/m3
+        equation: "n_pellets * seed_volume * seed_material_density * 1e-6"
+        parameters:
+          seed_consumption_per_hour:
+            uom: kg/h
+            equation: "seed_consumption * average_day / 1000"
+          seed_consumption_per_day:
+            uom: kg/d
+            equation: "seed_consumption * average_day * 24 / 1000"
+          seed_consumption_per_year:
+            uom: ton/y
+            equation: "seed_consumption * average_day * 24 * 365 / 1e6"
+
+      
+
+
+
+
+

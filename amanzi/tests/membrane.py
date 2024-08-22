@@ -1,9 +1,7 @@
-import cProfile
 from amanzi.core import Project
 
-demo = Project('/Users/Abel/Vitens/Projecten/amanzi/amanzi/tests/RO_demo.json')
+demo = Project('/Users/Abel/Downloads/rsf.json')
 
-def profile():
-    demo.scenarios[0].solver.solve()
+sc = demo.scenarios[0]  
 
-cProfile.run('profile()', 'membrane.prof')
+sc.run_scenario()

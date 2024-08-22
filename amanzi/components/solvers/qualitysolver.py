@@ -26,7 +26,7 @@ class QualitySolver(Solver):
         self.stop_at_model = None
         self.interrupted = False
     
-    def run_trace(self, model, stream_type: str) -> None:
+    def run_trace(self, model, stream_type: str, idx=0) -> None:
         """
         Runs the quality trace for a given model and stream type.
 
@@ -36,6 +36,9 @@ class QualitySolver(Solver):
         """
         if not self._is_model_ready(model, stream_type):
             return
+
+        # set model index
+        model.index = idx if not model.index else model.index
 
         logging.debug(f'Running trace for model {model.uid} with stream type {stream_type}')
         
@@ -50,7 +53,7 @@ class QualitySolver(Solver):
             self.interrupted = True
             return
         
-        self._propagate_solution(model, stream_type, solution)
+        self._propagate_solution(model, stream_type, solution, idx)
 
     def solve(self, until: Optional[str] = None) -> None:
         """
@@ -63,14 +66,16 @@ class QualitySolver(Solver):
         self.interrupted = False
 
         for connection in self.scenario.connections.values():
-            connection.solution = False
+            connection.quality.solution = False
             
         order = ['product', 'flush', 'waste']
+        idx_start = {'product': 0, 'flush': 100, 'waste': 200}
         
         for i in range(self.max_iterations):
             for stream_type in order:
+                idx = idx_start[stream_type]
                 for model in self.emitters.get(stream_type, []):
-                    self.run_trace(model, stream_type)
+                    self.run_trace(model, stream_type, idx)
                 if self.interrupted:
                     return
                     
@@ -135,13 +140,13 @@ class QualitySolver(Solver):
         balance = {}
 
         for connection in model.connections:
-            if not connection.solution:
+            if not connection.quality.solution:
                 continue
 
-            for element, mass_fraction in connection.solution.elements.items():
+            for element, mass_fraction in connection.quality.solution.elements.items():
                 flow_direction = 1 if connection.from_model == model else -1
                 element_name = element.split('(')[0]
-                balance[element_name] = balance.get(element_name, 0) + flow_direction * mass_fraction * connection.flow * 1e3
+                balance[element_name] = balance.get(element_name, 0) + flow_direction * mass_fraction * connection.quantity.flow * 1e3
 
         for element in balance.keys():
             if abs(balance[element]) < 0.00001:
@@ -160,7 +165,7 @@ class QualitySolver(Solver):
         Returns:
             bool: True if the model is ready, False otherwise.
         """
-        return all(connection.solution is not False for connection in model.upstream_connections.get(stream_type, []))
+        return all(connection.quality.solution is not False for connection in model.upstream_connections.get(stream_type, []))
 
     def _calculate_influent(self, model, stream_type: str, total_inflow: float) -> Optional[Dict]:
         """
@@ -175,13 +180,13 @@ class QualitySolver(Solver):
             Optional[Dict]: The calculated influent solution mixture or None if no influent.
         """
         if total_inflow > 0:
-            mixture = {connection.solution: connection.flow / total_inflow for connection in model.upstream_connections.get(stream_type, [])}
+            mixture = {connection.quality.solution: connection.quantity.flow / total_inflow for connection in model.upstream_connections.get(stream_type, [])}
             influent = model.pp.mix_solutions(mixture)
             model.quality['influent'][stream_type] = influent.copy()
             return influent
         return None
 
-    def _propagate_solution(self, model, stream_type: str, solution: Dict) -> None:
+    def _propagate_solution(self, model, stream_type: str, solution: Dict, idx: int) -> None:
         """
         Propagates the solution to downstream connections.
 
@@ -191,9 +196,9 @@ class QualitySolver(Solver):
             solution (Dict): The solution to propagate.
         """
         for connection in model.downstream_connections.get(stream_type, []):
-            connection.solution = solution
-            if connection.flow > 0:
-                self.run_trace(connection.to_model, stream_type)
+            connection.quality.solution = solution
+            if connection.quantity.flow > 0:
+                self.run_trace(connection.to_model, stream_type, idx+1)
 
     def _has_convergence_failed(self) -> bool:
         """

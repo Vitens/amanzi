@@ -1,6 +1,6 @@
 import phreeqpython
 from collections import OrderedDict
-from ..components.solvers import QuantitySolver, QualitySolver
+from ..components.solvers import QuantitySolver, QualitySolver, HydraulicSolver, EnergySolver
 from .. import models
 from ..components import Connection, solution
 
@@ -19,7 +19,9 @@ class Scenario:
         # list of solvers
         self.solvers = OrderedDict({
             'quantity': QuantitySolver(self),
-            'quality': QualitySolver(self)
+            'quality': QualitySolver(self),
+            'hydraulics': HydraulicSolver(self),
+            'energy': EnergySolver(self)
         })
 
     def run_scenario(self, until=None):

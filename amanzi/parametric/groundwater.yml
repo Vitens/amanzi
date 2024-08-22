@@ -41,7 +41,7 @@ parameters:
         default: 3.0
         range: [0.1, 10]
       minor_losses:
-        uom: m
+        uom: mH2O
         default: 1.0
         range: [0.0, 3.0]
     
@@ -53,13 +53,35 @@ parameters:
       pipe_length:
         uom: m
         default: 1000
-        range: [100, 5000]
+        range: [100, 50000]
       pipe_material:
         default: "PE"
         options: ["PE", "PVC", "Steel"]
 
 
 outputs:
+  hydraulic:
+    hydraulic_line:
+      total_headloss:
+        uom: mH2O
+        equation: "headloss_pipe + minor_losses"
+        parameters:
+          headloss_pipe_:
+            uom: mH2O
+            equation: "headloss_pipe"
+          minor_losses_:
+            uom: mH2O
+            equation: "minor_losses"
+      head_at_treatment:
+        uom: mH2O
+        equation: "hydraulics.head_out"
+      head_at_well:
+        uom: mH2O
+        equation: "hydraulics.head_in"
+      required_pump_head:
+        uom: mH2O
+        equation: "head_at_well - average_groundwater_level + average_drawdown"
+
   design:
     capacity:
       installed_capacity:
@@ -80,33 +102,52 @@ outputs:
         uom: "-"
         equation: "max(0,number_of_wells - wells_in_use)"
         precision: 0
-    headloss:
+    transport_pipe:
+      average_flow:
+        uom: m3/h
+        precision: 0
+        equation: "capacity"
+      average_velocity:
+        uom: m/s
+        precision: 2
+        equation: "capacity / 3600 / (3.14159 * (pipe_inner_diameter/1000)**2 / 4)"
+      kinematic_viscosity:
+        uom: mm2/s
+        precision: 2
+        equation: "1.308"
+      roughness:
+        uom: mm
+        precision: 5
+        equation: "{ 'PE': 0.003, 'PVC': 0.0015, 'Steel': 0.045 }[pipe_material]"
+      reynolds_number:
+        uom: "-"
+        precision: 0
+        equation: "average_velocity * (pipe_inner_diameter/1000) / (kinematic_viscosity*1e-6)"
+      darcy_coefficient:
+        equation: "64/reynolds_number if reynolds_number < 2000 else 0.25/math.log10(roughness/pipe_inner_diameter/3.7 + 5.74/reynolds_number**0.9)**2"
+        precision: 4
+        uom: "-"
       headloss_pipe:
         uom: m
-        equation: "5"
+        precision: 1
+        equation: "darcy_coefficient * pipe_length / (pipe_inner_diameter/1000) * average_velocity**2 / (2 * 9.81)"
+      headloss_per_meter:
+        uom: m/m
+        precision: 3
+        equation: "headloss_pipe / pipe_length"
+        validation: "headloss_per_meter < 0.005"
+
+  energy:
+    hydraulic_energy:
+      hydraulic_energy_loss:
+        uom: "kWh/m3"
+        equation: "1/3600 * delta_head * 9.81 * 1/(pump_efficiency)"
+        precision: 3
         parameters:
-          average_velocity:
-            uom: m/s
+          delta_head:
+            uom: mH2O
+            equation: "required_pump_head - head_at_treatment"
+          pump_efficiency:
+            equation: "0.55"
             precision: 2
-            equation: "capacity / 3600 / (3.14159 * (pipe_inner_diameter/1000)**2 / 4)"
-          kinematic_viscosity:
-            uom: mm2/s
-            precision: 2
-            equation: "1.308"
-          reynolds_number:
-            uom: "-"
-            precision: 0
-            equation: "average_velocity * (pipe_inner_diameter/1000) / (kinematic_viscosity*1e-6)"
-          turbulent_flow:
-            uom: "-"
-            precision: 0
-            equation: "1 if reynolds_number > 4000 else 0"
-
-
-
-
-
-
-
-
-
+        

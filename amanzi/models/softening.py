@@ -1,6 +1,7 @@
 from .model import Model
 from .submodels.balance import Balance
 import numpy as np
+from scipy.optimize import fmin
 
 class Softening(Model, Balance):
 
@@ -52,12 +53,35 @@ class Softening(Model, Balance):
             neutralized = mixed.copy().add(acid_chemical, acid_dosing, 'mmol')
         
         effluent = mixed if self.acid_position != 'after-bypass' else neutralized
-        
+
         return effluent, [dosed, softened, mixed, neutralized]
 
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
         s, _ = self.soften(solution, self.base_chemical, self.base_dosing, self.acid_chemical, self.acid_dosing, self.bypass)
         return s
+
+    @property
+    def methods(self):
+        return super().methods | {
+            'porosity': self.porosity
+        }
+    
+    @staticmethod
+    def porosity(pellet_diameter, pellet_density, velocity):
+        g = 9.81 # gravity constant m/s^2
+        v = velocity # m/s
+        u = 1.3e-6 # m^2/s
+        dp = pellet_diameter # m
+        rho_w = 1000 # water density kg/m^3
+        rho_p = pellet_density # pellet density kg/m^3
+
+        def fn(x):
+            return abs(130 * (v**1.2) / g * (u**0.8)/(dp**1.8) * (rho_w / (rho_p - rho_w)) - (x**3 / (1-x)**0.8))
+
+
+        resp = fmin(fn, 0.5, disp=False)
+
+        return resp[0]
 
     def design(self):
 
