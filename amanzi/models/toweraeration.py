@@ -20,13 +20,13 @@ class Toweraeration(Model, Balance):
 
         self.configuration = config.get('configuration', {})
 
-        self.rq = float(self.configuration.get('RQ', 50))
-        self.diameter = float(self.configuration.get('diameter', 2))
-        self.packing_type = self.configuration.get('packing_type', 'Raflux50')
-        self.packing_height = float(self.configuration.get('packing_height', 2.5))
-        self.capacity = float(self.configuration.get('nominal_capacity', 100))
+        self.rq = float(self.parameters['rq'])
+        self.diameter = float(self.parameters['diameter'])
+        self.packing_type = self.parameters['packingmaterial']
+        self.packing_height = float(self.parameters['bed_height'])
+        self.capacity = float(self.parameters['nominal_capacity'])
         self.compound = self.configuration.get('model_component', 'CO2')
-        self.temp_g = float(self.configuration.get('air_temp', 15))
+        self.temp_g = float(self.parameters['ambient_temperature'])
         
 
     
@@ -48,7 +48,8 @@ class Toweraeration(Model, Balance):
         return efficiency
 
     def calculate_efficiency(self,compound, RQ, packing_height,solution=0): 
-        T_liq= self.influent.temperature
+        influent = self.quality.influent.product
+        T_liq= influent.temperature
         T_gas= self.temp_g
         flow = self.capacity
         packing = self.packing_type
@@ -58,18 +59,18 @@ class Toweraeration(Model, Balance):
             c_gas=0
 
         if compound != 'CO2' and compound != 'Mtg' and compound != 'Oxg':
-            if self.influent.extraneous['VOC'][compound] >0 :
-                c_in=self.influent.extraneous['VOC'][compound]
+            if influent.extraneous['VOC'][compound] >0 :
+                c_in=influent.extraneous['VOC'][compound]
             else:
                 c_in =0.0000001
 
         else:
-            c_in = self.influent.total(compound, units='mmol')
+            c_in = influent.total(compound, units='mmol')
 
         if compound == 'Oxg':
-            solution = self.influent.copy()
-            oxg_in = self.influent.total("Oxg", "mmol")
-            o2_in = self.influent.total("O2", "mmol")
+            solution = influent.copy()
+            oxg_in = influent.total("Oxg", "mmol")
+            o2_in = influent.total("O2", "mmol")
 
             delta = o2_in - oxg_in        
             solution.add('Oxg', delta, 'mmol')
@@ -90,7 +91,7 @@ class Toweraeration(Model, Balance):
 
     def oxygen_transfer(self, solution):
         o2_in_gas = 9.4 # mol/m³
-        o2_in = self.influent.total("O2", "mmol")
+        o2_in = self.quality.influent.product.total("O2", "mmol")
         o2_efficiency = self.calculate_efficiency('Oxg', self.rq,self.packing_height)      
         c_O2_out =-(o2_efficiency*o2_in-o2_in)
         c_o2_change = abs(o2_in-c_O2_out)
@@ -101,25 +102,25 @@ class Toweraeration(Model, Balance):
         for i in self.scenario['metaData']['customMicroComponents']['VOC']:
             if i['name'] in solution.extraneous['VOC']:
                 if i['unit'] == 'ng/l':
-                    solution.extraneous['VOC'][i['name']] = self.influent.extraneous['VOC'][i['name']]/1000000
+                    solution.extraneous['VOC'][i['name']] = self.quality.influent.product.extraneous['VOC'][i['name']]/1000000
                 elif i['unit'] == 'μg/l':
-                    solution.extraneous['VOC'][i['name']] = self.influent.extraneous['VOC'][i['name']]/1000
+                    solution.extraneous['VOC'][i['name']] = self.quality.influent.product.extraneous['VOC'][i['name']]/1000
         return solution
 
 
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
         solution = self.unitcheck(solution.copy())
 
         ## gets called by solver
         co2_removal= self.calculate_efficiency('CO2',self.rq, self.packing_height)
         ch4_removal= self.calculate_efficiency('Mtg',self.rq, self.packing_height)
-        o2_change = self.oxygen_transfer(self.influent)
+        o2_change = self.oxygen_transfer(self.quality.influent.product)
         solution.remove_fraction('CO2', co2_removal)
         solution.remove_fraction('Mtg', ch4_removal)
-        for key in self.influent.extraneous['VOC']:
-            if self.influent.extraneous['VOC'][key] >0:
+        for key in self.quality.influent.product.extraneous['VOC']:
+            if self.quality.influent.product.extraneous['VOC'][key] >0:
                 removal = self.calculate_efficiency(key,self.rq,self.packing_height)
-                solution.extraneous['VOC'][key] = self.influent.extraneous['VOC'][key] * (1-removal)
+                solution.extraneous['VOC'][key] = self.quality.influent.product.extraneous['VOC'][key] * (1-removal)
         #print(o2_change)
         solution.add('O2',o2_change , 'mmol')
 
@@ -128,10 +129,10 @@ class Toweraeration(Model, Balance):
 
 
     def design(self):
-        print(self.influent.extraneous['VOC'])
-        self.configuration['influent'] = self.influent.extraneous['VOC']
+        influent= self.quality.influent.product
+
         ## gets called by design GUI
-        liquid = Water(self.influent.temperature)
+        liquid = Water(influent.temperature)
         rho_l = liquid.density()        # kg/m³
         p=1.023e5
         gas = Air(self.temp_g,p)
@@ -151,7 +152,7 @@ class Toweraeration(Model, Balance):
         werkpunt_quality =[{'x': self.rq, 'y': self.calculate_efficiency(self.compound,self.rq,self.packing_height)}]
         
         Liquid_capacity= np.linspace(0.01, 0.1, 30)#capacity liquid m/s
-        eng_stickl = run_engelstichlmair(self.influent.temperature,self.temp_g, self.packing_type)
+        eng_stickl = run_engelstichlmair(influent.temperature,self.temp_g, self.packing_type)
 
         Gas_capacity_flooding, _=eng_stickl.flooding_line(Liquid_capacity,1)
         Gas_capacity_loading, _=eng_stickl.flooding_line(Liquid_capacity,0.65)
@@ -159,18 +160,19 @@ class Toweraeration(Model, Balance):
         flooding = [{'x':Liquid_capacity[x] , 'y': Gas_capacity_flooding[x]} for x in range(len(Liquid_capacity))]
         operating = [{'x': Liquid_capacity[x] , 'y': Gas_capacity_loading[x]} for x in range(len(Liquid_capacity))]
         ## Efficiency loading and height charts
-        Rq = np.linspace(0.1,100,100)
+        Rq_space = np.linspace(0.1,100,100)
 
         heights = [1,2,3,4, self.packing_height]
         height_charts = {}
-        if self.compound != 'CO2' and self.compound != 'Mtg' and self.influent.extraneous['VOC'][self.compound] >0:            
-            VOC_c =[{'x': rq, 'y': (1-self.calculate_efficiency(self.compound,rq,self.packing_height))*self.influent.extraneous['VOC'][self.compound]} for rq in Rq]
+        if self.compound != 'CO2' and self.compound != 'Mtg' and influent.extraneous['VOC'][self.compound] >0:
+            print("Gets called")            
+            VOC_c =[{'x': rq, 'y': (1-self.calculate_efficiency(self.compound,rq,self.packing_height))*influent.extraneous['VOC'][self.compound]} for rq in Rq_space]
         else:
-            VOC_c = [{'x': 0, 'y': 0} for rq in Rq]
+            VOC_c = [{'x': 0, 'y': 0} for rq in Rq_space]
 
         for h in range(len(heights)):
             intermediary =[]
-            for k in Rq:
+            for k in Rq_space:
                 p=1
                 intermediary.append({'x': k, 'y':self.calculate_efficiency(self.compound,k,heights[h])})
             if h == len(heights)-1:
@@ -193,18 +195,18 @@ class Toweraeration(Model, Balance):
 
         return {
             'influent': {
-                'pH': self.influent.pH,
-                'O2': self.influent.total('O2', 'mg'),
-                'CO2': self.influent.total('CO2', 'mg'),
-                'CH4': self.influent.total('Mtg') * 16,
+                'pH': influent.pH,
+                'O2': influent.total('O2', 'mg'),
+                'CO2': influent.total('CO2', 'mg'),
+                'CH4': influent.total('Mtg') * 16,
                 
                 
             },
             'effluent': {
-                'pH': self.solution.pH,
-                'O2': self.solution.total('O2', 'mg'),
-                'CO2': self.solution.total('CO2', 'mg'),
-                'CH4': self.solution.total('Mtg') * 16 
+                'pH': self.quality.effluent.product.pH,
+                'O2': self.quality.effluent.product.total('O2', 'mg'),
+                'CO2': self.quality.effluent.product.total('CO2', 'mg'),
+                'CH4': self.quality.effluent.product.total('Mtg') * 16 
             },
             'model': {
                 'F': F,
@@ -221,7 +223,7 @@ class Toweraeration(Model, Balance):
                 'efficiency_workpoint': werkpunt_quality,
                 'column_is_flooding': column_is_flooding,
                 'VOC_concentration': VOC_c,
-                'VOC': self.influent.extraneous['VOC']
+                'VOC': influent.extraneous['VOC']
             }
         }
 

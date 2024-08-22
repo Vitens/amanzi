@@ -11,12 +11,13 @@ parameters:
         range: [0.1, 10]
       packingmaterial:
         default: "Raflux50"
-        range: ["Raflux25", "Raflux50", "Raflux90"]
-    operational:
-      rqd:
+        options: ["Raflux25", "Raflux50", "Raflux90"]
+  operational:
+    general:
+      rq:
         uom: "-"
-        default: 0.5
-        range: [0.01, 1]
+        default: 2
+        range: [0.01, 100]
       ambient_temperature:
         uom: "C"
         default: 20
