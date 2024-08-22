@@ -70,7 +70,7 @@ class Groundwater(Model):
             'PFAS':{}, 'VOC':{}, 'Other':{}}
            )
 
-        #print(c.get('PFAS', {}).items())
+        print(c.get('PFAS', {}).items())
         for key,value in c.get('PFAS', {}).items():
             if key != "" and key != '':
                 testsolution = self.pp.add_solution({},{
@@ -79,6 +79,7 @@ class Groundwater(Model):
                 self.solution = self.solution + testsolution
             if value == 0:
                 del self.solution.extraneous['PFAS'][key]
+        # implement a catch for error when a custom PFAS is added but not named. 
 
         for key,value in c.get('VOC', {}).items():
             if key != "":

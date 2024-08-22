@@ -19,44 +19,49 @@ from .PSDM import PSDM_functions
 
 
 class Activatedcarbon(Model, Balance):
-    parametric_models = ['model','activatedcarbon']
+    parametric_model = ['model', 'activatedcarbon']
 
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
+        self.configurations = config.get('configuration', {})
 
-        self.configuration = config.get('configuration', {})
-        self.packing_height = float(self.configuration.get('packing_height', 2.5))
-        self.dimension = float(self.configuration.get('diameter', 2))
-        self.packing_type = self.configuration.get('packing_type', 'NORA Supra 0.8')
-        self.volumeflow = float(self.configuration.get('volumeflow', 100))
+
+        config = config.get('configuration', {})
+        config = config.get('parameters', {})
+        
+        self.packing_height = float(config.get('bed_height', 2.5))
+        self.dimension = float(config.get('diameter', 2))
+        self.packing_type = config.get('packing_type', 'NORA Supra 0.8')
+        self.volumeflow = float(config.get('nominal_capacity', 100))
         self.packing_volume = self.packing_height * math.pi * (self.dimension/2)**2
-        self.capacity = float(self.configuration.get('capacity', 100))
-        self.compoundList = self.configuration.get('compound', {'x':0})
-        self.advanced = self.configuration.get('advanced', False)
-        self.renewal = int(self.configuration.get('interval', 1000))
-        self.filternumber = int(self.configuration.get('filternumber', 1))
+        self.capacity = float(config.get('nominal_capacity', 100))
+        self.compoundList = self.configurations.get('compound', {'x':0})
+        self.advanced = config.get('advanced', False)
+        self.renewal = int(config.get('replacement_interval', 1000))
+        self.filternumber = int(config.get('filternumber', 1))
         
         
 
-    def calculate_efficiency(self, compound, solution): 
-        #Freundlich Isotherm parameters
-        #Diffusion koefficient for film diffusion from water to GAC from compound file'
+    # def calculate_efficiency(self, compound, solution): 
+    #     #Freundlich Isotherm parameters
+    #     #Diffusion koefficient for film diffusion from water to GAC from compound file'
         
-        t_in_seconds = 134776000
-        resolution = 100
-        volume_flow_rate = self.volumeflow/3600 #m³/s
-        height = self.packing_height            #m
-        crosssection = math.pi * (self.dimension/2)**2  #m²
-        filmdiffusion =  Chemical(20,20).properties()['CO2']['Diff_water']*1000#m²/s should be m/s thats why *1000
-        freundlich_k = self.freundlich_k
-        freundlich_n = self.freundlich_n
+    #     t_in_seconds = 134776000
+    #     resolution = 100
+    #     volume_flow_rate = self.volumeflow/3600 #m³/s
+    #     height = self.packing_height            #m
+    #     crosssection = math.pi * (self.dimension/2)**2  #m²
+    #     filmdiffusion =  Chemical(20,20).properties()['CO2']['Diff_water']*1000#m²/s should be m/s thats why *1000
+    #     freundlich_k = self.freundlich_k
+    #     freundlich_n = self.freundlich_n
                 
-        cadet_model = CADETMODEL()
-        model=cadet_model.create_and_run_model(t_in_seconds, [solution.total('CO2', 'mol')*1000],  resolution, volume_flow_rate, height, crosssection, filmdiffusion,freundlich_k, freundlich_n)
+    #     cadet_model = CADETMODEL()
+    #     model=cadet_model.create_and_run_model(t_in_seconds, [solution.total('CO2', 'mol')*1000],  resolution, volume_flow_rate, height, crosssection, filmdiffusion,freundlich_k, freundlich_n)
 
-        efficiency= 1-(model.root.output.solution.unit_001.solution_outlet[3][0]/solution.total('CO2', 'mol'))
+    #     efficiency= 1-(model.root.output.solution.unit_001.solution_outlet[3][0]/solution.total('CO2', 'mol'))
 
-        return efficiency
+    #     return efficiency
+    
     def PSDMcalculation(self, solution):
         
 
