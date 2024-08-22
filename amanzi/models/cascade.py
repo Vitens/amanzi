@@ -2,6 +2,7 @@ from .model import Model
 from .submodels.balance import Balance
 from math import log
 import numpy as np
+import logging
 
 class Cascade(Model, Balance):
     parametric_model = ['model', 'cascade']
@@ -89,6 +90,8 @@ class Cascade(Model, Balance):
 
             ## oxygen saturation efficiency
             o2_eff.append({'x': steps, 'y': ((design_effluents.total("Oxg", "mmol") / oxg_saturation)) * 100})
+        
+        print(effluent.pH)
 
         return {
             'influent': {

@@ -4,11 +4,13 @@ from .model import Model
 from .submodels.balance import Balance
 
 class Dosing(Model, Balance):
+    parametric_model = ['model', 'dosing']
     def __init__(self, config, pp) -> None:
         super().__init__(config, pp)
         config = config.get('configuration', {})
-
-        self.values = {
+        config = config.get('parameters', {})
+        print(config)
+        self.dosing_values = {
           'pH': lambda s: s.pH,
           'O2': lambda s: 32*(s.total('O2', 'mmol') + s.total('Oxg', 'mmol')),
           'AgCO2': lambda s: -1 * min(0, s.ccpp()) * 44.01,
@@ -39,7 +41,7 @@ class Dosing(Model, Balance):
         x = min(5, max(0, x[0]))
 
         dosed = self.dose(solution, self.chemical, x)
-        val = self.values[self.parameter](dosed)
+        val = self.dosing_values[self.parameter](dosed)
         dosed.forget() # cleanup dosed function
         return abs(val - self.setpoint)
       
@@ -52,16 +54,16 @@ class Dosing(Model, Balance):
     def design(self):
 
       ## generate dosing charts
-      charts = {k: [] for k in self.values.keys()}
+      charts = {k: [] for k in self.dosing_values.keys()}
 
       for dosage in np.linspace(0,2,30):
         eff = self.dose(self.influent, self.chemical, dosage)
-        for k,v in self.values.items():
+        for k,v in self.dosing_values.items():
           charts[k].append({'x': dosage, 'y': v(eff)})
 
       return {
-        'influent': {n: v(self.influent) for n,v in self.values.items()},
-        'effluent': {n: v(self.solution) for n,v in self.values.items()},
+        'influent': {n: v(self.influent) for n,v in self.dosing_values.items()},
+        'effluent': {n: v(self.solution) for n,v in self.dosing_values.items()},
         'charts': charts,
         'calculated_dosage': self.calculated_dosage
       }

@@ -14,7 +14,7 @@ from .tower.compounds import Chemical
 
 
 class Toweraeration(Model, Balance):
-
+    parametric_model = ['model', 'toweraeration']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
 
