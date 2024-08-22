@@ -1,6 +1,7 @@
 from .model import Model
 
 class Reservoir(Model):
+    parametric_model = ['model']
 
     parametric_model = ['reservoir']
 

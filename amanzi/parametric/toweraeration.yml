@@ -1,0 +1,82 @@
+parameters:
+  design:
+    general:
+      diameter:
+        uom: m
+        default: 1.0
+        range: [0.1, 10]
+      bed_height:
+        uom: m
+        default: 2.0
+        range: [0.1, 10]
+      packingmaterial:
+        default: "Raflux50"
+        range: ["Raflux25", "Raflux50", "Raflux90"]
+    operational:
+      rqd:
+        uom: "-"
+        default: 0.5
+        range: [0.01, 1]
+      ambient_temperature:
+        uom: "C"
+        default: 20
+        range: [-30, 40]
+    
+outputs:
+  design:
+    toweraeration:
+      volume:
+        uom: m3
+        equation: "math.pi * (diameter/2)**2 * bed_height"
+        precision: 2
+
+
+      # packingmaterial:
+      #   equation: "packingmaterial"
+      #   precision: 2
+      #   validation: "packingmaterial in ['Raflux25', 'Raflux50', 'Raflux90']"
+      #   parameters:
+      #     packingmaterial_density:
+      #       uom: "kg/m3"
+      #       equation: "packingmaterial_density"
+      #       precision: 2
+      #     packingmaterial_surfacearea:
+      #       uom: "m2/m3"
+      #       equation: "packingmaterial_surfacearea"
+      #       precision: 2
+      #     packingmaterial_porosity:
+      #       uom: "-"
+      #       equation: "packingmaterial_porosity"
+      #       precision: 2
+      #     packingmaterial_specificsurfacearea:
+      #       uom: "m2/m3"
+      #       equation: "packingmaterial_surfacearea * packingmaterial_porosity"
+      #       precision: 2
+      #     packingmaterial_mass:
+      #       uom: "kg"
+      #       equation: "volume * packingmaterial_density"
+      #       precision: 2
+      #     packingmaterial_surface:
+      #       uom: "m2"
+      #       equation: "volume * packingmaterial_surfacearea"
+      #       precision: 2
+      #     packingmaterial_specificsurface:
+      #       uom: "m2"
+      #       equation: "volume * packingmaterial_specificsurfacearea"
+      #       precision: 2
+      #     packingmaterial_massloading:
+      #       uom: "kg/m3"
+      #       equation: "packingmaterial_mass / volume"
+      #       precision: 2
+      #     packingmaterial_surfaceloading:
+      #       uom: "m2/m3"
+      #       equation: "packingmaterial_surface / volume"
+      #       precision: 2
+      #     packingmaterial_specificsurfaceloading:
+      #       uom: "m2/m3"
+      #       equation: "packingmaterial_specificsurface / volume"
+      #       precision: 2
+      #     packingmaterial_massloading_rq:
+      #       uom: "kg
+
+    
