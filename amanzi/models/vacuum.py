@@ -22,13 +22,13 @@ class Vacuum(Model, Balance):
 
       return degassed, gas_phase
 
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
       degassed, _ = self.degass(solution, self.pressure)
       return degassed
 
 
     def design(self):
-      effluent, effluent_gas = self.degass(self.influent, self.pressure)
+      effluent, effluent_gas = self.degass(self.quality.influent.product, self.pressure)
 
       pressures = np.linspace(0.03, 1.0, 200)
 
@@ -51,7 +51,7 @@ class Vacuum(Model, Balance):
       wet_h2o = []
 
       for p in pressures:
-        eff, gas = self.degass(self.influent, p)
+        eff, gas = self.degass(self.quality.influent.product, p)
 
         si_data.append({'x': p, 'y': eff.si('Calcite')})
         ph_data.append({'x': p, 'y': eff.pH})
@@ -74,11 +74,11 @@ class Vacuum(Model, Balance):
 
       return {
          'influent': {
-            'pH': self.influent.pH,
-            'ch4': self.influent.total('Mtg') * 16.04e3,
-            'n2': self.influent.total('Ntg') * 28.0134,
-            'co2': self.influent.total('CO2','mg'),
-            'h2s': self.influent.total('H2S','mg'),
+            'pH': self.quality.influent.product.pH,
+            'ch4': self.quality.influent.product.total('Mtg') * 16.04e3,
+            'n2': self.quality.influent.product.total('Ntg') * 28.0134,
+            'co2': self.quality.influent.product.total('CO2','mg'),
+            'h2s': self.quality.influent.product.total('H2S','mg'),
          },
          'effluent': {
             'pH': effluent.pH,

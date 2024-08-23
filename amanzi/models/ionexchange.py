@@ -29,7 +29,7 @@ class Ionexchange(Model, Balance):
                 solution.extraneous['Other'][name]=solution.extraneous['Other'][name]*(1-float(removal_efficiency))    
         return solution
     
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
         effluent = self.simpleExtraneousRemoval(solution.copy())
 
 

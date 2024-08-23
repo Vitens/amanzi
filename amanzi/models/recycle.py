@@ -8,7 +8,7 @@ class Recycle(Model, Splitter):
         self.product_solution = None
     
 
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
         ## remove 95% of NaCl
         self.product_solution = solution.copy()
         return solution

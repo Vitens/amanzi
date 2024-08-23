@@ -63,13 +63,13 @@ class Plate(Model, Balance):
         return inf, air
 
 
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
         aerated, _ = self.aerate(solution, self.rq, self.recirculation)
         return aerated
     
     def design(self):
-        print('plate', self.influent.number)
-        effluent, effluent_gas = self.aerate(self.influent, self.rq, self.recirculation)
+        print('plate', self.quality.influent.product.number)
+        effluent, effluent_gas = self.aerate(self.quality.influent.product, self.rq, self.recirculation)
 
         ph_data = []
         si_data = []
@@ -82,7 +82,7 @@ class Plate(Model, Balance):
         RQs = np.linspace(1, 50, 100)
         # sweep RQ
         for rq in RQs:
-            eff, gas = self.aerate(self.influent, rq, self.recirculation)
+            eff, gas = self.aerate(self.quality.influent.product, rq, self.recirculation)
             ph_data.append({'x': rq, 'y': eff.pH})
             si_data.append({'x': rq, 'y': eff.si('Calcite')})
 
@@ -92,12 +92,12 @@ class Plate(Model, Balance):
 
         return {
             'influent': {
-                'pH': self.influent.pH,
-                'ch4': self.influent.total('Mtg') * 16040,
-                'n2': self.influent.total('Ntg') * 28.0134,
-                'co2': self.influent.total('CO2', 'mg'),
-                'h2s': self.influent.total('H2S', 'mg'),
-                'o2': self.influent.total('Oxg') * 32,
+                'pH': self.quality.influent.product.pH,
+                'ch4': self.quality.influent.product.total('Mtg') * 16040,
+                'n2': self.quality.influent.product.total('Ntg') * 28.0134,
+                'co2': self.quality.influent.product.total('CO2', 'mg'),
+                'h2s': self.quality.influent.product.total('H2S', 'mg'),
+                'o2': self.quality.influent.product.total('Oxg') * 32,
             },
             'effluent': {
                 'pH': effluent.pH,

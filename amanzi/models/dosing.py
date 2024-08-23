@@ -30,7 +30,7 @@ class Dosing(Model, Balance):
         dosed = solution.copy().add(chemical, dosing, 'mmol')
         return dosed
 
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
 
       if self.mode == 'constant':
         return self.dose(solution, self.chemical, self.dosing)
@@ -57,12 +57,12 @@ class Dosing(Model, Balance):
       charts = {k: [] for k in self.dosing_values.keys()}
 
       for dosage in np.linspace(0,2,30):
-        eff = self.dose(self.influent, self.chemical, dosage)
+        eff = self.dose(self.quality.influent.product, self.chemical, dosage)
         for k,v in self.dosing_values.items():
           charts[k].append({'x': dosage, 'y': v(eff)})
 
       return {
-        'influent': {n: v(self.influent) for n,v in self.dosing_values.items()},
+        'influent': {n: v(self.quality.influent.product) for n,v in self.dosing_values.items()},
         'effluent': {n: v(self.solution) for n,v in self.dosing_values.items()},
         'charts': charts,
         'calculated_dosage': self.calculated_dosage
