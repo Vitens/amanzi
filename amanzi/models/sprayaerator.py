@@ -11,13 +11,16 @@ from .tower.packing_properties import packing
 from .tower.compounds import Chemical
 
 class Sprayaerator(Model, Balance):
+    parametric_model = ['model', 'sprayaerator']
 
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
+        config = config.get('configuration', {})
+        config = config.get('parameters', {})
 
         self.configuration = config.get('configuration', {})
-        self.sauter = float(self.configuration.get('sauter_diameter', 0.00002))
-        self.fall_height = float(self.configuration.get('fall_height', 1))
+        self.sauter = float(config.get('sauter_diameter', 0.00002))
+        self.fall_height = float(config.get('fall_height', 1))
         self.compound = self.configuration.get('model_component', 'CO2')
 
 
@@ -40,7 +43,6 @@ class Sprayaerator(Model, Balance):
     
     def run_quality(self, type, total_inflow, solution):
         solution = self.quality.influent.product.copy()
-        h = self.fall_height
         RQ=1
         effciency_co2 = self.calculate_efficiency('CO2', RQ, self.fall_height, self.sauter)
         effciency_ch4 = self.calculate_efficiency('Mtg', RQ, self.fall_height,self.sauter)
@@ -72,10 +74,10 @@ class Sprayaerator(Model, Balance):
                 'CH4': self.quality.influent.product.total('Mtg') * 16,
             },
             'effluent': {
-                'pH': self.solution.pH,
-                'O2': self.solution.total('O2', 'mg'),
-                'CO2': self.solution.total('CO2', 'mg'),
-                'CH4': self.solution.total('Mtg') * 16 
+                'pH': self.quality.effluent.product.pH,
+                'O2': self.quality.effluent.product.total('O2', 'mg'),
+                'CO2': self.quality.effluent.product.total('CO2', 'mg'),
+                'CH4': self.quality.effluent.product.total('Mtg') * 16 
             },
             'efficiency': {
                 'Height': height_charts,
