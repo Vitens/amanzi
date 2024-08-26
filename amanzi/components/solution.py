@@ -134,8 +134,6 @@ def summary(self):
     ]
     return parameters
 
-
-
 # extend class
 Solution.si90 = si90
 Solution.ccpp = ccpp

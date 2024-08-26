@@ -12,6 +12,8 @@ class Model(ParametricModel):
         self.name = config.get("name", "")
         self.emitter = False
 
+        self.config = config
+
         self.connections = []
 
         self.pp = pp
@@ -96,6 +98,13 @@ class Model(ParametricModel):
         designData = self.design()
         designData['parameters'] = self.parameters
         designData['tables'] = self.generate_tables()
+
+        quality = {}
+        quality['influent'] = self.quality.influent.product.summary
+        quality['effluent'] = self.quality.effluent.product.summary
+
+        designData['quality'] = quality
+
         return designData
 
 
