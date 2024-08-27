@@ -3,7 +3,7 @@ from .submodels.balance import Balance
 import math
 import numpy as np
 from .tower.compounds import Chemical
-# from .CADET.modelsetup import CADETMODEL
+
 import warnings
 warnings.simplefilter("ignore")
 import os
@@ -11,12 +11,13 @@ srt_dir = os.getcwd()
 import bisect
 import pandas as pd
 import matplotlib.pyplot as plt
+import logging
 
 from .PSDM import PSDM
 from .PSDM import PSDM_functions
-#from .CADET.modelsetup import CADETMODEL
 
 
+logging.basicConfig(filename='example.log', filemode='w', level=logging.INFO)
 
 class Activatedcarbon(Model, Balance):
     parametric_model = ['model', 'activatedcarbon']
@@ -38,7 +39,12 @@ class Activatedcarbon(Model, Balance):
         self.compoundList = self.configurations.get('compound', {'x':0})
         self.advanced = config.get('advanced', False)
         self.renewal = int(config.get('replacement_interval', 1000))
-        self.filternumber = int(config.get('filternumber', 1))
+        self.filternumber = int(config.get('units', 1))
+        self.apparent_density = float(config.get('apparent_density', 0.5))
+        self.particle_density = float(config.get('particle_density', 0.5))
+        self.particle_diameter = float(config.get('particle_diameter', 0.04))
+        self.bed_porosity = float(config.get('bed_porosity', 0.4))
+        self.particle_porosity = float(config.get('particle_porosity', 0.5))
         
         
 
@@ -63,24 +69,26 @@ class Activatedcarbon(Model, Balance):
     #     return efficiency
     
     def PSDMcalculation(self, solution):
-        
-
         os.chdir(srt_dir)
          
         water_type = 'Organic Free'
         chem_type = 'halogenated alkenes'
-        nr=4
-        nz=8
-        ne=2
+        nr=4 # number of radial collocation points (int, default = 14)
+        nz=8 # number of axial collocation points (int, default = 19)
+        ne=2  # number of finite elements
 
-        particleRadius=0.04 #cm
-        apparentD= 0.5
-        particleD=0.5
-        length= self.packing_height*100 #cm
-        diameter= self.dimension*100 #cm
-        bedporosity=0.4
-        massGAC=bedporosity* apparentD*length*math.pi*(diameter/2)**2
-        flowrate= self.capacity*1e6/60 #ml/min
+        particlePorosity=self.particle_porosity
+        particleRadius=self.particle_diameter*0.5/10 # from mm -> cm
+        apparentDensity= self.apparent_density/1000 #kg/m³ -> g/cm³
+        particleDensity= self.particle_density/1000 #kg/m³ -> g/cm³
+        length= self.packing_height*100 #from m -> cm
+        diameter= self.dimension*100 #from m ->cm
+        bedporosity=self.bed_porosity
+        poreSurfaceRatio= 5 # pore to surface diffusion ratio
+        tortuosity=1 # tortuosity factor
+
+        massGAC=bedporosity*apparentDensity*length*math.pi*(diameter/2)**2
+        flowrate= self.capacity*1e6/60 #from m³/h -> ml/min
         volumebed= length*math.pi*(diameter/2)**2 #cm³
         volumeflow = flowrate*60*24 # ml/day
         EBCT=volumebed/flowrate 
@@ -88,7 +96,7 @@ class Activatedcarbon(Model, Balance):
 
 
         data = {    'name': ['carbonID', 'rad', 'epor', 'psdfr', 'rhop', 'rhof', 'L', 'wt', 'flrt', 'diam', 'tortu', 'influentID', 'effluentID'],	
-                    'value': ['F400', particleRadius, 0.641,    5,     apparentD,   particleD,  length, massGAC, flowrate,   diameter,    1, 'influent', 'effluent'],
+                    'value': ['F400', particleRadius, particlePorosity,  poreSurfaceRatio,  apparentDensity,  particleDensity,  length, massGAC, flowrate,  diameter,    tortuosity, 'influent', 'effluent'],
                 } 
         #default time is days
 
@@ -97,27 +105,26 @@ class Activatedcarbon(Model, Balance):
         # 'units': ['', 'cm', '', '', 'g/ml', 'g/ml', 'm', 'kg', 'gpm', 'm', '', '', '', '', '', '', '', '', ''],	} 
         df = pd.DataFrame(data, index=data['name'])
         df.name=data['value'][0]
+        # Setting of influent water profile, with compound concentrations in ng/l as default
         data_conc={}
         PFASproperties = {}
-        for compound in self.influent.extraneous['PFAS']:
-            data_conc['influent', compound] = [self.influent.extraneous['PFAS'][compound], self.influent.extraneous['PFAS'][compound]]
+        for compound in self.quality.influent.product.extraneous['PFAS']:
+            data_conc['influent', compound] = [self.quality.influent.product.extraneous['PFAS'][compound], self.quality.influent.product.extraneous['PFAS'][compound]]
             data_conc['F400', compound] = [0, 0]
 
             PFASproperties[compound] = [float(self.compoundList[compound][0]),float(self.compoundList[compound][1]),float(self.compoundList[compound][2])]
 
-
+        logging.warning(f"PFAS properties: {PFASproperties}")
         #index = pd.MultiIndex.from_tuples([(0, 'influent'), (1000, 'F400')], names=['time', 'carbonID'])
         index = pd.Index([0, self.renewal*2], name='time')
         df_conc = pd.DataFrame(data_conc, index=index)
         df_conc.columns = pd.MultiIndex.from_tuples([(col[0], col[1]) for col in df_conc.columns], names=['type', 'compound'])
         #df_conc.columns.levels[0]='compound'
 
-
-       
-        
-        index = ['K', '1/n', 'q']
-        df_kData = pd.DataFrame(PFASproperties, index=index)
-        # K, 1/n, q
+        index = ['K', '1/n', 'q'] # Freundlich parameters and loading
+        # PSDM model assumes units of (ug/g)(L/ug)**(1/n) for K and 1/n (unitless) and 'q' is solid phase concentration (ug/g)
+        # Numbers used fulfill the criteria
+        df_kData = pd.DataFrame(PFASproperties, index=index)  # K, 1/n, q
         data_k = {
             'PFBS': [456.94, 0.411, 1], #PSDM PFAS Excel
             'PFPeS': [1521, 0.3521, 1],#PSDM PFAS Excel
@@ -138,14 +145,11 @@ class Activatedcarbon(Model, Balance):
             'PFTrDA': [25862, 0.1972, 1],#PSDM PFAS Excel
             'PFTeDA': [30582, 0.1858, 1] #PSDM PFAS Excel
         }
-
-
-        index = ['K', '1/n', 'q']
-
         # df_kData = pd.DataFrame(PFASproperties, index=index)
-        # MW , MolarVol ,BP(Boling Point),Density ,Solubility (unused), VaporPress (unused)
+
         #Reference for PFAS data ITRC PFAS Technical and regulartory Guidance document
-        NaN=0
+        # MW , MolarVol ,BP(Boling Point),Density ,Solubility (unused), VaporPress (unused)
+        index = ['MW', 'MolarVol', 'BP', 'Density', 'Solubility', 'VaporPress']
         data_properties = {
             'PFBS': [300.1, 163.9, 198, 1.83, 0,0], # PSDM PFAS Excel
             'PFPeS': [350, 190.2, 225, 1.84, 0, 0],#ITRC
@@ -166,12 +170,13 @@ class Activatedcarbon(Model, Balance):
             'PFTeDA':  [714.1, 368, 270, 1.94, 0, 0],#ITRC
         }
 
-        index = ['MW', 'MolarVol', 'BP', 'Density', 'Solubility', 'VaporPress']
         df_properties = pd.DataFrame(data_properties, index=index)
         
         #print(df_properties)
 
         #print(chem_data)
+        #Simulation length is currently set to 2 times the replacement interval
+        #Can be manually set with duration = x days
 
         column = PSDM.PSDM(df['value'], df_properties, df_conc,\
                                 nz=nz,\
@@ -180,14 +185,17 @@ class Activatedcarbon(Model, Balance):
                                 chem_type=chem_type,\
                                 water_type=water_type,\
                                 k_data=df_kData,\
-                                solver='BDF')
+                                solver='BDF'
+                                )
             
         print('Starting example multicomponent simulation\n', 'This may take several minutes')
        
         all_results = column.run_psdm()
+        #print(f"Results for PFUnDA : {all_results['PFUnDA'](all_results['PFUnDA'].x)}")
+       
         for i in all_results.keys():
             idx = all_results[i].x
-            #print(all_results[i](idx))
+
         return all_results
 
     
@@ -206,8 +214,8 @@ class Activatedcarbon(Model, Balance):
     
     def advancedExtraneousRemoval(self, solution):
         # Calculation of average effluent concentration for each compound
-        # Using the regeneration of the GAC filter assuming equal distatnces between each regeneration of a filter
-        PSDMcalculation = self.PSDMcalculation(self.influent)
+        # Using the regeneration of the GAC filter assuming equal distances between each regeneration of a filter
+        PSDMcalculation = self.PSDMcalculation(self.quality.influent.product)
         solEffluent=solution.extraneous['PFAS']
         for key in PSDMcalculation:
             idx = PSDMcalculation[key].x
@@ -229,13 +237,13 @@ class Activatedcarbon(Model, Balance):
             if i['name'] in solution.extraneous['PFAS']:
                 print(f"PFAS: {i['name']} {solution.extraneous['PFAS'][i['name']]}")
                 if i['unit'] == 'mg/l':
-                    solution.extraneous['PFAS'][i['name']] = self.influent.extraneous['PFAS'][i['name']]*1000000
+                    solution.extraneous['PFAS'][i['name']] = self.quality.influent.product.extraneous['PFAS'][i['name']]*1000000
                 elif i['unit'] == 'μg/l':
-                    solution.extraneous['PFAS'][i['name']] = self.influent.extraneous['PFAS'][i['name']]*1000
+                    solution.extraneous['PFAS'][i['name']] = self.quality.influent.product.extraneous['PFAS'][i['name']]*1000
         return solution
 
 
-    def run_model(self, type, total_inflow,solution):
+    def run_quality(self, type, total_inflow,solution):
         solution = self.unitcheck(solution.copy())
 
         if self.advanced == False:
@@ -277,14 +285,14 @@ class Activatedcarbon(Model, Balance):
         sum20=[]
         peq2={}
         if self.compoundList != {} and self.compoundList.values() != [0] and self.advanced == True:
-            PSDMcalculation = self.PSDMcalculation(self.influent)
+            PSDMcalculation = self.PSDMcalculation(self.quality.influent.product)
             dict_keys = list(PSDMcalculation.keys())
             for i in self.scenario['metaData']['customMicroComponents']['PFAS']:
-                if i['name'] in self.influent.extraneous['PFAS']:
+                if i['name'] in self.quality.influent.product.extraneous['PFAS']:
                     peq2[i['name']] = i['PEQ']
   
             eff = {}
-            solEffluent=self.solution.extraneous['PFAS']
+            solEffluent=self.quality.effluent.product.extraneous['PFAS']
             peq1=[0] * len(PSDMcalculation[dict_keys[0]].x)
             sum4=[0] * len(PSDMcalculation[dict_keys[0]].x)
             sum20=[0] * len(PSDMcalculation[dict_keys[0]].x)
@@ -300,7 +308,7 @@ class Activatedcarbon(Model, Balance):
 
                 idx = PSDMcalculation[key].x
                 #print(PSDMcalculation[key](idx))               
-                eff[key] = [{'x': idx[k]*bedvolumesPerDay , 'y': PSDMcalculation[key](idx)[k]/self.influent.extraneous['PFAS'][key] } for k in range(len(PSDMcalculation[key].x))]
+                eff[key] = [{'x': idx[k]*bedvolumesPerDay , 'y': PSDMcalculation[key](idx)[k]/self.quality.influent.product.extraneous['PFAS'][key] } for k in range(len(PSDMcalculation[key].x))]
 
                 for k in range(len(PSDMcalculation[key].x)):
                     if key == dict_keys[0]:
@@ -311,7 +319,7 @@ class Activatedcarbon(Model, Balance):
                         sum4[k] = sum4[k]+PSDMcalculation[key](idx)[k]*peq2[key]
                     if key in ['PFOA', 'PFOS', 'PFHxS', 'PFHpS', 'PFHxS', 'PFHpS', 'PFDS', 'PFBA', 'PFPeA', 'PFHxA', 'PFHpA', 'PFOA', 'PFDA', 'PFUnDA', 'PFDoDA', 'PFTrDA', 'PFTeDA']:
                         sum20[k] = sum20[k]+PSDMcalculation[key](idx)[k]*peq2[key]
-
+            #print(eff['PFUnDA'])
             peqPFAS = [{'x': idx[k]*bedvolumesPerDay , 'y': peq1[k] } for k in range(len(PSDMcalculation[key].x))]
             sum4= [{'x': idx[k]*bedvolumesPerDay , 'y': sum4[k] } for k in range(len(PSDMcalculation[key].x))]
             sum20= [{'x': idx[k]*bedvolumesPerDay , 'y': sum20[k] } for k in range(len(PSDMcalculation[key].x))]
@@ -326,21 +334,21 @@ class Activatedcarbon(Model, Balance):
         bedporosity = 0.5
         GACdensity = 500 #kg/m³
         capacityFactor = GACdensity*bedporosity*iodineNumber*1000 #mg/m³ GAC
-        if 'PFAS' in self.influent.extraneous and self.influent.extraneous['PFAS'] != {}:
-            sumPFASinGAC = (sum(self.influent.extraneous['PFAS'].values())-sum(self.solution.extraneous['PFAS'].values()))*1e-6 #sum of all PFAS in mg/l
+        if 'PFAS' in self.quality.influent.product.extraneous and self.quality.influent.product.extraneous['PFAS'] != {}:
+            sumPFASinGAC = (sum(self.quality.influent.product.extraneous['PFAS'].values())-sum(self.quality.effluent.product.extraneous['PFAS'].values()))*1e-6 #sum of all PFAS in mg/l
         else:
             sumPFASinGAC = 0.00000000001
-        if 'Other' in self.influent.extraneous and self.influent.extraneous['Other'] != {}:
-            sumOtherinGAC = (sum(self.influent.extraneous['Other'].values())-sum(self.solution.extraneous['Other'].values()))*1e-6 #sum of all Other in mg/l
+        if 'Other' in self.quality.influent.product.extraneous and self.quality.influent.product.extraneous['Other'] != {}:
+            sumOtherinGAC = (sum(self.quality.influent.product.extraneous['Other'].values())-sum(self.quality.effluent.product.extraneous['Other'].values()))*1e-6 #sum of all Other in mg/l
         else:
             sumOtherinGAC = 0.00000000001
         volumeGAC = (self.packing_height* math.pi * (self.dimension/2)**2) 
         regeneration = (volumeGAC *capacityFactor / ((sumPFASinGAC+sumOtherinGAC)*self.capacity*1000)) #capcity divided by amount of organics adsorbed per hour
 
-        relevantInfluent = self.influent.extraneous['PFAS'].copy()
-        relevantInfluent.update(self.influent.extraneous['Other'])
-        relevantEffluent = self.solution.extraneous['PFAS'].copy()
-        relevantEffluent.update(self.solution.extraneous['Other'])
+        relevantInfluent = self.quality.influent.product.extraneous['PFAS'].copy()
+        relevantInfluent.update(self.quality.influent.product.extraneous['Other'])
+        relevantEffluent = self.quality.effluent.product.extraneous['PFAS'].copy()
+        relevantEffluent.update(self.quality.effluent.product.extraneous['Other'])
         #print(relevantEffluent)
 
 
@@ -358,6 +366,7 @@ class Activatedcarbon(Model, Balance):
                 'sum4PFAS': sum4,
                 'sum20PFAS': sum20,
                 'Volume': self.packing_volume,
-                'breakthrough': eff
+                'breakthrough': eff,
+                'PFAS': self.quality.influent.product.extraneous['PFAS']
             }
         }

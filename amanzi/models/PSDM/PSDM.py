@@ -53,6 +53,7 @@ from .PSDM_functions import density, viscosity, recalc_k, generate_grid
 from .PSDM_functions import interp 
 from .PSDM_functions import process_input_data, process_input_file
 from .PSDM_functions import logistic, filter_compounds
+import logging
 
 lpg = 3.785411784 # liter per gallon conversion
 cm_per_ft = 2.54 * 12
@@ -70,6 +71,9 @@ def run_MP_helper(test_column, k, invN, compound, k_mult):
         ssqs = pd.DataFrame(1e9, columns=[invN], index=[k_mult] )
     return [k, invN, ssqs.values[0][0], compound, k_mult]
 
+# Current routine: 1. getting fouling parameters
+#                  2. setting backups
+#                  3. Running PSDM
 class PSDM():
     def __init__(self, column_data, comp_data, rawdata_df, **kw):
         '''
@@ -359,6 +363,8 @@ class PSDM():
                     aromatics, nitro compounds, chlorinated compounds, phenols
                     PNAs, pesticides]
         '''
+        print('Getting fouling parameters')
+
         a1, a2, a3, a4 = foul_params['water'][self.water_type]
         if self.chem_type != 'PFAS':
             b1, b2 = foul_params['chemical'][self.chem_type]
@@ -404,6 +410,7 @@ class PSDM():
             return data_store
         
     def __calculate_capacity(self, compound):
+        print("Calculating capacity for something")
         ## retunrs k, q_meas, breakthrough_code, breakthrough_time, aveC, k_function, foul_mult_est
         k = 0.
         q_meas = 0.
@@ -674,6 +681,7 @@ class PSDM():
         return k, q_meas, breakthrough_code, breakthrough_time, aveC, k_function, foul_mult_est
 
     def __set_backups(self):
+        print('Setting backups')
         ## store initial values so they can be changed: backups flagged with _bup
         self.k_data_bup = self.k_data.copy()
         self.data_bup = self.data_df.copy()
@@ -697,6 +705,7 @@ class PSDM():
         self.epor_bup = self.epor * 1
 
     def __reset_column_values(self):
+        print('Resetting column values')
         ### just a deep copy???
         # =============================================================================
         #         Reset values in column object
@@ -741,6 +750,7 @@ class PSDM():
     
     def run_all(self, plot=False, save_file=True, optimize='staged', 
                 init_grid=5, init_loop=3):
+        print('Running all')
         '''
         Parameters
         ----------
@@ -960,6 +970,7 @@ class PSDM():
                       save_file=True, file_name='PSDM_', 
                       pm=10, num=11, des_xn=0.025, 
                       search_limit=50):
+        print('Running all smart')
         '''
         Smart Optimizer for K & 1/n fitting.
         Starts with estimates for effective fouling, and attemps to find path 
@@ -1258,6 +1269,7 @@ class PSDM():
 # =============================================================================
 
     def run_psdm(self):
+        print('Running PSDM')
         '''
         new run multi
         
@@ -1593,6 +1605,7 @@ class PSDM():
 ##### end run_psdm()    
 
     def run_psdm_kfit(self, compound):
+        print('Running PSDM Kfit')
         ## now uses run_psdm()
         idx=pd.IndexSlice     
         
@@ -1702,6 +1715,7 @@ class PSDM():
         ## end run_psdm_kfit()
         
     def run_psdm_dsfit(self, compound):
+        print('Running PSDM Dsfit')
         idx=pd.IndexSlice     
         ## replacement of run_psdm_dsfit() that uses run_psdm() ### TODO: Need to test
         mp.freeze_support()
@@ -1767,6 +1781,7 @@ class PSDM():
 
     ### Begin model_uncertainty()
     def model_uncertainty(self, single=True, capacity=10, k='None', qn='None', c0='None', mass='None', flrt='None', ds='None', dp='None', kf='None'):
+        print('Running Model Uncertainty')
         idx=pd.IndexSlice 
         
         self.__set_backups()
@@ -1966,6 +1981,7 @@ class PSDM():
       
     
     def run_all_MP(self, plot=False, save_file=False):
+        print('Running PSDM MP')
         '''
         Parameters
         ----------

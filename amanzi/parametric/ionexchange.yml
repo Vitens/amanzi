@@ -1,0 +1,25 @@
+parameters:
+  design:
+    general:
+      Resin_capacity:
+        uom: "kg"
+        default: 100
+        description: "Resin capacity"
+        range: [0.01, 1000]
+      bed_height:
+        uom: "m"
+        default: 1
+        description: "Height of the resin bed"
+        range: [0.01, 10]
+      diameter:
+        uom: "m"
+        default: 1
+        description: "Diameter of the resin bed"
+        range: [0.01, 10]
+  operational:
+    general:
+      resin_exchange_rate:
+        uom: "m3/hr"
+        default: 1
+        description: "Resin exchange rate"
+        range: [0.01, 100]

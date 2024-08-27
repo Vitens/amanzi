@@ -1,0 +1,13 @@
+parameters:
+  design:
+    general:
+      sauter_diameter:
+        uom: m
+        default: 0.0005
+        description: Diameter of the Sauter mean bubble size [m]
+        range: [0.0001, 0.01]
+      fall_height:
+        default: 0.1
+        uom: m
+        description: Height of the spray nozzle above the water surface [m]
+        range: [0.01, 10]

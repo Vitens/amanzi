@@ -21,7 +21,7 @@ class Dosing(Model, Balance):
         self.chemical = config.get('chemical', 'NaOH')
         self.dosing = float(config.get('dosage', 1))
         self.mode = config.get('mode', 'constant')
-        self.parameter = config.get('parameter', 'pH')
+        self.parameter = config.get('setpoint_parameter', 'pH')
         self.setpoint = float(config.get('setpoint', 7))
         self.calculated_dosage = None
     
@@ -30,7 +30,7 @@ class Dosing(Model, Balance):
         dosed = solution.copy().add(chemical, dosing, 'mmol')
         return dosed
 
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
 
       if self.mode == 'constant':
         return self.dose(solution, self.chemical, self.dosing)
@@ -57,13 +57,13 @@ class Dosing(Model, Balance):
       charts = {k: [] for k in self.dosing_values.keys()}
 
       for dosage in np.linspace(0,2,30):
-        eff = self.dose(self.influent, self.chemical, dosage)
+        eff = self.dose(self.quality.influent.product, self.chemical, dosage)
         for k,v in self.dosing_values.items():
           charts[k].append({'x': dosage, 'y': v(eff)})
 
       return {
-        'influent': {n: v(self.influent) for n,v in self.dosing_values.items()},
-        'effluent': {n: v(self.solution) for n,v in self.dosing_values.items()},
+        'influent': {n: v(self.quality.influent.product) for n,v in self.dosing_values.items()},
+        'effluent': {n: v(self.quality.effluent.product) for n,v in self.dosing_values.items()},
         'charts': charts,
         'calculated_dosage': self.calculated_dosage
       }
