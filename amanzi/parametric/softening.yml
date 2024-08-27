@@ -41,13 +41,13 @@ parameters:
       height_funnel:
         if: 
           reactor_shape: funnel
-        default: 4.0
+        default: 2.0
         uom: m
         range: [1.0, 10.0]
       diameter_funnel:
         if:
           reactor_shape: funnel
-        default: 3.0
+        default: 4.0
         uom: m
         range: [diameter_cylindrical, 10.0]
         range: [0.1, 10.0]

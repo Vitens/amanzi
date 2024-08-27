@@ -213,7 +213,7 @@ class Membrane(Model, Splitter):
             for index, stage_row in df.iterrows():
                 if index == 0 and s == 0:
                     # R = stage_row['R_e']
-                    Cf_e = self.influent.copy()
+                    Cf_e = self.quality.influent.product.copy()
                     qualities[s]['influent'].append(Cf_e)
                 elif index == 0 and s > 0:
                     # R = stage_row['R_e']
@@ -247,7 +247,7 @@ class Membrane(Model, Splitter):
     def emitter_solutions(self):
         return {'waste': self.concentrate}
 
-    def run_model(self, type, total_inflow, solution):
+    def run_quality(self, type, total_inflow, solution):
         specsheet_pressure = self.membrane_config['test_conditions']['P_feed'] #use test pressure to start iteration
         self.solve_staging(specsheet_pressure)
         self.solve_staging_qualities()
@@ -469,7 +469,7 @@ class Membrane(Model, Splitter):
     
     def design(self):
         print("Designing a Membrane")
-        self.run_model(None, None, None)
+        self.run_quality(None, None, None)
         
         d = {
             #parameters

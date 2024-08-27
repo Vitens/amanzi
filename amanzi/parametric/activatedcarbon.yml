@@ -12,19 +12,16 @@ parameters:
         uom: m
         default: 2.0
         range: [0.1, 10]
-      replacement_interval:
-        uom: days
-        default: 1000
-        range: [1, 10000]
-      filternumber:
-        uom: "-"
-        default: 1
-        range: [1, 20]
+
 
   operational:
     general:
       staggered_replacement:
         default: true
+      replacement_interval:
+        uom: days
+        default: 1000
+        range: [1, 10000]
       replacement_loading:
         uom: "%"
         default: 0.5
@@ -42,11 +39,33 @@ parameters:
         default: 10
         range: [0.1, 1000]
 
-  chemical:
+  chemicals:
     general:
       packing_type:
         default: "NORA Supra 0.8"
         options: ["NORA Supra 0.8", "NORA Supra 1.0", "NORA Supra 1.2", "NORA Supra 1.5", "NORA Supra 2.0"]
+      apparent_density:
+        uom: kg/m3
+        default: 500
+        range: [100, 2000]
+      particle_diameter:
+        uom: mm
+        default: 0.8
+        range: [0.1, 10]
+      particle_density:
+        uom: kg/m3
+        default: 2000
+        range: [1000, 5000]
+      bed_porosity:
+        uom: "-"
+        default: 0.5
+        range: [0.1, 0.9]
+      particle_porosity:
+        uom: "-"
+        default: 0.6
+        range: [0.1, 0.9]
+      
+      
 
       
         
@@ -65,8 +84,5 @@ outputs:
         uom: days
         equation: "replacement_interval"
         precision: 0
-      total_volume:
-        uom: m3
-        equation: "volume * filternumber"
-        precision: 2
+
     

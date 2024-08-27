@@ -7,7 +7,7 @@ parameters:
       mode: 
         default: constant
         options: [constant, setpoint]
-      parameter:
+      setpoint_parameter:
         if: 
           mode: setpoint
         default: 'pH'
