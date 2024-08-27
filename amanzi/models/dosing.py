@@ -21,7 +21,7 @@ class Dosing(Model, Balance):
         self.chemical = config.get('chemical', 'NaOH')
         self.dosing = float(config.get('dosage', 1))
         self.mode = config.get('mode', 'constant')
-        self.parameter = config.get('parameter', 'pH')
+        self.parameter = config.get('setpoint_parameter', 'pH')
         self.setpoint = float(config.get('setpoint', 7))
         self.calculated_dosage = None
     
@@ -63,7 +63,7 @@ class Dosing(Model, Balance):
 
       return {
         'influent': {n: v(self.quality.influent.product) for n,v in self.dosing_values.items()},
-        'effluent': {n: v(self.solution) for n,v in self.dosing_values.items()},
+        'effluent': {n: v(self.quality.effluent.product) for n,v in self.dosing_values.items()},
         'charts': charts,
         'calculated_dosage': self.calculated_dosage
       }
