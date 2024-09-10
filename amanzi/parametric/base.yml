@@ -1,0 +1,15 @@
+outputs:
+  sustainability:
+    indirect_emissions:
+      electricity_emissions:
+        uom: gCO2-eq/m3
+        equation: "electricity_consumption * electricity_emission_factor"
+        precision: 2
+        parameters:
+          electricity_consumption:
+            uom: kWh/m3
+            equation: "energy.model_specific_consumption"
+          electricity_emission_factor:
+            uom: gCO2-eq/kWh
+            equation: "250"
+            precision: 1

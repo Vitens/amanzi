@@ -121,6 +121,7 @@ outputs:
         uom: "kWh/m3"
         equation: "1/3600 * delta_head * 9.81 * 1/(pump_efficiency)"
         precision: 3
+        if: "not integrated_booster"
         parameters:
           delta_head:
             uom: mH2O

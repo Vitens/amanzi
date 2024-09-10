@@ -3,7 +3,7 @@ import logging
 from .model import Model
 
 class Groundwater(Model):
-    parametric_model = ['groundwater']
+    parametric_model = ['base', 'groundwater']
 
     def __init__(self, config, pp):
         super().__init__(config, pp)

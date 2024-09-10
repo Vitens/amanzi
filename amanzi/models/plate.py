@@ -4,7 +4,7 @@ from math import log
 import numpy as np
 
 class Plate(Model, Balance):
-    parametric_model = ['model', 'plate']
+    parametric_model = ['model', 'plate', 'aeration']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
         config = config.get('configuration', {})
@@ -32,20 +32,13 @@ class Plate(Model, Balance):
         iterations = 1 if recirculation == 0 else 3
 
         RQ *= self.efficiency
-        print(f"RQ is {RQ}")
         for _ in range(iterations):
             # copy influent
             inf = influent.copy()
-            print(inf.species)
             # process air
-            print(f"RQ is {RQ}")
             air = self.pp.add_gas(gas_comp,  pressure=1, volume=RQ, fixed_pressure=True, fixed_volume=False)
-            print(air.volume)
             # interact
             inf.interact(air)
-            print(inf.species)
-            print(air.volume)
-
 
             # amount of off gas
             off_gas = air.fractions
@@ -68,7 +61,6 @@ class Plate(Model, Balance):
         return aerated
     
     def design(self):
-        print('plate', self.quality.influent.product.number)
         effluent, effluent_gas = self.aerate(self.quality.influent.product, self.rq, self.recirculation)
 
         ph_data = []

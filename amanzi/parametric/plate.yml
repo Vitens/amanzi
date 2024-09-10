@@ -108,7 +108,19 @@ outputs:
         description: Air flow through the exhaust fan
         uom: m3/h
         equation: "air_flow * 1.05"
+  hydraulic:
+    hydraulic_line:
+      headloss_model:
+        equation: "0.5"
     
+  energy:
+    blowers:
+      supply_fan_power:
+        uom: "kWh/m3"
+        equation: "0.08"
+      exhaust_fan_power:
+        uom: "kWh/m3"
+        equation: "0.01"
   
   ## calculations are per unit at standard capacity
   # energy:

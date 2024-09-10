@@ -30,6 +30,17 @@ outputs:
         uom: m3
         equation: "math.pi * (diameter/2)**2 * bed_height"
         precision: 2
+  
+  energy:
+    toweraeration:
+      blower:
+        uom: "kWh/m3"
+        equation: "0.15"
+
+  hydraulic:
+    hydraulic_line:
+      headloss_model:
+        equation: "8"
 
 
       # packingmaterial:

@@ -2,10 +2,12 @@ from .model import Model
 from .submodels.splitter import Splitter
 
 class Recycle(Model, Splitter):
+    parametric_model = ['recycle']
+
     def __init__(self, config, pp):
         super().__init__(config, pp)
         self.split = config['configuration'].get('fraction', 0.8)
-        self.product_solution = None
+        self.product_solution = pp.add_solution({})
     
 
     def run_quality(self, type, total_inflow, solution):

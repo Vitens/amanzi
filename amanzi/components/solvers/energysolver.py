@@ -4,9 +4,6 @@ class EnergySolver(Solver):
 
   def solve(self, until=None):
 
-    if until: # dont run in design mode
-      return
-    
     total_distribution = self.scenario.solvers['quantity'].summary()['total_distribution'] * 1e6
     # sum energy consumption for each model
     for m in self.scenario.models.values():
@@ -24,11 +21,30 @@ class EnergySolver(Solver):
       
   def summary(self):
 
+    results = []
+
+    for _,m in self.scenario.models.items():
+      results.append([
+        m.name, [
+          {'name': 'model_specific_consumption', 'value': m.energy.model_specific_consumption, 'uom': 'kWh/m3', 'precision': 3, 'positive': False},
+          {'name': 'specific_consumption', 'value': m.energy.specific_consumption, 'uom': 'kWh/m3', 'precision': 3, 'positive': False},
+          {'name': 'total_consumption', 'value': m.energy.total_consumption/1e3, 'uom': 'MWh/y', 'precision': 0, 'positive': False}
+        ],
+        m.index
+      ])
+
+    order = sorted(results, key=lambda x: x[2])
+    models = [x[0] for x in order]
+    metrics = [x[1] for x in order]
+
+
+
     return {
-      'model_specific_consumptions': {m.name: m.energy.model_specific_consumption for m in self.scenario.models.values()},
-      'specific_consumptions': {m.name: m.energy.specific_consumption for m in self.scenario.models.values()},
-      'total_consumptions': {m.name: m.energy.total_consumption for m in self.scenario.models.values()},
-      'total_consumption': sum([m.energy.total_consumption for m in self.scenario.models.values()]),
-      'total_specific_consumption': sum([m.energy.specific_consumption for m in self.scenario.models.values()])
+      'order': models,
+      'models': metrics,
+      'metrics': [
+        {'name': 'total_consumption', 'value': sum([m.energy.total_consumption for m in self.scenario.models.values()])/1e3, 'uom': 'MWh/y', 'precision': 0, 'positive': False},
+        {'name': 'total_specific_consumption', 'value': sum([m.energy.specific_consumption for m in self.scenario.models.values()]), 'uom': 'kWh/m3', 'precision': 3, 'positive': False}
+      ]
     }
 

@@ -1,9 +1,7 @@
 from .model import Model
 
 class Reservoir(Model):
-    parametric_model = ['model']
-
-    parametric_model = ['reservoir']
+    parametric_model = ['base', 'reservoir']
 
     def __init__(self, config, pp):
         super().__init__(config, pp)

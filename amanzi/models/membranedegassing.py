@@ -2,7 +2,7 @@ from .model import Model
 from .submodels.balance import Balance
 
 class Membranedegassing(Model, Balance):
-  parametric_model = ['model', 'membranedegassing']
+  parametric_model = ['base', 'model', 'membranedegassing']
 
   def __init__(self, config, pp: dict = {}) -> None:
     super().__init__(config, pp)
@@ -12,7 +12,6 @@ class Membranedegassing(Model, Balance):
 
     self.vacuum1 = self.parameters['vacuum_stage_1']
     self.vacuum2 = self.parameters['vacuum_stage_2']
-  
 
   def degass(self, solution, rq1=[0,0], vacuum1=0.1, rq2=[0,0], vacuum2=0.1):
 

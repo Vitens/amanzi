@@ -117,6 +117,12 @@ parameters:
         default: 0.5
         uom: mm
         range: [0.1, 5.0]
+  model:
+    reactor_model:
+      soften_to_si:
+        default: 0.6
+        range: [0.0, 2.0]
+
     
 outputs:
   hydraulic:

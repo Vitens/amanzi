@@ -35,11 +35,15 @@ class Model(ParametricModel):
             'booster_head': 0, # head supplied by the integrated booster pump
             'efficiency': 0, # efficiency of the booster pump
         })
-
         self.energy = DotMap({
             'model_specific_consumption': 0, # energy consumption per m3 produced by model (kWh/m3)
             'specific_consumption': 0, # energy consumption per m3 produced by the treatment plant (kWh/m3)
             'total_consumption': 0 # total energy consumption per year (kWh/year)
+        })
+        self.sustainability = DotMap({
+            'model_specific_emission': 0, # energy consumption per m3 produced by model (gCO2-eq/m3)
+            'specific_emission': 0, # energy consumption per m3 produced by the treatment plant (gCO2-eq/m3)
+            'total_emission': 0 # total energy consumption per year (gCO2-eq/year)
         })
     
     # placeholder for model quality run
@@ -100,8 +104,11 @@ class Model(ParametricModel):
         designData['tables'] = self.generate_tables()
 
         quality = {}
-        quality['influent'] = self.quality.influent.product.summary
-        quality['effluent'] = self.quality.effluent.product.summary
+        # gather quality data
+        for direction, solutions in self.quality.items():
+            for solution_type, solution in solutions.items():
+                if solution:
+                    quality[f'{direction}_{solution_type}'] = solution.summary
 
         designData['quality'] = quality
 

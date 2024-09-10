@@ -9,7 +9,7 @@ class Dosing(Model, Balance):
         super().__init__(config, pp)
         config = config.get('configuration', {})
         config = config.get('parameters', {})
-        print(config)
+
         self.dosing_values = {
           'pH': lambda s: s.pH,
           'O2': lambda s: 32*(s.total('O2', 'mmol') + s.total('Oxg', 'mmol')),
