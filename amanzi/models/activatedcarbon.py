@@ -46,7 +46,40 @@ class Activatedcarbon(Model, Balance):
         self.bed_porosity = float(config.get('bed_porosity', 0.4))
         self.particle_porosity = float(config.get('particle_porosity', 0.5))
         
+    @property
+    def backwash_programme(self):
+        config = self.config.get('configuration', {})
+        programme = config.get('backwash_programme', [])
+        return programme
+    
+    @property
+    def _backwash_duration(self):
+        return sum([p['time'] for p in self.backwash_programme]) / 60
+
+    @property
+    def _backwash_volume(self):
+        surface = self.output_parameters['surface_area'].calculate(super().context)
+        return sum([p['water'] * surface * p['time']/3600 for p in self.backwash_programme])
+
+    @property
+    def _backwash_max_rate(self):
+        return max([p['water'] for p in self.backwash_programme] + [0])
         
+    @staticmethod
+    def kozeny_carman(p, v, d):
+        d /= 1e3 # convert to mm
+        v /= 3600 # convert to m/s
+        return 180 * 1.3e-6 / 9.81 * (1-p)**2 / p**3 * v/d**2
+
+
+    @property
+    def context(self):
+        ctx = super().context
+        ctx['_backwash_duration'] = self._backwash_duration
+        ctx['_backwash_volume'] = self._backwash_volume
+        ctx['_backwash_max_rate'] = self._backwash_max_rate
+        ctx['kozeny_carman'] = self.kozeny_carman
+        return ctx
 
     # def calculate_efficiency(self, compound, solution): 
     #     #Freundlich Isotherm parameters

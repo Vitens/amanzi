@@ -1,6 +1,6 @@
 parameters:
   design:
-    general:
+    toweraeration:
       diameter:
         uom: m
         default: 1.0
@@ -12,6 +12,11 @@ parameters:
       packingmaterial:
         default: "Raflux50"
         options: ["Raflux25", "Raflux50", "Raflux90"]
+      blowereficiency:
+        uom: "-"
+        default: 0.75
+        range: [0.01, 1]
+
   operational:
     general:
       rq:
@@ -22,62 +27,92 @@ parameters:
         uom: "C"
         default: 20
         range: [-30, 40]
-    
+  
+
+
 outputs:
   design:
-    toweraeration:
+    general:
       volume:
         uom: m3
         equation: "math.pi * (diameter/2)**2 * bed_height"
         precision: 2
+        if: "ambient_temperature < 0"
+      total_surface:
+        uom: m2
+        equation: "volume * packing['ageo']"
+        precision: 2
+      pressuredrop:
+        uom: mbar/m
+        equation: "operationpoint(capacity, rq,diameter, engel_stickl)[0]/100"
+        precision: 2
+      total_pressure_drop:
+        uom: Pa
+        equation: "operationpoint(capacity, rq,diameter, engel_stickl)[0]*bed_height"
+        precision: 1
+    packing:
+      surfacevolumeration:
+        uom: m2/m3
+        equation: "packing['ageo']"
+        precision: 0
+      packingsize:
+        uom: mm
+        equation: "packing['size']"
+        precision: 0
+      voidfraction:
+        uom: "-"
+        equation: "packing['void']"
+        precision: 2
+      a-factor:
+        uom: "-"
+        equation: "packing['a']"
+        precision: 2
+      b-factor:
+        uom: "-"
+        equation: "packing['b']"
+        precision: 2
+    operation:
+      liquidloading:
+        uom: m3/m2/h
+        equation: "capacity/(3.14*(diameter/2)**2)"
+        precision: 2
+      floodingfactor:
+        uom: "-"
+        equation: "operationpoint(capacity, rq,diameter, engel_stickl)[3]*100"
+        precision: 2
+      liquid_holdup:
+        uom: m3/m3
+        equation: "operationpoint(capacity, rq,diameter, engel_stickl)[1]*100"
+        precision: 2
+      F-Factor:
+        uom: "Pa0.5"
+        equation: "operationpoint(capacity, rq,diameter, engel_stickl)[2]"
+        precision: 2
 
 
-      # packingmaterial:
-      #   equation: "packingmaterial"
-      #   precision: 2
-      #   validation: "packingmaterial in ['Raflux25', 'Raflux50', 'Raflux90']"
-      #   parameters:
-      #     packingmaterial_density:
-      #       uom: "kg/m3"
-      #       equation: "packingmaterial_density"
-      #       precision: 2
-      #     packingmaterial_surfacearea:
-      #       uom: "m2/m3"
-      #       equation: "packingmaterial_surfacearea"
-      #       precision: 2
-      #     packingmaterial_porosity:
-      #       uom: "-"
-      #       equation: "packingmaterial_porosity"
-      #       precision: 2
-      #     packingmaterial_specificsurfacearea:
-      #       uom: "m2/m3"
-      #       equation: "packingmaterial_surfacearea * packingmaterial_porosity"
-      #       precision: 2
-      #     packingmaterial_mass:
-      #       uom: "kg"
-      #       equation: "volume * packingmaterial_density"
-      #       precision: 2
-      #     packingmaterial_surface:
-      #       uom: "m2"
-      #       equation: "volume * packingmaterial_surfacearea"
-      #       precision: 2
-      #     packingmaterial_specificsurface:
-      #       uom: "m2"
-      #       equation: "volume * packingmaterial_specificsurfacearea"
-      #       precision: 2
-      #     packingmaterial_massloading:
-      #       uom: "kg/m3"
-      #       equation: "packingmaterial_mass / volume"
-      #       precision: 2
-      #     packingmaterial_surfaceloading:
-      #       uom: "m2/m3"
-      #       equation: "packingmaterial_surface / volume"
-      #       precision: 2
-      #     packingmaterial_specificsurfaceloading:
-      #       uom: "m2/m3"
-      #       equation: "packingmaterial_specificsurface / volume"
-      #       precision: 2
-      #     packingmaterial_massloading_rq:
-      #       uom: "kg
+
+    
+  energy:
+    electric_energy:
+      blower_energy:
+        uom: kWh/m3
+        equation: "blower_power(rq, ambient_temperature ,deltap ,blowereficiency, Air_density)"
+        precision: 4
+        parameters:
+          deltap:
+            uom: Pa
+            equation: "operationpoint(capacity, rq,diameter, engel_stickl)[0]*bed_height"
+            precision: 2
+          blowerefficiency:
+            uom: "-"
+            equation: "blowereficiency"
+            precision: 2
+          resparitoryquotient:
+            uom: "-"
+            equation: "rq"
+            precision: 2
+
+        
+
 
     

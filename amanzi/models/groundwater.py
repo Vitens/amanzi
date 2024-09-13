@@ -70,34 +70,25 @@ class Groundwater(Model):
 
         for key,value in c.get('PFAS', {}).items():
             if key != "" and key != '':
-                testsolution = self.pp.add_solution({},{
-                        'PFAS':{key: value}
-                    })
-                self.solution = self.solution + testsolution
+                self.solution.extraneous['PFAS'].update({key: value})
             if value == 0:
                 del self.solution.extraneous['PFAS'][key]
         # implement a catch for error when a custom PFAS is added but not named. 
 
         for key,value in c.get('VOC', {}).items():
             if key != "":
-                testsolution = self.pp.add_solution({},{
-                        'VOC':{key: value}
-                    })
-                self.solution = self.solution + testsolution
+                self.solution.extraneous['VOC'].update({key: value})
             if value == 0:
                 del self.solution.extraneous['VOC'][key]
         
         for key,value in c.get('Other', {}).items():
             if key != "":
-                testsolution = self.pp.add_solution({},{
-                        'Other':{key: value}
-                    })
-                self.solution = self.solution + testsolution
+                self.solution.extraneous['Other'].update({key: value})
             
             if value == 0:
                 del self.solution.extraneous['Other'][key]
 
-
+        print(self.solution.extraneous)
 
 
 
