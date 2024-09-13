@@ -51,7 +51,11 @@ class Toweraeration(Model, Balance):
         return Pavg
     @property
     def engel_stickl(self):
-        return run_engelstichlmair(self.quality.influent.product.temperature,self.temp_g, self.packing_type)
+        if self.quality.influent.product:
+            temp= self.quality.influent.product.temperature 
+        else:
+            temp=10
+        return run_engelstichlmair(temp,self.temp_g, self.packing_type)
     
     @staticmethod
     def operationpoint(capacity, RQ, diameter, engel_stickl_object):
