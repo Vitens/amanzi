@@ -2,6 +2,7 @@ from .model import Model
 from .submodels.balance import Balance
 from math import log
 import numpy as np
+from .tower.air_properties import Air
 
 class Plate(Model, Balance):
     parametric_model = ['model', 'plate']
@@ -12,12 +13,36 @@ class Plate(Model, Balance):
 
         self.rq = float(config.get('RQ', 10))
         self.recirculation = float(config.get('recirculation', 0)) #/ 100
-        self.efficiency = 0.5#float(config.get('efficiency', 10)) #/ 100
-
+        self.efficiency = 0.1#float(config.get('efficiency', 10)) #/ 100
+        self.totalpressuredrop = 0 
+        self.temp_g = 20
+        self.g_density = Air(self.temp_g, 1.023e5).density()
         self.change_per_step = {}
+
+    @staticmethod
+    def blower_power(Qair,Tair, delta_p, efficiency, air_density):
+        Pin = 101325 # Pa
+        R = 8.31446 # J/(mol*K)
+        kappa = 1.4
+        Mair = 28.97e-3 # kg/mol
+        Tair = Tair + 273.15 # C to K
+        Pavg = Qair * air_density* R * Tair *(kappa/(kappa-1)) * (((Pin+delta_p)/Pin)**((kappa-1)/kappa)-1)/(efficiency*Mair)
+        # conversion J to kWh
+        Pavg = Pavg / 3600000
+        return Pavg
+    
+    @property
+    def deltaPtotal(self):
+        return self.totalpressuredrop
+    @property
+    def context(self):
+        ctx = super().context
+        ctx['blower_power'] = self.blower_power
+        ctx['Air_density'] = self.g_density
+        return ctx
     
     def aerate(self, influent, RQ, recirculation):
-
+        
         air_comps = {
             'Oxg(g)': 0.208,
             'Ntg(g)': 0.7916,
@@ -32,21 +57,13 @@ class Plate(Model, Balance):
         iterations = 1 if recirculation == 0 else 3
 
         RQ *= self.efficiency
-        print(f"RQ is {RQ}")
         for _ in range(iterations):
-            # copy influent
+             # copy influent
             inf = influent.copy()
-            print(inf.species)
             # process air
-            print(f"RQ is {RQ}")
             air = self.pp.add_gas(gas_comp,  pressure=1, volume=RQ, fixed_pressure=True, fixed_volume=False)
-            print(air.volume)
             # interact
             inf.interact(air)
-            print(inf.species)
-            print(air.volume)
-
-
             # amount of off gas
             off_gas = air.fractions
             off_gas_volume = air.volume
@@ -68,7 +85,6 @@ class Plate(Model, Balance):
         return aerated
     
     def design(self):
-        print('plate', self.quality.influent.product.number)
         effluent, effluent_gas = self.aerate(self.quality.influent.product, self.rq, self.recirculation)
 
         ph_data = []
@@ -100,12 +116,12 @@ class Plate(Model, Balance):
                 'o2': self.quality.influent.product.total('Oxg') * 32,
             },
             'effluent': {
-                'pH': effluent.pH,
-                'ch4': effluent.total('Mtg') * 16040,
-                'n2': effluent.total('Ntg') * 28.0134,
-                'co2': effluent.total('CO2','mg'),
-                'h2s': effluent.total('H2S','mg'),
-                'o2': effluent.total('Oxg') * 32,
+                'pH': self.quality.effluent.product.pH,
+                'ch4': self.quality.effluent.product.total('Mtg') * 16040,
+                'n2': self.quality.effluent.product.total('Ntg') * 28.0134,
+                'co2': self.quality.effluent.product.total('CO2','mg'),
+                'h2s': self.quality.effluent.product.total('H2S','mg'),
+                'o2': self.quality.effluent.product.total('Oxg') * 32,
             },
             'gas': {
                 'ch4': effluent_gas.dry_fractions['Mtg(g)'] * 100,
