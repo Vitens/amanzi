@@ -120,7 +120,7 @@ outputs:
         name: Supply Fan Air Flow
         description: Air flow through the fan
         uom: m3/h
-        equation: "air_flow * (1 - recirculation) if recirculation > 0 else air_flow"
+        equation: "air_flow"
       recirculation_fan_flow:
         name: Recirculation Fan Air Flow
         show: "recirculation"
@@ -131,7 +131,7 @@ outputs:
         name: Exhaust Fan Air Flow
         description: Air flow through the exhaust fan
         uom: m3/h
-        equation: "air_flow * 1.05"
+        equation: "air_flow * (1 - recirculation) if recirculation > 0 else air_flow"
  
   energy:
     electric_energy:
