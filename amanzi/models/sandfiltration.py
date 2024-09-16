@@ -3,7 +3,7 @@ from .model import Model
 from .submodels.loss import Loss
 
 class Sandfiltration(Model, Loss):
-    parametric_model = ['model', 'filtration']
+    parametric_model = ['base', 'model', 'filtration']
 
     def __init__(self, config, pp):
         super().__init__(config, pp)
@@ -105,10 +105,12 @@ class Sandfiltration(Model, Loss):
             # add load to waste solution
             self.waste_solution = solution.copy()
             return
+        
+        if(type == 'product'):
+            effluent, _ = self.filtrate(solution)
+            return effluent
 
-        effluent, _ = self.filtrate(solution)
-
-        return effluent
+        return solution
 
 
     def design(self):
@@ -147,10 +149,6 @@ class Sandfiltration(Model, Loss):
             'names': list(values.keys())
         }
 
-
-
-
-
-
-
-        return {}
+    @property
+    def emitter_solutions(self):
+        return {'waste': self.waste_solution}

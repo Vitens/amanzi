@@ -5,7 +5,7 @@ import numpy as np
 import logging
 
 class Cascade(Model, Balance):
-    parametric_model = ['model', 'cascade']
+    parametric_model = ['base', 'model', 'cascade', 'aeration']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
 

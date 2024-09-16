@@ -75,7 +75,11 @@ class QualitySolver(Solver):
             for stream_type in order:
                 idx = idx_start[stream_type]
                 for model in self.emitters.get(stream_type, []):
-                    self.run_trace(model, stream_type, idx)
+                    # set model index if not set
+                    model.index = idx if not model.index else model.index
+                    # set model effluent quality
+                    model.quality['effluent'][stream_type] = model.emitter_solutions[stream_type].copy()
+                    self._propagate_solution(model, stream_type, model.emitter_solutions[stream_type], idx)
                 if self.interrupted:
                     return
                     
@@ -92,9 +96,29 @@ class QualitySolver(Solver):
         Returns:
             Dict: A dictionary summarizing the solution.
         """
+        qualities = []
+
         for _,m in self.scenario.models.items():
             if m.type == 'output':
-                return m.quality.influent.product.summary
+                effluent = m.quality.influent.product.summary
+                qualities.append([m.name, m.index, effluent])
+            else:
+                if m.quality.effluent.product:
+                    effluent = m.quality.effluent.product.summary
+                    qualities.append([m.name, m.index, effluent])
+        
+        order = sorted(qualities, key=lambda x: x[1])
+        models = [x[0] for x in order]
+        qualities = [x[2] for x in order]
+        # sort qualities based on order
+
+
+        return {
+            'order': models,
+            'models': qualities,
+            'effluent': effluent,
+            'metrics': effluent
+        }
 
     @property
     def error(self) -> Dict[str, float]:

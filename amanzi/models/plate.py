@@ -5,7 +5,7 @@ import numpy as np
 from .tower.air_properties import Air
 
 class Plate(Model, Balance):
-    parametric_model = ['model', 'plate']
+    parametric_model = ['model', 'plate', 'aeration']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
         config = config.get('configuration', {})
@@ -63,7 +63,9 @@ class Plate(Model, Balance):
             # process air
             air = self.pp.add_gas(gas_comp,  pressure=1, volume=RQ, fixed_pressure=True, fixed_volume=False)
             # interact
+
             inf.interact(air)
+
             # amount of off gas
             off_gas = air.fractions
             off_gas_volume = air.volume

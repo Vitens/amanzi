@@ -3,7 +3,7 @@ import logging
 from .model import Model
 
 class Groundwater(Model):
-    parametric_model = ['groundwater']
+    parametric_model = ['base', 'groundwater']
 
     def __init__(self, config, pp):
         super().__init__(config, pp)
@@ -85,14 +85,14 @@ class Groundwater(Model):
             if key != "":
                 self.solution.extraneous['Other'].update({key: value})
             
-            if value == 0:
-                del self.solution.extraneous['Other'][key]
+        #     if value == 0:
+        #         del self.solution.extraneous['Other'][key]
 
         print(self.solution.extraneous)
 
 
 
-        ## equalize solution
+        ## equalize solution to ensure all mass balances are solved
         self.solution.equalize('Calcite', 1000, 0)
 
         self.emitter = True

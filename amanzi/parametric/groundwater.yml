@@ -18,7 +18,6 @@ parameters:
         uom: m3/h
         default: 1500
         range: [1, 10000]
-      
     well_design:
       number_of_wells:
         default: 4
@@ -44,10 +43,6 @@ parameters:
         uom: mH2O
         default: 1.0
         range: [0.0, 3.0]
-      influent_pressure_loss:
-        uom: m
-        default: 0.0
-        range: [0.0, 100.0]
     
     transport_pipe:
       pipe_inner_diameter:
