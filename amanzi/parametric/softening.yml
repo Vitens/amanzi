@@ -256,9 +256,66 @@ outputs:
             uom: ton/y
             equation: "seed_consumption * average_day * 24 * 365 / 1e6"
 
-      
-
-
-
-
-
+  chemicals:
+    base:
+      lye:
+        if: "base_chemical == 'NaOH'"
+        equation: "base_dosage * 40"
+        uom: "g/m3"
+        parameters:
+          lye_mass_per_hour_per_reactor:
+            uom: kg/h
+            equation: "lye * capacity / 1000"
+          lye_mass_per_hour:
+            uom: kg/h
+            equation: "lye * average_day / 1000"
+          lye_mass_per_year:
+            uom: ton/y
+            equation: "lye * average_day * 24 * 365 / 1e6"
+            precision: 0
+      lime:
+        if: "base_chemical == 'Ca(OH)2'"
+        equation: "base_dosage * 74.093"
+        uom: "g/m3"
+        parameters:
+          lime_mass_per_hour_per_reactor:
+            uom: kg/h
+            equation: "lime * capacity / 1000"
+          lime_mass_per_hour:
+            uom: kg/h
+            equation: "lime * average_day / 1000"
+          lime_mass_per_year:
+            uom: ton/y
+            equation: "lime * average_day * 24 * 365 / 1e6"
+            precision: 0
+    acid:
+      co2:
+        if: "acid_chemical == 'CO2'"
+        equation: "acid_dosage * 44"
+        uom: "g/m3"
+        parameters:
+          co2_mass_per_hour_per_reactor:
+            uom: kg/h
+            equation: "co2 * capacity / 1000"
+          co2_mass_per_hour:
+            uom: kg/h
+            equation: "co2 * average_day / 1000"
+          co2_mass_per_year:
+            uom: ton/y
+            equation: "co2 * average_day * 24 * 365 / 1e6"
+            precision: 0
+      hcl:
+        if: "acid_chemical == 'HCl'"
+        equation: "acid_dosage * 36.461"
+        uom: "g/m3"
+        parameters:
+          hcl_mass_per_hour_per_reactor:
+            uom: kg/h
+            equation: "hcl * capacity / 1000"
+          hcl_mass_per_hour:
+            uom: kg/h
+            equation: "hcl * average_day / 1000"
+          hcl_mass_per_year:
+            uom: ton/y
+            equation: "hcl * average_day * 24 * 365 / 1e6"
+            precision: 0

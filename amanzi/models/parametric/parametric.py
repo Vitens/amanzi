@@ -103,7 +103,7 @@ class ParametricModel():
 
     tables = []
 
-    for c,summarize,precision in [['design',None,0], ['hydraulic',None,0], ['energy','kWh/m3',3], ['sustainability', 'gCO2-eq/m3', 2]]:
+    for c,summarize,precision in [['design',None,0], ['hydraulic',None,0], ['energy','kWh/m3',3], ['sustainability', 'gCO2-eq/m3', 2], ['chemicals', None, 0]]:
       outputs = [o for o in self.output_parameters.values() if o.category == c]
 
       sections = []

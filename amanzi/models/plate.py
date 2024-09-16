@@ -38,6 +38,7 @@ class Plate(Model, Balance):
             # process air
             air = self.pp.add_gas(gas_comp,  pressure=1, volume=RQ, fixed_pressure=True, fixed_volume=False)
             # interact
+            print(inf.temperature)
             inf.interact(air)
 
             # amount of off gas

@@ -27,9 +27,6 @@ class Toweraeration(Model, Balance):
         self.capacity = float(self.parameters['nominal_capacity'])
         self.compound = self.configuration.get('model_component', 'CO2')
         self.temp_g = float(self.parameters['ambient_temperature'])
-        
-
-    
       
     def get_NTU(self,T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov):
 
@@ -126,6 +123,22 @@ class Toweraeration(Model, Balance):
 
         return solution
 
+    def generate_tables(self):
+        tables = super().generate_tables()
+
+        tables[3]['outputs'].append({
+            'name': 'nils',
+            'uom': 'demo',
+            'precision': 3,
+            'namespace': 'nils',
+            'section': 'direct_emissions',
+            'indent': False,
+            'min': 0,
+            'nom': 0,
+            'max': 0
+        })
+
+        return tables
 
 
     def design(self):

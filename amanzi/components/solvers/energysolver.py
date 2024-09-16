@@ -26,8 +26,8 @@ class EnergySolver(Solver):
     for _,m in self.scenario.models.items():
       results.append([
         m.name, [
-          {'name': 'model_specific_consumption', 'value': m.energy.model_specific_consumption, 'uom': 'kWh/m3', 'precision': 3, 'positive': False},
           {'name': 'specific_consumption', 'value': m.energy.specific_consumption, 'uom': 'kWh/m3', 'precision': 3, 'positive': False},
+          {'name': 'model_specific_consumption', 'value': m.energy.model_specific_consumption, 'uom': 'kWh/m3', 'precision': 3, 'positive': False},
           {'name': 'total_consumption', 'value': m.energy.total_consumption/1e3, 'uom': 'MWh/y', 'precision': 0, 'positive': False}
         ],
         m.index

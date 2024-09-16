@@ -83,6 +83,8 @@ class QuantitySolver(Solver):
         generate a summary of the solver
         """
 
+
+
         production = sum([m.quantity.outflow.get('product', 0) for _,m in self.scenario.models.items() if m.upstream_connections == {}])
 
         distribution = sum([m.quantity.inflow.get('product', 0) for _,m in self.scenario.models.items() if m.downstream_connections == {}])
@@ -90,7 +92,6 @@ class QuantitySolver(Solver):
         return {
             'total_production': production,
             'total_distribution': distribution,
-
             'metrics': [
                 {'name': 'total_production', 'value': production, 'uom': 'Mm3/y', 'precision': 2, 'positive': True},
                 {'name': 'total_distribution', 'value': distribution, 'uom': 'Mm3/y', 'precision': 2, 'positive': True},

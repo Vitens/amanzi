@@ -68,40 +68,40 @@ class Groundwater(Model):
             'PFAS':{}, 'VOC':{}, 'Other':{}}
            )
 
-        for key,value in c.get('PFAS', {}).items():
-            if key != "" and key != '':
-                testsolution = self.pp.add_solution({},{
-                        'PFAS':{key: value}
-                    })
-                self.solution = self.solution + testsolution
-            if value == 0:
-                del self.solution.extraneous['PFAS'][key]
-        # implement a catch for error when a custom PFAS is added but not named. 
+        # for key,value in c.get('PFAS', {}).items():
+        #     if key != "" and key != '':
+        #         testsolution = self.pp.add_solution({},{
+        #                 'PFAS':{key: value}
+        #             })
+        #         self.solution = self.solution + testsolution
+        #     if value == 0:
+        #         del self.solution.extraneous['PFAS'][key]
+        # # implement a catch for error when a custom PFAS is added but not named. 
 
-        for key,value in c.get('VOC', {}).items():
-            if key != "":
-                testsolution = self.pp.add_solution({},{
-                        'VOC':{key: value}
-                    })
-                self.solution = self.solution + testsolution
-            if value == 0:
-                del self.solution.extraneous['VOC'][key]
+        # for key,value in c.get('VOC', {}).items():
+        #     if key != "":
+        #         testsolution = self.pp.add_solution({},{
+        #                 'VOC':{key: value}
+        #             })
+        #         self.solution = self.solution + testsolution
+        #     if value == 0:
+        #         del self.solution.extraneous['VOC'][key]
         
-        for key,value in c.get('Other', {}).items():
-            if key != "":
-                testsolution = self.pp.add_solution({},{
-                        'Other':{key: value}
-                    })
-                self.solution = self.solution + testsolution
+        # for key,value in c.get('Other', {}).items():
+        #     if key != "":
+        #         testsolution = self.pp.add_solution({},{
+        #                 'Other':{key: value}
+        #             })
+        #         self.solution = self.solution + testsolution
             
-            if value == 0:
-                del self.solution.extraneous['Other'][key]
+        #     if value == 0:
+        #         del self.solution.extraneous['Other'][key]
 
 
 
 
 
-        ## equalize solution
+        ## equalize solution to ensure all mass balances are solved
         self.solution.equalize('Calcite', 1000, 0)
 
         self.emitter = True
