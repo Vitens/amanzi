@@ -97,13 +97,13 @@ class ParametricModel():
   @property
   # calculation context for parameters
   def context(self):
-    return self.parameters | self.methods | {'quantity': self.quantity, 'quality': self.quality, 'hydraulics': self.hydraulics} | self.output_parameters
+    return self.parameters | self.methods | {'quantity': self.quantity, 'quality': self.quality, 'hydraulics': self.hydraulics, 'energy': self.energy} | self.output_parameters
 
   def generate_tables(self):
 
     tables = []
 
-    for c,summarize,precision in [['design',None,0], ['hydraulic',None,0], ['energy','kWh/m3',3]]:
+    for c,summarize,precision in [['design',None,0], ['hydraulic',None,0], ['energy','kWh/m3',3], ['sustainability', 'gCO2-eq/m3', 2], ['chemicals', None, 0]]:
       outputs = [o for o in self.output_parameters.values() if o.category == c]
 
       sections = []

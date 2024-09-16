@@ -17,3 +17,10 @@ class Project:
         with open(file) as slm:
             output = json.load(slm)
         return output
+    
+    def report(self):
+
+        return {
+            'scenarios': [s.name for _,s in self.scenarios.items()],
+            'results': [self.scenarios[s].report() for s in self.scenarios]
+        }

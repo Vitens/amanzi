@@ -77,8 +77,4 @@ outputs:
       stage_2:
         uom: kWh/m3
         equation: "0.01"
-    production:
-      generator:
-        uom: kWh/m3
-        equation: "-0.01"
     

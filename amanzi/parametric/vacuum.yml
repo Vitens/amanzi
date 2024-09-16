@@ -1,20 +1,30 @@
 parameters:
   design:
+    vacuum:
+      methane_reuse:
+        default: false
+        uom: '-'
+  operational:
     general:
       vacuum_pressure:
-        name: Vacuum Pressure
-        description: "Pressure of the vacuum"
         default: 0.2
-        uom: atm
+        uom: bara
         range: [0.01, 1.0]
 
-
-
 outputs:
-  design:
-    general:
-      test:
-        name: test
-        equation: "1 + 1"
-        uom: "-"
-        description: test
+  hydraulic:
+    hydraulic_line:
+      headloss_model:
+        equation: "8"
+  energy:
+    vacuum_system:
+      vacuum_power:
+        equation: "0.12"
+        uom: kWh/m3
+        range: [0.1, 10.0]
+    energy_production:
+      generator:
+        equation: "0.1"
+        uom: kWh/m3
+        range: [0.1, 10.0]
+        if: "methane_reuse"

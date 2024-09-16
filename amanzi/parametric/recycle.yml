@@ -1,0 +1,6 @@
+outputs:
+  energy:
+    energy_consumption:
+      total:
+        uom: kWh/m3
+        equation: "0.5"

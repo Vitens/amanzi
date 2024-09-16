@@ -1,6 +1,6 @@
 import phreeqpython
 from collections import OrderedDict
-from ..components.solvers import QuantitySolver, QualitySolver, HydraulicSolver, EnergySolver
+from ..components.solvers import QuantitySolver, QualitySolver, HydraulicSolver, EnergySolver, SustainabilitySolver
 from .. import models
 from ..components import Connection, solution
 
@@ -11,6 +11,7 @@ MODULES = sys.modules['amanzi.models']
 class Scenario:
     def __init__(self, project, config):
         self.config = config
+        self.name = config['name']
         self.pp = phreeqpython.PhreeqPython()
         # loading
         self.models = self.load_models()  
@@ -21,13 +22,29 @@ class Scenario:
             'quantity': QuantitySolver(self),
             'quality': QualitySolver(self),
             'hydraulics': HydraulicSolver(self),
-            'energy': EnergySolver(self)
+            'energy': EnergySolver(self),
+            'sustainability': SustainabilitySolver(self)
         })
 
     def run_scenario(self, until=None):
         # run all solvers in order
         for _,solver in self.solvers.items():
             solver.solve(until)
+
+    def report(self):
+        # solve the scenario
+        self.run_scenario()
+        # model indices
+        order = {m.name: m.index for i,m in self.models.items()}
+        # transform to list ordered by index:
+        order = [name for name, index in sorted(order.items(), key=lambda item: item[1])]
+
+
+
+        return {
+            'summaries': {s: self.solvers[s].summary() for s in self.solvers},
+            'order': order
+            }
 
     def load_models(self):
         models = {}

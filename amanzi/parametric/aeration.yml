@@ -1,0 +1,20 @@
+outputs:
+  sustainability:
+    direct_emissions:
+      co2_emission:
+        equation: "quality.influent.product.total('CO2','mg') - quality.effluent.product.total('CO2','mg')"
+        uom: gCO2-eq/m3
+        precision: 2
+      methane_emission:
+        equation: "methane_removal * methane_factor"
+        uom: gCO2-eq/m3
+        precision: 2
+        parameters:
+          methane_removal:
+            uom: "g/m3"
+            precision: 2
+            equation: "(quality.influent.product.total('Mtg') - quality.effluent.product.total('Mtg'))*16.04"
+          methane_factor:
+            uom: "gCO2-eq/gCH4"
+            precision: 0
+            equation: "27"

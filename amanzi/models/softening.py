@@ -5,12 +5,13 @@ from scipy.optimize import fmin
 
 class Softening(Model, Balance):
 
-    parametric_model = ['model', 'softening']
+    parametric_model = ['base', 'model', 'softening']
 
     def __init__(self, config, pp) -> None:
         super().__init__(config, pp)
 
         self.base_chemical = self.parameters['base_chemical']
+        self.to_si = self.parameters['soften_to_si']
         self.acid_chemical = self.parameters['acid_chemical']
         self.base_dosing = float(self.parameters['base_dosage'])
         self.acid_dosing = float(self.parameters['acid_dosage'])
@@ -35,7 +36,7 @@ class Softening(Model, Balance):
         # dose chemical
         dosed = reactor_in.copy().add(base_chemical, base_dosing, 'mmol')
 
-        softened = dosed.copy().desaturate('Calcite', to_si=0.6)
+        softened = dosed.copy().desaturate('Calcite', to_si=self.to_si)
 
         # if acid_position is product or bypass, then acidify
         if self.acid_position == 'reactor-outlet':

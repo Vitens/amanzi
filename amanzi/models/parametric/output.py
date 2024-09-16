@@ -85,7 +85,11 @@ class Output:
         """
         if self._value is not None:
             return self._value
-        self._value = self._calculate_expression(self.param['equation'], context,evaluation_stack=evaluation_stack)
+        try:
+            self._value = self._calculate_expression(self.param['equation'], context,evaluation_stack=evaluation_stack)
+        except:
+            self._value = 0
+
         return self._value
 
     def _calculate_expression(self, expression, context, evaluation_stack=None):

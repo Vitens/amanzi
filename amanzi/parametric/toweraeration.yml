@@ -37,7 +37,6 @@ outputs:
         uom: m3
         equation: "math.pi * (diameter/2)**2 * bed_height"
         precision: 2
-        if: "ambient_temperature < 0"
       total_surface:
         uom: m2
         equation: "volume * packing['ageo']"
@@ -110,9 +109,4 @@ outputs:
           resparitoryquotient:
             uom: "-"
             equation: "rq"
-            precision: 2
-
-        
-
-
-    
+            precision: 2    

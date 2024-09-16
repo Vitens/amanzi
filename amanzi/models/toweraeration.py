@@ -14,7 +14,7 @@ from .tower.compounds import Chemical
 
 
 class Toweraeration(Model, Balance):
-    parametric_model = ['model', 'toweraeration']
+    parametric_model = ['model', 'toweraeration', 'aeration']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
         self.configuration = config.get('configuration', {})
@@ -27,6 +27,7 @@ class Toweraeration(Model, Balance):
         self.max_capacity = float(self.parameters['maximal_capacity'])
         self.compound = self.configuration.get('model_component', 'CO2')
         self.temp_g = float(self.parameters['ambient_temperature'])
+
         self.totalpressuredrop = 0 
         self.g_density = Air(self.temp_g, 1.023e5).density()
         self.operationparams={}
@@ -83,9 +84,6 @@ class Toweraeration(Model, Balance):
         ctx['engel_stickl'] = self.engel_stickl
         ctx['operationpoint'] = self.operationpoint
         return ctx
-
-
-    
       
     def get_NTU(self,T_liq,T_gas,flow,diameter, packing_height, packing, RQ, compound, c_in, c_gas,HTU_ov):
 
@@ -181,6 +179,7 @@ class Toweraeration(Model, Balance):
 
     def generate_tables(self):
         tables = super().generate_tables()
+
         tables[0]['sections'].append({
             'name': 'removalrates',
             'namespace': 'toweraeration',
