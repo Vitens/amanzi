@@ -2,7 +2,7 @@ parameters:
   chemicals:
     general:
       chemical:
-        default: 'CO2'
+        default: 'NaOH'
         options: ['CO2', 'HCl', 'H2SO4', 'NaOH' , 'Ca(OH)2', 'CaCO3','O2', ' FeCl3','MnCl2' ]
       mode: 
         default: constant

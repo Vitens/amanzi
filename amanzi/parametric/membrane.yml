@@ -62,41 +62,6 @@ outputs:
         description: "Total membrane length in the stack"
         equation: "total_modules * 10"
         uom: m
-      membrane_volume:
-        name: Membrane Volume
-        description: "Total membrane volume in the stack"
-        equation: "total_modules * 10"
-        uom: m3
-      membrane_mass:
-        name: Membrane Mass
-        description: "Total membrane mass in the stack"
-        equation: "total_modules * 10"
-        uom: kg
-      membrane_cost:
-        name: Membrane Cost
-        description: "Total membrane cost in the stack"
-        equation: "total_modules * 10"
-        uom: USD
-      membrane_lifetime:
-        name: Membrane Lifetime
-        description: "Total membrane lifetime in the stack"
-        equation: "total_modules * 10"
-        uom: years
-      membrane_energy:
-        name: Membrane Energy
-        description: "Total membrane energy in the stack"
-        equation: "total_modules * 10"
-        uom: kWh
-      membrane_pressure:
-        name: Membrane Pressure
-        description: "Total membrane pressure in the stack"
-        equation: "total_modules * 10"
-        uom: atm
-      membrane_temperature:
-        name: Membrane Temperature
-        description: "Total membrane temperature in the stack"
-        equation: "total_modules * 10"
-        uom: K
       membrane_flux:
         name: Membrane Flux
         description: "Total membrane flux in the stack"

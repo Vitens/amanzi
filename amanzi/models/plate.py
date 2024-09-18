@@ -8,12 +8,9 @@ class Plate(Model, Balance):
     parametric_model = ['model', 'plate', 'aeration']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
-        config = config.get('configuration', {})
-        config = config.get('parameters', {})
-
-        self.rq = float(config.get('RQ', 10))
-        self.recirculation = float(config.get('recirculation', 0)) #/ 100
-        self.efficiency = 0.1#float(config.get('efficiency', 10)) #/ 100
+        self.rq = float(self.parameters['RQ'])
+        self.recirculation = float(self.parameters['recirculation'])
+        self.efficiency = float(self.parameters['efficiency'])
         self.totalpressuredrop = 0 
         self.temp_g = 20
         self.g_density = Air(self.temp_g, 1.023e5).density()

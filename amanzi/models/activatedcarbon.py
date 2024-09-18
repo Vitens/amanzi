@@ -20,7 +20,7 @@ from .PSDM import PSDM_functions
 logging.basicConfig(filename='example.log', filemode='w', level=logging.INFO)
 
 class Activatedcarbon(Model, Balance):
-    parametric_model = ['model', 'activatedcarbon']
+    parametric_model = ['base','model', 'activatedcarbon']
 
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
