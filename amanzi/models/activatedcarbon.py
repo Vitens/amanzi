@@ -17,7 +17,7 @@ from .PSDM import PSDM
 from .PSDM import PSDM_functions
 
 
-logging.basicConfig(filename='example.log', filemode='w', level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 class Activatedcarbon(Model, Balance):
     parametric_model = ['model', 'activatedcarbon']

@@ -1,11 +1,8 @@
 import pprint as pp
 from amanzi.core import Project
 
-p = Project('/Users/Abel/Downloads/demo-complete.json')
+p = Project('/Users/Abel/Downloads/demo123.json')
 
 s  = p.scenarios[0]
 
-import time
-st = time.time()
-p.report()
-et = time.time()
+s.run_scenario(until='cfzrwi')

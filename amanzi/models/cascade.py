@@ -91,8 +91,6 @@ class Cascade(Model, Balance):
             ## oxygen saturation efficiency
             o2_eff.append({'x': steps, 'y': ((design_effluents.total("Oxg", "mmol") / oxg_saturation)) * 100})
         
-        print(effluent.pH)
-
         return {
             'influent': {
                 'pH': influent.pH,
