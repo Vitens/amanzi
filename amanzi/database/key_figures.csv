@@ -1,0 +1,31 @@
+﻿name;category;type;default;UOM;remarks
+max_hour;general;operational;1.2;-;day peak factor
+well_efficiency;general;operational;55;%;well pump efficiency
+booster_efficiency;general;operational;75;%;booster efficiency
+carbon_intensity_grid;general;emission;250;gCO2/kWh; 
+methane_emission_factor;general;emission;28;gCO2/gCH4;
+ph_lower_limit;general;norms;7;-;
+ph_lower_threshold;general;norms;7.7;-;
+ph_upper_threshold;general;norms;8.3;-;
+ph_upper_limit;general;norms;9.5;-;
+sc_upper_threshold;general;norms;80;mS/m;
+sc_upper_limit;general;norms;125;mS/m;
+o2_lower_threshold;general;norms;4;mg/l;
+o2_lower_limit;general;norms;2;mg/l;
+hardness_upper_threshold;general;norms;1.43;mmol/l;
+hardness_upper_limit;general;norms;2;mmol/l;
+hardness_lower_limit;general;norms;1;mmol/l;
+aggco2_upper_threshold;general;norms;2.2;mmol/l;
+aggco2_upper_limit;general;norms;2.2;mmol/l;
+ccpp90_upper_threshold;general;norms;0.4;mmol/l;
+ccpp90_upper_limit;general;norms;0.6;mmol/l;
+fe_upper_threshold;general;norms;0.05;mg/l;
+fe_upper_limit;general;norms;0.1;mg/l;
+mn_upper_threshold;general;norms;0.01;mg/l;
+mn_upper_limit;general;norms;0.05;mg/l;
+nh4_upper_threshold;general;norms;0.05;mg/l;
+nh4_upper_limit;general;norms;0.2;mg/l;
+na_upper_threshold;general;norms;100;mg/l;
+na_upper_limit;general;norms;150;mg/l;
+cl_upper_threshold;general;norms;100;mg/l;
+cl_upper_limit;general;norms;150;mg/l;

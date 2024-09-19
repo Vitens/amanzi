@@ -1,5 +1,6 @@
 import ast
 import math
+import logging
 
 class VariableVisitor(ast.NodeVisitor):
     def __init__(self):
@@ -88,6 +89,8 @@ class Output:
         try:
             self._value = self._calculate_expression(self.param['equation'], context,evaluation_stack=evaluation_stack)
         except:
+            logging.error(f"Error calculating {self.name}")
+            raise
             self._value = 0
 
         return self._value
@@ -129,7 +132,9 @@ class Output:
             # Evaluate the expression safely
             value = eval(compiled, {'__builtins__': ctx['__builtins__']}, ctx)
         except Exception as e:
+            logging.error(f"Error! calculating {self.name}")
             raise ValueError(f"Error evaluating expression \"{self.param['equation']}\" for {self.name}: {e}")
+
         
         # Remove the current parameter from the stack
         evaluation_stack.pop()

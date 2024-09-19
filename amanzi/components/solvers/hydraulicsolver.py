@@ -18,7 +18,7 @@ class HydraulicSolver(Solver):
         self._walk_backwards(leaf)
       
       for start in start_nodes:
-        self._walk_forward(start, 0.55) # pump efficiency of 55% for now
+        self._walk_forward(start, self.scenario.database.get('well_efficiency')/100) # pump efficiency of 55% for now
       
       # assign average efficiency to models
       for m in self.scenario.models.values():
@@ -82,7 +82,7 @@ class HydraulicSolver(Solver):
               # set head out as head in - total headloss
               from_node.hydraulics.head_out = from_node.hydraulics.head_in - info['total_headloss']
             else:
-              pump_efficiency = 0.75
+              pump_efficiency = self.scenario.database.get('booster_efficiency')/100
 
             # set pump efficiency to 75% for integrated booster
           else:
@@ -92,7 +92,7 @@ class HydraulicSolver(Solver):
       for c in from_node.downstream_connections.get('product', []):
         # assign booster to connection if head_out is lower than head_in
         if from_node.hydraulics.head_out < c.to_model.hydraulics.head_in:
-          pump_efficiency = 0.75
+          pump_efficiency = self.scenario.database.get('booster_efficiency')/100
           c.hydraulics.booster = True
           c.hydraulics.booster_head = c.to_model.hydraulics.head_in - from_node.hydraulics.head_out
         

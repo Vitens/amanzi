@@ -97,7 +97,7 @@ class ParametricModel():
   @property
   # calculation context for parameters
   def context(self):
-    return self.parameters | self.methods | {'quantity': self.quantity, 'quality': self.quality, 'hydraulics': self.hydraulics, 'energy': self.energy} | self.output_parameters
+    return self.parameters | self.methods | {'quantity': self.quantity, 'quality': self.quality, 'hydraulics': self.hydraulics, 'energy': self.energy, 'db': self.database} | self.output_parameters
 
   def generate_tables(self):
 

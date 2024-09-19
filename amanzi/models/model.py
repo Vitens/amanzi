@@ -19,6 +19,7 @@ class Model(ParametricModel):
         self.pp = pp
 
         self.index = None # index of the model in the scenario, set by quality solver during solve pass
+        self.database = None # database object, set by scenario during initialization
 
         """ Solver namespace parameters """
         self.quantity = DotMap({

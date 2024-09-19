@@ -135,7 +135,6 @@ class Sandfiltration(Model, Loss):
 
         for i, step in enumerate(steps):
 
-            print(step.pH)
             step_results = {}
 
             for n, v in values.items():

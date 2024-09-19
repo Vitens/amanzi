@@ -6,7 +6,8 @@ class SustainabilitySolver(Solver):
 
     total_distribution = self.scenario.solvers['quantity'].summary()['total_distribution'] * 1e6
     # sum energy consumption for each model
-    for m in self.scenario.models.values():
+    models = self.scenario.models if not until else {until: self.scenario.models[until]}
+    for m in models.values():
       outputs = [o for o in m.output_parameters.values() if o.category == 'sustainability' and o.uom == 'gCO2-eq/m3' and not o.hidden(m.context)]
 
       # specific co2-eq emissions in gCO2-eq/m3 produced by the model

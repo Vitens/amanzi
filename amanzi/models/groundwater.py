@@ -88,9 +88,6 @@ class Groundwater(Model):
         #     if value == 0:
         #         del self.solution.extraneous['Other'][key]
 
-        print(self.solution.extraneous)
-
-
 
         ## equalize solution to ensure all mass balances are solved
         self.solution.equalize('Calcite', 1000, 0)

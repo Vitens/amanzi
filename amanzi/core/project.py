@@ -1,3 +1,4 @@
+from .database import Database
 from .scenario import Scenario
 import json
 
@@ -5,7 +6,13 @@ class Project:
     def __init__(self, slm = "", debug=True):                
 
         self.config = self.load_file(slm)
+
+        self.database = Database()
+        # overwrite key figures for the whole project
+        self.database.overwrite(self.config['key_figure_overwrites'])
+
         self.scenarios = self.load_scenarios()
+
          
     def load_scenarios(self):
         return {s: Scenario(self, scenario) 
