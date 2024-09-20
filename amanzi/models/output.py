@@ -10,12 +10,13 @@ class Output(Model):
     
     @property
     def quality_table(self):
+
         ## return table of quality
         parameters = [
-        {'name': 'pH', 'll': 6.5, 'lt': 7.7, 'ut': 8.3, 'ul': 9.5, 'value': lambda s: s.pH, 'units': '-'},
+        {'name': 'ph', 'll': 6.5, 'lt': 7.7, 'ut': 8.3, 'ul': 9.5, 'value': lambda s: s.pH, 'units': '-'},
         {'name': 'sc', 'ut': 80, 'ul': 130, 'value': lambda s: s.sc20/10, 'units': 'mS/m'},
         {'name': 'o2', 'lt': 4, 'll': 2, 'value': lambda s: s.total('Oxg')*32 + s.total('O2') * 32, 'units': 'mg/l'},
-        {'name': 'hh', 'ut': 1.43, 'ul': 2, 'll': 1, 'value': lambda s: s.hardness, 'units': 'mmol/l'},
+        {'name': 'hardness', 'ut': 1.43, 'ul': 2, 'll': 1, 'value': lambda s: s.hardness, 'units': 'mmol/l'},
         {'name': 'ccpp90', 'ut': 0.4, 'ul': 0.6, 'value': lambda s: s.ccpp90, 'units': 'mmol/l'},
         {'name': 'aggco2', 'ul': 2.2, 'ut': 2.2, 'units': 'mg/l', 'value': lambda s: -1 * min(0, s.ccpp()) * 44.01},
         {'name': 'fe', 'ut': 0.05, 'ul': 0.1, 'value': lambda s: s.total('Fe')*55.84, 'units': 'mg/l'},
@@ -25,6 +26,19 @@ class Output(Model):
         {'name': 'cl', 'ut': 100, 'ul': 150, 'value': lambda s: s.total('Cl')*35.45, 'units': 'mg/l'},
         # {'name': 'Color', 'ut': 10, 'ul': 15, 'value': lambda s: s.extraneous['Color'], 'units': 'mg/l'},
         ]
+
+        # TODO: make this dynamic
+
+        for p in parameters:
+            # get limits and thresholds from the database
+            if 'll' in p:
+                p['ll'] = self.database.get(f"{p['name']}_lower_limit")
+            if 'lt' in p:
+                p['lt'] = self.database.get(f"{p['name']}_lower_threshold")
+            if 'ut' in p:
+                p['ut'] = self.database.get(f"{p['name']}_upper_threshold")
+            if 'ul' in p:
+                p['ul'] = self.database.get(f"{p['name']}_upper_limit")
     
         output = []
         for p in parameters:

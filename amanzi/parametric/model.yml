@@ -42,7 +42,7 @@ outputs:
         precision: 0
       max_day:
         uom: 'm3/h'
-        equation: "quantity.inflow.product * 1e6 / 24 / 365 * 1.2"
+        equation: "quantity.inflow.product * 1e6 / 24 / 365 * db.max_hour"
         precision: 0
       average_day_load:
         uom: "%"

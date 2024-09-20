@@ -1,4 +1,5 @@
 import phreeqpython
+import copy
 from collections import OrderedDict
 from ..components.solvers import QuantitySolver, QualitySolver, HydraulicSolver, EnergySolver, SustainabilitySolver
 from .. import models
@@ -13,9 +14,15 @@ class Scenario:
         self.config = config
         self.name = config['name']
         self.pp = phreeqpython.PhreeqPython()
-        # loading
+
+        # load database and apply overwrites for this scenario during initialization
+        self.database = copy.copy(project.database)
+        self.database.overwrites = self.config['key_figure_overwrites']
+
+        # load models and connections
         self.models = self.load_models()  
         self.connections = self.load_connections()
+
 
         # list of solvers
         self.solvers = OrderedDict({
@@ -53,6 +60,7 @@ class Scenario:
             model_class = getattr(MODULES, modeltype, "Model")
             models[model["uid"]] = model_class(model, self.pp)
             models[model["uid"]].scenario = self.config # please make a more consistent way of accessing the whole file from a model!
+            models[model["uid"]].database = self.database
 
         return models
 
