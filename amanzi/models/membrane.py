@@ -57,8 +57,7 @@ class Membrane(Model, Splitter):
 
     @property
     def modules(self):
-        modules = 6
-        # modules = self.configuration.get('modules', 6)/2 if self.optiflux else self.configuration.get('modules', 6)
+        modules = self.parameters['number_of_stacks']/2 if self.optiflux else self.parameters['number_of_stacks']
         return int(modules)
 
 

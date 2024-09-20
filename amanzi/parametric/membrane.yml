@@ -11,7 +11,7 @@ parameters:
         default: spiral
         options: [spiral, hollow_fiber]
       number_of_stacks:
-        default: 3
+        default: 6
         range: [1, 10]
         uom: '-'
       modules_per_stage:
