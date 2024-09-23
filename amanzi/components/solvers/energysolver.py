@@ -38,14 +38,24 @@ class EnergySolver(Solver):
     models = [x[0] for x in order]
     metrics = [x[1] for x in order]
 
+    total_consumption = sum([m.energy.total_consumption for m in self.scenario.models.values()])/1e3
+    specific_consumption = sum([m.energy.specific_consumption for m in self.scenario.models.values()])
 
+    specific_consumption_distribution = sum([m.energy.specific_consumption for m in self.scenario.models.values() if m.type == 'output'])
+    specific_consumption_production = specific_consumption - specific_consumption_distribution
 
     return {
       'order': models,
       'models': metrics,
+      'total_consumption': total_consumption,
+      'specific_consumption': specific_consumption,
+      'specific_consumption_distribution': specific_consumption_distribution,
+      'specific_consumption_production': specific_consumption_production,
       'metrics': [
-        {'name': 'total_consumption', 'value': sum([m.energy.total_consumption for m in self.scenario.models.values()])/1e3, 'uom': 'MWh/y', 'precision': 0, 'positive': False},
-        {'name': 'total_specific_consumption', 'value': sum([m.energy.specific_consumption for m in self.scenario.models.values()]), 'uom': 'kWh/m3', 'precision': 3, 'positive': False}
+        {'name': 'specific_consumption_production', 'value': specific_consumption_production, 'uom': 'kWh/m3', 'precision': 3, 'positive': False},
+        {'name': 'specific_consumption_distribution', 'value': specific_consumption_distribution, 'uom': 'kWh/m3', 'precision': 3, 'positive': False},
+        {'name': 'total_specific_consumption', 'value': specific_consumption, 'uom': 'kWh/m3', 'precision': 3, 'positive': False, 'group': 'total'},
+        {'name': 'total_consumption', 'value': total_consumption, 'uom': 'MWh/y', 'precision': 0, 'positive': False, 'group': 'total'}
       ]
     }
 

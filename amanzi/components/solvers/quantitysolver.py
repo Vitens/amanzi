@@ -95,7 +95,7 @@ class QuantitySolver(Solver):
             'metrics': [
                 {'name': 'total_production', 'value': production, 'uom': 'Mm3/y', 'precision': 2, 'positive': True},
                 {'name': 'total_distribution', 'value': distribution, 'uom': 'Mm3/y', 'precision': 2, 'positive': True},
-                {'name': 'loss', 'value': production-distribution, 'uom': 'Mm3/y', 'precision': 2, 'positive': False},
-                {'name': 'loss_percentage', 'value': (production-distribution)/production * 100, 'uom': '%', 'precision': 2, 'positive': False},
+                {'name': 'loss', 'value': production-distribution, 'uom': 'Mm3/y', 'precision': 2, 'positive': False, 'group': 'loss'},
+                {'name': 'loss_percentage', 'value': (production-distribution)/production * 100, 'uom': '%', 'precision': 2, 'positive': False, 'group': 'loss'},
             ]
         }

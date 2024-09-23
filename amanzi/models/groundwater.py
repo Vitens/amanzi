@@ -3,7 +3,7 @@ import logging
 from .model import Model
 
 class Groundwater(Model):
-    parametric_model = ['base', 'groundwater']
+    parametric_model = ['base', 'groundwater', 'quality']
 
     def __init__(self, config, pp):
         super().__init__(config, pp)
@@ -23,9 +23,9 @@ class Groundwater(Model):
             self.constant -= self.minorloss
 
         
-        c = configuration.get('solution', {}) 
 
         # pprint.pprint(c)
+        c = self.parameters
 
         oxg = c.get('oxygen', 0) if c.get('oxygen', 0) > 0 else 0.00001
         h2s = 'Sg' if c.get('oxygen', 0) == 0 else 'S(-2)'
@@ -67,6 +67,8 @@ class Groundwater(Model):
          'TOC': c.get('total-organic-carbon', 0),
             'PFAS':{}, 'VOC':{}, 'Other':{}}
            )
+
+        c = configuration.get('solution', {}) 
 
         for key,value in c.get('PFAS', {}).items():
             if key != "" and key != '':

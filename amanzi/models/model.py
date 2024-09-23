@@ -7,7 +7,7 @@ class Model(ParametricModel):
 
     def __init__(self, config, pp):
         super().__init__(config)
-        self.uid = config.get("uid", "")	
+        self.uid = config.get('uid', "")
         self.type = config.get("type", "")
         self.name = config.get("name", "")
         self.emitter = False

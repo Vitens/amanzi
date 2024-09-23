@@ -43,7 +43,6 @@ class Membrane(Model, Splitter):
         self.element_length = 1 # m
         self.rho = 1000 # kg/m3
         self.porosity = 0.85 # RO-porosity = 0.8-0.85 (Vrouwenvelder, 2009)
-        print("OPTIFLUX =", self.optiflux)
         
 
     @property

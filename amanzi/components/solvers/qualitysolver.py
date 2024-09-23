@@ -1,4 +1,5 @@
 import logging
+import math
 from typing import Dict, List, Optional, Union
 from .solver import Solver
 
@@ -109,16 +110,45 @@ class QualitySolver(Solver):
         
         order = sorted(qualities, key=lambda x: x[1])
         models = [x[0] for x in order]
-        qualities = [x[2] for x in order]
         # sort qualities based on order
-
+        qualities = [x[2] for x in order]
 
         return {
             'order': models,
             'models': qualities,
             'effluent': effluent,
-            'metrics': effluent
+            'metrics': self.grade_quality(effluent)
         }
+
+    def grade_quality(self, quality):
+        """
+        Grades the quality based on the given quality metrics.
+
+        Args:
+            quality (Dict[str, Union[str, float]]): A dictionary of quality metrics.
+        """
+        db = self.scenario.database
+
+        for component in quality:
+            # get threshold and limits from database
+            nm = component['name'].lower()
+            ll = db.get(nm+'_lower_limit', -math.inf)
+            lt = db.get(nm+'_lower_threshold', -math.inf)
+            ut = db.get(nm+'_upper_threshold', math.inf)
+            ul = db.get(nm+'_upper_limit', math.inf)
+            
+            value = component['value']
+
+            # set color based on thresholds and limits
+            if value < ll or value > ul:
+                component['color'] = 'red'
+            elif value < lt or value > ut:
+                component['color'] = 'orange'
+            else:
+                component['color'] = 'green'
+        
+        return quality
+    
 
     @property
     def error(self) -> Dict[str, float]:
