@@ -5,6 +5,7 @@ parameters:
         uom: Mm3
         default: 10.0
         range: [0.1, 100]
+        quick: true
 
       minimal_capacity:
         uom: m3/h
@@ -56,8 +57,7 @@ parameters:
       pipe_material:
         default: "PE"
         options: ["PE", "PVC", "Steel"]
-
-
+    
 outputs:
   hydraulic:
     hydraulic_line:
@@ -87,11 +87,11 @@ outputs:
         uom: 'm3/h'
         equation: "number_of_wells * average_well_capacity"
         precision: 0
-      average_day:
+      production:
         uom: 'm3/h'
-        equation: "yearly_production * 1e6 / 24 / 365"
+        equation: "capacity"
         precision: 0
-        validation: "average_day < installed_capacity"
+        validation: "capacity < installed_capacity"
       wells_in_use:
         uom: "-"
         equation: "math.ceil(capacity / average_well_capacity)"
@@ -101,6 +101,7 @@ outputs:
         uom: "-"
         equation: "max(0,number_of_wells - wells_in_use)"
         precision: 0
+        validation: "wells_standby > 0"
     transport_pipe:
       average_flow:
         uom: m3/h
@@ -147,6 +148,7 @@ outputs:
             uom: mH2O
             equation: "required_pump_head - head_at_treatment"
           pump_efficiency:
-            equation: "0.55"
-            precision: 2
+            equation: "db.well_efficiency/100"
+            uom: "%"
+            precision: 0
         

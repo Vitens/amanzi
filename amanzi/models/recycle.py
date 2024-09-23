@@ -6,8 +6,10 @@ class Recycle(Model, Splitter):
 
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        self.split = config['configuration'].get('fraction', 0.8)
-        self.product_solution = pp.add_solution({})
+        self.split = config.get('configuration', {}).get('fraction', 0.8)
+
+        if pp:
+            self.product_solution = pp.add_solution({})
     
 
     def run_quality(self, type, total_inflow, solution):

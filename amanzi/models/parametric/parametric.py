@@ -18,7 +18,11 @@ class ParametricModel():
 
     # parse the yaml files
     for filename in self.parametric_model:
-      self.parse_yaml(filename)
+      try:
+        self.parse_yaml(filename)
+      except Exception as e:
+        raise Exception(f"Error parsing {filename}.yml: {e}")
+
     
     # set parameters
     self.parameters = self.config.get('parameters', {})
