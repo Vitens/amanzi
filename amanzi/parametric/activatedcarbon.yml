@@ -152,5 +152,3 @@ outputs:
           backwash_power_consumption:
             uom: kWh
             equation: "backwash_volume * 9.81 * backwash_head * 1/backwash_pump_efficiency / 3600"
-
-    

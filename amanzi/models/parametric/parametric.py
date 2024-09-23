@@ -19,7 +19,8 @@ class ParametricModel():
     # parse the yaml files
     for filename in self.parametric_model:
       self.parse_yaml(filename)
-    
+    print("PARAMETRIC MODEL initialized")
+    print(config)
     # set parameters
     self.parameters = self.config.get('parameters', {})
     # set unknown parameters to default values
