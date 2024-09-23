@@ -1,6 +1,9 @@
 from typing import Any
 import pandas as pd
 from pathlib import Path
+
+# sentinel object to indicate that a key figure was not found in the database
+_sentinel = object()
 # key-figure database
 class Database:
   def __init__(self, database_file=None):
@@ -18,15 +21,19 @@ class Database:
     except:
       return super().__getattribute__(name)
   
-  def get(self, key):
+  def get(self, key, default=_sentinel):
     if key in self.overwrites:
       return float(self.overwrites[key])
 
     row = self.db[self.db['name'] == key]
-    if row.empty:
+
+    if not row.empty:
+      return float(row['default'].values[0])
+    elif default is not _sentinel:
+      return default
+    else:
       raise KeyError(f'Key figure {key} not found in database')
 
-    return float(row['default'].values[0])
   
   # overwrite key figures for the whole project
   def overwrite(self, key_figures):

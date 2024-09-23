@@ -51,8 +51,8 @@ class SustainabilitySolver(Solver):
       'total_emission': total_emission,
       'total_specific_emission': total_specific_emission,
       'metrics': [
-        {'name': 'total_emission', 'value': total_emission, 'uom': 'ton CO2-eq/y'},
         {'name': 'total_specific_emission', 'value': total_specific_emission, 'uom': 'gCO2-eq/m3'},
+        {'name': 'total_emission', 'value': total_emission, 'uom': 'ton CO2-eq/y'},
       ]
     }
 
