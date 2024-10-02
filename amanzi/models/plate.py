@@ -5,7 +5,7 @@ import numpy as np
 from .tower.air_properties import Air
 
 class Plate(Model, Balance):
-    parametric_model = ['model', 'plate', 'aeration']
+    parametric_model = ['base','model', 'plate', 'aeration']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
         self.rq = float(self.parameters['RQ'])
