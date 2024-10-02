@@ -4,12 +4,14 @@ from .submodels.splitter import Splitter
 class Recycle(Model, Splitter):
     parametric_model = ['recycle']
 
-    def __init__(self, config, pp):
+    def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
-        self.split = config.get('configuration', {}).get('fraction', 0.8)
 
         if pp:
             self.product_solution = pp.add_solution({})
+        self.configurations = config.get('configuration', {})
+        self.split = self.configurations.get('fraction', 0.8)
+
     
 
     def run_quality(self, type, total_inflow, solution):

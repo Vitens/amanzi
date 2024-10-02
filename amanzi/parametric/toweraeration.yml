@@ -84,7 +84,7 @@ outputs:
         equation: "operationpoint(capacity, rq,diameter, engel_stickl)[1]*100"
         precision: 2
       F-Factor:
-        uom: "Pa0.5"
+        uom: "√Pa"
         equation: "operationpoint(capacity, rq,diameter, engel_stickl)[2]"
         precision: 2
 
