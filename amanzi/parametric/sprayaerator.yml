@@ -1,6 +1,6 @@
 parameters:
   design:
-    general:
+    sprayaerator:
       sauter_diameter:
         uom: m
         default: 0.0005
@@ -11,3 +11,76 @@ parameters:
         uom: m
         description: Height of the spray nozzle above the water surface [m]
         range: [0.01, 10]
+      surface_area:
+        default: 1.0
+        uom: m2
+        description: Surface area of the spray aeration unit [m2]
+        range: [0.1, 100]
+      area_per_nozzle:
+        default: 1
+        uom: m2
+        description: Area of the spray nozzle [m2]
+        range: [0.1, 10]
+      blowereficiency:
+        uom: "-"
+        default: 0.75
+        range: [0.01, 1]
+  operational:
+    general:
+      rq:
+        default: 2
+        uom: "-"
+        description: Ratio of air to water flow rate
+        range: [1,5]
+      ambient_temperature:
+        default: 15
+        uom: "C"
+        description: Ambient temperature [C]
+        range: [-30, 40]
+      nozzle_pressure:
+        default: 100
+        uom: kPa
+        description: Pressure of the spray nozzle [kPa]
+        range: [10, 10000]
+
+outputs:
+  design:
+    general:
+      total_nozzles:
+        name: Total Nozzles
+        description: Total number of nozzles in the spray aeration unit
+        equation: "surface_area / area_per_nozzle"
+        uom: '-'
+      total_air_flow:
+        name: Total Air Flow
+        description: Total air flow rate through the spray aeration unit
+        equation: "rq * capacity"
+        uom: m3/h
+  
+  energy:
+    electric_energy:
+      blower_energy:
+        uom: kWh/m3
+        equation: "blower_power(rq, ambient_temperature ,100 ,blowereficiency, Air_density)"
+        precision: 4
+        parameters:
+          blowerefficiency:
+            uom: "-"
+            equation: "blowereficiency"
+            precision: 2
+          resparitoryquotient:
+            uom: "-"
+            equation: "rq"
+            precision: 2  
+    hydraulic_energy:
+      nozzle_energy_loss:
+        uom: "kWh/m3"
+        equation: "1/3600 * (nozzle_pressure/100) * 9.81 * 1/(pump_efficiency)"
+        precision: 3
+        parameters:
+            pump_efficiency:
+              uom: "%"
+              equation: "hydraulics.efficiency"
+              precision: 0
+
+      

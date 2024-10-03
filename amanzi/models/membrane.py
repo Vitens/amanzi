@@ -10,7 +10,7 @@ from ..assets.membranes import MEMBRANE_DB
 KP = 0.99 #Hydraunotics constant for permeate flux (p. 258 from https://www.researchgate.net/publication/351606477)
 
 class Membrane(Model, Splitter):
-    parametric_model = ['model', 'membrane']
+    parametric_model = ['base','model', 'membrane']
     def __init__(self, config, pp):
         super().__init__(config, pp)
         #self.configuration = config.get('configuration', {}) 
@@ -19,7 +19,7 @@ class Membrane(Model, Splitter):
         #print(config)
         self.split = config.get('recovery', 0.8)
         #self.split = self.configuration.get('recovery', 0.8)
-        self.capacity = 100#self.configuration.get('capacity', 300)
+        self.capacity = config.get('nominal_capacity', 300)
 
         #self.membrane = self.configuration.get('membrane', 'ESPA2-LD')
         self.membrane_config = MEMBRANE_DB["SUEZ AK-400H"]
@@ -56,8 +56,7 @@ class Membrane(Model, Splitter):
 
     @property
     def modules(self):
-        modules = 6
-        # modules = self.configuration.get('modules', 6)/2 if self.optiflux else self.configuration.get('modules', 6)
+        modules = self.parameters['number_of_stacks']/2 if self.optiflux else self.parameters['number_of_stacks']
         return int(modules)
 
 
