@@ -17,4 +17,4 @@ outputs:
           methane_factor:
             uom: "gCO2-eq/gCH4"
             precision: 0
-            equation: "27"
+            equation: "db.methane_emission_factor"

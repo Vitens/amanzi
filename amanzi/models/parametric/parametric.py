@@ -111,9 +111,9 @@ class ParametricModel():
       outputs = [o for o in self.output_parameters.values() if o.category == c]
 
       sections = []
-      section = ""
+      # find sections
       for o in outputs:
-        if o.section != section:
+        if not any(s['name'] == o.section for s in sections):
           section = o.section
           sections.append({'name': section, 'namespace': o.namespace, 'precision': precision, 'uom': summarize})
       
@@ -135,7 +135,7 @@ class ParametricModel():
           values[o.name][label] = o.calculate(self.context | {'capacity': capacity})
           invalid[o.name][label+'_invalid'] = int(not o.validate(self.context | {'capacity': capacity}))
         
-          if summarize and o.uom == summarize and not o.hidden(self.context):
+          if summarize and o.uom == summarize and not o.hidden(self.context) and o.parent is None:
             # find relevant section
             section = next((s for s in sections if s['name'] == o.section), None)
             section[label] = section.get(label, 0) + values[o.name][label]

@@ -1,8 +1,8 @@
 import pprint as pp
 from amanzi.core import Project
 
-p = Project('/Users/Abel/Downloads/demo123.json')
+p = Project('/Users/Abel/Downloads/vacuum.json')
 
 s  = p.scenarios[0]
 
-s.run_scenario(until='cfzrwi')
+pp.pprint(s.models['0mcq94'].parameters)

@@ -8,7 +8,7 @@ class SustainabilitySolver(Solver):
     # sum energy consumption for each model
     models = self.scenario.models if not until else {until: self.scenario.models[until]}
     for m in models.values():
-      outputs = [o for o in m.output_parameters.values() if o.category == 'sustainability' and o.uom == 'gCO2-eq/m3' and not o.hidden(m.context)]
+      outputs = [o for o in m.output_parameters.values() if o.category == 'sustainability' and o.uom == 'gCO2-eq/m3' and not o.hidden(m.context) and o.parent is None]
 
       # specific co2-eq emissions in gCO2-eq/m3 produced by the model
       m.sustainability.model_specific_emission = emission = sum([m.get_output(o.name) for o in outputs])
