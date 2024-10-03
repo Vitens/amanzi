@@ -86,7 +86,7 @@ class Cascade(Model, Balance):
             ## calculate removal/transfer efficiency
             ## removal percentage = (1 - (effluent conc / influent conc)) * 100
             co2_eff.append({'x': steps, 'y': (1 - (design_effluents.total("CO2", "mg") / influent.total("CO2", "mg"))) * 100})
-            ch4_eff.append({'x': steps, 'y': max(0,(1 - (design_effluents.total("Mtg", "mmol") / influent.total("Mtg", "mmol"))) * 100)})
+            ch4_eff.append({'x': steps, 'y': max(0,(1 - (design_effluents.total("Mtg", "mmol") / (influent.total("Mtg", "mmol")+1e-6))) * 100)})
 
             ## oxygen saturation efficiency
             o2_eff.append({'x': steps, 'y': ((design_effluents.total("Oxg", "mmol") / oxg_saturation)) * 100})

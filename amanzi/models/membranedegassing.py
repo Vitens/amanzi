@@ -2,7 +2,7 @@ from .model import Model
 from .submodels.balance import Balance
 
 class Membranedegassing(Model, Balance):
-  parametric_model = ['base', 'model', 'membranedegassing']
+  parametric_model = ['base', 'model', 'membranedegassing', 'gasprocessing']
 
   def __init__(self, config, pp: dict = {}) -> None:
     super().__init__(config, pp)
@@ -43,9 +43,28 @@ class Membranedegassing(Model, Balance):
 
     effluent1, effluent2, gas1, gas2 = self.degass(solution,self.RQstage1, self.vacuum1, self.RQstage2, self.vacuum2)
 
+    self.gas1 = gas1
+    self.gas2 = gas2
+
     if(self.parameters['num_stages'] == 1):
       return effluent1
     return effluent2
+
+  @property
+  def context(self):
+    ctx = super().context
+    ctx['_gas'] = self.gas1
+    ctx['_gas2'] = self.gas2
+    ctx['pressure_loss'] = self.pressure_loss
+    return ctx
+  
+  @staticmethod
+  def pressure_loss(membrane_load, membrane_type):
+    if membrane_type == "EXF14x40":
+      return 0.0003 * membrane_load**2 + 0.0379*membrane_load - 0.0601
+    else:
+      return 0.0006 * membrane_load**2 + 0.0527*membrane_load + 0.2351
+      
 
 
   def design(self):

@@ -238,6 +238,9 @@ outputs:
 
   energy:
     backwash:
+      test:
+        uom: kWh/m3
+        equation: "-0.05"
       backwash_energy:
         uom: kWh/m3
         equation: "backwash_power_consumption / runtime_volume"

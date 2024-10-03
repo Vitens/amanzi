@@ -2,7 +2,7 @@ parameters:
   design:
     hydraulic_line:
       integrated_booster:
-        default: false
+        default: true
       inlet_elevation:
         default: 0.0
         uom: m
@@ -29,3 +29,15 @@ outputs:
       minimal_head:
         equation: "inlet_elevation + 1 if integrated_booster else 0"
         uom: m
+  energy:
+    hydraulic_energy:
+      energy_loss:
+        uom: "kWh/m3"
+        equation: "1/3600 * 35 * 9.81 * 1/(pump_efficiency)"
+        precision: 3
+        parameters:
+          pump_efficiency:
+            equation: "0.8"
+            uom: "%"
+            range: [0.1, 1.0]
+            precision: 0

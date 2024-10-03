@@ -2,8 +2,8 @@ parameters:
   chemicals:
     general:
       chemical:
-        default: 'NaOH'
-        options: ['CO2', 'HCl', 'H2SO4', 'NaOH' , 'Ca(OH)2', 'CaCO3','O2', ' FeCl3','MnCl2' ]
+        default: 'CO2'
+        options: ['CO2', 'HCl', 'H2SO4', 'NaOH' , 'Ca(OH)2', 'CaCO3','O2', 'FeCl3','MnCl2' ]
       mode: 
         default: constant
         options: [constant, setpoint]
@@ -11,18 +11,16 @@ parameters:
         if: 
           mode: setpoint
         default: 'pH'
-        options: ['pH', 'SI', 'AggCO2', 'TACC90']
+        options: ['pH', 'SI', 'AggCO2', 'CCPP90']
       dosage:
         if: 
           mode: constant
-        name: 'Dosing'
         uom: 'mmol/L'
-        default: 0.0
-        range: [0, 100]
+        default: 0.2
+        range: [0, 5]
       setpoint:
         if: 
           mode: setpoint
-        name: Setpoint
-        uom: mode
+        uom: ""
         default: 7.0
         range: [0, 14]

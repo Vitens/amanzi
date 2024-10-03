@@ -2,6 +2,8 @@
 max_hour;general;operational;1.2;-;day peak factor
 well_efficiency;general;operational;55;%;well pump efficiency
 booster_efficiency;general;operational;75;%;booster efficiency
+psa_purity_4_power_consumption;general;operational;0.61;kWh/Nm3;
+psa_purity_5_power_consumption;general;operational;0.82;kWh/Nm3;
 carbon_intensity_grid;general;emission;250;gCO2/kWh; 
 methane_emission_factor;general;emission;28;gCO2/gCH4;
 ph_lower_limit;general;norms;7;-;

@@ -4,12 +4,14 @@ import numpy as np
 from math import log
 
 class Vacuum(Model, Balance):
-    parametric_model = ['model', 'vacuum']
+    parametric_model = ['base', 'model', 'vacuum', 'gasprocessing']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
         config = config.get('configuration', {})
         config = config.get('parameters', {})
         self.pressure = float(config.get('vacuum_pressure', 0.2))
+
+        self.gas = None
 
     def degass(self, solution, pressure):
       # make gas phase
@@ -23,14 +25,20 @@ class Vacuum(Model, Balance):
       return degassed, gas_phase
 
     def run_quality(self, type, total_inflow, solution):
-      degassed, _ = self.degass(solution, self.pressure)
+      degassed, self.gas = self.degass(solution, self.pressure)
       return degassed
 
+    @property
+    def context(self):
+       ctx = super().context
+       ctx['_gas'] = self.gas
+
+       return ctx
 
     def design(self):
       effluent, effluent_gas = self.degass(self.quality.influent.product, self.pressure)
 
-      pressures = np.linspace(0.03, 1.0, 200)
+      pressures = np.linspace(0.03, 0.5, 100)
 
       ph_data = []
       si_data = []

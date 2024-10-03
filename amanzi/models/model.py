@@ -103,6 +103,8 @@ class Model(ParametricModel):
         designData = self.design()
         designData['parameters'] = self.parameters
         designData['tables'] = self.generate_tables()
+        # get all outputs
+        designData['outputs'] = {o.name: {'precision': o.precision, 'value': o.calculate(self.context), 'uom': o.uom} for o in self.output_parameters.values()}
 
         quality = {}
         # gather quality data
