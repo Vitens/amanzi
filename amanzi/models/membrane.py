@@ -4,6 +4,7 @@ import pandas as pd
 from scipy.optimize import minimize, minimize_scalar
 import numpy as np
 import json
+from pprint import pprint as pprint
 from phreeqpython import PhreeqPython, Solution
 from ..assets.membranes import MEMBRANE_DB
 
@@ -47,16 +48,21 @@ class Membrane(Model, Splitter):
 
     @property
     def vessel_config(self):
-        vessel={"1":12, "2":6, "3":3}
-        #fix pls
+
+        vessel = [
+            self.parameters['stage1_vessels'],
+            self.parameters['stage2_vessels'],
+            self.parameters['stage3_vessels']
+        ]
+
         if self.optiflux:
-            return [x*2 for x in list(self.configuration['vessels'].values())]
+            return [x*2 for x in vessel]
         else:
-            return list(vessel.values())
+            return vessel
 
     @property
     def modules(self):
-        modules = self.parameters['number_of_stacks']/2 if self.optiflux else self.parameters['number_of_stacks']
+        modules = self.parameters['modules_per_stage']/2 if self.optiflux else self.parameters['modules_per_stage']
         return int(modules)
 
 
@@ -183,8 +189,12 @@ class Membrane(Model, Splitter):
             self.init_stack(Pf)
             return abs(self.recovery - target_R)
 
-        result = minimize(recovery_difference, x0=Pf, method='Nelder-Mead', options={"fatol":tolerance})        
+        tolerance = 10
+
+        result = minimize(recovery_difference, x0=Pf, method='Nelder-Mead', tol=0.5, options={'disp': True})        
         best_Pf = result.x
+
+        self.feed_pressure = best_Pf[0]
         self.init_stack(best_Pf)    
         iterations = result.nfev  # The number of function evaluations used by the optimization algorithm  
 
@@ -194,16 +204,46 @@ class Membrane(Model, Splitter):
             print(f"Solved in {iterations} iterations")
 
     def solve_staging_qualities(self):
+
+        def balance(composition):
+            cbalance = 0
+            for species, quantity in composition.items():
+                if species[-1] == "-":
+                    charge = -1
+                elif species[-1] == "+":
+                    charge = 1
+                elif species[-2] == "-":
+                    charge = -int(species[-1])
+                elif species[-2] == "+":
+                    charge = int(species[-1])
+                else:
+                    charge = 0
+                cbalance += quantity * charge
+    
+            if cbalance > 0:
+                composition['Nmod'] = cbalance
+            else:
+                composition['Pmod'] = -cbalance
+
+            return composition
+
         def solve_qualities(influent, R):
             permeate_composition = {}
             concentrate_composition = {}
             for el, val in influent.species.items():
-                ret = self.retention.get(el, 0.999)
-                permeate_composition[el] = val * (1-ret) * 1e3
-                concentrate_composition[el] = val * (1-(R/100)*(1-ret)) / (1-(R/100)) * 1e3
-            permeate = self.pp.add_solution_simple(permeate_composition, 'mol')
-            concentrate = self.pp.add_solution_simple(concentrate_composition, 'mol')
-            return concentrate.copy(), permeate.copy()
+                # dont remove gasses
+                if el in ['H2', 'H+', 'OH-', 'H2O']:
+                    continue
+                if el in ['CO2', 'Mtg', 'Ntg', 'Oxg', 'O2', 'CH4']:
+                    continue
+                else:
+                    ret = self.retention.get(el, 0.99)
+                    permeate_composition[el] = val * -ret
+                    recovery = R/100
+                    concentrate_composition[el] = (val * (1-recovery * (1-ret))/(1-recovery))-val
+            permeate = influent.copy().change(balance(permeate_composition), units='mol')
+            concentrate = influent.copy().change(balance(concentrate_composition), units='mol')
+            return concentrate, permeate
 
         qualities = {}
         for s, df in self.stage_results.items():
@@ -292,17 +332,25 @@ class Membrane(Model, Splitter):
     #         "permeate": sum([data['Qp'] for s, data in self.stage_quantities.items()])
     #     }
     #     return d
+    @property
+    def context(self):
+        ctx = super().context
+        ctx['calculated_feed_pressure'] = self.feed_pressure
+        return ctx
 
     @property
     def stack_quantities(self):
         qp = sum([data['Qp'] for s, data in self.stage_quantities.items()])
+
+        permeate_pressure = self.hydraulics.head_out / 10.1972
+
         d = {
             "Qf": self.stack_inflow,
             "Qc": self.stack.iloc[-1]['Qc_e'] * self.vessel_config[-1],
             "Qp": qp,
-            "Pf": self.stack.iloc[0]['Pf_e'],
-            "Pc": self.stack.iloc[-1]['Pc_e'],
-            "Pp": 0,
+            "Pf": self.stack.iloc[0]['Pf_e'] + permeate_pressure,
+            "Pc": self.stack.iloc[-1]['Pc_e'] + permeate_pressure,
+            "Pp": permeate_pressure,
             "dP_mean": self.stack['dP_e'].mean(),
             "dP_max": self.stack['dP_e'].max(),            
             "recovery": 100 * qp/self.stack_inflow,
@@ -314,6 +362,7 @@ class Membrane(Model, Splitter):
     @property
     def stage_quantities(self):
         d = {}
+        permeate_pressure = self.hydraulics.head_out / 10.1972
         qp_summed = 0
         for s, data in self.stage_results.items():
             qf = self.stack_inflow if s == 0 else data.iloc[0]['Qf_e'] * self.vessel_config[s]
@@ -324,9 +373,9 @@ class Membrane(Model, Splitter):
                 "Qf": qf,
                 "Qc": data.iloc[-1]['Qc_e'] * self.vessel_config[s],
                 "Qp": qp,
-                "Pf": data.iloc[0]['Pf_e'],
-                "Pc": data.iloc[-1]['Pc_e'],
-                "Pp": 0,
+                "Pf": data.iloc[0]['Pf_e'] + permeate_pressure,
+                "Pc": data.iloc[-1]['Pc_e'] + permeate_pressure,
+                "Pp": permeate_pressure,
                 "dP_mean": data['dP_e'].mean(),
                 "dP_max": data['dP_e'].max(),
                 "recovery": round(100 * qp/qf, 0),
@@ -379,6 +428,8 @@ class Membrane(Model, Splitter):
         # add misc parameters
         elements['Hardheid'] = round(solution.hardness, 2)
         elements['pH'] = round(solution.pH, 2)
+        elements['CO2'] = round(solution.total('CO2', 'mg'), 2)
+        elements['Mtg'] = round(solution.total('Mtg', 'mmol') * 16, 2)
         elements['EGV'] = round(solution.sc20/10, 2)
         elements['TDS'] = round(solution.tds, 2)
 
@@ -398,8 +449,7 @@ class Membrane(Model, Splitter):
 
             mixture = {sol:flow/p_total for sol, flow in zip(p_sols, p_flows)}
             int_permeate = self.pp.mix_solutions(mixture)
-            permeate_mixture[int_permeate] = p_total
-        d['permeate'] = self.pp.mix_solutions(permeate_mixture)
+        d['permeate'] = int_permeate
         return d
     
     @property

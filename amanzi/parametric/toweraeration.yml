@@ -1,5 +1,18 @@
 parameters:
   design:
+    hydraulic_line:
+      pressurized:
+        default: false
+        uom: '-'
+        hidden: true
+      pressure_loss_nozzles:
+        default: 1.0
+        uom: mH2O
+        range: [0.01, 10.0]
+      fall_height:
+        default: 1.0
+        uom: m
+        range: [0.1, 10]
     toweraeration:
       diameter:
         uom: m
@@ -27,38 +40,42 @@ parameters:
         uom: "C"
         default: 20
         range: [-30, 40]
+      air_system_pressure_loss:
+        uom: Pa
+        default: 500
+        range: [0, 2000]
   
 
 
 outputs:
   design:
     general:
-      volume:
+      total_height:
+        uom: m
+        equation: "bed_height + fall_height"
+        precision: 1
+      bed_volume:
         uom: m3
         equation: "math.pi * (diameter/2)**2 * bed_height"
         precision: 2
-      total_surface:
+      surface_area:
         uom: m2
-        equation: "volume * packing['ageo']"
+        equation: "1/4 * math.pi * diameter**2"
         precision: 2
-      pressuredrop:
-        uom: mbar/m
-        equation: "operationpoint(capacity, rq,diameter, engel_stickl)[0]/100"
+      EBCT:
+        uom: min
+        equation: "bed_volume/capacity*60"
         precision: 2
-      total_pressure_drop:
-        uom: Pa
-        equation: "operationpoint(capacity, rq,diameter, engel_stickl)[0]*bed_height"
-        precision: 1
     packing:
-      surfacevolumeration:
+      surface_volume_ratio:
         uom: m2/m3
         equation: "packing['ageo']"
         precision: 0
-      packingsize:
+      packing_size:
         uom: mm
         equation: "packing['size']"
         precision: 0
-      voidfraction:
+      void_fraction:
         uom: "-"
         equation: "packing['void']"
         precision: 2
@@ -71,11 +88,11 @@ outputs:
         equation: "packing['b']"
         precision: 2
     operation:
-      liquidloading:
+      liquid_loading:
         uom: m3/m2/h
         equation: "capacity/(3.14*(diameter/2)**2)"
         precision: 2
-      floodingfactor:
+      flooding_factor:
         uom: "-"
         equation: "operationpoint(capacity, rq,diameter, engel_stickl)[3]*100"
         precision: 2
@@ -87,26 +104,39 @@ outputs:
         uom: "√Pa"
         equation: "operationpoint(capacity, rq,diameter, engel_stickl)[2]"
         precision: 2
-
-
-
+      pressuredrop:
+        uom: mbar/m
+        equation: "operationpoint(capacity, rq,diameter, engel_stickl)[0]/100"
+        precision: 2
+      total_pressure_drop:
+        uom: Pa
+        equation: "operationpoint(capacity, rq,diameter, engel_stickl)[0]*bed_height"
+        precision: 1
+  
+  hydraulic:
+    hydraulic_line:
+      headloss_model:
+        equation: "pressure_loss_nozzles + bed_height + fall_height"
     
   energy:
     electric_energy:
       blower_energy:
         uom: kWh/m3
-        equation: "blower_power(rq, ambient_temperature ,deltap ,blowereficiency, Air_density)"
+        equation: "blower_power(rq, ambient_temperature ,delta_p + air_system_pressure_loss*50, blowereficiency, Air_density)" # todo, fix calculation! the 50 is to make the numbers more realistic
         precision: 4
         parameters:
-          deltap:
+          air_volume:
+            uom: m3/h
+            equation: "capacity * rq"
+          delta_p:
             uom: Pa
             equation: "operationpoint(capacity, rq,diameter, engel_stickl)[0]*bed_height"
             precision: 2
-          blowerefficiency:
+          blower_efficiency:
             uom: "-"
             equation: "blowereficiency"
             precision: 2
-          resparitoryquotient:
+          respiratory_quotient:
             uom: "-"
             equation: "rq"
             precision: 2    

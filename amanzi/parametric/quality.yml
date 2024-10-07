@@ -24,7 +24,7 @@ parameters:
         chemical: N2
       methane:
         uom: mg/l
-        default: 0
+        default: 1
         range: [0, 100]
         chemical: CH4
       hydrogen-sulfide:

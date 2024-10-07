@@ -4,6 +4,7 @@ from collections import OrderedDict
 from ..components.solvers import QuantitySolver, QualitySolver, HydraulicSolver, EnergySolver, SustainabilitySolver
 from .. import models
 from ..components import Connection, solution
+from .database import Database
 
 import sys
 
@@ -16,7 +17,8 @@ class Scenario:
         self.pp = phreeqpython.PhreeqPython()
 
         # load database and apply overwrites for this scenario during initialization
-        self.database = copy.copy(project.database)
+        self.database = Database()
+        self.database.overwrite(project.config['key_figure_overwrites'])
         self.database.overwrites = self.config['key_figure_overwrites']
 
         # load models and connections

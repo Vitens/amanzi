@@ -1,4 +1,5 @@
 from .solver import Solver
+from pprint import pprint as pprint
 
 class EnergySolver(Solver):
 
@@ -12,8 +13,14 @@ class EnergySolver(Solver):
 
       # specific energy consumption in kWh/m3 produced by the model
       m.energy.model_specific_consumption = energy_consumption = sum([m.get_output(o.name) for o in outputs])
+
       # total energy consumption per year
-      m.energy.total_consumption = energy_consumption * m.quantity.outflow['product'] * 1e6 # total energy consumption per year
+      if m.type == 'output':
+        m.energy.total_consumption = energy_consumption * m.quantity.inflow['product'] * 1e6 # total energy consumption per year
+      elif m.type == 'recycle':
+        m.energy.total_consumption = energy_consumption * m.quantity.inflow['waste'] * 1e6 # total energy consumption per year
+      else:
+        m.energy.total_consumption = energy_consumption * m.quantity.outflow['product'] * 1e6 # total energy consumption per year
       # specific energy consumption in kWh/m3 produced by the treatment plant
 
       # total production in m3/y
@@ -42,6 +49,7 @@ class EnergySolver(Solver):
     specific_consumption = sum([m.energy.specific_consumption for m in self.scenario.models.values()])
 
     specific_consumption_distribution = sum([m.energy.specific_consumption for m in self.scenario.models.values() if m.type == 'output'])
+    
     specific_consumption_production = specific_consumption - specific_consumption_distribution
 
     return {

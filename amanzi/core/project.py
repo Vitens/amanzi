@@ -7,9 +7,9 @@ class Project:
 
         self.config = self.load_file(slm)
 
-        self.database = Database()
-        # overwrite key figures for the whole project
-        self.database.overwrite(self.config['key_figure_overwrites'])
+        # self.database = Database()
+        # # overwrite key figures for the whole project
+        # self.database.overwrite(self.config['key_figure_overwrites'])
 
         self.scenarios = self.load_scenarios()
 

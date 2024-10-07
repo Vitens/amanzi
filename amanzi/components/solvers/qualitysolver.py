@@ -102,6 +102,7 @@ class QualitySolver(Solver):
         for _,m in self.scenario.models.items():
             if m.type == 'output':
                 effluent = m.quality.influent.product.summary
+                plant_effluent = m.quality.influent.product.summary
                 qualities.append([m.name, m.index, effluent])
             else:
                 if m.quality.effluent.product:
@@ -116,8 +117,8 @@ class QualitySolver(Solver):
         return {
             'order': models,
             'models': qualities,
-            'effluent': effluent,
-            'metrics': self.grade_quality(effluent)
+            'effluent': plant_effluent,
+            'metrics': self.grade_quality(plant_effluent)
         }
 
     def grade_quality(self, quality):

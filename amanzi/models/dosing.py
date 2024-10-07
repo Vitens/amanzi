@@ -75,6 +75,3 @@ class Dosing(Model, Balance):
         'calculated_dosage': self.calculated_dosage,
         'warning': self.warning
       }
-      
-
-

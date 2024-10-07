@@ -1,38 +1,43 @@
 parameters:
   design:
-    general:
+
+    hydraulic_line:
+      inlet_elevation:
+        default: 1.0
+        range: [-10, 12.0]
+        uom: m
+      pressurized:
+        default: true
+        hidden: true
+      pressure_loss_cartridge_filter:
+        default: 2.0
+        uom: mH2O
+        range: [0.01, 20.0]
+
+    stack_configuration:
       number_of_stages:
         default: 3
         range: [1, 3]
         uom: '-'
-  stack_configuration:
-    general:  
-      membranetype:
-        default: spiral
-        options: [spiral, hollow_fiber]
-      number_of_stacks:
-        default: 6
-        range: [1, 10]
-        uom: '-'
       modules_per_stage:
-        default: 3
+        default: 6
         range: [1, 10]
         uom: '-'
       optiflux:
         default: false
       stage1_vessels:
-        default: 3
+        default: 12 
         range: [1, 20]
         uom: '-'
       stage2_vessels:
         if: 
-          number_of_stages > 1
-        default: 3
+          number_of_stages: ['gt', 1]
+        default: 6
         range: [1, 20]
         uom: '-'
       stage3_vessels:
         if: 
-          number_of_stages > 2
+          number_of_stages: 3
         default: 3
         range: [1, 20]
         uom: '-'
@@ -40,40 +45,25 @@ parameters:
   operational:
     general:
       recovery:
-        default: 0.5
-        range: [0.1, 1.0]
-        uom: '-'
+        default: 0.8
+        range: [0.5, 0.95]
+        quick: true
+        uom: '%'
 
 outputs:
   design:
-    general:
-      total_modules:
-        name: Total Modules
-        description: "Total number of modules in the stack"
-        equation: "number_of_stages * modules_per_stage"
+    operation:
+      trans_membrane_pressure:
+        uom: mH2O
+        equation: "calculated_feed_pressure * 10.1974" 
+      net_feed_pressure:
+        uom: mH2O
+        equation: "trans_membrane_pressure + hydraulics.head_out"
+  hydraulic:
+    hydraulic_line:
+      headloss_model:
+        equation: "trans_membrane_pressure + pressure_loss_cartridge_filter"
+        uom: mH2O
+      integrated_booster:
         uom: '-'
-      membrane_area:
-        name: Membrane Area
-        description: "Total membrane area in the stack"
-        equation: "total_modules * 10"
-        uom: m2
-      membrane_length:
-        name: Membrane Length
-        description: "Total membrane length in the stack"
-        equation: "total_modules * 10"
-        uom: m
-      membrane_flux:
-        name: Membrane Flux
-        description: "Total membrane flux in the stack"
-        equation: "total_modules * 10"
-        uom: m3/m2/day
-      membrane_rejection:
-        name: Membrane Rejection
-        description: "Total membrane rejection in the stack"
-        equation: "total_modules * 10"
-        uom: '%'
-      membrane_recovery:
-        name: Membrane Recovery
-        description: "Total membrane recovery in the stack"
-        equation: "total_modules * 10"
-        uom: '%'
+        equation: "1"

@@ -94,7 +94,13 @@ class ParametricModel():
     if 'nominal_capacity' in self.parameters:
       ctx = ctx | {'capacity': self.parameters['nominal_capacity']}
 
-    return output.calculate(ctx)
+    try:
+      result = output.calculate(ctx)
+    except:
+      raise Exception(f"Error calculating {name} for {self.name}")
+
+    return result
+
     
 
   

@@ -48,7 +48,7 @@ parameters:
     transport_pipe:
       pipe_inner_diameter:
         uom: mm
-        default: 200
+        default: 450
         range: [100, 2500]
       pipe_length:
         uom: m

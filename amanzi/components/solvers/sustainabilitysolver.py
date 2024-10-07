@@ -13,7 +13,10 @@ class SustainabilitySolver(Solver):
       # specific co2-eq emissions in gCO2-eq/m3 produced by the model
       m.sustainability.model_specific_emission = emission = sum([m.get_output(o.name) for o in outputs])
       # total co2-eq emissions per year in ton CO2-eq/y
-      m.sustainability.total_emission = emission * m.quantity.outflow['product'] * 1e6 / 1e6 # total energy consumption per year
+      if m.type == 'output':
+        m.sustainability.total_emission = emission * m.quantity.inflow['product'] * 1e6 / 1e6 # total energy consumption per year
+      else:
+        m.sustainability.total_emission = emission * m.quantity.outflow['product'] * 1e6 / 1e6 # total energy consumption per year
       # specific energy consumption in kWh/m3 produced by the treatment plant
       # total production in m3/y
       m.sustainability.specific_emission = 1e6 * m.sustainability.total_emission / total_distribution

@@ -51,3 +51,16 @@ outputs:
       head_in_check:
         equation: "elevation + inlet_weir_height"
         uom: m
+
+  energy:
+    hydraulic_energy:
+      energy_loss:
+        uom: "kWh/m3"
+        equation: "1/3600 * total_headloss * 9.81 * 1/(pump_efficiency)"
+        precision: 3
+        if: "total_headloss > 0"
+        parameters:
+          pump_efficiency:
+            equation: "hydraulics.efficiency"
+            uom: "%"
+            precision: 0

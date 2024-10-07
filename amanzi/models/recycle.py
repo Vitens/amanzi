@@ -9,8 +9,10 @@ class Recycle(Model, Splitter):
 
         if pp:
             self.product_solution = pp.add_solution({})
-        self.configurations = config.get('configuration', {})
-        self.split = self.configurations.get('fraction', 0.8)
+        
+        print(self.parameters)
+
+        self.split = self.parameters.get('recycle_efficiency', 0.8)
 
     
 
@@ -27,4 +29,3 @@ class Recycle(Model, Splitter):
     def mass(self):
         # recycle mass is 0 otherwise the model will not converge
         return {}
-

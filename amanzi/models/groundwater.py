@@ -30,7 +30,9 @@ class Groundwater(Model):
         oxg = c.get('oxygen', 0) if c.get('oxygen', 0) > 0 else 0.00001
         h2s = 'Sg' if c.get('oxygen', 0) == 0 else 'S(-2)'
         fe = '[Fe+2]' if c.get('oxygen', 0) == 0 else 'Fe'
+        # fe = 'Fe'
         mn = '[Mn+2]' if c.get('oxygen', 0) == 0 else 'Mn'
+        # mn = 'Mn'
         nh4 = '[N-3]' if c.get('oxygen', 0) == 0 else 'N(-3)'
         no2 = '[N+3]' if c.get('oxygen', 0) == 0 else 'N(3)'
 

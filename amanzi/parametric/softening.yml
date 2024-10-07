@@ -121,7 +121,17 @@ parameters:
     reactor_model:
       soften_to_si:
         default: 0.6
+        uom: "-"
         range: [0.0, 2.0]
+      fe_capture:
+        default: 0.9
+        uom: "%"
+        range: [0.0, 0.99]
+      mn_capture:
+        default: 0.9
+        uom: "%"
+        range: [0.0, 0.99]
+
 
     
 outputs:

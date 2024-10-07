@@ -23,6 +23,7 @@ class Sandfiltration(Model, Loss):
         to_exchange = min(to_exchange, oxygen_available / oxygen_consumption)
         to_exchange = to_exchange * efficiency
 
+        print(f"Oxidizing {from_element} to {to_element} with {to_exchange} oxygen")
         solution.change({from_element: -to_exchange, to_element: to_exchange})
 
         return solution
@@ -76,12 +77,13 @@ class Sandfiltration(Model, Loss):
 
         # influent
         influent = solution.copy()
-
         # replace inert oxygen with free oxygen
-        influent.change({"O2": influent.total("Oxg"), "Oxg": -influent.total("Oxg")*0.99999})
+        print(influent.total("O2"))
+        influent.change({ "O2": influent.total("Oxg"), "Oxg": -influent.total("Oxg")*0.99999})
+
 
         # oxidize methane
-        after_ch4 = self.oxidize(influent, "Mtg", "C-4", 2)
+        after_ch4 = self.oxidize(influent, "Mtg", "CH4", 2)
             
         after_fe = self.oxidize(after_ch4, "[Fe+2]", "Fe+2", 0.25, fe_removal_efficiency).desaturate("Fe(OH)3(a)", 0)
         

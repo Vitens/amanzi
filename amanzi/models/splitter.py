@@ -2,7 +2,9 @@ from .model import Model
 from .submodels.splitter import Splitter
  
 class Splitter(Model, Splitter):
+    parametric_model = ['splitter']
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        self.configurations = config.get('configuration', {})
-        self.split = self.configurations.get('fraction', 0.5)
+        config = config.get('configuration', {})
+        config = config.get('parameters', {})
+        self.split = config.get('split', 0.5)
