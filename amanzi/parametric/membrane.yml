@@ -1,5 +1,14 @@
 parameters:
   design:
+    general:
+      minimal_capacity:
+        default: 0
+        uom: m3/h
+        hidden: true
+      maximal_capacity:
+        default: 0
+        uom: m3/h
+        hidden: true
 
     hydraulic_line:
       inlet_elevation:
@@ -13,13 +22,20 @@ parameters:
         default: 2.0
         uom: mH2O
         range: [0.01, 20.0]
+      pressure_loss_between_stages:
+        default: 2.0
+        uom: mH2O
+        range: [0.01, 20.0]
 
     stack_configuration:
+      membrane_type:
+        default: "ESPA2-LD"
+        options: ["ESPA2-LD", "ESPA2-LD-MAX", "ESPA4-LD", "ESPA4-MAX", "AK-400H", "AK-440H"]
       number_of_stages:
         default: 3
         range: [1, 3]
         uom: '-'
-      modules_per_stage:
+      modules_per_vessel:
         default: 6
         range: [1, 10]
         uom: '-'
@@ -52,17 +68,101 @@ parameters:
 
 outputs:
   design:
-    operation:
-      trans_membrane_pressure:
-        uom: mH2O
-        equation: "calculated_feed_pressure * 10.1974" 
-      net_feed_pressure:
-        uom: mH2O
-        equation: "trans_membrane_pressure + hydraulics.head_out"
+    stack:
+      total_pressure_vessels:
+        precision: 0
+        equation: "stage1_vessels + (stage2_vessels if number_of_stages >= 2 else 0) + (stage3_vessels if number_of_stages == 3 else 0)" 
+      total_modules:
+        precision: 0
+        equation: "total_pressure_vessels * modules_per_vessel"
+      total_membrane_surface:
+        uom: m2
+        precision: 0
+        equation: "total_modules * membrane_area"
+    membrane:
+      membrane_name:
+        equation: "membrane_type"
+      membrane_supplier:
+        equation: "membrane.supplier"
+      membrane_area:
+        uom: m2
+        equation: "membrane.area"
+      membrane_rejection:
+        uom: '%'
+        equation: "membrane.rejection"
+      membrane_max_feed:
+        uom: m3/h
+        equation: "membrane.max_feed"
+      membrane_min_brine:
+        uom: m3/h
+        equation: "membrane.min_brine"
+      membrane_max_pressure_drop:
+        uom: bar
+        equation: "membrane.max_pressure_drop"
+    operational:
+      required_ndp:
+        uom: bar
+        equation: "calculated_feed_pressure"
+      _recovery:
+        uom: '%'
+        precision: 0
+        equation: "recovery"
+      permeate_flow:
+        uom: m3/h
+        precision: 1
+        equation: "capacity * recovery"
+      concentrate_flow:
+        uom: m3/h
+        precision: 1
+        equation: "capacity * (1-recovery)"
+      concentration_factor:
+        precision: 1
+        equation: "1/(1-recovery)"
+      feed_pressure:
+        uom: bar
+        precision: 1
+        equation: "calculated_feed_pressure + permeate_pressure"
+      permeate_pressure:
+        uom: bar
+        precision: 1
+        equation: "hydraulics.head_out / 10.2"
+      concentrate_pressure:
+        uom: bar
+        equation: "element_results['P_c'].min() + permeate_pressure"
+    membrane_conditions:
+      mean_flux:
+        uom: 'L/m2/h'
+        equation: "element_results['J'].mean()"
+      max_flux:
+        uom: 'L/m2/h'
+        equation: "element_results['J'].max()"
+      mean_beta:
+        equation: "element_results['beta'].mean()"
+        precision: 2
+        validation: "mean_beta <= 1.2"
+      max_beta:
+        equation: "element_results['beta'].max()"
+        precision: 2
+        validation: "max_beta <= 1.2"
+      mean_pressure_drop:
+        uom: bar
+        equation: "element_results['DP_e'].mean()"
+      max_pressure_drop:
+        uom: bar
+        equation: "element_results['DP_e'].max()"
+      max_feed:
+        uom: m3/h
+        equation: "element_results['Q_f'].max()"
+      min_brine:
+        uom: m3/h
+        equation: "element_results['Q_c'].max()"
+
+
+      
   hydraulic:
     hydraulic_line:
       headloss_model:
-        equation: "trans_membrane_pressure + pressure_loss_cartridge_filter"
+        equation: "calculated_feed_pressure * 10.2 + pressure_loss_cartridge_filter"
         uom: mH2O
       integrated_booster:
         uom: '-'

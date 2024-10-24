@@ -51,7 +51,7 @@ class QualitySolver(Solver):
 
         if self.stop_at_model and model.uid == self.stop_at_model:
             logging.info(f'Interrupted at model {model.uid}')
-            self.interrupted = True
+            # self.interrupted = True
             return
         
         self._propagate_solution(model, stream_type, solution, idx)

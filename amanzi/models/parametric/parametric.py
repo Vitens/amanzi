@@ -135,6 +135,10 @@ class ParametricModel():
 
         label = capacity[:3]
         capacity = self.parameters.get(capacity, 0)
+
+        if capacity == 0:
+          # skip if capacity is 0
+          continue
         
         # calculate outputs
         for o in outputs:

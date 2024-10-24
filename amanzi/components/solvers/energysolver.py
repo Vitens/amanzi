@@ -41,6 +41,7 @@ class EnergySolver(Solver):
         m.index
       ])
 
+    print(results)
     order = sorted(results, key=lambda x: x[2])
     models = [x[0] for x in order]
     metrics = [x[1] for x in order]
