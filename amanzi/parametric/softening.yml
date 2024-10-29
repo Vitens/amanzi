@@ -68,20 +68,6 @@ parameters:
           base_chemical: Ca(OH)2
         default: quicklime
         options: [quicklime, hydrated_lime, milk_of_lime]
-      base_concentration:
-        if: 
-          or:
-            base_chemical: NaOH
-            lime_type: milk_of_lime
-        default: 25
-        uom: "%"
-        range: [0, 100]
-      acid_concentration:
-        if: 
-          acid_chemical: HCl
-        default: 5
-        uom: "%"
-        range: [0, 100]
       acid_position:
         default: reactor-outlet
         options: [reactor-outlet, bypass, after-bypass]
@@ -232,13 +218,15 @@ outputs:
         uom: mmol/l
         precision: 2
         equation: "quality.influent.product.hardness - quality.effluent.product.hardness"
+        validation: "delta_hardness >= 0"
       calcite_production:
         uom: g/m3
         equation: "(delta_hardness * 2 if base_chemical == 'Ca(OH)2' else delta_hardness) * 100.0869"
+        validation: "calcite_production >= 0"
       n_pellets:
         uom: '-'
         equation: "calcite_production / (calcite_volume * 1e-6 * calcite_density)"
-        hidden: true # hide by default
+        if: 'False' # hide by default
       pellet_production:
         uom: g/m3
         equation: "n_pellets * pellet_mass * 1e-3"

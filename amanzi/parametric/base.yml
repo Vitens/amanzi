@@ -12,5 +12,5 @@ outputs:
             equation: "energy.model_specific_consumption"
           electricity_emission_factor:
             uom: gCO2-eq/kWh
-            equation: "250"
+            equation: "db.carbon_intensity_grid"
             precision: 1
