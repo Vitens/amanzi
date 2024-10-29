@@ -51,7 +51,7 @@ class QualitySolver(Solver):
 
         if self.stop_at_model and model.uid == self.stop_at_model:
             logging.info(f'Interrupted at model {model.uid}')
-            # self.interrupted = True
+            self.interrupted = True
             return
         
         self._propagate_solution(model, stream_type, solution, idx)
@@ -80,6 +80,13 @@ class QualitySolver(Solver):
                     model.index = idx if not model.index else model.index
                     # set model effluent quality
                     model.quality['effluent'][stream_type] = model.emitter_solutions[stream_type].copy()
+    
+                    if until and model.uid == until:
+                        logging.info(f'Interrupted at model {model.uid}')
+                        self.interrupted = True
+                        return
+
+
                     self._propagate_solution(model, stream_type, model.emitter_solutions[stream_type], idx)
                 if self.interrupted:
                     return

@@ -142,10 +142,33 @@ class Membrane(Model, Splitter):
         'C_p': self.calculation_results['stage_permeate'][stage-1].tds, # permeate TDS (ppm)
         'permeate_quality': self.calculation_results['stage_permeate'][stage-1].summary, # permeate quality
         'feed_quality': feed.summary, # permeate quality
-        'concentrate_quality': self.calculation_results['stage_concentrate'][stage-1].summary # permeate quality
+        'concentrate_quality': self.calculation_results['stage_concentrate'][stage-1].summary, # permeate quality
+        'feed_saturation': self.supersaturation(feed),
+        'concentrate_saturation': self.supersaturation(self.calculation_results['stage_concentrate'][stage-1]),
       })
 
     return stage_results
+  
+  @staticmethod
+  def supersaturation(sol):
+      """ Calculate supersaturation of scaling components in a solution 
+
+      args:
+        sol (Solution): Solution object
+
+      returns:
+        dict: supersaturation index of each scaling component
+      """
+
+      return {
+        'Calcite (CaCO3)': sol.si('Calcite'),
+        'Gypsum (CaSO4)': sol.si('Gypsum'),
+        'Hydroxyapatite': sol.si('Hydroxyapatite'),
+        'Barite (BaSO4)': sol.si('Barite'),
+        'Celestite (SrSO4)': sol.si('Celestite'),
+        'Fluorite (CaF2)': sol.si('Fluorite'),
+        'Silica (SiO2)': sol.si('Silica'),
+      }
   
   def design(self):
 
@@ -155,17 +178,9 @@ class Membrane(Model, Splitter):
      element_results = self.calculation_results['element_results']
      element_concentrate = self.calculation_results['element_concentrate']
      # calculate super saturations
-     def supersaturation(sol):
-       return {
-         'Calcite (CaCO3)': sol.si('Calcite'),
-         'Gypsum (CaSO4)': sol.si('Gypsum'),
-         'Hydroxyapatite': sol.si('Gypsum'),
-         'Barite (BaSO4)': sol.si('Barite'),
-         'Celestite (SrSO4)': sol.si('Celestite'),
-         'Fluorite (CaF2)': sol.si('Fluorite'),
-         'Silica (SiO2)': sol.si('Silica'),
-       }
-     si = [supersaturation(s) for s in element_concentrate]
+     
+
+     si = [self.supersaturation(s) for s in element_concentrate]
 
      def stream_results(stream):
       return [
