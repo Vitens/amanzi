@@ -109,7 +109,7 @@ class Toweraeration(Model, Balance):
         packing = self.packing_type
         diameter=self.diameter
         if self.compound == 'CO2':
-            c_gas = 0.82/16/1000
+            c_gas = 0.82/16/1000 #0.04*101325/(8.31446*(273.15+T_gas)) #
         else:
             c_gas=0
 
@@ -146,7 +146,6 @@ class Toweraeration(Model, Balance):
         o2_efficiency = self.calculate_efficiency('Oxg', self.rq,self.packing_height, self.capacity)      
         c_O2_out =-(o2_efficiency*o2_in-o2_in)
         c_o2_change = abs(o2_in-c_O2_out)
-        #print(c_o2_change)
         return c_o2_change
     
     def unitcheck(self,solution):
@@ -257,7 +256,6 @@ class Toweraeration(Model, Balance):
         heights = [1,2,3,4, self.packing_height]
         height_charts = {}
         if self.compound != 'CO2' and self.compound != 'Mtg' and influent.extraneous['VOC'][self.compound] >0:
-            print("Gets called")            
             VOC_c =[{'x': rq, 'y': (1-self.calculate_efficiency(self.compound,rq,self.packing_height, self.capacity))*influent.extraneous['VOC'][self.compound]} for rq in Rq_space]
         else:
             VOC_c = [{'x': 0, 'y': 0} for rq in Rq_space]

@@ -17,7 +17,7 @@ class Sprayaerator(Model, Balance):
         super().__init__(config, pp)
 
         self.configuration = config.get('configuration', {})
-        self.sauter = float(self.parameters['sauter_diameter'])
+        # self.sauter = float(self.parameters['sauter_diameter'])
         self.fall_height = float(self.parameters['fall_height'])
         self.compound = self.configuration.get('model_component', 'CO2')
         self.g_density = Air(self.parameters['ambient_temperature'], 1.023e5).density()
