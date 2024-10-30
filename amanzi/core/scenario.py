@@ -1,7 +1,7 @@
 import phreeqpython
 import copy
 from collections import OrderedDict
-from ..components.solvers import QuantitySolver, QualitySolver, HydraulicSolver, EnergySolver, SustainabilitySolver
+from ..components.solvers import QuantitySolver, QualitySolver, HydraulicSolver, EnergySolver, SustainabilitySolver, ChemicalSolver
 from .. import models
 from ..components import Connection, solution
 from .database import Database
@@ -32,6 +32,7 @@ class Scenario:
             'quality': QualitySolver(self),
             'hydraulics': HydraulicSolver(self),
             'energy': EnergySolver(self),
+            'chemicals': ChemicalSolver(self),
             'sustainability': SustainabilitySolver(self)
         })
 

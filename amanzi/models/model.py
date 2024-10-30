@@ -46,6 +46,11 @@ class Model(ParametricModel):
             'specific_emission': 0, # energy consumption per m3 produced by the treatment plant (gCO2-eq/m3)
             'total_emission': 0 # total energy consumption per year (gCO2-eq/year)
         })
+        self.chemicals = DotMap({
+            # dotmap with chemical consumptions in gAS/m3
+            'lye': 0,
+            'lime': 0,
+        })
     
     # placeholder for model quality run
     def run_quality(self, type, total_inflow, solution):

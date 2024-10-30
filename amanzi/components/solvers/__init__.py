@@ -3,4 +3,5 @@ from .qualitysolver import QualitySolver
 from .quantitysolver import QuantitySolver
 from .hydraulicsolver import HydraulicSolver
 from .energysolver import EnergySolver
+from .chemicalsolver import ChemicalSolver
 from .sustainabilitysolver import SustainabilitySolver
