@@ -1,27 +1,26 @@
 parameters:
   design:
     sprayaerator:
-      sauter_diameter:
-        uom: m
-        default: 0.0005
-        description: Diameter of the Sauter mean bubble size [m]
-        range: [0.0001, 0.01]
+      spray:
+        default: true
+        uom: '-'
       fall_height:
         default: 0.1
+        if:
+          spray: true
         uom: m
         description: Height of the spray nozzle above the water surface [m]
         range: [0.01, 10]
-      surface_area:
-        default: 1.0
-        uom: m2
-        description: Surface area of the spray aeration unit [m2]
-        range: [0.1, 100]
       area_per_nozzle:
         default: 1
+        if:
+          spray: true
         uom: m2
         description: Area of the spray nozzle [m2]
         range: [0.1, 10]
       blowereficiency:
+        if:
+          spray: true
         uom: "-"
         default: 0.75
         range: [0.01, 1]
@@ -29,29 +28,31 @@ parameters:
     general:
       rq:
         default: 2
+        if:
+          spray: true
         uom: "-"
         description: Ratio of air to water flow rate
         range: [1,5]
       ambient_temperature:
         default: 15
+        if:
+          spray: true
         uom: "C"
         description: Ambient temperature [C]
         range: [-30, 40]
-      nozzle_pressure:
-        default: 100
-        uom: kPa
-        description: Pressure of the spray nozzle [kPa]
-        range: [10, 10000]
+
 
 outputs:
   design:
     general:
       total_nozzles:
+        if: "spray"
         name: Total Nozzles
         description: Total number of nozzles in the spray aeration unit
         equation: "surface_area / area_per_nozzle"
         uom: '-'
       total_air_flow:
+        if: "spray"
         name: Total Air Flow
         description: Total air flow rate through the spray aeration unit
         equation: "rq * capacity"
@@ -60,6 +61,7 @@ outputs:
   energy:
     electric_energy:
       blower_energy:
+        if: "spray"
         uom: kWh/m3
         equation: "blower_power(rq, ambient_temperature ,100 ,blowereficiency, Air_density)"
         precision: 4
@@ -72,15 +74,6 @@ outputs:
             uom: "-"
             equation: "rq"
             precision: 2  
-    hydraulic_energy:
-      nozzle_energy_loss:
-        uom: "kWh/m3"
-        equation: "1/3600 * (nozzle_pressure/100) * 9.81 * 1/(pump_efficiency)"
-        precision: 3
-        parameters:
-            pump_efficiency:
-              uom: "%"
-              equation: "hydraulics.efficiency"
-              precision: 0
+
 
       
