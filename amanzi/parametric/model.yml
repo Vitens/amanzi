@@ -20,8 +20,8 @@ parameters:
     hydraulic_line:
       inlet_elevation:
         uom: m
-        default: 15.0
-        range: [0, 20]
+        default: 5.0
+        range: [0, 25]
       influent_pressure_loss:
         uom: mH2O
         default: 0.0
