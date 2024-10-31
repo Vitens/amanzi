@@ -10,6 +10,7 @@ parameters:
         range: [0.1, 1.0]
 
     sandfilter:
+
       shape:
         default: 'rectangular'
         options: ['rectangular', 'circular']
@@ -105,6 +106,9 @@ parameters:
           backwash_control: 'volume'
         uom: m3
         range: [10, 100000]
+
+
+      
   model:
     removal_rates:
       suppress_iron_removal:
@@ -133,7 +137,11 @@ parameters:
         if:
           suppress_manganese_removal: true
         uom: '%'
-        range: [0.0, 1.0]
+        range: [0.0, 1.0]    
+
+
+
+
 
 
 outputs:
@@ -245,3 +253,6 @@ outputs:
           backwash_power_consumption:
             uom: kWh
             equation: "backwash_volume * 9.81 * backwash_head * 1/backwash_pump_efficiency / 3600"
+
+
+

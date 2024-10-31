@@ -1,9 +1,13 @@
 from pprint import pprint as pprint
 from .model import Model
 from .submodels.loss import Loss
+from .tower.compounds import Chemical
+import math
+import numpy as np
+from .tower.air_properties import Air
 
 class Sandfiltration(Model, Loss):
-    parametric_model = ['base', 'model', 'filtration']
+    parametric_model = ['base', 'model', 'filtration','aeration','sprayaerator']
 
     def __init__(self, config, pp):
         super().__init__(config, pp)
@@ -14,6 +18,13 @@ class Sandfiltration(Model, Loss):
         self.loss = self.get_output('backwash_loss')
         self.load = 0
         self.waste_solution = None
+        self.sprayaeration = config.get('spray', False)
+        # self.sauter = float(self.parameters['sauter_diameter'])
+        self.fall_height = float(self.parameters['fall_height'])
+        self.configuration = config.get('configuration', {})
+        self.compound = self.configuration.get('model_component', 'CO2')
+
+        self.RQ = float(self.parameters['rq'])
 
     def oxidize(self, solution, from_element, to_element, oxygen_consumption, efficiency=1):
         solution = solution.copy()
@@ -46,12 +57,27 @@ class Sandfiltration(Model, Loss):
     @property
     def _backwash_max_rate(self):
         return max([p['water'] for p in self.backwash_programme] + [0])
+    @property
+    def airDensity(self):
+        return Air(float(self.parameters['ambient_temperature']), 1.023e5).density()
         
     @staticmethod
     def kozeny_carman(p, v, d):
         d /= 1e3 # convert to mm
         v /= 3600 # convert to m/s
         return 180 * 1.3e-6 / 9.81 * (1-p)**2 / p**3 * v/d**2
+    
+    @staticmethod
+    def blower_power(Qair,Tair, delta_p, efficiency, air_density):
+        Pin = 101325 # Pa
+        R = 8.31446 # J/(mol*K)
+        kappa = 1.4
+        Mair = 28.97e-3 # kg/mol
+        Tair = Tair + 273.15 # C to K
+        Pavg = Qair * air_density* R * Tair *(kappa/(kappa-1)) * (((Pin+delta_p)/Pin)**((kappa-1)/kappa)-1)/(efficiency*Mair)
+        # conversion J to kWh
+        Pavg = Pavg / 3600000
+        return Pavg
 
 
     @property
@@ -61,6 +87,8 @@ class Sandfiltration(Model, Loss):
         ctx['_backwash_volume'] = self._backwash_volume
         ctx['_backwash_max_rate'] = self._backwash_max_rate
         ctx['kozeny_carman'] = self.kozeny_carman
+        ctx['blower_power'] = self.blower_power
+        ctx['Air_density'] = self.airDensity
         return ctx
 
     def filtrate(self, solution):
@@ -99,10 +127,50 @@ class Sandfiltration(Model, Loss):
         effluent = after_mn.copy()
 
         return effluent, [influent, after_ch4, after_fe, after_h2s, after_nh4, after_no2, after_mn]
+    
+    def calculate_efficiency(self,compound, RQ, fall_height):
+        # polynominla fit of  TU Delft dresden Nozzle curve
+        # Currently a workaround
+        x = fall_height
+        y = -0.4424*x**4 + 1.8483*x**3 - 2.9011*x**2 + 2.2391*x + 0.0255
+        efficiency = y
 
+        #d_sauter = 0.00025 # m sauter diameter function of presure/ nozzle/ volume flow.
+        # A = math.pi*(d_sauter**2)/4
+        # V = math.pi*(d_sauter**3)/6
+        # g=9.81
+        # c_v= 0.95 # nozzle sprecific parameter
+        # alpha = 45 # angle of the nozzle outflow
+        # t = 2*c_v * math.sin(alpha)*np.sqrt(4*fall_height/g)
+        # t =np.sqrt(2*fall_height/g) ## exposure time, simple     
+        # comp=Chemical(self.quality.influent.product.temperature,20)
+        # D_comp= comp.properties()[compound]['Diff_water']#diffusion coefficient
+        # print(f'Diffusion coefficient for {compound}: {D_comp}')
+        # k2=2*(A/V)*np.sqrt(D_comp*t/(math.pi)) #gas transfer coefficient
+        # efficiency= 1-np.exp(-k2)
+
+        return efficiency
+
+    def spray_aeration(self, solution, compound, RQ, fall_height):
+        solution = solution.copy()
+        effciency_co2 = self.calculate_efficiency('CO2', RQ , fall_height)
+        effciency_ch4 = self.calculate_efficiency('Mtg', RQ , fall_height)
+        effciency_O2 = self.calculate_efficiency('Oxg', RQ , fall_height)
+
+        # max Oxygen saturation linear interpolation dependend on water temperature (5-20 Celsius)
+        # mg/l to mmol/l
+        O2_max = (-0.2366*self.quality.influent.product.temperature + 13.801) /32
+        o2_in = self.quality.influent.product.total("O2", "mmol")
+        O2_change = abs((O2_max-o2_in)*effciency_O2)
+        solution.remove_fraction('CO2', effciency_co2)
+        solution.remove_fraction('Mtg', effciency_ch4)
+        solution.add('O2',O2_change , 'mmol')
+        return solution
 
     def run_quality(self, type, total_inflow, solution):
 
+        if(self.sprayaeration):
+            solution = self.spray_aeration(solution, self.compound, self.RQ, self.fall_height)
         if(type == 'flush'):
             # add load to waste solution
             self.waste_solution = solution.copy()
@@ -129,9 +197,12 @@ class Sandfiltration(Model, Loss):
             'NO3': lambda s: s.total("NO3", 'mg'),
             'Mn': lambda s: s.total("Mn", 'mg'),
         }
+        if(self.sprayaeration):
+            solution = self.spray_aeration(self.quality.influent.product, self.compound, self.RQ, self.fall_height)
+        else:
+            solution = self.quality.influent.product.copy()
 
-
-        effluent, steps = self.filtrate(self.quality.influent.product)
+        effluent, steps = self.filtrate(solution)
 
         results = {}
 
