@@ -115,8 +115,11 @@ outputs:
   
   hydraulic:
     hydraulic_line:
+      headloss_influent:
+        uom: mH2O
+        equation: "pressure_loss_nozzles + influent_pressure_loss"
       headloss_model:
-        equation: "pressure_loss_nozzles + bed_height + fall_height"
+        equation: "bed_height + fall_height"
     
   energy:
     electric_energy:

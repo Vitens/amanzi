@@ -102,7 +102,7 @@ outputs:
         if: "integrated_booster"
       minimal_head:
         uom: mH2O
-        equation: "inlet_height + influent_pressure_loss if inlet_height > outlet_height else outlet_height + total_headloss if not integrated_booster else inlet_height + minimal_pump_head"
+        equation: "inlet_height + headloss_influent if inlet_height > outlet_height else outlet_height + total_headloss if not integrated_booster else inlet_height + headloss_influent + minimal_pump_head"
         precision: 1  
       calculated_head_in:
         uom: mH2O
