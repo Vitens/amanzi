@@ -3,7 +3,7 @@ parameters:
     hydraulic_line:
       integrated_booster:
         default: true
-      inlet_elevation:
+      inlet_height:
         default: 0.0
         uom: m
         range: [0, 100.0]
