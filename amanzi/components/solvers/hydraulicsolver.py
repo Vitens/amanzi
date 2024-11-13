@@ -51,7 +51,7 @@ class HydraulicSolver(Solver):
 
         # check for integrated booster
         if info['integrated_booster']:
-          from_node.hydraulics.head_in = info['minimal_head'] # assign minimal required head to node
+          from_node.hydraulics.head_in = max(info['minimal_head'], from_node.hydraulics.head_in) # assign minimal required head to node
         else:
           # calculate head in based on head out and total headloss
           # get head out from upstream nodes
@@ -59,7 +59,7 @@ class HydraulicSolver(Solver):
           from_node.hydraulics.head_in = max(from_node.hydraulics.head_out + info['total_headloss'], info['minimal_head'], head_out_upstream)
       else:
         if info['minimal_head'] == -999:
-          from_node.hydraulics.head_in = max([c.from_model.hydraulics.head_out for c in from_node.upstream_connections.get('product', [])] + [0])
+          from_node.hydraulics.head_in = max([c.from_model.hydraulics.head_out for c in from_node.upstream_connections.get('product', [])] + [-999])
           from_node.hydraulics.head_out = from_node.hydraulics.head_in - info['total_headloss']
 
 
@@ -130,7 +130,9 @@ class HydraulicSolver(Solver):
           booster_efficiency = self.scenario.database.get('booster_efficiency')/100
           booster_head = c.to_model.hydraulics.head_in - from_node.hydraulics.head_out
 
-          connection_efficiency = 1 / ((1/model_efficiency * from_node.hydraulics.head_out + 1/booster_efficiency * booster_head) / (from_node.hydraulics.head_out + booster_head))
+          connection_efficiency = booster_efficiency
+          if from_node.hydraulics.head_out >= 0:
+            connection_efficiency = 1 / ((1/model_efficiency * from_node.hydraulics.head_out + 1/booster_efficiency * booster_head) / (from_node.hydraulics.head_out + booster_head))
 
           c.hydraulics.booster = True
           c.hydraulics.booster_head = booster_head

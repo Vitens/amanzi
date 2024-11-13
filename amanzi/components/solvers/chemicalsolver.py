@@ -12,9 +12,6 @@ class ChemicalSolver(Solver):
       for o in outputs:
         m.chemicals[o.name] = o.calculate(m.context)
       
-      print(m.chemicals)
-
-
 
 
   def summary(self):

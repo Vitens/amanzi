@@ -2,11 +2,11 @@ parameters:
   design:
     general:
       minimal_capacity:
-        default: 0
+        default: -1
         uom: m3/h
         hidden: true
       maximal_capacity:
-        default: 0
+        default: -1
         uom: m3/h
         hidden: true
 

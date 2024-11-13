@@ -34,7 +34,7 @@ class Sandfiltration(Model, Loss):
         to_exchange = min(to_exchange, oxygen_available / oxygen_consumption)
         to_exchange = to_exchange * efficiency
 
-        print(f"Oxidizing {from_element} to {to_element} with {to_exchange} oxygen")
+        # print(f"Oxidizing {from_element} to {to_element} with {to_exchange} oxygen")
         solution.change({from_element: -to_exchange, to_element: to_exchange})
 
         return solution

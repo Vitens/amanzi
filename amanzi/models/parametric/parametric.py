@@ -134,10 +134,10 @@ class ParametricModel():
 
 
         label = capacity[:3]
-        capacity = self.parameters.get(capacity, 0)
+        capacity = self.parameters.get(capacity, None)
 
-        if capacity == 0:
-          # skip if capacity is 0
+        if capacity is not None and capacity <= 0:
+          # skip if capacity is -1
           continue
         
         # calculate outputs
