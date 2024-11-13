@@ -25,7 +25,7 @@ class Connection:
         self.hydraulics = DotMap({
             'booster': False,
             'booster_head': 0,
-            'efficiency': 0,
+            'efficiency': None,
             'headloss': 0
         })
 

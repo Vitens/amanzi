@@ -4,9 +4,17 @@ class Balance:
         # all ingoing streams must match all outgoing streams
         # return [[[c.eq(1) for c in self.connections['product']] + [c.eq(-1) for c in self.connections['product']], 0]]
         equations = []
+
+        # all ingoing streams must match all outgoing streams
+
         # upstream equals downstream
-        eq1 = [c.eq(self.minorloss_percentage) for c in self.upstream_connections['product']]
-        eq2 = [c.eq(-1) for c in self.downstream_connections['product']]
-        equations.append([ eq1 + eq2, self.minorloss])        
+        if 'product' in self.upstream_connections:
+            eq1 = [c.eq(1) for c in self.upstream_connections['product']]
+            eq2 = [c.eq(-1) for c in self.downstream_connections['product']]
+        elif 'waste' in self.upstream_connections:
+            eq1 = [c.eq(1) for c in self.upstream_connections['waste']]
+            eq2 = [c.eq(-1) for c in self.downstream_connections['waste']]
+
+        equations.append([ eq1 + eq2, 0])
         
         return equations

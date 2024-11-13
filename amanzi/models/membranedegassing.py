@@ -13,6 +13,9 @@ class Membranedegassing(Model, Balance):
     self.vacuum1 = self.parameters['vacuum_stage_1']
     self.vacuum2 = self.parameters['vacuum_stage_2']
 
+    self.gas1 = None
+    self.gas2 = None
+
   def degass(self, solution, rq1=[0,0], vacuum1=0.1, rq2=[0,0], vacuum2=0.1):
 
     total1 = rq1[0] + rq1[1]

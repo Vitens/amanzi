@@ -78,6 +78,7 @@ outputs:
         uom: mH2O
         equation: "hydraulics.head_in"
       required_pump_head:
+        precision: 1
         uom: mH2O
         equation: "head_at_well - average_groundwater_level + average_drawdown"
 

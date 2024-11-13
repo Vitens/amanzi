@@ -190,6 +190,7 @@ class Sandfiltration(Model, Loss):
             'pH': lambda s: s.pH,
             'O2': lambda s: s.total("O2", 'mg'),
             'CO2': lambda s: s.total("CO2", 'mg'),
+            'HCO3': lambda s: s.total("HCO3", 'mg'),
             'CH4': lambda s: s.total("Mtg") * 16e3,
             'Fe': lambda s: s.total("Fe", 'mg'),
             'NH4': lambda s: s.total("[N-3]") * 18,
