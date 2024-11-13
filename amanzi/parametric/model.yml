@@ -121,27 +121,12 @@ outputs:
         uom: "kWh/m3"
         equation: "1/3600 * delta_head * 9.81 * 1/(pump_efficiency)"
         precision: 3
-        if: "not integrated_booster"
         parameters:
           delta_head:
             uom: mH2O
-            equation: "total_headloss - calculated_booster_head"
+            equation: "total_headloss"
             precision: 1
           pump_efficiency:
             uom: "%"
             equation: "hydraulics.efficiency"
-            precision: 0
-      booster_energy_consumption:
-        uom: "kWh/m3"
-        equation: "1/3600 * delta_booster * 9.81 * 1/(booster_efficiency)"
-        precision: 3
-        if: "integrated_booster"
-        parameters:
-          delta_booster:
-            uom: mH2O
-            equation: "calculated_booster_head - calculated_head_out"
-            precision: 0
-          booster_efficiency:
-            uom: "%"
-            equation: "0.80"
             precision: 0

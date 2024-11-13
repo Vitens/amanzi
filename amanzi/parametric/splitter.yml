@@ -6,3 +6,7 @@ parameters:
         uom: '%'
         range: [0.01, 0.99]
         quick: true
+    hydraulic_line:
+      pressurized:
+        default: false
+        quick: true
