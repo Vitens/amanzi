@@ -22,7 +22,7 @@ parameters:
         default: false
         if: "false"
       pressure_loss_nozzles:
-        default: 5.0
+        default: 2.0
         uom: mH2O
         range: [0.01, 10.0]
     vacuum_system:

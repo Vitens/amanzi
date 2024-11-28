@@ -184,8 +184,6 @@ class Sandfiltration(Model, Loss):
 
 
     def design(self):
-        labels = ["Influent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
-
         values = {
             'pH': lambda s: s.pH,
             'O2': lambda s: s.total("O2", 'mg'),
@@ -198,14 +196,18 @@ class Sandfiltration(Model, Loss):
             'NO3': lambda s: s.total("NO3", 'mg'),
             'Mn': lambda s: s.total("Mn", 'mg'),
         }
+        results = {}
+
         if(self.sprayaeration):
             solution = self.spray_aeration(self.quality.influent.product, self.compound, self.RQ, self.fall_height)
+            labels = ["Sprayeffluent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
+            results
         else:
+            labels = ["Influent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
             solution = self.quality.influent.product.copy()
 
         effluent, steps = self.filtrate(solution)
-
-        results = {}
+        print(steps)
 
         for i, step in enumerate(steps):
 
@@ -215,7 +217,15 @@ class Sandfiltration(Model, Loss):
                 step_results[n] = v(step)
             
             results[labels[i]] = step_results
-                
+
+        if(self.sprayaeration):
+            labels = ["Influent","Sprayeffluent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
+            step_results = {}
+            for n, v in values.items():
+                step_results[n] = v(self.quality.influent.product.copy())
+            results["Influent"]= step_results
+
+
         return {
             'steps': labels,
             'values': results,
