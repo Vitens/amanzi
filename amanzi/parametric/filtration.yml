@@ -206,20 +206,20 @@ outputs:
       backwash_volume:
         uom: m3
         equation: "max(_backwash_volume, 0.0001)"
+      max_rate:
+        equation: "max(_backwash_max_rate, 0.01)"
+        uom: 'm/h'
       bed_expansion:
         uom: m
         equation: "expanded_height_sand + expanded_height_anthracite if dual_media else expanded_height_sand"
         parameters:
-          max_rate:
-            equation: "_backwash_max_rate"
-            uom: 'm/h'
           bed_expansion_anthracite:
             if: "dual_media"
-            equation: "1.2"
-            uom: '-'
+            equation: "backwash_bed_expansion(diameter_anthracite, max_rate)"
+            uom: '%'
           bed_expansion_sand:
-            equation: "1.2"
-            uom: '-'
+            equation: "backwash_bed_expansion(diameter_sand, max_rate)"
+            uom: '%'
           expanded_height_sand:
             precision: 1
             equation: "height_sand * bed_expansion_anthracite"
@@ -229,7 +229,15 @@ outputs:
             if: "dual_media"
             equation: "height_anthracite * bed_expansion_anthracite"
             uom: m
-
+      backwash_headloss:
+        uom: mH2O
+        equation: "backwash_headloss(diameter_sand, max_rate, height_sand)+ backwash_headloss(diameter_anthracite, max_rate, height_anthracite) if dual_media else backwash_headloss(diameter_sand, max_rate, height_sand)"
+        parameters:
+          backwash_headloss_anthracite:
+            if: "dual_media"
+            equation: "backwash_headloss(diameter_anthracite, max_rate, height_anthracite)"
+          backwash_headloss_sand:
+            equation: "backwash_headloss(diameter_sand, max_rate, height_sand)"
       backwash_loss:
         uom: "%"
         equation: backwash_volume / runtime_volume

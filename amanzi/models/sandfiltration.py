@@ -78,6 +78,29 @@ class Sandfiltration(Model, Loss):
         # conversion J to kWh
         Pavg = Pavg / 3600000
         return Pavg
+    @staticmethod
+    def backwash_bed_expansion(particle_size, max_rate):
+        # Formula has a high sensitivity for viscosity --> temperature influence that is not implemented yet
+        backwashvelocity = max_rate / 3600 # m/s
+        particle_size = particle_size/1000 # convert to m
+        expansion_table = []
+        viscosity = 1.1375e-3 # Pa.s at 15 Celsius
+        filtertowater_density = 2.6
+        Filterporosity = 0.38
+        for i in range(0,31):
+            ExpandedFilterporosity = (Filterporosity+ i/100)/(1+i/100)
+            velocity = (9.81*(filtertowater_density-1)*(ExpandedFilterporosity**3)*(particle_size**1.8)/(((1-ExpandedFilterporosity)**0.8)*(viscosity**0.8)*130))**(1/1.2) 
+            expansion_table.append(velocity*100)
+        #interpolate to find the expansion at the backwash velocity
+        return np.interp(backwashvelocity, expansion_table, range(0,31))/100
+    @staticmethod
+    def backwash_headloss(particle_size, max_rate , layer_height):
+        backwashvelocity = max_rate / 3600 # m/s
+        particle_size = particle_size/1000 # convert to m
+        viscosity = 1.1375e-3 # Pa.s at 15 Celsius
+        Filterporosity = 0.38
+        headloss = 130 * layer_height * backwashvelocity**1.2 * (1-Filterporosity)**1.8 * viscosity**0.8 / (9.81*(Filterporosity**3)*particle_size**1.8)
+        return headloss/1000 # convert to mH2O
 
 
     @property
@@ -89,6 +112,8 @@ class Sandfiltration(Model, Loss):
         ctx['kozeny_carman'] = self.kozeny_carman
         ctx['blower_power'] = self.blower_power
         ctx['Air_density'] = self.airDensity
+        ctx['backwash_bed_expansion'] = self.backwash_bed_expansion
+        ctx['backwash_headloss'] = self.backwash_headloss
         return ctx
 
     def filtrate(self, solution):
