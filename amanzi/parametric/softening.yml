@@ -52,7 +52,6 @@ parameters:
         default: 3.0
         uom: m
         range: [diameter_cylindrical, 10.0]
-        range: [0.1, 10.0]
   chemicals:
     seed:
       seed_material:
@@ -273,62 +272,31 @@ outputs:
         if: "base_chemical == 'NaOH'"
         equation: "base_dosage * 40 * flow_reactor / total_flow"
         uom: "gAS/m3"
-        parameters:
-          lye_mass_per_hour_per_reactor:
-            uom: kg/h
-            equation: "lye * capacity / 1000"
-          lye_mass_per_hour:
-            uom: kg/h
-            equation: "lye * average_day / 1000"
-          lye_mass_per_year:
-            uom: ton/y
-            equation: "lye * average_day * 24 * 365 / 1e6"
-            precision: 0
       lime:
         if: "base_chemical == 'Ca(OH)2'"
         equation: "base_dosage * 74.093 * flow_reactor / total_flow"
         uom: "gAS/m3"
-        parameters:
-          lime_mass_per_hour_per_reactor:
-            uom: kg/h
-            equation: "lime * capacity / 1000"
-          lime_mass_per_hour:
-            uom: kg/h
-            equation: "lime * average_day / 1000"
-          lime_mass_per_year:
-            uom: ton/y
-            equation: "lime * average_day * 24 * 365 / 1e6"
-            precision: 0
       co2:
         if: "acid_chemical == 'CO2'"
         equation: "acid_dosage * 44 * {'reactor-outlet': flow_reactor / total_flow, 'bypass': bypass_capacity * bypass_open / total_flow, 'after-bypass': 1}[acid_position]"
         uom: "gAS/m3"
-        parameters:
-          co2_mass_per_hour_per_reactor:
-            uom: kg/h
-            equation: "co2 * capacity / 1000"
-          co2_mass_per_hour:
-            uom: kg/h
-            equation: "co2 * average_day / 1000"
-          co2_mass_per_year:
-            uom: ton/y
-            equation: "co2 * average_day * 24 * 365 / 1e6"
-            precision: 0
       hcl:
         if: "acid_chemical == 'HCl'"
         equation: "acid_dosage * 36.461 * {'reactor-outlet': flow_reactor / total_flow, 'bypass': bypass_capacity * bypass_open / total_flow, 'after-bypass': 1}[acid_position]"
         uom: "gAS/m3"
-        parameters:
-          hcl_mass_per_hour_per_reactor:
-            uom: kg/h
-            equation: "hcl * capacity / 1000"
-          hcl_mass_per_hour:
-            uom: kg/h
-            equation: "hcl * average_day / 1000"
-          hcl_mass_per_year:
-            uom: ton/y
-            equation: "hcl * average_day * 24 * 365 / 1e6"
-            precision: 0
+    materials:
+      garnet_sand:
+        if: "seed_material == 'garnet_sand'"
+        equation: "seed_consumption"
+        uom: gAS/m3
+      quartz_sand:
+        if: "seed_material == 'quartz_sand'"
+        equation: "seed_consumption"
+        uom: gAS/m3
+      calcite:
+        if: "seed_material == 'calcite'"
+        equation: "seed_consumption"
+        uom: gAS/m3
 
   sustainability:
     direct_emissions:
@@ -336,17 +304,3 @@ outputs:
         uom: gCO2-eq/m3
         precision: 1
         equation: "-1 * calcite_production / 100.08 * 44.01" # CaCO3 to CO2
-
-    chemical_emissions:
-      garnet_sand:
-        if: "seed_material == 'garnet_sand'"
-        equation: "seed_consumption * db.seed_garnet_emission"
-        uom: gCO2-eq/m3
-      quartz_sand:
-        if: "seed_material == 'quartz_sand'"
-        equation: "seed_consumption * db.seed_quartz_sand_emission"
-        uom: gCO2-eq/m3
-      calcite:
-        if: "seed_material == 'calcite'"
-        equation: "seed_consumption * db.seed_calcite_emission"
-        uom: gCO2-eq/m3

@@ -31,3 +31,15 @@ outputs:
         uom: gCO2-eq/m3
         equation: "chemicals.get('hcl', 0) * db.hydrochloric_acid_emission"
         if: "chemicals.get('hcl')"
+      garnet_sand_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('garnet_sand', 0) * db.seed_garnet_emission"
+        if: "chemicals.get('garnet_sand')"
+      quartz_sand_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('quartz_sand', 0) * db.seed_quartz_sand_emission"
+        if: "chemicals.get('quartz_sand')"
+      calcite_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('calcite', 0) * db.seed_calcite_emission"
+        if: "chemicals.get('calcite')"

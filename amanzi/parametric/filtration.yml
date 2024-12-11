@@ -1,16 +1,22 @@
 parameters:
   design:
+    general:
+      spray:
+        default: true
+        uom: '-'
     hydraulic_line:
       pressurized: # overwrite to enable unique translation
         default: false
         uom: '-'
       height_gutter_to_media:
         default: 0.5
+        if:
+          spray: false
+          pressurized: false
         uom: m
         range: [0.1, 1.0]
 
     sandfilter:
-
       shape:
         default: 'rectangular'
         options: ['rectangular', 'circular']

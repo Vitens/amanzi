@@ -110,19 +110,21 @@ class QualitySolver(Solver):
             if m.type == 'output':
                 effluent = m.quality.influent.product.summary
                 plant_effluent = m.quality.influent.product.summary
-                qualities.append([m.name, m.index, effluent])
+                qualities.append([m.uid, m.name, m.index, effluent])
             else:
                 if m.quality.effluent.product:
                     effluent = m.quality.effluent.product.summary
-                    qualities.append([m.name, m.index, effluent])
+                    qualities.append([m.uid, m.name, m.index, effluent])
         
-        order = sorted(qualities, key=lambda x: x[1])
+        order = sorted(qualities, key=lambda x: x[2])
         models = [x[0] for x in order]
+        names = [x[1] for x in order]
         # sort qualities based on order
-        qualities = [x[2] for x in order]
+        qualities = [x[3] for x in order]
 
         return {
             'order': models,
+            'names': names,
             'models': qualities,
             'effluent': plant_effluent,
             'metrics': self.grade_quality(plant_effluent)

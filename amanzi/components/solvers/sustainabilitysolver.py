@@ -31,7 +31,7 @@ class SustainabilitySolver(Solver):
 
     for _,m in self.scenario.models.items():
       results.append([
-        m.name, [
+        m.uid, m.name, [
           {'name': 'specific_emission', 'value': m.sustainability.specific_emission, 'uom': 'gCO2-eq/m3', 'precision': 3, 'positive': False},
           {'name': 'model_specific_emission', 'value': m.sustainability.model_specific_emission, 'uom': 'gCO2-eq/m3', 'precision': 3, 'positive': False},
           {'name': 'total_emission', 'value': m.sustainability.total_emission, 'uom': 'ton CO2-eq/y', 'precision': 0, 'positive': False}
@@ -39,14 +39,16 @@ class SustainabilitySolver(Solver):
         m.index
       ])
 
-    order = sorted(results, key=lambda x: x[2])
+    order = sorted(results, key=lambda x: x[3])
     models = [x[0] for x in order]
-    metrics = [x[1] for x in order]
+    names = [x[1] for x in order]
+    metrics = [x[2] for x in order]
 
 
 
     return {
       'order': models,
+      'names': names,
       'models': metrics,  
       'model_specific_emission': {m.name: m.sustainability.model_specific_emission for m in self.scenario.models.values()},
       'specific_emissions': {m.name: m.sustainability.specific_emission for m in self.scenario.models.values()},

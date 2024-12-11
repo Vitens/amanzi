@@ -1,9 +1,6 @@
 parameters:
   design:
-    sprayaerator:
-      spray:
-        default: true
-        uom: '-'
+    hydraulic_line:
       fall_height:
         default: 0.1
         if:
@@ -11,6 +8,7 @@ parameters:
         uom: m
         description: Height of the spray nozzle above the water surface [m]
         range: [0.01, 10]
+    sprayaerator:
       area_per_nozzle:
         default: 1
         if:
