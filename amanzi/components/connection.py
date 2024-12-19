@@ -41,7 +41,7 @@ class Connection:
     """
     @property
     def cid(self):
-        return "{} ({}) -> {} ({})".format(self.from_model.uid, self.from_anchor, self.to_model.uid, self.to_anchor)
+        return "{} -> {} ({})".format(self.from_model.uid, self.to_model.uid, self.type)
 
     @property
     def name(self):

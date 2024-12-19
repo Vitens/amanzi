@@ -126,7 +126,7 @@ class HydraulicSolver(Solver):
 
       for c in from_node.downstream_connections.get('product', []):
         # assign booster to connection if head_out is lower than head_in
-        if from_node.hydraulics.head_out < c.to_model.hydraulics.head_in:
+        if from_node.hydraulics.head_out - c.to_model.hydraulics.head_in < -0.01:
           booster_efficiency = self.scenario.database.get('booster_efficiency')/100
           booster_head = c.to_model.hydraulics.head_in - from_node.hydraulics.head_out
 
