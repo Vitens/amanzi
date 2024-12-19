@@ -2,7 +2,7 @@ parameters:
   design:
     hydraulic_line:
       fall_height:
-        default: 0.1
+        default: 0.5
         if:
           spray: true
         uom: m
