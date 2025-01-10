@@ -225,10 +225,9 @@ class Sandfiltration(Model, Loss):
 
         if(self.sprayaeration):
             solution = self.spray_aeration(self.quality.influent.product, self.compound, self.RQ, self.fall_height)
-            labels = ["Sprayeffluent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
-            results
+            labels = ["sprayeffluent", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "mangan_removal"]
         else:
-            labels = ["Influent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
+            labels = ["influent", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "mangan_removal"]
             solution = self.quality.influent.product.copy()
 
         effluent, steps = self.filtrate(solution)
@@ -244,11 +243,11 @@ class Sandfiltration(Model, Loss):
             results[labels[i]] = step_results
 
         if(self.sprayaeration):
-            labels = ["Influent","Sprayeffluent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
+            labels = ["influent","sprayeffluent", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "mangan_removal"]
             step_results = {}
             for n, v in values.items():
                 step_results[n] = v(self.quality.influent.product.copy())
-            results["Influent"]= step_results
+            results["influent"]= step_results
 
 
         return {
