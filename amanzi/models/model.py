@@ -10,6 +10,7 @@ class Model(ParametricModel):
         self.uid = config.get('uid', "")
         self.type = config.get("type", "")
         self.name = config.get("name", "")
+        self.category = config.get("category", "")
         self.emitter = False
 
         self.config = config
