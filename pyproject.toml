@@ -1,3 +1,35 @@
+[project]
+name = "Amanzi"
+description = "Amanzi scenario tool developed by Vitens"
+version = "1.0.0"
+authors = [
+    { name="Abel Heinsbroek", email="abel.heinsbroek@vitens.nl" },
+    { name="Nils Zickermann", email="nils.zickermann@vitens.nl" }
+]
+readme = "README.md"
+license = "GPL-3.0-or-later"
+dependencies = [
+    "numpy",
+    "phreeqpython",
+    "dotmap",
+    "pyaml",
+    "pandas",
+    "scipy",
+]
+keywords = ["water treatment", "scenario tool", "slimm", "vitens", "drinking water"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Process Engineers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+]
+[project.urls]
+homepage = "https://github.com/Vitens/amanzi"
+repository = "https://github.com/Vitens/amanzi"
+
+[project.scripts]
+amanzi = "amanzi.cli:main"
+
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
