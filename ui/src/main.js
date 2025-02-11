@@ -1,0 +1,144 @@
+import { createApp, ref } from 'vue'
+import App from './App.vue'
+import mitt from 'mitt'
+import _ from 'lodash'
+import { scenarioStore } from './stores/scenario'
+import { projectStore } from './stores/project'
+import { piniaUndoRedo } from './stores/undo'
+import { createPinia } from 'pinia'
+import piniaPersist from 'pinia-plugin-persist'
+import axios from 'axios'
+import VueCookies from 'vue-cookies'
+
+import en from "./locales/en.json"
+import nl from "./locales/nl.json"
+import de from "./locales/de.json"
+
+import {createI18n} from 'vue-i18n'
+
+import ElementPlus from 'element-plus'
+import * as Icons from '@element-plus/icons-vue' // Introduce all Icons and name them Icons
+
+import NumberInput from './components/NumberInput.vue'
+
+// import MasonryWall from '@yeger/vue-masonry-wall'
+import VueMasonry from 'vue-masonry-css'
+
+import 'font-awesome/css/font-awesome.css'
+import 'element-plus/dist/index.css'
+
+let version = "1.0.0"
+
+var chemform = function(chemical) {
+  if(chemical == "") { return "" }
+
+  let parts = chemical.match(/(\d+|[A-Za-z]+|\+|-)/g);
+
+  let result = '';
+  for (let part of parts) {
+      if (/[A-Za-z]+/.test(part)) {
+          result += part
+      } else if (/\d+/.test(part)) {
+          for (let char of part) {
+              result += "<sub>"+char+"</sub>";
+          }
+      } else if (/\+|-/.test(part)) {
+          for (let char of part) {
+              result += "<sup>"+char+"</sup>";
+          }
+      }
+  }
+
+  return result;
+}
+
+
+// setup Pinia store
+const pinia = createPinia()
+
+pinia.use(piniaPersist)
+// global variable for pinia
+const shared = ref(100)
+pinia.use(({store}) => {
+  store.undo = shared
+})
+
+pinia.use(piniaUndoRedo)
+
+// setup event bus
+const eventBus = mitt()
+
+// setup lodash
+window._ = _
+
+// setup i18n
+const i18n = createI18n({
+  locale: 'nl',
+  fallbackLocale: 'en',
+  messages: { en, nl, de },
+  silentTranslationWarn: true,
+  fallbackWarn: false,
+  missingWarn: false
+})
+
+let app = createApp(App)
+
+
+app.use(VueCookies)
+
+app.use(pinia)
+app.use(ElementPlus)
+app.use(i18n)
+app.use(VueMasonry)
+
+for (let i in Icons) {
+  app.component(i, Icons[i])
+}
+
+app.component('number-input', NumberInput)
+
+// load models specification
+var modelspec = {}
+var modelVueNames = []
+
+async function loadModels() {
+  const models = import.meta.glob('./models/*/*.json')
+ for(const path in models) {
+    let spec = await models[path]()
+    modelspec[spec.name] = JSON.parse(JSON.stringify(spec))
+  }
+
+  const modelVues = import.meta.glob('./models/*/*.vue', {'eager': true})
+  for(const path in modelVues) {
+    let split = path.split('/')
+    let model = split[2]
+    let type = split[3].split('.')[0]
+    // let mdl = await modelVues[path]()
+    let mdl = modelVues[path]
+    let name = _.startCase(_.camelCase(type+"-"+model)).replace(" ","")
+    app.component(name, mdl.default)
+    modelVueNames.push(name)
+  }
+
+}
+
+// let store use modelspec
+pinia.use(({store}) => {
+  store.modelspec = modelspec
+})
+
+await loadModels()
+
+let store = projectStore()
+app.config.globalProperties.$bus = eventBus
+app.config.globalProperties.modelspec = modelspec
+app.config.globalProperties.$project = store
+app.config.globalProperties.chemform = chemform
+
+app.config.globalProperties.$store = store.activeScenario
+app.config.globalProperties.$modelVues = modelVueNames
+
+app.config.globalProperties.$version = version
+
+app.config.globalProperties.$http = axios
+app.mount('#app')

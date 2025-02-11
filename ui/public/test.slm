@@ -1,0 +1,238 @@
+{
+  "metadata": {
+    "project_name": "aapjes",
+    "version": 0.1,
+    "ui_version": 1
+  },
+  "scenarios": [
+    {
+      "metadata": {
+        "name": "demo",
+        "description": "demo",
+        "scenario_version": 0.1
+      },
+      "models": [
+        {
+          "configuration": {
+            "production": 15
+          },
+          "uid": "9bcn6i",
+          "name": "Winning",
+          "type": "groundwater",
+          "position": {
+            "x": 1560,
+            "y": 1085
+          }
+        },
+        {
+          "configuration": {
+            "loss": 0.1
+          },
+          "uid": "fyqgwo",
+          "name": "Zandfiltratie",
+          "type": "sandfiltration",
+          "position": {
+            "x": 1840,
+            "y": 1085
+          }
+        },
+        {
+          "configuration": {},
+          "uid": "vqrpmk",
+          "name": "Reservoir",
+          "type": "reservoir",
+          "position": {
+            "x": 2315,
+            "y": 1085
+          }
+        },
+        {
+          "configuration": {},
+          "uid": "oouq8b",
+          "name": "Levering",
+          "type": "output",
+          "position": {
+            "x": 2500,
+            "y": 1085
+          }
+        },
+        {
+          "configuration": {},
+          "uid": "z0d392",
+          "name": "Afvalstroom",
+          "type": "waste",
+          "position": {
+            "x": 2420,
+            "y": 1330
+          }
+        },
+        {
+          "configuration": {
+            "loss": 0.2
+          },
+          "uid": "gohz02",
+          "name": "Membranen",
+          "type": "membrane",
+          "position": {
+            "x": 2085,
+            "y": 1085
+          }
+        },
+        {
+          "configuration": {},
+          "uid": "tj42fx",
+          "name": "Ontharding",
+          "type": "softening",
+          "position": {
+            "x": 2085,
+            "y": 900
+          }
+        },
+        {
+          "configuration": {
+            "production": 10
+          },
+          "uid": "335kpe",
+          "name": "Winning 2",
+          "type": "groundwater",
+          "position": {
+            "x": 1555,
+            "y": 895
+          }
+        }
+      ],
+      "connections": [
+        {
+          "src": "fyqgwo",
+          "srcAnchor": "bottom",
+          "tgt": "z0d392",
+          "tgtAnchor": "left",
+          "customPath": [],
+          "type": "waste",
+          "selected": false
+        },
+        {
+          "src": "9bcn6i",
+          "srcAnchor": "right",
+          "tgt": "fyqgwo",
+          "tgtAnchor": "left",
+          "customPath": [],
+          "type": "product",
+          "selected": false
+        },
+        {
+          "src": "vqrpmk",
+          "srcAnchor": "top",
+          "tgt": "fyqgwo",
+          "tgtAnchor": "top",
+          "customPath": [],
+          "type": "flush",
+          "selected": false
+        },
+        {
+          "src": "vqrpmk",
+          "srcAnchor": "right",
+          "tgt": "oouq8b",
+          "tgtAnchor": "left",
+          "customPath": [],
+          "type": "product",
+          "selected": false
+        },
+        {
+          "src": "fyqgwo",
+          "srcAnchor": "right",
+          "tgt": "gohz02",
+          "tgtAnchor": "left",
+          "customPath": [],
+          "type": "product",
+          "selected": false
+        },
+        {
+          "src": "gohz02",
+          "srcAnchor": "right",
+          "tgt": "vqrpmk",
+          "tgtAnchor": "left",
+          "customPath": [],
+          "type": "product",
+          "selected": false
+        },
+        {
+          "src": "gohz02",
+          "srcAnchor": "bottom",
+          "tgt": "z0d392",
+          "tgtAnchor": "left",
+          "customPath": [],
+          "type": "waste",
+          "selected": false
+        },
+        {
+          "src": "335kpe",
+          "srcAnchor": "right",
+          "tgt": "tj42fx",
+          "tgtAnchor": "left",
+          "customPath": [],
+          "type": "product",
+          "selected": false
+        },
+        {
+          "src": "tj42fx",
+          "srcAnchor": "right",
+          "tgt": "vqrpmk",
+          "tgtAnchor": "left",
+          "customPath": [
+            {
+              "x": 2190,
+              "y": 950,
+              "anchor": "right"
+            },
+            {
+              "x": 2205,
+              "y": 950,
+              "anchor": "right"
+            },
+            {
+              "x": 2205,
+              "y": 950,
+              "anchor": "right"
+            },
+            {
+              "x": 2205,
+              "y": 950,
+              "anchor": "right"
+            },
+            {
+              "x": 2290,
+              "y": 950
+            },
+            {
+              "x": 2290,
+              "y": 1135
+            },
+            {
+              "x": 2295,
+              "y": 1135,
+              "anchor": "left"
+            },
+            {
+              "x": 2295,
+              "y": 1135,
+              "anchor": "left"
+            },
+            {
+              "x": 2295,
+              "y": 1135,
+              "anchor": "left"
+            },
+            {
+              "x": 2310,
+              "y": 1135,
+              "anchor": "left"
+            }
+          ],
+          "type": "product",
+          "selected": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1404 @@
+{
+	"general": {
+		"solution": {
+			"components": {
+				"ammonium": "Ammonium",
+				"barium": "Barium",
+				"bicarbonate": "Bicarbonaat",
+				"boron": "Boor",
+				"calcium": "Calcium",
+				"chloride": "Chloride",
+				"color": "Kleur",
+				"fluoride": "Fluoride",
+				"hydrogen-sulfide": "Waterstofsulfide",
+				"iron": "IJzer",
+				"magnesium": "Magnesium",
+				"manganese": "Mangaan",
+				"methane": "Methaan",
+				"nitrate": "Nitraat",
+				"nitrite": "Nitriet",
+				"nitrogen": "Stikstof",
+				"oxygen": "Zuurstof",
+				"pH": "pH",
+				"phosphate": "Fosfaat",
+				"potassium": "Kalium",
+				"silicate": "Silica",
+				"sodium": "Natrium",
+				"strontium": "Strontium",
+				"sulfate": "Sulfaat",
+				"temperature": "Temperatuur",
+				"total-organic-carbon": "Totaal organisch koolstof"
+			}
+		},
+		"terms": {
+			"volume": "Volume"
+		}
+	},
+	"keyfigures": {
+		"categories": {
+			"chemicals": "Chemie",
+			"general": "Algemeen"
+		},
+		"name": {
+			"activated_carbon_new_emission": "Aktiefkool (nieuw) emissie",
+			"activated_carbon_regenerated_emission": "Aktiefkool (regeneratie) emissie",
+			"aggco2_upper_limit": "Aggressief CO2 bovengrens",
+			"aggco2_upper_threshold": "Aggressief CO2 bovenstreefwaarde",
+			"aluminium_sulphate_emission": "Aluminium sulfaat emissie",
+			"ammonia_emission": "Ammoniak emissie",
+			"anthracite_emission": "Antraciet emissie",
+			"bleach_emission": "Bleekwater emissie",
+			"booster_efficiency": "Rendement boosterpomp",
+			"calcium_carbonate_emission": "Calciumcarbonaat emissie",
+			"calcium_hydroxide_emission": "Calciumhydroxide emissie",
+			"calcium_oxide_emission": "Calciumoxide emissie",
+			"carbon_intensity_grid": "Emissiefactor elektriciteit",
+			"ccpp90_upper_limit": "TACC90 bovengrens",
+			"ccpp90_upper_threshold": "TACC90 bovenstreefwaarde",
+			"chlorine_emission": "Chloor emissie",
+			"chlorine_gas_emission": "Chloorgas emissie",
+			"citric_acid_emission": "Citroenzuur emissie",
+			"cl_upper_limit": "Chloride bovengrens",
+			"cl_upper_threshold": "Chloride bovenstreefwaarde",
+			"co2_emission": "CO2 emissie",
+			"fe_upper_limit": "IJzer bovengrens",
+			"fe_upper_threshold": "IJzer bovenstreefwaarde",
+			"filter_sand_emission": "Zand emissie",
+			"hardness_lower_limit": "Hardheid ondergrens",
+			"hardness_upper_limit": "Hardheid bovengrens",
+			"hardness_upper_threshold": "Hardheid bovenstreefwaarde",
+			"hydrochloric_acid_emission": "Hydrochloride emissie",
+			"hydrogen_peroxide_emission": "Hydrogenperoxide emissie",
+			"iron_chloride_emission": "IJzerchloride emissie",
+			"iron_sulphate_emission": "IJzersulfaat emissie",
+			"lime_emission": "Lime emissie",
+			"lye_emission": "Natronloog emissie",
+			"manganese_chloride_emission": "Mangaanchloride emissie",
+			"max_hour": "Max uurfactor",
+			"methane_emission_factor": "Emissiefactor methaan",
+			"mn_upper_limit": "Mangaan bovengrens",
+			"mn_upper_threshold": "Mangaan bovenstreefwaarde",
+			"na_upper_limit": "Natrium bovengrens",
+			"na_upper_threshold": "Natrium bovenstreefwaarde",
+			"nh4_upper_limit": "Ammonium bovengrens",
+			"nh4_upper_threshold": "Ammonium bovenstreefwaarde",
+			"o2_lower_limit": "Zuurstof ondergrens",
+			"o2_lower_threshold": "Zuurstof onderstreefwaarde",
+			"oxygen_emission": "Oxygen emissie",
+			"ph_lower_limit": "pH ondergrens",
+			"ph_lower_threshold": "pH onderstreefwaarde",
+			"ph_upper_limit": "pH bovengrens",
+			"ph_upper_threshold": "pH bovenstreefwaarde",
+			"potassium_permangate_emission": "Kaliumpermanganaat emissie",
+			"psa_purity_4_power_consumption": "PSA generator klasse 4",
+			"psa_purity_5_power_consumption": "PSA generator klasse 5",
+			"sc20_upper_limit": "EGV bovengrens",
+			"sc20_upper_threshold": "EGV bovenstreefwaarde",
+			"sc_upper_limit": "EGV bovengrens",
+			"sc_upper_threshold": "EGV bovenstreefwaarde",
+			"seed_calcite_emission": "Zaaizout emissie",
+			"seed_dolomite_emission": "Dolomiet emissie",
+			"seed_garnet_emission": "Garnet emissie",
+			"seed_quartz_sand_emission": "Zilverzand emissie",
+			"sodium_bisulfite_emission": "Natriumbisulfaat emissie",
+			"sodium_chloride_emission": "Natriumchloride emissie",
+			"sulphuric_acid_emission": "Zwavelzuur emissie",
+			"well_efficiency": "Rendement winput"
+		},
+		"types": {
+			"emission": "Duurzaamheid & Uitstoot",
+			"norms": "Kwaliteitsnormen",
+			"operational": "Operationeel"
+		}
+	},
+	"models": {
+		"aeration": {
+			"outputs": {
+				"co2_emission": "CO2 uitstoot",
+				"methane_emission": "Methaan uitstoot",
+				"methane_factor": "Emissiefactor",
+				"methane_removal": "Methaan verwijdering"
+			},
+			"sections": {
+				"direct_emissions": "Directe uitstoot"
+			}
+		},
+		"base": {
+			"outputs": {
+				"co2_emissions": "CO₂",
+				"electricity_consumption": "Elektriciteitsverbruik",
+				"electricity_emission_factor": "Emissiefactor",
+				"electricity_emissions": "Uitstoot door elektriciteitsverbruik",
+				"hcl_emissions": "Zoutzuur",
+				"lime_emissions": "Kalkmelk",
+				"lye_emissions": "Natronloog",
+				"quartz_sand_emissions": "Zilverzand"
+			},
+			"sections": {
+				"chemical_emissions": "Chemicaliën en materialen",
+				"indirect_emissions": "Indirecte uitstoot"
+			}
+		},
+		"cascade": {
+			"design": {
+				"effluentQuality": "Effluent kwaliteit",
+				"pHcourse": "pH over hoogte",
+				"step": "Trap",
+				"steps": "Aantal stappen",
+				"yield": "Rendement"
+			},
+			"name": "Cascade",
+			"outputs": {
+				"blower_capacity": "Capaciteit beluchting",
+				"blower_efficiency": "Rendement beluchting",
+				"blower_flow": "Luchtstroom",
+				"blower_power": "Elektriciteitsverbruik",
+				"blower_pressure": "Ventilatiedruk",
+				"crest_head": "Overstorthoogte",
+				"fall_time": "Valtijd",
+				"headloss_model": "Hydraulisch hoogteverlies cascade",
+				"jet_velocity": "Horizontale snelheid overstort",
+				"jet_width": "Straalbreedte",
+				"total_height": "Totale hoogte cascade",
+				"total_width": "Totale breedte benodigd",
+				"trough_depth": "Diepte valgoot",
+				"trough_width": "Breedte valgoot",
+				"wier_load": "Mesbelasting"
+			},
+			"parameters": {
+				"cascade_length": "Lengte overstortrand",
+				"cascade_width": "Breedte cascade",
+				"number_of_steps": "Aantal stappen",
+				"step_height": "Valhoogte",
+				"units": "Aantal cascades"
+			},
+			"sections": {
+				"blowers": "Beluchting",
+				"general": "Ontwerp cascade"
+			}
+		},
+		"dosing": {
+			"design": {
+				"dosing": "Dosering",
+				"dosingcurve_AggCO2": "Doseercurve Aggressief CO2",
+				"dosingcurve_CCPP90": "Doseercurve TACC90",
+				"dosingcurve_pH": "Doseercurve pH",
+				"dosingcurve_SI": "Doseercurve SI",
+				"setpoint_warning": "Setpoint niet haalbaar met huidige instellingen"
+			},
+			"name": "Dosering",
+			"parameters": {
+				"chemical": "Chemicalië",
+				"dosage": "Dosering",
+				"mode": "Doseermode",
+				"options": {
+					"AggCO2": "AggCO₂",
+					"Ca(OH)2": "Ca(OH)2",
+					"CaCO3": "CaCO3",
+					"CCPP90": "TACC90",
+					"CO2": "CO2",
+					"constant": "Constante dosering",
+					"FeCl3": "FeCl3",
+					"H2SO4": "H2SO4",
+					"HCl": "HCl",
+					"MnCl2": "MnCl2",
+					"NaOH": "NaOH",
+					"O2": "O2",
+					"pH": "pH",
+					"setpoint": "Naar setpoint",
+					"SI": "SI"
+				},
+				"setpoint": "Wenswaarde",
+				"setpoint_parameter": "Parameter"
+			}
+		},
+		"filtration": {
+			"backwash_abbr": "Spoelprog.",
+			"backwash_programme": {
+				"add_step": "Stap toevoegen",
+				"air_only": "Lucht",
+				"air_water": "Lucht/Water",
+				"decreasing": "Aflopend",
+				"increasing": "Oplopend",
+				"q_air": "Q<sub>lucht</sub>",
+				"q_water": "Q<sub>water</sub>",
+				"step": "Stap",
+				"time": "Tijd",
+				"water_only": "Water"
+			},
+			"design": {
+				"acid_formation": "Zuurvorming",
+				"bicarbonate": "Bicarbonate",
+				"denitrification": "Denitrificatie",
+				"filtration": "Filtratie",
+				"h2s_oxidation": "H2S oxidatie",
+				"highlight_editing_model": "Highlight huidig model",
+				"influent": "Influent",
+				"iron_removal": "IJzerverwijdering",
+				"mangan_removal": "Ontmanganing",
+				"manganese_removal": "Ontmanganing",
+				"methane_oxidation": "Methaan oxidatie",
+				"nitrification": "Nitrificatie",
+				"O2": "Zuurstof",
+				"O2_consumption": "Zuurstofverbruik",
+				"pH": "Zuurgrad",
+				"show_levels": "Aan- en afvoerhoogte",
+				"show_model_levels": "Waterniveaus",
+				"spray": "Sproeibeluchting",
+				"sprayeffluent": "Sproer effluent"
+			},
+			"name": "Zandfiltratie",
+			"outputs": {
+				"average_headloss": "Gemiddeld drukverlies",
+				"backwash_duration": "Tijdsduur terugspoelen",
+				"backwash_energy": "Energieverbruik spoelen",
+				"backwash_headloss": "Drukverlies spoelen",
+				"backwash_headloss_anthracite": "Drukverlies spoelen antraciet",
+				"backwash_headloss_sand": "Drukverlies spoelen zand",
+				"backwash_iron": "IJzer gehalte spoelwater",
+				"backwash_loss": "Spoelverlies",
+				"backwash_power_consumption": "Elektriciteitsverbruik spoelen",
+				"backwash_volume": "Totaal spoelvolume",
+				"bed_expansion": "Bed expansie",
+				"bed_expansion_anthracite": "Bed expansie antraciet",
+				"bed_expansion_sand": "Bed expansie zand",
+				"bed_height": "Bedhoogte",
+				"blower_efficiency": "Rendement beluchting",
+				"blower_energy": "Elektriciteitsverbruik sproebeluchting",
+				"EBCT": "EBCT",
+				"expanded_height_anthracite": "Geëxpandeerde hoogte antraciet",
+				"expanded_height_sand": "Geëxpandeerde hoogte zand",
+				"filtration_velocity": "Filtratiesnelheid",
+				"headloss_anthracite": "Drukverlies schoon antraciet",
+				"headloss_anthracite_clogged": "Drukverlies verstopt antraciet",
+				"headloss_clean": "Drukverlies schoon filter",
+				"headloss_clogged": "Drukverlies verstopt filter",
+				"headloss_influent": "Hoogteverlies inlaat + sproeiers",
+				"headloss_model": "Hydraulisch hoogteverlies filtermedium",
+				"headloss_sand": "Drukverlies schoon zand",
+				"headloss_sand_clogged": "Drukverlies verstopt zand",
+				"iron_capture": "IJzer afgevangen per filterrun",
+				"iron_load": "IJzerbelasting",
+				"max_rate": "Maximale spoelsnelheid",
+				"runtime_volume": "Loopvolume",
+				"surface_area": "Filteroppervlak",
+				"total_surface": "Totaal filteroppervlak"
+			},
+			"parameters": {
+				"ammonium_removal_efficiency": "NH₄ verwijderingsrendement",
+				"backwash_control": "Spoelen op:",
+				"backwash_head": "Overstorthoogte spoelen",
+				"backwash_pump_efficiency": "Rendement spoelpomp",
+				"blowereficiency": "Rendement sproebeluchting",
+				"diameter": "Diameter",
+				"diameter_anthracite": "Diameter Antraciet",
+				"diameter_sand": "Diameter Zand",
+				"dual_media": "Dubbellaags",
+				"fall_height_to_media": "Valhoogte tot filterbed",
+				"filter_bottom": "Filterbodem",
+				"height_anthracite": "Hoogte Antraciet",
+				"height_gutter_to_media": "Afstand inlaatgoot tot filterbed",
+				"height_sand": "Hoogte zand",
+				"iron_removal_efficiency": "Fe verwijderingsrendement",
+				"length": "Lengte",
+				"manganese_removal_efficiency": "Mn verwijderingsrendement",
+				"options": {
+					"circular": "Rond",
+					"rectangular": "Rechthoekig",
+					"time": "Tijd",
+					"volume": "Loopvolume"
+				},
+				"porosity_anthracite": "Porositeit schoon",
+				"porosity_anthracite_clogged": "Porositeit verstopt",
+				"porosity_sand": "Porositeit schoon",
+				"porosity_sand_clogged": "Porositeit verstopt",
+				"pressure_loss_nozzles": "Drukverlies sproeinet",
+				"pressurized": "Drukfilter",
+				"runtime": "Looptijd",
+				"runvolume": "Volume behandeld water",
+				"shape": "Vorm",
+				"spray": "Sproebeluchting integratie",
+				"supernatant_level": "Bovenwaterstand",
+				"suppress_ammonium_removal": "Onderdruk NH₄ verwijdering",
+				"suppress_iron_removal": "Onderdruk Fe-verwijdering",
+				"suppress_manganese_removal": "Onderdruk Mn verwijdering",
+				"width": "Breedte"
+			},
+			"sections": {
+				"backwash": "Terugspoelen",
+				"general": "Algemeen",
+				"pressure_loss": "Drukverlies filtermedium"
+			}
+		},
+		"gasprocessing": {
+			"outputs": {
+				"ch4_emission": "Uitstoot methaangas",
+				"co2_by_burning": "CO2 door verbranding methaan",
+				"co2_content": "CO2 gehalte",
+				"co2_emission": "CO2 uitstoot",
+				"co2_gas": "CO2 in gas",
+				"gas_density": "Dichtheid",
+				"gas_production_max_day": "Max dag",
+				"gas_production_per_m3": "Gas productie per m3",
+				"gas_production_per_unit": "Gas productie per vacuumketel",
+				"gas_production_total": "Totale productie proces",
+				"gas_production_year": "Jaarproductie",
+				"generator_electric_rating": "Elektrische capaciteit generator",
+				"generator_thermal_rating": "Thermische capaciteit generator",
+				"gross_caloric_value": "Hoge calorische waarde",
+				"gross_wobbe_index": "Hoge Wobbe index",
+				"h2o_content": "Watergehalte",
+				"methane_content": "Methaangehalte",
+				"methane_content_dry": "Droog gas",
+				"methane_emitted": "Uitgestoten methaan per m3",
+				"methane_factor": "Emissiefactor methaan",
+				"n2_content": "N2 gehalte",
+				"net_caloric_value": "Lage calorische waarde",
+				"net_wobbe_index": "Lage Wobbe index",
+				"power_produced": "Geproduceerde elektricteit",
+				"relative_density": "Relative dichtheid"
+			},
+			"parameters": {
+				"flare": "Fakkel",
+				"flare_minimal_ch4": "Minimaal methaangehalte",
+				"power_generation": "Elektriciteitsproductie",
+				"power_generator_availability": "Beschikbaarheid generator",
+				"power_generator_efficiency": "Rendement generator",
+				"power_generator_minimal_ch4": "Minimaal methaangehalte"
+			},
+			"sections": {
+				"direct_emissions": "Directe uitstoot",
+				"gas_composition": "Gassamenstelling",
+				"gas_production": "Gasproductie",
+				"gas_quality": "Gaskwaliteit",
+				"power_production": "Elektriciteitsproductie"
+			}
+		},
+		"groundwater": {
+			"composition": {
+				"groups": {
+					"anions": "Anionen",
+					"cations": "Kationen",
+					"common": "Algemeen",
+					"dissolved-gasses": "Opgeloste gassen",
+					"other": "Overig"
+				}
+			},
+			"design": {
+				"activity": "Activiteit",
+				"calculated-properties": "Berekende eigenschappen",
+				"carbon-equilibrium": "Koolzuurevenwicht",
+				"ccpp": "TACC",
+				"ccpp90": "TACC90",
+				"charge": "Lading",
+				"charge-balance": "Balans",
+				"charge-derivation": "Afwijking",
+				"charge-inbalance-warning": "De maximale afwijking is 2%",
+				"conductivity": "EGV20",
+				"hardness": "Hardheid",
+				"m-number": "m-getal",
+				"osmotic-pressure": "Osmotische druk",
+				"oxygen-consumption": "Zuurstofverbruik",
+				"p-number": "p-getal",
+				"redox-potential": "Redoxpot. (pe)",
+				"scaling-potential": "Kalkafzettendheid",
+				"scaling-warning": "Grondwater kan niet kalkafzettend zijn",
+				"SI": "SI",
+				"tds": "TDS",
+				"total": "Totaal"
+			},
+			"name": "Winning",
+			"outputs": {
+				"average_day": "Gemiddelde dag",
+				"average_flow": "Gemiddeld debiet",
+				"average_velocity": "Gemiddelde snelheid",
+				"darcy_coefficient": "Darcy coefficient",
+				"delta_head": "Hydraulisch drukverlies",
+				"head_at_treatment": "Stijghoogte bij ingang zuivering",
+				"head_at_well": "Stijghoogte uitgang winput",
+				"headloss_per_meter": "Hoogteverlies per strekkende meter",
+				"headloss_pipe": "Hoogteverlies in leiding",
+				"headloss_pipe_": "Hoogteverlies in leiding",
+				"hydraulic_energy_loss": "Hydraulisch energieverlies",
+				"installed_capacity": "Opgestelde capaciteit",
+				"kinematic_viscosity": "Kinematische viscositeit",
+				"minor_losses_": "Lokale verliezen",
+				"production": "Productie",
+				"pump_efficiency": "Gem. rendement bronpomp",
+				"required_pump_head": "Benodigde opvoerhoogte winput",
+				"reynolds_number": "Reynolds getal",
+				"roughness": "Wandruwheid",
+				"total_headloss": "Totaal hoogteverlies",
+				"wells_in_use": "Putten in bedrijf",
+				"wells_standby": "Putten standby"
+			},
+			"parameters": {
+				"average_drawdown": "Gemiddelde afpomping",
+				"average_elevation": "Gemiddelde hoogte",
+				"average_groundwater_level": "Gemiddelde grondwaterstand",
+				"average_well_capacity": "Gemiddelde capaciteit",
+				"max_production": "Maximale productie",
+				"maximal_capacity": "Maximale productie",
+				"minimal_capacity": "Minimale productie",
+				"minor_losses": "Wrijvingsverlies",
+				"nominal_capacity": "Nominale productie",
+				"number_of_wells": "Aantal winputten",
+				"options": {
+					"PE": "PE",
+					"PVC": "PVC",
+					"Steel": "Staal"
+				},
+				"pipe_inner_diameter": "Inwendige diameter",
+				"pipe_length": "Buislengte",
+				"pipe_material": "Materiaal",
+				"yearly_production": "Jaarproductie"
+			},
+			"presets": {
+				"deep-anaerobic": "Diep anaeroob",
+				"slightly-anaerobic": "Mild anaeroob"
+			},
+			"sections": {
+				"capacity": "Productiecapaciteit",
+				"hydraulic_energy": "Hydraulische energie",
+				"hydraulic_line": "Hydraulische lijn",
+				"transport_pipe": "Transportbuis"
+			},
+			"select-preset": "Selecteer standaardoplossing"
+		},
+		"membrane": {
+			"design": {
+				"beta_factor": "Beta-factor",
+				"crossflow_per_module": "Doorstroming per module",
+				"feed_flow": "Voedingsdebiet",
+				"headloss_per_module": "Drukverlies per module",
+				"osmotic_pressure": "Osmotische druk",
+				"stage": "Trap"
+			},
+			"name": "Membraanfiltratie",
+			"outputs": {
+				"_recovery": "Recovery",
+				"concentrate_flow": "Concentraatdebiet",
+				"concentrate_pressure": "Concentraatdruk",
+				"concentration_factor": "Concentratiefactor",
+				"feed_pressure": "Voedingsdruk",
+				"headloss_model": "Benodigde Transmembraandruk",
+				"max_beta": "Maximale Beta-factor",
+				"max_feed": "Maximaal voedingsdebiet",
+				"max_flux": "Maximale Flux",
+				"max_pressure_drop": "Maximale drukval",
+				"mean_beta": "Gemiddelde Beta-factor",
+				"mean_flux": "Gemiddelde Flux",
+				"mean_pressure_drop": "Gemiddelde drukval",
+				"membrane_area": "Membraanoppervlakte",
+				"membrane_max_feed": "Maximale voedingsdebiet",
+				"membrane_max_pressure_drop": "Maximale drukval",
+				"membrane_min_brine": "Minimale concentraatdebiet",
+				"membrane_name": "Productnaam",
+				"membrane_rejection": "Zoutretentie",
+				"membrane_supplier": "Leverancier",
+				"min_brine": "Minimaal concentraatdebiet",
+				"permeate_flow": "Permeaatdebiet",
+				"permeate_pressure": "Permeaatdruk",
+				"required_ndp": "Benodigde Transmembraandruk",
+				"total_membrane_surface": "Totaal membraanoppervlak",
+				"total_modules": "Totaal aantal membranen",
+				"total_pressure_vessels": "Totaal aantal drukbuizen"
+			},
+			"parameters": {
+				"inlet_elevation": "Inlaathoogte",
+				"membrane_type": "Membraantype",
+				"modules_per_stage": "Modules per drukbuis",
+				"modules_per_vessel": "Membranen per drukbuis",
+				"number_of_stages": "Aantal trappen",
+				"optiflux": "Optiflux",
+				"options": {
+					"AK-400H": "AK-400H",
+					"AK-440H": "AK-440H",
+					"ESPA2-LD": "ESPA2-LD",
+					"ESPA2-LD-MAX": "ESPA2-LD-MAX",
+					"ESPA4-LD": "ESPA4-LD",
+					"ESPA4-MAX": "ESPA4-MAX",
+					"spiral": "Spiraal"
+				},
+				"pressure_loss_between_stages": "Drukverlies tussen trappen",
+				"pressure_loss_cartridge_filter": "Drukverlies kaarsenfilter",
+				"recovery": "Recovery",
+				"stage1_vessels": "Drukbuizen trap 1",
+				"stage2_vessels": "Drukbuizen trap 2",
+				"stage3_vessels": "Drukbuizen trap 3"
+			},
+			"sections": {
+				"membrane": "Membraangegevens",
+				"membrane_conditions": "Membraancondities",
+				"operational": "Operationeel",
+				"stack": "Stack ontwerp"
+			}
+		},
+		"membranedegassing": {
+			"design": {
+				"per_m3": "Per m3",
+				"per_membrane": "Per membraan",
+				"per_stack": "Per stack",
+				"total_process": "Totaal proces"
+			},
+			"name": "Membraanontgassing",
+			"outputs": {
+				"ch4_emission_stage_2": "Uitstoot methaangas",
+				"co2_by_burning_stage_2": "CO2 door verbranding methaan",
+				"co2_emission_stage_2": "CO2 uitstoot",
+				"co2_gas_stage_2": "CO2 in gas",
+				"headloss_model": "Hydraulisch hoogteverlies membraanontgasser",
+				"isothermic_energy": "Isothermische energie",
+				"isothermic_energy2": "Isothermische energie",
+				"membrane_load": "Membraanbelasting",
+				"membrane_pressure_loss": "Drukverlies membraan",
+				"psa_consumption": "Energiegebruik PSA generator",
+				"psa_specific_consumption": "Specifiek verbruik PSA generator",
+				"stage_2_co2_content": "CO2-gehalte stage 2",
+				"stage_2_gas_production_per_m3": "Gas productie per m3",
+				"stage_2_gas_production_per_unit": "Gas productie per membraanontgasser",
+				"stage_2_methane_content": "Methaangehalte stage 2",
+				"stage_2_methane_emitted": "Uitgestoten methaan per m3",
+				"stage_2_methane_factor": "Emissiefactor methaan",
+				"stage_2_vacuum_pressure": "Vacuumdiepte",
+				"total_membranes": "Aantal membranen per unit",
+				"total_membranes_process": "Totaal proces membraanontgassing",
+				"total_nitrogen_consumption": "Totaal stikstof-verbruik",
+				"total_pressure_loss": "Totaal drukverlies",
+				"vacuum_efficiency": "Rendement vacuumpomp",
+				"vacuum_efficiency2": "Rendement vacuumpomp",
+				"vacuum_pressure": "Vacuumdiepte",
+				"vacuum_pump_rating": "Aansluitwaarde vacuumpomp",
+				"vacuum_pump_rating2": "Aansluitwaarde vacuumpomp",
+				"vacuum_pump_stage_1": "Vacuumpomp stage 1",
+				"vacuum_pump_stage_2": "Vacuumpomp stage 2"
+			},
+			"parameters": {
+				"co2_rq_stage_1": "RQ CO₂",
+				"co2_rq_stage_2": "RQ CO₂",
+				"inlet_elevation": "Hoogte inlaat",
+				"membrane_type": "Membraantype",
+				"membranes_per_stage": "Aantal membranen per stage",
+				"n2_rq_stage_1": "RQ Stikstof",
+				"n2_rq_stage_2": "RQ Stikstof",
+				"nitrogen_purity": "Stikstofzuiverheidsklasse",
+				"nitrogen_source": "Stikstof bron",
+				"num_stages": "Aantal stages",
+				"options": {
+					"cryogenic": "Cryogeen",
+					"double": "Tweetraps",
+					"EXF14x28": "EXF14x28",
+					"EXF14x40": "EXF14x40",
+					"liquid-ring": "Vloeibare ring",
+					"PSA": "PSA",
+					"screw": "Schroef",
+					"single": "Enkeltraps"
+				},
+				"pressure_loss_cartridge_filter": "Gemiddeld drukverlies kaarsenfilter",
+				"vacuum_stage_1": "Vacuümdiepte Stage 1",
+				"vacuum_stage_2": "Vacuümdiepte Stage 2",
+				"vacuum_type": "Type vacuumpomp",
+				"vent_flare": "Fakkel"
+			},
+			"sections": {
+				"direct_emissions": "Directe uitstoot stage 1",
+				"direct_emissions_stage_2": "Direct uitstoot stage 2",
+				"gas_composition": "Gassamenstelling Stage 1",
+				"gas_production": "Gasproductie Stage 1",
+				"gas_quality": "Gaskwaliteit Stage 1",
+				"general": "Membraanontgassing",
+				"nitrogen_supply": "Stikstofvoorziening",
+				"stage_2_gas": "Gasproductie Stage 2",
+				"vacuum_pumps": "Vacuumpompen"
+			}
+		},
+		"model": {
+			"outputs": {
+				"average_day": "Gemiddelde dag",
+				"average_day_load": "Belasting gemiddelde dag",
+				"booster_efficiency": "Rendement boosterpomp",
+				"booster_energy_consumption": "Energiegebruik boosterpomp",
+				"calculated_booster_head": "Opvoerhoogte geintegreerde boosterpomp",
+				"calculated_head_in": "Berekende aanvoerhoogte",
+				"calculated_head_out": "Berekende afvoerhoogte",
+				"delta_booster": "Hydraulisch hoogteverlies",
+				"delta_head": "Hydraulisch drukverlies",
+				"headloss_influent": "Drukverlies inlaatwerk",
+				"hydraulic_energy_loss": "Hydraulisch energieverlies",
+				"inlet_head": "Stijghoogte influent",
+				"inlet_height": "Inlaathoogte",
+				"installed_capacity": "Opgestelde capaciteit processtap",
+				"max_day": "Max. dag",
+				"max_day_load": "Belasting max. dag",
+				"max_missing_units_average_day": "Maximale uitval op gemiddelde dag",
+				"max_missing_units_max_day": "Maximale uitval bij max. dag",
+				"minimal_head": "Minimale aanvoerhoogte",
+				"minimal_pump_head": "Minimale voordruk boosterpomp",
+				"outlet_head": "Stijghoogte Effluent",
+				"outlet_height": "Uitlaat hoogte",
+				"pump_efficiency": "Gemid. rendement toevoerpomp",
+				"test": "",
+				"total_headloss": "Totaal verlies hydraulische hoogte"
+			},
+			"parameters": {
+				"effluent_atmospheric": "Uitlaat asmosferisch",
+				"influent_pressure_loss": "Drukverlies inlaatwerk",
+				"inlet_elevation": "Inlaathoogte",
+				"maximal_capacity": "Maximale capaciteit",
+				"minimal_capacity": "Minimale capaciteit",
+				"nominal_capacity": "Nominale capaciteit",
+				"outlet_elevation": "Uitlaathoogte",
+				"pressurized": "Druksysteem",
+				"units": "Aantal units"
+			},
+			"sections": {
+				"hydraulic_energy": "Hydraulische energie",
+				"hydraulic_line": "Hydraulische lijn",
+				"hydraulic_load": "Hydraulische belasting"
+			}
+		},
+		"output": {
+			"name": "Levering",
+			"parameters": {
+				"inlet_elevation": "Aanvoerhoogte",
+				"integrated_booster": "Distributiepompen",
+				"required_pressure": "Distributiedruk"
+			}
+		},
+		"plate": {
+			"design": {
+				"effluent_quality": "Effluent kwaliteit",
+				"oxygen": "Zuurstof",
+				"pH_and_SI": "Zuurgraad en SI"
+			},
+			"name": "Plaatbeluchting",
+			"outputs": {
+				"air_flow": "Luchtstroom",
+				"deltaP": "Toevoerdrukverschil",
+				"deltaP_exhaust": "Uitlaatdrukverschil",
+				"deltaP_recirc": "Recirculatiedrukverschil",
+				"efficiency_exhaust": "Rendement uitlaatventilator",
+				"efficiency_recirculation": "Rendement recirculatieventilator",
+				"efficiency_supply": "Rendement toevoerventilator",
+				"exhaust_blower_energy": "Elektriciteitsverbruik uitlaatventilator",
+				"exhaust_fan_flow": "Luchtstroom uitlaatventilator",
+				"recirculation_blower_energy": "Elektriciteitsverbruik recirculatieventilator",
+				"recirculation_fan_flow": "Luchtstroom recirculatieventilator",
+				"supply_blower_energy": "Elektriciteitsverbruik toevoerventilator",
+				"supply_fan_flow": "Luchtstroom toevoerventilator",
+				"surface": "Oppervlakte",
+				"surface_load": "Oppervlaktebelasting",
+				"watercolumn_height": "Waterkolomhoogte"
+			},
+			"parameters": {
+				"contact_time": "Contacttijd",
+				"efficiency": "Luchtrendement",
+				"endplate_height": "Hoogte eindplaat",
+				"exhaust_fan_efficiency": "Rendement uitlaatventilator",
+				"exhaust_fan_pressure": "Druk afvoerventilator",
+				"exhaust_fan_pressure_difference": "Drukverlies uitlaatventilator",
+				"hole_diameter": "Diameter van de opening",
+				"length": "Lengte",
+				"options": {
+					"Foil": "Folie",
+					"Metal": "Metaal"
+				},
+				"recirculation": "Recirculatie",
+				"recirculation_fan_efficiency": "Rendement recirculatieventilator",
+				"recirculation_fan_pressure": "Druk recirculatieventilator",
+				"recirculation_fan_pressure_difference": "Drukverlies recirculatieventilator",
+				"RQ": "RQ",
+				"supply_fan_efficiency": "Rendement toevoerventilator",
+				"supply_fan_pressure": "Druk aanvoerventilator",
+				"supply_fan_pressure_difference": "Drukverlies toevoerventilator",
+				"type": "Beluchtingstype",
+				"width": "Breedte"
+			},
+			"sections": {
+				"electric_energy": "Elektriciteitsverbruik"
+			}
+		},
+		"recycle": {
+			"name": "Spoelwaterhergebruik",
+			"parameters": {
+				"recycle_efficiency": "Rendement"
+			}
+		},
+		"reservoir": {
+			"name": "Reservoir",
+			"outputs": {
+				"_headloss_model": "Hydraulisch hoogteverlies in reservoir",
+				"_influent_pressure_loss": "Drukverlies inlaatwerk",
+				"average_production": "Gemiddelde productie",
+				"average_retention_time": "Verblijftijd gemiddeld",
+				"calculalted_head_in": "Berekende aanvoerhoogte",
+				"calculated_head_out": "Berekende afvoerhoogte",
+				"delta_head": "Hydraulisch hoogteverlies",
+				"energy_loss": "Hydraulisch energieverlies",
+				"gross_volume": "Bruto inhoud",
+				"max_production": "Maximale productie",
+				"max_retention_time": "Verblijftijd maximale productie",
+				"minimal_head": "Minimale aanvoerhoogte",
+				"net_volume": "Netto inhoud",
+				"pump_efficiency": "Gemid. Rendement aanvoerpomp",
+				"surface_area": "Oppervlakte",
+				"total_headloss": "Totaal verlies hydraulische hoogte",
+				"total_storage": "Totaal opslagvolume"
+			},
+			"parameters": {
+				"co2_removal": "CO2 verwijderingsrendement",
+				"elevation": "Hoogteligging",
+				"influent_pressure_loss": "Drukverlies inlaatwerk",
+				"inlet_elevation": "Inlaathoogte",
+				"inlet_weir_height": "Hoogte inlaatoverstort",
+				"integrated_aeration": "Geintegreerde beluchting",
+				"mean_water_level": "Gemiddeld waterniveau",
+				"o2_addition": "Verzadiging zuurstofgehalte",
+				"o2_saturation": "Zuurstof naar verzadiging",
+				"options": {
+					"cylindrical": "Cilindrisch",
+					"rectangular": "Rechthoek"
+				},
+				"reservoir_diameter": "Diameter",
+				"reservoir_height": "Hoogte",
+				"reservoir_length": "Lengte",
+				"reservoir_shape": "Reservoir vorm",
+				"reservoir_width": "Breedte",
+				"units": "Aantal reservoirs/segmenten"
+			},
+			"sections": {
+				"general": "Reservoir",
+				"hydraulic_energy": "Hydraulische energie",
+				"hydraulic_line": "Hydraulische Lijn",
+				"retention_time": "Verblijftijd"
+			}
+		},
+		"sandfiltration": {
+			"name": "Zandfiltratie"
+		},
+		"sandtrap": {
+			"name": "Zandvang",
+			"outputs": {
+				"particle_density": "Dichtheid materiaal",
+				"settling_velocity": "Bezinksnelheid",
+				"settling_velocity_check": "Bezinksnelheid controle",
+				"surface_area": "Oppervlakte",
+				"surface_loading": "Oppervlaktebelasting",
+				"viscosity": "Dynamische viscositeit",
+				"volume": "Volume",
+				"water_density": "Dichtheid water"
+			},
+			"parameters": {
+				"height_at_inlet": "Hoogte influentzijde",
+				"height_at_outlet": "Hoogte effluentzijde",
+				"length": "Lengte",
+				"nominal_capacity": "Nominale capaciteit",
+				"options": {
+					"anthracite": "Antraciet",
+					"basalt": "Basalt",
+					"garnet": "Granaatzand",
+					"gravel": "Grind",
+					"hydro-anthracite": "Hydro-antraciet",
+					"marble": "Marmer",
+					"other": "Overig (zelf invullen)",
+					"pellets": "Kalkpellets",
+					"quartz-sand": "Zilverzand"
+				},
+				"other_particle_density": "Dichtheid materiaal",
+				"particle_material": "Materiaal",
+				"particle_size": "Deeltjesgrootte",
+				"temperature": "Watertemperatuur",
+				"width": "Breedte"
+			},
+			"sections": {
+				"design_check": "Ontwerpcontrole",
+				"sandtrap": "Zandvang",
+				"settling": "Bezinkgedrag"
+			}
+		},
+		"softening": {
+			"design": {
+				"Doseercurve": "Doseercurve",
+				"Dosering": "Dosering",
+				"EGV": "EGV",
+				"Hardheid": "Hardheid",
+				"HCO3": "HCO3",
+				"Kalkmelk": "Kalkmelk",
+				"Kalkmelk doseren": "Kalkmelk doseren",
+				"Kalkmelk ontharden": "Kalkmelk ontharden",
+				"NaOH doseren": "NaOH doseren",
+				"NaOH ontharden": "NaOH ontharden",
+				"Natronloog": "Natronloog",
+				"pH": "pH"
+			},
+			"name": "Pelletontharding",
+			"outputs": {
+				"base_height": "Hoogte cilindrisch deel",
+				"bed_expansion": "Bed expansie",
+				"bed_headloss": "Drukverlies ge-expandeerd bed",
+				"bottom_surface_area": "Oppervlakte cilindrisch deel",
+				"calcite_production": "Calciet productie",
+				"calcite_volume": "Volume calciet schil",
+				"co2": "CO₂",
+				"delta_ca": "Calcium verwijdering",
+				"delta_hardness": "Δ Hardheid",
+				"expanded_bed_height": "Hoogte ge-expandeerd bed",
+				"expanded_bed_porosity": "Porositeit ge-expandeerd bed",
+				"flow_reactor": "Debiet door reactor",
+				"funnel_angle": "Hoek uitkraging",
+				"funnel_height": "Hoogte uitkraging",
+				"hcl": "Zoutzuur",
+				"headloss_model": "Hydraulisch hoogteverlies pelletreactor",
+				"installed_capacity": "Opgestelde capaciteit",
+				"lime": "Kalkmelk",
+				"lye": "Natronloog",
+				"n_pellets": "Aantal pellets",
+				"outlet_height": "Hoogte uitlaat",
+				"pellet_bed_volume": "Volume vastbed",
+				"pellet_carbon_capture": "CO₂ afvang in pellets",
+				"pellet_density": "Dichtheid pellet",
+				"pellet_mass": "Massa pellet",
+				"pellet_production": "Pellet productie",
+				"pellet_production_per_day": "per dag",
+				"pellet_production_per_hour": "per uur",
+				"pellet_production_per_year": "per jaar",
+				"pellet_volume": "Volume pellet",
+				"quartz_sand": "Zilverzand",
+				"seed_consumption": "Entmateriaal verbruik",
+				"seed_consumption_per_day": "per dag",
+				"seed_consumption_per_hour": "per uur",
+				"seed_consumption_per_year": "per jaar",
+				"seed_volume": "Volume entmateriaal",
+				"top_surface_area": "Oppervlakte bovenkant uitkraging",
+				"total_flow": "Totaal debiet",
+				"total_reactor_height": "Totale hoogte reactor",
+				"velocity_cylindrical": "Cilindirsch deel",
+				"velocity_top": "Bovenkant reactor"
+			},
+			"parameters": {
+				"acid_chemical": "Zuur chemicalie",
+				"acid_concentration": "Concentratie zuur",
+				"acid_dosage": "Zuur dosering",
+				"acid_position": "Positie zuurdosering",
+				"average_pellet_diameter": "Gemiddelde pelletdiameter",
+				"average_seed_diameter": "Gemiddelde diameter",
+				"base_chemical": "Base chemicalie",
+				"base_concentration": "Base concentratie",
+				"base_dosage": "Base dosering",
+				"bypass_capacity": "Capaciteit bypass",
+				"bypass_open": "Percentage bypass open",
+				"bypass_ratio": "Bypass open",
+				"diameter_cylindrical": "Diameter cilindr. deel",
+				"diameter_funnel": "Diameter uitkraging",
+				"fe_capture": "Afvang Fe in pellets",
+				"height_cylindrical": "Hoogte cilindr. deel",
+				"height_funnel": "Hoogte uitkraging",
+				"inlet_elevation": "Hoogte toevoer reactor",
+				"lime_type": "Kalktype",
+				"maximal_capacity": "Maximale capaciteit",
+				"minimal_capacity": "Minimale capaciteit",
+				"mn_capture": "Afvang Mn in pellets",
+				"nominal_capacity": "Nominale capaciteit",
+				"options": {
+					"after-bypass": "Na bypass",
+					"bypass": "Bypass",
+					"Ca(OH)2": "Kalkmelk",
+					"calcite": "Calciet",
+					"CO2": "CO₂",
+					"cylindrical": "Cilindrisch",
+					"funnel": "Uitkragend",
+					"garnet_sand": "Granaatsand",
+					"HCl": "HCl",
+					"hydrated_lime": "Geblust",
+					"milk_of_lime": "Kalkmelk",
+					"NaOH": "Natronloog",
+					"quartz_sand": "Silverzand",
+					"quicklime": "Ongeblust",
+					"reactor-outlet": "Effluent"
+				},
+				"pressurized": "Drukreactor",
+				"reactor_shape": "Reactorvorm",
+				"seed_material": "Entmateriaal",
+				"soften_to_si": "Ontharding tot SI",
+				"static_bed_height": "Hoogte vastbed",
+				"static_bed_porosity": "Porositeit vastbed"
+			},
+			"sections": {
+				"direct_emissions": "Directe uitstoot",
+				"dosing": "Doseringen",
+				"hydraulic_load": "Hydraulische belasting",
+				"materials": "Materialen",
+				"pellet_bed": "Pellet bed",
+				"pellet_production": "Pellet productie",
+				"reactor_shape": "Reactor vorm",
+				"velocities": "Snelheden"
+			}
+		},
+		"splitter": {
+			"name": "Splitsing",
+			"parameters": {
+				"pressurized": "Druksysteem",
+				"split": "Deelstroom"
+			}
+		},
+		"sprayaerator": {
+			"name": "Sproeibeluchting",
+			"outputs": {
+				"blower_energy": "Elektriciteitsverbruik sproebeluchting",
+				"blowerefficiency": "Rendement beluchter voor sproebeluchting",
+				"resparitoryquotient": "Respiratoire Quotient",
+				"total_air_flow": "Totale luchtstroom",
+				"total_nozzles": "Aantal sproeiers"
+			},
+			"parameters": {
+				"ambient_temperature": "Omgevingstemperatuur",
+				"area_per_nozzle": "Oppervlak per sproeier",
+				"blowereficiency": "Rendement sproebeluchting",
+				"fall_height": "Valhoogte boven bed",
+				"rq": "RQ"
+			},
+			"sections": {
+				"electric_energy": "Elektriciteitsverbruik"
+			}
+		},
+		"toweraeration": {
+			"design": {
+				"air_capacity": "Capaciteit Lucht [m/s]",
+				"column_is_flooding": "Kolom is overstromend",
+				"hydraulics": "Hydraulisch",
+				"water_capacity": "Capaciteit Water [m/s]",
+				"water_quality": "Waterkwaliteit"
+			},
+			"name": "Torenbeluchting",
+			"outputs": {
+				"a-factor": "a-factor",
+				"air_volume": "Luchtvolume",
+				"b-factor": "b-factor",
+				"bed_volume": "Bed volume",
+				"blower_efficiency": "Rendement blower",
+				"blower_energy": "Blower energie",
+				"CO2": "CO2",
+				"delta_p": "Drukverschil bed",
+				"EBCT": "EBCT",
+				"F-Factor": "F-Factor",
+				"flooding_factor": "Flooding factor",
+				"headloss_influent": "Hydraulisch hoogteverlies influent",
+				"headloss_model": "Hydraulisch hoogteverlies torenbeluchter",
+				"liquid_holdup": "Liquid Holdup",
+				"liquid_loading": "Oppervlaktebelasting",
+				"Methane": "Methaan",
+				"packing_size": "Pakkingsgrootte",
+				"pressuredrop": "Drukval luchtzijdig",
+				"respiratory_quotient": "RQ",
+				"surface_area": "Oppervlakte",
+				"surface_volume_ratio": "Oppervlakte/Volume-ratio",
+				"total_height": "Totale hoogte",
+				"total_pressure_drop": "Totaal drukverlies luchtzijdig",
+				"void_fraction": "Void-fractie",
+				"volume": "Volume torenbeluchter"
+			},
+			"parameters": {
+				"air_system_pressure_loss": "Drukverlies luchtsysteem",
+				"ambient_temperature": "Omgevingstemperatuur",
+				"bed_height": "Bed hoogte",
+				"blowereficiency": "Rendement blower",
+				"diameter": "Diameter",
+				"fall_height": "Valhoogte boven bed",
+				"options": {
+					"Raflux25": "Raflux 25",
+					"Raflux50": "Raflux 50",
+					"Raflux90": "Raflux 90"
+				},
+				"packingmaterial": "Pakkingsmateriaal",
+				"pressure_loss_nozzles": "Drukverlies verdeelwerk",
+				"rq": "RQ"
+			},
+			"sections": {
+				"electric_energy": "Elektriciteitsverbruik",
+				"general": "Torenbeluchter",
+				"operation": "Operatie",
+				"packing": "Pakkingsmateriaal",
+				"removalrates": "Verwijderingsrendement"
+			}
+		},
+		"vacuum": {
+			"design": {
+				"acidity-and-si": "Zuurgraad en SI",
+				"dry": "Droog",
+				"effluent-quality": "Effluent Kwaliteit",
+				"gas-quality": "Gas Kwaliteit",
+				"vacuum-pressure": "Onderdruk [bara]",
+				"wet": "Nat",
+				"wet-gas-volume": "(nat) gas volume"
+			},
+			"name": "Vacuumontgassing",
+			"outputs": {
+				"headloss_influent": "Drukverlies inlaatwerk + sproeinet",
+				"headloss_model": "Hoogteverlies vacuumketel",
+				"isothermic_energy": "Isothermische energie",
+				"surface": "Oppervlakte",
+				"surface_load": "Oppervlaktebelasting",
+				"total_height": "Totale hoogte",
+				"vacuum_efficiency": "Vacuum rendement",
+				"vacuum_pump_rating": "Opgesteld vermogen per ketel",
+				"vacuum_pumps": "Vacuumpompen",
+				"velocity": "Snelheid"
+			},
+			"parameters": {
+				"acidity-and-si": "",
+				"bed_height": "Hoogte pakking",
+				"bottom_height": "Hoogte onderkant",
+				"diameter": "Diameter",
+				"dry": "",
+				"effluent-quality": "",
+				"gas-quality": "",
+				"options": {
+					"liquid_ring": "Vloeistofring",
+					"screw": "Schroefpomp"
+				},
+				"pressure_loss_nozzles": "Drukverlies sproeinet",
+				"spray_height": "Valhoogte sproeiers",
+				"vacuum_pressure": "Vacuum diepte",
+				"vacuum_pump": "Type vacuumpomp",
+				"wet": "",
+				"wet-gas-volume": ""
+			},
+			"sections": {
+				"vacuum_system": "Vacuum systeem",
+				"vessel": "Vacuumketel"
+			}
+		},
+		"waste": {
+			"name": "Afvalstroom"
+		}
+	},
+	"Totaal": "Totaal",
+	"tutorial": [
+		{
+			"body": "This tutorial will guide you through the basic features and functionality of Amanzi-UI. \n\nFollow along to learn how to create and configure your water treatment process.\n\nClick 'Next' to begin the tutorial.",
+			"title": "Welkom bij Amanzi!"
+		},
+		{
+			"body": "Start by dragging components from the left sidebar onto the canvas or double click them in the library to have them connect automatically. \n\nEvery treatment plant scenario needs a source (abstraction model) and a sink (outlet model).",
+			"title": "Processtappen toevoegen"
+		},
+		{
+			"body": "Connect components by clicking and dragging between their connection points. \n\nMake sure all connections for the product stream (blue), waste stream (red) and backwash stream (blue dotted) are made.",
+			"title": "Componenten verbinden"
+		},
+		{
+			"body": "Double click any component or use its Edit model parameter button to open the configuration panel and adjust parameters of this component. \n\nAny changes will show immediatly in the desgin graphs and tables and effect the whole treatment process.",
+			"title": "Componenten configureren"
+		},
+		{
+			"body": "Click on the 'Key figure' tab in the right sidebar to set the project wide parameters. \n\nThese parameters will be used for all calculations in this project.",
+			"title": "Project parameters instellen"
+		},
+		{
+			"body": "Use the right sidebar to view calculation results and performance metrics.",
+			"title": "Resultaten bekijken"
+		},
+		{
+			"body": "You can create multiple scenarios to compare different design options. \n\nClick on the '+' tab in bottom to create a new scenario. \n\nYou can also edit or delete existing scenarios. \n\nIt is possible to copy and paste components between scenarios with the general ctrl+c and ctrl+v shortcuts.",
+			"title": "Meerdere scenario's"
+		},
+		{
+			"body": "You've completed the tutorial. Feel free to explore and build your own treatment process.",
+			"title": "Klaar om te beginnen!"
+		}
+	],
+	"ui": {
+		"design": {
+			"categories": {
+				"chemicals": "Chemicaliën",
+				"design": "Ontwerp",
+				"design_tables": "Ontwerptabellen",
+				"gas_processing": "Gasverw.",
+				"hydraulic_line": "Hydraulische lijn",
+				"massbalance": "Massabalans",
+				"model": "Model",
+				"operational": "Bedrijfsv.",
+				"schematic": "Schematisch"
+			},
+			"parameterlist": {
+				"category": "Categorie",
+				"equation": "Vergelijking",
+				"parameter": "Parameter",
+				"section": "Sectie",
+				"tag": "Tag",
+				"units": "Eenheid",
+				"value": "Waarde"
+			},
+			"sections": {
+				"aeration": "Beluchting",
+				"backwash": "Terugspoelen",
+				"backwash_programme": "Spoelprogramma",
+				"blowerspecifications": "Blower specificaties",
+				"cascade": "Cascade",
+				"chemicals": "Chemicaliën",
+				"dosing": "Dosering",
+				"flows": "Debieten",
+				"general": "Algemeen",
+				"hydraulic_energy": "Hydraulische energie",
+				"hydraulic_line": "Hydraulische lijn",
+				"membrane_degassing": "Membraanontgasser",
+				"methane_processing": "Methaanverwerking",
+				"particles": "Deeltjes",
+				"pellet_bed": "Pelletbed",
+				"plate_aeration": "Plaatbeluchter",
+				"reactor": "Reactor",
+				"reactor_model": "Reactormodel",
+				"removal_rates": "Verwijderingsrendementen",
+				"sandfilter": "Snelfilter",
+				"sandtrap": "Zandvang",
+				"seed": "Entmateriaal",
+				"sprayaerator": "Sproeibeluchting",
+				"stack_configuration": "Stack configuratie",
+				"stage_1": "Trap 1",
+				"stage_2": "Trap 2",
+				"supernatant": "Bovenwaterstand",
+				"toweraeration": "Torenbeluchter",
+				"transport_pipe": "Transportleiding",
+				"vacuum": "Vacuum",
+				"vacuum_system": "Vacuumsysteem",
+				"vent_processing": "Verwerking restgas ",
+				"vessel": "Ketel",
+				"well_design": "Winputten"
+			},
+			"tables": {
+				"headers": {
+					"chemicals": "Chemicaliën en materialen",
+					"design": "Ontwerp",
+					"energy": "Energieverbruik",
+					"hydraulic": "Hydraulisch",
+					"sustainability": "Duurzaamheid"
+				},
+				"parameter": "Parameter",
+				"totals": "Totaal",
+				"units": "Eenheid"
+			}
+		},
+		"dialogs": {
+			"keyfigures": {
+				"title": "Kengetallen"
+			},
+			"report": {
+				"title": "Rapportage"
+			},
+			"tutorial": {
+				"title": "Rondleiding"
+			}
+		},
+		"general": {
+			"messages": {
+				"missing_connections": "Het model \"{name}\" is niet volledig aangesloten",
+				"missing_sink": "Het model heeft een uitgaande stroom (levering) nodig",
+				"missing_source": "Het model heeft een bron (grondwaterwinning) nodig om te functioneren",
+				"missing_source_sink": "Het model heeft een bron en een levering nodig"
+			},
+			"press-enter-to-commit": "Druk op enter om op te slaan"
+		},
+		"menubar": {
+			"add_scenario": "Scenario toevoegen",
+			"cancel": "Annuleren",
+			"confirm_remove": "Weet u zeker dat u dit scenario wilt verwijderen?",
+			"display": {
+				"booster_head": "Opvoerhoogte",
+				"boosters": "Boosterpompen",
+				"debug": "Testgegevens hydraulica",
+				"flows": "Debieten",
+				"fullscreen": "Schermvullend",
+				"grid": "Raster",
+				"label": "Weergave",
+				"losses": "Hydraulische verliezen",
+				"sidebar_left": "Modellen",
+				"sidebar_right": "Resultaten",
+				"zoom_fit": "Passend in venster",
+				"zoom_in": "Vergroot",
+				"zoom_out": "Verklein"
+			},
+			"edit": {
+				"copy": "Kopieëren",
+				"cut": "Knippen",
+				"duplicate": "Dupliceren",
+				"edit": "Wijzigen",
+				"label": "Wijzig",
+				"paste": "Plakken",
+				"redo": "Opnieuw",
+				"remove": "Verwijderen",
+				"select_all": "Alles selecteren",
+				"select_nothing": "Selectie leegmaken",
+				"undo": "Ongedaan maken"
+			},
+			"enter_scenario_name": "Voer een nieuwe scenarionaam in",
+			"enter_scenario_name_empty_error": "De naam mag niet leeg zijn",
+			"help": {
+				"about": "Over Amanzi",
+				"help": "Hulp",
+				"label": "Hulp",
+				"tutorial": "Tutorial"
+			},
+			"new": {
+				"cancel_button": "Overschrijven",
+				"confirm": "Bij het aanmaken van een nieuw project wordt het oude project overschreven. Wilt u het oude project eerst downloaden?",
+				"confirm_button": "Downloaden en overschrijven",
+				"title": "Nieuw project aanmaken?"
+			},
+			"new_scenario": "Nieuw scenario",
+			"project": {
+				"download": "Downloaden",
+				"keyfigures": "Kengetallen",
+				"label": "Project",
+				"new": "Nieuw...",
+				"open": "Openen",
+				"rename": "Hernoem project",
+				"report": "Bereken project",
+				"save": "Opslaan"
+			},
+			"remove": "Verwijderen",
+			"remove_scenario": "Scenario verwijderen",
+			"rename": "Hernoemen",
+			"rename_scenario": "Naam scenario aanpassen",
+			"saved": "Alle wijzigingen opgeslagen",
+			"scenario": {
+				"duplicate": "Dupliceer scenario",
+				"label": "Scenario",
+				"new": "Nieuw scenario",
+				"remove": "Verwijder scenario",
+				"rename": "Hernoem scenario"
+			},
+			"unsaved": "Niet-opgeslagen wijzigingen, klik hier om op te slaan."
+		},
+		"report": {
+			"energy": {
+				"metrics": {
+					"model_specific_consumption": "Per behandelde m³",
+					"specific_consumption": "Per totaal m³ geleverd",
+					"specific_consumption_distribution": "Spec. verbruik distributie",
+					"specific_consumption_production": "Spec. verbruik zuivering",
+					"total_consumption": "Totaal verbruik",
+					"total_specific_consumption": "Specifiek verbruik"
+				}
+			},
+			"general": {
+				"energy": "Energie",
+				"higher_better": "hoger is beter",
+				"lower_better": "lager is beter",
+				"sustainability": "Duurzaamheid",
+				"waterquality": "Waterkwaliteit"
+			},
+			"quality": {
+				"metrics": {
+					"aggco2": "AggCO₂",
+					"ccpp90": "TACC₉₀",
+					"Cl": "Cl",
+					"Fe": "Fe",
+					"hardness": "Hardheid",
+					"hco3": "HCO₃",
+					"Mn": "Mn",
+					"Na": "Na",
+					"NH4": "NH₄",
+					"o2": "O₂",
+					"pH": "pH",
+					"sc20": "EGV",
+					"tds": "TDS"
+				}
+			},
+			"quantity": {
+				"metrics": {
+					"loss": "Productieverlies",
+					"loss_percentage": "Verlies perc.",
+					"total_distribution": "Totale levering",
+					"total_production": "Totale productie"
+				}
+			},
+			"sustainability": {
+				"metrics": {
+					"model_specific_emission": "Per behandelde m3",
+					"specific_emission": "Per totaal m3 geleverd",
+					"total_emission": "Totale uitstoot",
+					"total_specific_emission": "Specifieke uitstoot"
+				}
+			}
+		},
+		"scenariobar": {
+			"duplicate": "Dupliceren",
+			"remove": "Verwijderen",
+			"rename": "Hernoemen"
+		},
+		"sidebar": {
+			"configuration": {
+				"edit": "Modelparameters bewerken",
+				"label": "Configuratie",
+				"name": "Naam"
+			},
+			"energy": {
+				"label": "Energie",
+				"specific_consumption_distribution": "Distributie",
+				"specific_consumption_production": "Zuivering",
+				"total_specific_consumption": "Totaal"
+			},
+			"library": {
+				"categories": {
+					"main": "Hoofdstroom",
+					"waste": "Reststroom"
+				},
+				"filter": "Filter",
+				"label": "Bibliotheek"
+			},
+			"project": {
+				"download": "Downloaden",
+				"label": "Project",
+				"reset": "Reset",
+				"save": "Opslaan",
+				"upload": "Uploaden"
+			},
+			"quality": {
+				"aggco2": "AggCO₂",
+				"ccpp90": "TACC₉₀",
+				"Cl": "Cl",
+				"Fe": "Fe",
+				"hardness": "Hardheid",
+				"hco3": "HCO₃",
+				"label": "Kwaliteit",
+				"Mn": "Mn",
+				"Na": "Na",
+				"NH4": "NH₄",
+				"o2": "O₂",
+				"pH": "pH",
+				"sc20": "EGV",
+				"tds": "TDS"
+			},
+			"quantity": {
+				"label": "Kwantiteit",
+				"loss": "Verlies",
+				"total_distribution": "Distributie",
+				"total_production": "Winning"
+			},
+			"sustainability": {
+				"label": "Duurzaamheid",
+				"specific_emission": "Per totaal m3 geleverd",
+				"total_emission": "Totale uitstoot",
+				"total_specific_emission": "Specifieke uitstoot"
+			}
+		},
+		"topbar": {
+			"cancel": "Annuleren",
+			"enter_scenario_name_already_exists": "Er bestaat al een scenario met deze naam",
+			"feedback": "Feedback?",
+			"key_figures": "Kengetallen",
+			"rename": "Opslaan",
+			"rename_error": "Ongeldige naam",
+			"rename_project": "Nieuwe naam voor project",
+			"rename_project_title": "Naam wijzigen",
+			"run_project": "Bereken project",
+			"zoom_to_fit": "Passend in venster"
+		},
+		"tutorial": {
+			"close": "Aan de slag!",
+			"next": "Volgende",
+			"previous": "Vorige",
+			"skip": "Niet meer tonen"
+		}
+	}
+}
