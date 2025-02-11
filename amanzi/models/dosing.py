@@ -4,7 +4,7 @@ from .model import Model
 from .submodels.balance import Balance
 
 class Dosing(Model, Balance):
-    parametric_model = ['model','dosing']
+    parametric_model = ['dosing']
     def __init__(self, config, pp) -> None:
         super().__init__(config, pp)
         config = config.get('configuration', {})

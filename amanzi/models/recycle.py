@@ -9,6 +9,7 @@ class Recycle(Model, Splitter):
 
         if pp:
             self.product_solution = pp.add_solution({})
+            self.waste_solution = pp.add_solution({})
         
         print(self.parameters)
 
@@ -18,12 +19,16 @@ class Recycle(Model, Splitter):
 
     def run_quality(self, type, total_inflow, solution):
         ## remove 95% of NaCl
+
         self.product_solution = solution.copy()
+        self.waste_solution = solution.copy()
         return solution
 
+    # Problem is that run_trace only happens for product, not waste
     @property
     def emitter_solutions(self):
-        return {'product': self.product_solution}
+        return {'product': self.product_solution,
+                'waste': self.waste_solution}
     
     @property
     def mass(self):

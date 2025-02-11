@@ -258,6 +258,7 @@ class Sandfiltration(Model, Loss):
             for n, v in values.items():
                 step_results[n] = v(self.quality.influent.product.copy())
             results["influent"]= step_results
+            results["influent"]= step_results
 
 
         return {
