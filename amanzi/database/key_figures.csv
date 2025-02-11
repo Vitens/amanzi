@@ -1,33 +1,63 @@
-﻿name;category;type;default;UOM;remarks
-max_hour;general;operational;1.2;-;day peak factor
-well_efficiency;general;operational;55;%;well pump efficiency
-booster_efficiency;general;operational;75;%;booster efficiency
-psa_purity_4_power_consumption;general;operational;0.61;kWh/Nm3;
-psa_purity_5_power_consumption;general;operational;0.82;kWh/Nm3;
-carbon_intensity_grid;general;emission;250;gCO2/kWh; 
-methane_emission_factor;general;emission;28;gCO2/gCH4;
-ph_lower_limit;general;norms;7;-;
-ph_lower_threshold;general;norms;7.7;-;
-ph_upper_threshold;general;norms;8.3;-;
-ph_upper_limit;general;norms;9.5;-;
-sc20_upper_threshold;general;norms;80;mS/m;
-sc20_upper_limit;general;norms;125;mS/m;
-o2_lower_threshold;general;norms;4;mg/l;
-o2_lower_limit;general;norms;2;mg/l;
-hardness_upper_threshold;general;norms;1.43;mmol/l;
-hardness_upper_limit;general;norms;2;mmol/l;
-hardness_lower_limit;general;norms;1;mmol/l;
-aggco2_upper_threshold;general;norms;2.2;mmol/l;
-aggco2_upper_limit;general;norms;2.2;mmol/l;
-ccpp90_upper_threshold;general;norms;0.4;mmol/l;
-ccpp90_upper_limit;general;norms;0.6;mmol/l;
-fe_upper_threshold;general;norms;0.05;mg/l;
-fe_upper_limit;general;norms;0.1;mg/l;
-mn_upper_threshold;general;norms;0.01;mg/l;
-mn_upper_limit;general;norms;0.05;mg/l;
-nh4_upper_threshold;general;norms;0.05;mg/l;
-nh4_upper_limit;general;norms;0.2;mg/l;
-na_upper_threshold;general;norms;100;mg/l;
-na_upper_limit;general;norms;150;mg/l;
-cl_upper_threshold;general;norms;100;mg/l;
-cl_upper_limit;general;norms;150;mg/l;
+﻿name;category;type;default;UOM;remarks;
+max_hour;general;operational;1.2;-;day peak factor;
+well_efficiency;general;operational;55;%;well pump efficiency;
+booster_efficiency;general;operational;75;%;booster efficiency;
+psa_purity_4_power_consumption;general;operational;0.61;kWh/Nm3;;
+psa_purity_5_power_consumption;general;operational;0.82;kWh/Nm3;;
+carbon_intensity_grid;general;emission;250;gCO2/kWh; ;
+methane_emission_factor;general;emission;28;gCO2/gCH4;;
+activated_carbon_new_emission;chemicals;emission;10.24;gCO2/gAS;Actief kool;Nieuw
+activated_carbon_regenerated_emission;chemicals;emission;2.13;gCO2/gAS;Actief kool;Geregenereerd
+aluminium_sulphate_emission;chemicals;emission;0.58;gCO2/gAS;Aluminium sulfaat;
+ammonia_emission;chemicals;emission;2.73;gCO2/gAS;Ammonia;
+anthracite_emission;chemicals;emission;0.69;gCO2/gAS;Antraciet;
+calcium_oxide_emission;chemicals;emission;1.12;gCO2/gAS;Calciumoxide;
+calcium_hydroxide_emission;chemicals;emission;0.87;gCO2/gAS;Calciumhydroxide;
+calcium_carbonate_emission;chemicals;emission;0.06;gCO2/gAS;Calciumcarbonaat;
+chlorine_emission;chemicals;emission;0.62;gCO2/gAS;Chloor;Vloeibaar
+bleach_emission;chemicals;emission;2.13;gCO2/gAS;Chloorbleekloog;
+chlorine_gas_emission;chemicals;emission;0.59;gCO2/gAS;Chloorgas;
+citric_acid_emission;chemicals;emission;6.00;gCO2/gAS;citroenzuur;
+co2_emission;chemicals;emission;0.74;gCO2/gAS;CO2;
+seed_calcite_emission;chemicals;emission;0.04;gCO2/gAS;Entmateriaal;Calciet uit drinkwater
+seed_dolomite_emission;chemicals;emission;0.11;gCO2/gAS;Entmateriaal;Italiaans dolomiet
+seed_garnet_emission;chemicals;emission;2.22;gCO2/gAS;Entmateriaal;Granaatzand incl. transport uit Australië
+seed_quartz_sand_emission;chemicals;emission;0.04;gCO2/gAS;Entmateriaal;Zilverzand
+filter_sand_emission;chemicals;emission;0.04;gCO2/gAS;Filterzand;
+iron_chloride_emission;chemicals;emission;0.49;gCO2/gAS;IJzerchloride;
+iron_sulphate_emission;chemicals;emission;0.16;gCO2/gAS;Ijzersulfaat;
+potassium_permangate_emission;chemicals;emission;1.76;gCO2/gAS;Kaliumpermanganaat;
+lime_emission;chemicals;emission;0.87;gCO2/gAS;Kalk/kalkhydraat/kalkmelk/kalkpoeder;
+lye_emission;chemicals;emission;1.27;gCO2/gAS;Natronloog;
+sodium_bisulfite_emission;chemicals;emission;1.31;gCO2/gAS;Natriumbisulfiet;
+sodium_chloride_emission;chemicals;emission;0.27;gCO2/gAS;Natriumchloride;
+hydrogen_peroxide_emission;chemicals;emission;1.13;gCO2/gAS;Waterstofperoxide;
+hydrochloric_acid_emission;chemicals;emission;0.56;gCO2/gAS;Zoutzuur;
+oxygen_emission;chemicals;emission;0.55;gCO2/gAS;Zuurstof;
+sulphuric_acid_emission;chemicals;emission;0.11;gCO2/gAS;Zwavelzuur;
+manganese_chloride_emission;chemicals;emission;2.98;gCO2/gAS;Mangaanchloride;
+ph_lower_limit;general;norms;7;-;;
+ph_lower_threshold;general;norms;7.7;-;;
+ph_upper_threshold;general;norms;8.3;-;;
+ph_upper_limit;general;norms;9.5;-;;
+sc20_upper_threshold;general;norms;80;mS/m;;
+sc20_upper_limit;general;norms;125;mS/m;;
+o2_lower_threshold;general;norms;4;mg/l;;
+o2_lower_limit;general;norms;2;mg/l;;
+hardness_upper_threshold;general;norms;1.43;mmol/l;;
+hardness_upper_limit;general;norms;2;mmol/l;;
+hardness_lower_limit;general;norms;1;mmol/l;;
+aggco2_upper_threshold;general;norms;2.2;mmol/l;;
+aggco2_upper_limit;general;norms;2.2;mmol/l;;
+ccpp90_upper_threshold;general;norms;0.4;mmol/l;;
+ccpp90_upper_limit;general;norms;0.6;mmol/l;;
+fe_upper_threshold;general;norms;0.05;mg/l;;
+fe_upper_limit;general;norms;0.1;mg/l;;
+mn_upper_threshold;general;norms;0.01;mg/l;;
+mn_upper_limit;general;norms;0.05;mg/l;;
+nh4_upper_threshold;general;norms;0.05;mg/l;;
+nh4_upper_limit;general;norms;0.2;mg/l;;
+na_upper_threshold;general;norms;100;mg/l;;
+na_upper_limit;general;norms;150;mg/l;;
+cl_upper_threshold;general;norms;100;mg/l;;
+cl_upper_limit;general;norms;150;mg/l;;

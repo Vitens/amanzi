@@ -14,7 +14,7 @@ from .tower.compounds import Chemical
 
 
 class Toweraeration(Model, Balance):
-    parametric_model = ['model', 'toweraeration', 'aeration']
+    parametric_model = ['base', 'model', 'toweraeration', 'aeration']
     def __init__(self, config, pp: dict = {}) -> None:
         super().__init__(config, pp)
         self.configuration = config.get('configuration', {})
@@ -48,7 +48,6 @@ class Toweraeration(Model, Balance):
         Pavg = Qair * air_density* R * Tair *(kappa/(kappa-1)) * (((Pin+delta_p)/Pin)**((kappa-1)/kappa)-1)/(efficiency*Mair)
         # conversion J to kWh
         Pavg = Pavg / 3600000
-        print(((Pin+delta_p)/Pin))
         return Pavg
     @property
     def engel_stickl(self):

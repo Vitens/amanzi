@@ -6,94 +6,72 @@ metadata:
 ## Input parameters:
 parameters:
   design:
-    general:
+    hydraulic_line:
+      pressurized:
+        default: false
+        uom: '-'
+        hidden: true
+    plate_aeration:
       type:
-        name: Aerator Type
-        description: Type of plate aeration (metal or foil)
         options: ['Metal', 'Foil']
         default: Metal
       length:
-        name: Length
-        description: Length of the plate aeration
         uom: m
         default: 1.0
         range: [0.1, 10.0]
       width:
-        name: Width
-        description: Width of the plate aeration
         uom: m
         default: 1.0
         range: [0.1, 10.0]
       hole_diameter:
-        name: Hole Diameter
-        description: The size of the holes in the plate
         uom: mm
         default: 1.5
         range: [0.5, 3.0]
       recirculation:
-        name: Recirculation Factor
-        description: Percentage of air that is recirculated
         default: 0.0
         uom: '%'
-        range: [0.0, 1.0]
-      efficiency:
-        name: Aerator Efficiency
-        description: Efficiency of the plate aeration
-        uom: '-'
-        default: 0.5
-        range: [0.2, 1]
+        range: [0.0, 0.8]
   operational:
     general:
       RQ:
-        name: Air-Water Ratio
-        description: Ratio between air and water (RQ)
         uom: '-'
         default: 50
         range: [0, 100]
       contact_time:
-        name: Contact Time
-        description: Time the water is in contact with the air
         uom: s
         default: 10
         range: [1, 100]
     blowerspecifications:
       supply_fan_pressure_difference:
-        name: Supply Fan Pressure difference
-        description: Pressure difference of the supply fan
         uom: Pa
         default: 100
         range: [10, 2000]
       exhaust_fan_pressure_difference:
-        name: Exhaust Fan Pressure difference
-        description: Pressure difference of the exhaust fan
         uom: Pa
         default: 100
         range: [10, 2000]
       recirculation_fan_pressure_difference:
-        name: Recirculation Fan Pressure difference
-        description: Pressure difference of the recirculation fan
         uom: Pa
         default: 100
         range: [10, 2000]
       supply_fan_efficiency:
-        name: Supply Fan Efficiency
-        description: Efficiency of the supply fan
         uom: '-'
         default: 0.75
         range: [0.5, 1]
       exhaust_fan_efficiency:
-        name: Exhaust Fan Efficiency
-        description: Efficiency of the exhaust fan
         uom: '-'
         default: 0.75
         range: [0.5, 1]
       recirculation_fan_efficiency:
-        name: Recirculation Fan Efficiency
-        description: Efficiency of the recirculation fan
         uom: '-'
         default: 0.75
         range: [0.5, 1]
-  
+  model:
+    plate_aeration:
+      efficiency:
+        uom: '-'
+        default: 0.02
+        range: [0.01, 1]
     
 ## Output parameters:
 outputs:

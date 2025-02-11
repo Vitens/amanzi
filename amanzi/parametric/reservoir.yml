@@ -1,53 +1,149 @@
 parameters:
   design:
     general:
-      reservoir_capacity:
-        uom: m3
-        default: 1000
-        range: [100, 10000]
+      units:
+        default: 1
+        uom: "-"
+        range: [1, 40]
       reservoir_shape:
         default: rectangular
         options: [rectangular, cylindrical]
+      reservoir_width:
+        default: 10.0
+        if:
+          reservoir_shape: rectangular
+        uom: m
+        range: [1.0, 100.0]
+      reservoir_length:
+        default: 20.0
+        if:
+          reservoir_shape: rectangular
+        uom: m
+        range: [1.0, 100.0]
+      reservoir_diameter:
+        default: 10.0
+        if:
+          reservoir_shape: cylindrical
+        uom: m
+        range: [1.0, 50.0]
       reservoir_height:
         default: 5.0
         uom: m
-        range: [1.0, 10.0]
-      inlet_weir_height:
-        default: 4.5
-        uom: m
-        range: [0.1, 10.0]
-      
+        range: [1.0, 20.0]
     hydraulic_line:
-      elevation:
+      inlet_elevation:
         uom: m
-        default: 1.0
+        default: 2.0
         range: [0, 80]
+      influent_pressure_loss:
+        uom: mH2O
+        default: 0.0
+        range: [0.0, 10.0]
       pressurized:
         default: false
         hidden: true
       mean_water_level:
         default: 3.0
         uom: m
-        range: [1.0, 10.0]
+        range: [0.1, reservoir_height]
+    aeration:
+      integrated_aeration:
+        default: false
+      co2_removal:
+        if:
+          integrated_aeration: true
+        default: 0.5
+        uom: '%'
+        range: [0.0, 1.0]
+      o2_saturation:
+        if:
+          integrated_aeration: true
+        default: 0.8
+        uom: '%'
+        range: [0.0, 1.0]
+
+
+  
 
 outputs:
+  design:
+    general:
+      surface_area:
+        equation: "reservoir_width * reservoir_length if reservoir_shape == 'rectangular' else 1/4 * math.pi * reservoir_diameter**2"
+        uom: m2
+        precision: 0
+      gross_volume:
+        equation: "surface_area * reservoir_height"
+        uom: m3
+        precision: 0
+      net_volume:
+        equation: "surface_area * inlet_elevation"
+        uom: m3
+        precision: 0
+    retention_time:
+      total_storage:
+        equation: "units * net_volume"
+        uom: m3
+        precision: 0
+      average_production:
+        equation: "quantity.inflow.product * 1e6 / 24 / 365"
+        uom: m3/h
+        precision: 0
+      max_production:
+        equation: "quantity.inflow.product * 1e6 / 24 / 365 * db.max_hour"
+        uom: m3/h
+        precision: 0
+      average_retention_time:
+        equation: "total_storage / average_production"
+        uom: h
+        precision: 1
+      max_retention_time:
+        equation: "total_storage / max_production"
+        uom: h
+        precision: 1
+      
+      
+
+
+
   hydraulic:
     hydraulic_line:
       minimal_head:
-        equation: "elevation + inlet_weir_height"
-        uom: m
+        equation: "inlet_elevation + influent_pressure_loss"
+        uom: mH2O
       total_headloss:
-        equation: "inlet_weir_height - mean_water_level"
-        uom: m
-      head_out:
-        equation: "hydraulics.head_out"
-        uom: m
-      head_out_check:
-        equation: "elevation + mean_water_level"
-        uom: m
-      head_in:
+        equation: "(reservoir_height - mean_water_level) + influent_pressure_loss"
+        uom: mH2O
+        parameters:
+          _influent_pressure_loss:
+            equation: "influent_pressure_loss"
+            uom: mH2O
+            precision: 1
+          _headloss_model:
+            equation: "inlet_elevation - mean_water_level"
+            uom: mH2O
+            precision: 1
+
+      calculalted_head_in:
         equation: "hydraulics.head_in"
-        uom: m
-      head_in_check:
-        equation: "elevation + inlet_weir_height"
-        uom: m
+        uom: mH2O
+      calculated_head_out:
+        equation: "hydraulics.head_out"
+        uom: mH2O
+
+  energy:
+    hydraulic_energy:
+      energy_loss:
+        uom: "kWh/m3"
+        equation: "1/3600 * total_headloss * 9.81 * 1/(pump_efficiency)"
+        precision: 3
+        if: "total_headloss > 0"
+        parameters:
+          delta_head:
+            uom: mH2O
+            equation: "total_headloss"
+            precision: 1
+          pump_efficiency:
+            equation: "hydraulics.efficiency"
+            uom: "%"
+            precision: 0

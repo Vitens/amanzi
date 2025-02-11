@@ -1,4 +1,11 @@
 parameters:
+  design:
+    hydraulic_line:
+      pressurized:
+        default: true
+        uom: '-'
+        hidden: true
+      
   chemicals:
     general:
       chemical:
@@ -24,3 +31,4 @@ parameters:
         uom: ""
         default: 7.0
         range: [0, 14]
+    

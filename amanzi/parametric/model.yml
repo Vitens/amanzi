@@ -12,16 +12,16 @@ parameters:
       nominal_capacity:
         uom: m3/h
         default: 100
-        range: [1, 10000]
+        range: [minimal_capacity, 10000]
       maximal_capacity:
         uom: m3/h
         default: 150
-        range: [1, 10000]
+        range: [nominal_capacity, 10000]
     hydraulic_line:
       inlet_elevation:
         uom: m
-        default: 15.0
-        range: [0, 20]
+        default: 5.0
+        range: [0, 25]
       influent_pressure_loss:
         uom: mH2O
         default: 0.0
@@ -102,7 +102,7 @@ outputs:
         if: "integrated_booster"
       minimal_head:
         uom: mH2O
-        equation: "inlet_height + influent_pressure_loss if inlet_height > outlet_height else outlet_height + total_headloss if not integrated_booster else inlet_height + minimal_pump_head"
+        equation: "inlet_height + headloss_influent if inlet_height > outlet_height else outlet_height + total_headloss if not integrated_booster else inlet_height + headloss_influent + minimal_pump_head"
         precision: 1  
       calculated_head_in:
         uom: mH2O
@@ -121,27 +121,12 @@ outputs:
         uom: "kWh/m3"
         equation: "1/3600 * delta_head * 9.81 * 1/(pump_efficiency)"
         precision: 3
-        if: "not integrated_booster"
         parameters:
           delta_head:
             uom: mH2O
-            equation: "total_headloss - calculated_booster_head"
+            equation: "total_headloss"
             precision: 1
           pump_efficiency:
             uom: "%"
             equation: "hydraulics.efficiency"
-            precision: 0
-      booster_energy_consumption:
-        uom: "kWh/m3"
-        equation: "1/3600 * delta_booster * 9.81 * 1/(booster_efficiency)"
-        precision: 3
-        if: "integrated_booster"
-        parameters:
-          delta_booster:
-            uom: mH2O
-            equation: "calculated_booster_head - calculated_head_out"
-            precision: 0
-          booster_efficiency:
-            uom: "%"
-            equation: "0.80"
             precision: 0

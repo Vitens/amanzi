@@ -30,7 +30,9 @@ class Groundwater(Model):
         oxg = c.get('oxygen', 0) if c.get('oxygen', 0) > 0 else 0.00001
         h2s = 'Sg' if c.get('oxygen', 0) == 0 else 'S(-2)'
         fe = '[Fe+2]' if c.get('oxygen', 0) == 0 else 'Fe'
+        # fe = 'Fe'
         mn = '[Mn+2]' if c.get('oxygen', 0) == 0 else 'Mn'
+        # mn = 'Mn'
         nh4 = '[N-3]' if c.get('oxygen', 0) == 0 else 'N(-3)'
         no2 = '[N+3]' if c.get('oxygen', 0) == 0 else 'N(3)'
 
@@ -61,6 +63,11 @@ class Groundwater(Model):
             no2: '{} as NO2'.format(c.get('nitrite', 0)),
             'S(6)': '{} as SO4'.format(c.get('sulfate', 0)),
             'P': '{} as PO4'.format(c.get('phosphate', 0)),
+            'Si': '{} as SiO2'.format(c.get('silica', 0)),
+            'B': c.get('boron', 0),
+            'Sr': c.get('strontium', 0),
+            'Ba': c.get('barium', 0),
+            'F': c.get('fluoride', 0),
         },
         # extraneous properties (i.e. untracked by PHREEQC)
         {'Color': c.get('color', 0),
@@ -130,6 +137,7 @@ class Groundwater(Model):
             'pe': self.solution.pe,
             'h_activity': -np.log10(self.solution.activity('H+', 'mol')),
             'osmotic_pressure': self.solution.osmotic_pressure,
+            'tds': self.solution.tds,
             'anions': an,
             'cations': cat,
             'charge_balance': self.solution.charge_balance,

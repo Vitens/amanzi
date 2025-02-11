@@ -24,7 +24,7 @@ parameters:
         chemical: N2
       methane:
         uom: mg/l
-        default: 0
+        default: 1
         range: [0, 100]
         chemical: CH4
       hydrogen-sulfide:
@@ -68,6 +68,16 @@ parameters:
         default: 10
         range: [0, 50]
         chemical: K
+      barium:
+        uom: mg/l
+        default: 0
+        range: [0, 5]
+        chemical: Ba
+      strontium:
+        uom: mg/l
+        default: 0
+        range: [0, 5]
+        chemical: Sr
     anions:
       bicarbonate:
         uom: mg/l
@@ -99,6 +109,21 @@ parameters:
         default: 0
         range: [0, 0.5]
         chemical: PO4
+      fluoride:
+        uom: mg/l
+        default: 0
+        range: [0, 250]
+        chemical: F
+      silicate:
+        uom: mg/l
+        default: 0
+        range: [0, 10]
+        chemical: SiO2
+      boron:
+        uom: mg/l
+        default: 0
+        range: [0, 5]
+        chemical: B
     other:
       total-organic-carbon:
         uom: mg/l

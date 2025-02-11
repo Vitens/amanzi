@@ -1,3 +1,12 @@
+parameters:
+  design:
+    general:
+      recycle_efficiency:
+        default: 0.8
+        range: [0.5, 0.95]
+        uom: '%'
+        quick: true
+
 outputs:
   energy:
     energy_consumption:

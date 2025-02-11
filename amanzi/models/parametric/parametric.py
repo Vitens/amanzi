@@ -94,14 +94,20 @@ class ParametricModel():
     if 'nominal_capacity' in self.parameters:
       ctx = ctx | {'capacity': self.parameters['nominal_capacity']}
 
-    return output.calculate(ctx)
+    try:
+      result = output.calculate(ctx)
+    except:
+      raise Exception(f"Error calculating {name} for {self.name}")
+
+    return result
+
     
 
   
   @property
   # calculation context for parameters
   def context(self):
-    return self.parameters | self.methods | {'quantity': self.quantity, 'quality': self.quality, 'hydraulics': self.hydraulics, 'energy': self.energy, 'db': self.database} | self.output_parameters
+    return self.parameters | self.methods | {'quantity': self.quantity, 'quality': self.quality, 'hydraulics': self.hydraulics, 'energy': self.energy, 'db': self.database, 'chemicals': self.chemicals} | self.output_parameters
 
   def generate_tables(self):
 
@@ -128,7 +134,11 @@ class ParametricModel():
 
 
         label = capacity[:3]
-        capacity = self.parameters.get(capacity, 0)
+        capacity = self.parameters.get(capacity, None)
+
+        if capacity is not None and capacity <= 0:
+          # skip if capacity is -1
+          continue
         
         # calculate outputs
         for o in outputs:

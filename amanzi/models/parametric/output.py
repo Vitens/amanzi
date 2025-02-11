@@ -170,6 +170,15 @@ class Output:
         return self._hidden
 
     @property
+    def equation(self):
+        """
+        Get the equation for the parameter if available.
+
+        :return: Equation or None
+        """
+        return self.param.get('equation', None)
+
+    @property
     def uom(self):
         """
         Get the unit of measure for the parameter if available.

@@ -1,0 +1,12 @@
+parameters:
+  operational:
+    general:
+      split:
+        default: 0.5
+        uom: '%'
+        range: [0.01, 0.99]
+        quick: true
+    hydraulic_line:
+      pressurized:
+        default: false
+        quick: true

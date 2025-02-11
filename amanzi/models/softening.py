@@ -24,6 +24,9 @@ class Softening(Model, Balance):
 
         bypass_flow = bypass_open * bypass_capacity
 
+        self.fe_capture = float(self.parameters['fe_capture'])
+        self.mn_capture = float(self.parameters['mn_capture'])
+
         self.total_flow = reactor_capacity + bypass_flow
         self.bypass = bypass_flow / self.total_flow
 
@@ -35,6 +38,11 @@ class Softening(Model, Balance):
 
         # dose chemical
         dosed = reactor_in.copy().add(base_chemical, base_dosing, 'mmol')
+
+        if self.fe_capture > 0 and dosed.total('[Fe+2]','mmol') > 0:
+            dosed.remove('[Fe+2]CO3', dosed.total('[Fe+2]','mmol') * self.fe_capture, 'mmol')
+        if self.mn_capture > 0 and dosed.total('[Mn+2]','mmol') > 0:
+            dosed.remove('[Mn+2]CO3', dosed.total('[Mn+2]','mmol') * self.mn_capture, 'mmol')
 
         softened = dosed.copy().desaturate('Calcite', to_si=self.to_si)
 

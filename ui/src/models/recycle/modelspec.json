@@ -1,0 +1,19 @@
+{
+  "name": "recycle",
+  "localizedName": "Hergebruik",
+  "category": "waste",
+  "canvas": {
+    "defaultImg": "recycle.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "waste"},
+      {"position": "right", "direction": "out", "type": "product"},
+      {"position": "bottom", "direction": "out", "type": "waste"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "loss": 0.1
+    }
+  }
+}

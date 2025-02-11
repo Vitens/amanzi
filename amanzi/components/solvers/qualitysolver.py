@@ -48,6 +48,8 @@ class QualitySolver(Solver):
 
         solution = model.run_quality(stream_type, total_inflow, influent)
         model.quality['effluent'][stream_type] = solution
+        if stream_type == 'waste':
+            print(model, model.quality['effluent']['waste'])
 
         if self.stop_at_model and model.uid == self.stop_at_model:
             logging.info(f'Interrupted at model {model.uid}')
@@ -80,6 +82,15 @@ class QualitySolver(Solver):
                     model.index = idx if not model.index else model.index
                     # set model effluent quality
                     model.quality['effluent'][stream_type] = model.emitter_solutions[stream_type].copy()
+                    if stream_type == 'waste':
+                        print(model, model.quality['effluent']['waste'])
+    
+                    if until and model.uid == until:
+                        logging.info(f'Interrupted at model {model.uid}')
+                        self.interrupted = True
+                        return
+
+
                     self._propagate_solution(model, stream_type, model.emitter_solutions[stream_type], idx)
                 if self.interrupted:
                     return
@@ -102,22 +113,25 @@ class QualitySolver(Solver):
         for _,m in self.scenario.models.items():
             if m.type == 'output':
                 effluent = m.quality.influent.product.summary
-                qualities.append([m.name, m.index, effluent])
+                plant_effluent = m.quality.influent.product.summary
+                qualities.append([m.uid, m.name, m.index, effluent])
             else:
                 if m.quality.effluent.product:
                     effluent = m.quality.effluent.product.summary
-                    qualities.append([m.name, m.index, effluent])
+                    qualities.append([m.uid, m.name, m.index, effluent])
         
-        order = sorted(qualities, key=lambda x: x[1])
+        order = sorted(qualities, key=lambda x: x[2])
         models = [x[0] for x in order]
+        names = [x[1] for x in order]
         # sort qualities based on order
-        qualities = [x[2] for x in order]
+        qualities = [x[3] for x in order]
 
         return {
             'order': models,
+            'names': names,
             'models': qualities,
-            'effluent': effluent,
-            'metrics': self.grade_quality(effluent)
+            'effluent': plant_effluent,
+            'metrics': self.grade_quality(plant_effluent)
         }
 
     def grade_quality(self, quality):

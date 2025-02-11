@@ -55,7 +55,7 @@ def sc20(self):
 def osmotic_pressure(self):
     total_moles = sum(self.elements.values())
     # subtract gasses (H2S, CH4, CO2, N2)
-    total_moles -= self.total('[C-4]', 'mol') + self.total('Ntg', 'mol') + self.total('[S-2]', 'mol')
+    total_moles -= self.total('[C-4]', 'mol') + self.total('Ntg', 'mol') + self.total('[S-2]', 'mol') + self.total('Mtg', 'mol')
     total_moles -= self.total('CO2', 'mol') + self.total('O2', 'mol')
     
     psi = 1.12 * (273 + self.temperature) * total_moles
@@ -111,9 +111,13 @@ def aggCO2(self):
 
 @property
 def tds(self):
-    k_e = 0.67 #The value of kₑ increases along with the increase of ions in water. It ranges from 0.5 to 0.8, but usually, 0.67 is used. (https://www.omnicalculator.com/chemistry/tds)
-    return self.sc * k_e
-
+    total = (self.density - self.mass/self.volume) * 1e6
+    # suptract dissolved gasses
+    total -= self.total('CO2', 'mg')
+    total -= self.total('O2', 'mg')
+    total -= self.total('Ntg', 'mmol') * 28.0134
+    total -= self.total('Mtg', 'mmol') * 16.043
+    return total
 
 # return dict with solution summary
 @property
@@ -124,6 +128,7 @@ def summary(self):
         {'name': 'o2', 'value': self.total('Oxg')*32 + self.total('O2')*32, 'uom': 'mg/l', 'precision': 2},
         {'name': 'hco3', 'value': self.total('HCO3', 'mg'), 'uom': 'mg/l', 'precision': 2},
         {'name': 'hardness', 'value': self.hardness, 'uom': 'mmol/l', 'precision': 2, 'positive': False},
+        {'name': 'tds', 'value': self.tds, 'uom': 'mg/l', 'precision': 1, 'positive': False},
         {'name': 'ccpp90', 'value': self.ccpp90, 'uom': 'mmol/l', 'precision': 2, 'positive': False},
         {'name': 'aggco2', 'value': self.aggCO2, 'uom': 'mg/l', 'precision': 2},
         {'name': 'Fe', 'value': self.total('Fe', 'mg'), 'uom': 'mg/l', 'precision': 2},

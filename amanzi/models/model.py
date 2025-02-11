@@ -10,6 +10,7 @@ class Model(ParametricModel):
         self.uid = config.get('uid', "")
         self.type = config.get("type", "")
         self.name = config.get("name", "")
+        self.category = config.get("category", "")
         self.emitter = False
 
         self.config = config
@@ -33,6 +34,7 @@ class Model(ParametricModel):
         self.hydraulics = DotMap({
             'head_in': 0, # head at the inlet
             'head_out': 0, # head at the outlet
+            'integrated_booster': False, # whether the model has an integrated booster
             'booster_head': 0, # head supplied by the integrated booster pump
             'efficiency': 0, # efficiency of the booster pump
         })
@@ -45,6 +47,11 @@ class Model(ParametricModel):
             'model_specific_emission': 0, # energy consumption per m3 produced by model (gCO2-eq/m3)
             'specific_emission': 0, # energy consumption per m3 produced by the treatment plant (gCO2-eq/m3)
             'total_emission': 0 # total energy consumption per year (gCO2-eq/year)
+        })
+        self.chemicals = DotMap({
+            # dotmap with chemical consumptions in gAS/m3
+            'lye': 0,
+            'lime': 0,
         })
     
     # placeholder for model quality run
@@ -104,7 +111,7 @@ class Model(ParametricModel):
         designData['parameters'] = self.parameters
         designData['tables'] = self.generate_tables()
         # get all outputs
-        designData['outputs'] = {o.name: {'precision': o.precision, 'value': o.calculate(self.context), 'uom': o.uom} for o in self.output_parameters.values()}
+        designData['outputs'] = {o.name: {'precision': o.precision, 'value': o.calculate(self.context), 'uom': o.uom, 'order': i, 'equation': o.equation, 'section': o.section, 'category': o.category, 'namespace': o.namespace} for i,o in enumerate(self.output_parameters.values())}
 
         quality = {}
         # gather quality data

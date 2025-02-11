@@ -12,5 +12,34 @@ outputs:
             equation: "energy.model_specific_consumption"
           electricity_emission_factor:
             uom: gCO2-eq/kWh
-            equation: "250"
+            equation: "db.carbon_intensity_grid"
             precision: 1
+    chemical_emissions:
+      lye_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('lye', 0) * db.lye_emission"
+        if: "chemicals.get('lye')"
+      lime_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('lime', 0) * db.lime_emission"
+        if: "chemicals.get('lime')"
+      co2_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('co2', 0) * db.co2_emission"
+        if: "chemicals.get('co2')"
+      hcl_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('hcl', 0) * db.hydrochloric_acid_emission"
+        if: "chemicals.get('hcl')"
+      garnet_sand_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('garnet_sand', 0) * db.seed_garnet_emission"
+        if: "chemicals.get('garnet_sand')"
+      quartz_sand_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('quartz_sand', 0) * db.seed_quartz_sand_emission"
+        if: "chemicals.get('quartz_sand')"
+      calcite_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('calcite', 0) * db.seed_calcite_emission"
+        if: "chemicals.get('calcite')"

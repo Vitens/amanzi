@@ -1,16 +1,6 @@
 parameters:
   design:
     sprayaerator:
-      spray:
-        default: true
-        uom: '-'
-      fall_height:
-        default: 0.1
-        if:
-          spray: true
-        uom: m
-        description: Height of the spray nozzle above the water surface [m]
-        range: [0.01, 10]
       area_per_nozzle:
         default: 1
         if:
@@ -40,8 +30,6 @@ parameters:
         uom: "C"
         description: Ambient temperature [C]
         range: [-30, 40]
-
-
 outputs:
   design:
     general:
