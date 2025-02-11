@@ -51,6 +51,7 @@ class HydraulicSolver(Solver):
 
         # check for integrated booster
         if info['integrated_booster']:
+          from_node.hydraulics.integrated_booster = True # set integrated booster to true
           from_node.hydraulics.head_in = max(info['minimal_head'], from_node.hydraulics.head_in) # assign minimal required head to node
         else:
           # calculate head in based on head out and total headloss
@@ -86,6 +87,7 @@ class HydraulicSolver(Solver):
           # if integrated booster, assign booster head
           if info['integrated_booster']:
             # calculate booster head based on head_in, head_out and total headloss
+            from_node.hydraulics.integrated_booster = True
             from_node.hydraulics.booster_head = from_node.hydraulics.head_out - from_node.hydraulics.head_in + info['total_headloss']
             # check for negative booster head
             if from_node.hydraulics.booster_head < 0:

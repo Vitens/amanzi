@@ -112,7 +112,7 @@ outputs:
         equation: "inlet_elevation + influent_pressure_loss"
         uom: mH2O
       total_headloss:
-        equation: "(inlet_elevation - mean_water_level) + influent_pressure_loss"
+        equation: "(reservoir_height - mean_water_level) + influent_pressure_loss"
         uom: mH2O
         parameters:
           _influent_pressure_loss:

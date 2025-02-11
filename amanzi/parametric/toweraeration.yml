@@ -34,7 +34,7 @@ parameters:
     general:
       rq:
         uom: "-"
-        default: 2
+        default: 50
         range: [0.01, 100]
       ambient_temperature:
         uom: "C"

@@ -2,7 +2,7 @@ parameters:
   design:
     general:
       units:
-        default: 2 # overwrite default value
+        default: 1 # overwrite default value
     hydraulic_line:
       pressurized:
         default: false
@@ -13,8 +13,8 @@ parameters:
         range: [1, 8]
         uom: '-'
       step_height:
-        default: 1.0
-        range: [0.1, 10.0]
+        default: 0.5
+        range: [0.1, 2.0]
         uom: m
       cascade_length:
         default: 3.0

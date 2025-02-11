@@ -7,11 +7,11 @@ import numpy as np
 from .tower.air_properties import Air
 
 class Sandfiltration(Model, Loss):
-    parametric_model = ['base', 'model', 'filtration','aeration','sprayaerator']
+    parametric_model = ['base', 'model', 'filtration','sprayaerator']
 
     def __init__(self, config, pp):
         super().__init__(config, pp)
-        #self.loss = config['configuration'].get('loss', 0.5)
+
         config = config.get('configuration', {})
         config = config.get('parameters', {})
 
@@ -20,7 +20,7 @@ class Sandfiltration(Model, Loss):
         self.waste_solution = None
         self.sprayaeration = config.get('spray', False)
         # self.sauter = float(self.parameters['sauter_diameter'])
-        self.fall_height = float(self.parameters['fall_height'])
+        self.fall_height = float(self.parameters['fall_height_to_media'])
         self.configuration = config.get('configuration', {})
         self.compound = self.configuration.get('model_component', 'CO2')
 
@@ -93,6 +93,7 @@ class Sandfiltration(Model, Loss):
             expansion_table.append(velocity*100)
         #interpolate to find the expansion at the backwash velocity
         return np.interp(backwashvelocity, expansion_table, range(0,31))/100
+
     @staticmethod
     def backwash_headloss(particle_size, max_rate , layer_height):
         backwashvelocity = max_rate / 3600 # m/s
@@ -114,6 +115,8 @@ class Sandfiltration(Model, Loss):
         ctx['Air_density'] = self.airDensity
         ctx['backwash_bed_expansion'] = self.backwash_bed_expansion
         ctx['backwash_headloss'] = self.backwash_headloss
+        ctx['aerated'] = self.aerated if hasattr(self, 'aerated') else self.quality.influent.product
+
         return ctx
 
     def filtrate(self, solution):
@@ -128,12 +131,10 @@ class Sandfiltration(Model, Loss):
         if self.parameters['suppress_manganese_removal']:
             mn_removal_efficiency = self.parameters['manganese_removal_efficiency']
 
-        # influent
+
         influent = solution.copy()
         # replace inert oxygen with free oxygen
-        print(influent.total("O2"))
         influent.change({ "O2": influent.total("Oxg"), "Oxg": -influent.total("Oxg")*0.99999})
-
 
         # oxidize methane
         after_ch4 = self.oxidize(influent, "Mtg", "CH4", 2)
@@ -178,6 +179,9 @@ class Sandfiltration(Model, Loss):
 
     def spray_aeration(self, solution, compound, RQ, fall_height):
         solution = solution.copy()
+        # replace inert oxygen with free oxygen
+        solution.change({ "O2": solution.total("Oxg"), "Oxg": -solution.total("Oxg")*0.99999})
+
         effciency_co2 = self.calculate_efficiency('CO2', RQ , fall_height)
         effciency_ch4 = self.calculate_efficiency('Mtg', RQ , fall_height)
         effciency_O2 = self.calculate_efficiency('Oxg', RQ , fall_height)
@@ -185,7 +189,7 @@ class Sandfiltration(Model, Loss):
         # max Oxygen saturation linear interpolation dependend on water temperature (5-20 Celsius)
         # mg/l to mmol/l
         O2_max = (-0.2366*self.quality.influent.product.temperature + 13.801) /32
-        o2_in = self.quality.influent.product.total("O2", "mmol")
+        o2_in = self.quality.influent.product.total("Oxg", "mmol") + self.quality.influent.product.total("O2", "mmol")
         O2_change = abs((O2_max-o2_in)*effciency_O2)
         solution.remove_fraction('CO2', effciency_co2)
         solution.remove_fraction('Mtg', effciency_ch4)
@@ -194,15 +198,21 @@ class Sandfiltration(Model, Loss):
 
     def run_quality(self, type, total_inflow, solution):
 
-        if(self.sprayaeration):
-            solution = self.spray_aeration(solution, self.compound, self.RQ, self.fall_height)
         if(type == 'flush'):
             # add load to waste solution
             self.waste_solution = solution.copy()
             return
         
         if(type == 'product'):
+            # influent
+            solution = solution.copy()
+
+            if(self.sprayaeration):
+                solution = self.spray_aeration(solution, self.compound, self.RQ, self.fall_height)
+                self.aerated = solution.copy()
+
             effluent, _ = self.filtrate(solution)
+
             return effluent
 
         return solution
@@ -211,7 +221,7 @@ class Sandfiltration(Model, Loss):
     def design(self):
         values = {
             'pH': lambda s: s.pH,
-            'O2': lambda s: s.total("O2", 'mg'),
+            'O2': lambda s: s.total("O2", 'mg') + s.total("Oxg", 'mmol')*32,
             'CO2': lambda s: s.total("CO2", 'mg'),
             'HCO3': lambda s: s.total("HCO3", 'mg'),
             'CH4': lambda s: s.total("Mtg") * 16e3,
@@ -225,14 +235,13 @@ class Sandfiltration(Model, Loss):
 
         if(self.sprayaeration):
             solution = self.spray_aeration(self.quality.influent.product, self.compound, self.RQ, self.fall_height)
-            labels = ["Sprayeffluent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
+            labels = ["spray", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
             results
         else:
-            labels = ["Influent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
+            labels = ["influent", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
             solution = self.quality.influent.product.copy()
 
         effluent, steps = self.filtrate(solution)
-        print(steps)
 
         for i, step in enumerate(steps):
 
@@ -244,11 +253,11 @@ class Sandfiltration(Model, Loss):
             results[labels[i]] = step_results
 
         if(self.sprayaeration):
-            labels = ["Influent","Sprayeffluent", "Methaan oxidatie", "IJzerverwijdering", "H2S oxidatie", "Nitrificatie", "Denitrificatie", "Ontmanganing"]
+            labels = ["spray", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
             step_results = {}
             for n, v in values.items():
                 step_results[n] = v(self.quality.influent.product.copy())
-            results["Influent"]= step_results
+            results["influent"]= step_results
 
 
         return {

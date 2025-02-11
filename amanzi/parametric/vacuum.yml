@@ -13,10 +13,6 @@ parameters:
         default: 3.0
         uom: m
         range: [0, 10.0]
-      bottom_height:
-        default: 3.0
-        range: [0, 10.0]
-        uom: m
     hydraulic_line:
       pressurized:
         default: false
@@ -50,7 +46,7 @@ outputs:
     vessel:
       total_height:
         uom: m
-        equation: "bed_height + spray_height + bottom_height"
+        equation: "bed_height + spray_height"
         precision: 1
       surface:
         uom: m2
@@ -67,8 +63,12 @@ outputs:
 
   hydraulic:
     hydraulic_line:
+      headloss_influent:
+        uom: mH2O
+        equation: "pressure_loss_nozzles + influent_pressure_loss"
       headloss_model:
-        equation: "pressure_loss_nozzles + bed_height + spray_height"
+        uom: mH2O
+        equation: "bed_height + spray_height"
   
   energy:
     vacuum_system:

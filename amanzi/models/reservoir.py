@@ -30,7 +30,9 @@ class Reservoir(Model):
             to_add = max(0, max_o2 * o2_saturation - solution.total(oxygen_type))
             to_remove = (solution.total('CO2')-min_co2) * co2_removal
 
-            solution.change({oxygen_type: to_add, 'CO2': -to_remove, 'Mtg': -solution.total('Mtg')})
+            print(to_add, to_remove)
+
+            solution.change({oxygen_type: to_add, 'CO2': -to_remove, 'Mtg': -solution.total('Mtg')*0.999})
 
         self.reservoir_solution = solution.copy()
 

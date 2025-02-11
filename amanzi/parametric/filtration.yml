@@ -2,17 +2,20 @@ parameters:
   design:
     general:
       spray:
-        default: true
+        default: false
         uom: '-'
     hydraulic_line:
       pressurized: # overwrite to enable unique translation
         default: false
         uom: '-'
-      height_gutter_to_media:
-        default: 0.5
+      pressure_loss_nozzles:
         if:
-          spray: false
-          pressurized: false
+          spray: true
+        default: 1.0
+        uom: mH2O
+        range: [0.01, 10.0]
+      fall_height_to_media:
+        default: 0.5
         uom: m
         range: [0.1, 1.0]
       filter_bottom:
@@ -90,7 +93,7 @@ parameters:
       supernatant_level:
         default: 0.2
         uom: m
-        range: [0.1, 1.0]
+        range: [0.1, fall_height_to_media]
     backwash:
       backwash_pump_efficiency:
         default: 0.6
@@ -149,16 +152,14 @@ parameters:
         uom: '%'
         range: [0.0, 1.0]    
 
-
-
-
-
-
 outputs:
   hydraulic:
     hydraulic_line:
+      headloss_influent:
+        uom: mH2O
+        equation: "pressure_loss_nozzles + influent_pressure_loss if spray else influent_pressure_loss"
       headloss_model:
-        equation: "average_headloss + height_gutter_to_media - supernatant_level"
+        equation: "average_headloss + fall_height_to_media - supernatant_level if not pressurized else average_headloss"
 
   design:
     general:
@@ -273,4 +274,25 @@ outputs:
             equation: "backwash_volume * 9.81 * backwash_head * 1/backwash_pump_efficiency / 3600"
 
 
+  sustainability:
+    direct_emissions:
+      co2_emission:
+        if: "spray"
+        equation: "quality.influent.product.total('CO2','mg') - aerated.total('CO2','mg')"
+        uom: gCO2-eq/m3
+        precision: 2
+      methane_emission:
+        if: "spray"
+        equation: "methane_removal * methane_factor"
+        uom: gCO2-eq/m3
+        precision: 2
+        parameters:
+          methane_removal:
+            uom: "g/m3"
+            precision: 2
+            equation: "(quality.influent.product.total('Mtg') - aerated.total('Mtg'))*16.04"
+          methane_factor:
+            uom: "gCO2-eq/gCH4"
+            precision: 0
+            equation: "db.methane_emission_factor"
 

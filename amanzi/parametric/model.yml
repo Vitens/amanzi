@@ -12,11 +12,11 @@ parameters:
       nominal_capacity:
         uom: m3/h
         default: 100
-        range: [1, 10000]
+        range: [minimal_capacity, 10000]
       maximal_capacity:
         uom: m3/h
         default: 150
-        range: [1, 10000]
+        range: [nominal_capacity, 10000]
     hydraulic_line:
       inlet_elevation:
         uom: m

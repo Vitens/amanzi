@@ -33,6 +33,7 @@ class Model(ParametricModel):
         self.hydraulics = DotMap({
             'head_in': 0, # head at the inlet
             'head_out': 0, # head at the outlet
+            'integrated_booster': False, # whether the model has an integrated booster
             'booster_head': 0, # head supplied by the integrated booster pump
             'efficiency': 0, # efficiency of the booster pump
         })

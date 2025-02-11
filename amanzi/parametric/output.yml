@@ -6,7 +6,7 @@ parameters:
       inlet_elevation:
         default: 0.0
         uom: m
-        range: [0, 100.0]
+        range: [-10, 100.0]
       required_pressure:
         default: 35.0
         uom: mH2O
