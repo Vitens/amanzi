@@ -12,6 +12,7 @@ __pycache__/
 MANIFEST
 
 .ipynb_checkpoints
+.vscode
 
 # Environments
 .env
