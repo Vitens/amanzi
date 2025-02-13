@@ -10,6 +10,7 @@ __pycache__/
 .installed.cfg
 *.egg
 MANIFEST
+dist/
 
 .ipynb_checkpoints
 .vscode
@@ -22,5 +23,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
 
 scribbles/

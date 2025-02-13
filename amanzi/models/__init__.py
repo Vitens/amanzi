@@ -9,11 +9,11 @@ from .softening import Softening
 from .plate import Plate
 from .recycle import Recycle
 from .splitter import Splitter
-from .ionexchange import Ionexchange
+#from .ionexchange import Ionexchange
 from .vacuum import Vacuum
 from .cascade import Cascade
 from .dosing import Dosing
 from .membranedegassing import Membranedegassing
 from .toweraeration import Toweraeration
-from .activatedcarbon import Activatedcarbon
+#from .activatedcarbon import Activatedcarbon
 from .sandtrap import Sandtrap
