@@ -359,9 +359,8 @@ export default {
         var file = e.target.files[0]
         var reader = new FileReader()
         reader.onload = e => {
-          console.log(e)
           localStorage.setItem('project', e.target.result)
-          this.$project.open()
+          this.$project.open('', true)
 
           this.$nextTick().then(() => {
             this.$bus.emit('zoomFit')

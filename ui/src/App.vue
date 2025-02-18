@@ -67,9 +67,16 @@ export default {
     components: components
   }},
   async mounted() {
-    this.$project.open(DefaultProject)
+    // check if tutorial was skipped
+    const tutorialSkipped = this.$cookies.get('tutorial-skip')
+    if (tutorialSkipped) {
+      this.$project.tutorial = false
+    }
+
+    this.$project.open(DefaultProject, false)
+    await this.$project.loadParameters()
     this.$project.solve()
-    this.$project.loadParameters()
+
     // throttle solve requests using lodash
     this.$project.$subscribe((m, s) => {
       // check if unsolved
@@ -81,10 +88,6 @@ export default {
         this.$project.scenario.unsolved = false
       }
     })
-    const tutorialSkipped = this.$cookies.get('tutorial-skip')
-    if (tutorialSkipped) {
-      this.$project.tutorial = false
-    }
     // zoom fit
     await this.$nextTick()
     this.$bus.emit('zoomFit')

@@ -99,11 +99,11 @@ parameters:
       average_seed_diameter:
         default: 0.1
         uom: mm
-        range: [0.1, 2.0]
+        range: [0.1, average_pellet_diameter]
       average_pellet_diameter:
         default: 0.5
         uom: mm
-        range: [0.1, 5.0]
+        range: [average_seed_diameter, 5.0]
   model:
     reactor_model:
       soften_to_si:

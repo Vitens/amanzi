@@ -15,11 +15,11 @@ def handler(event, context):
     if method == 'parameters':
       resp = api.parameters()
     elif method == 'solve':
-      resp = api.solve(args[3], json.loads(event['body']))
+      resp = api.solve(json.loads(event['body']), args[3])
     elif method == 'report':
       resp = api.report(json.loads(event['body']))
     elif method == 'design':
-      resp = api.design(args[3], args[4], json.loads(event['body']))
+      resp = api.design(json.loads(event['body']), args[3], args[4])
     elif method == 'keyfigures':
       resp = api.keyfigures()
     else:

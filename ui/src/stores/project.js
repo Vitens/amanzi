@@ -162,6 +162,9 @@ export const projectStore = defineStore('project', {
     async loadParameters(type) {
       let parameters = await axios.get(url + "/parameters")
       this.modelParameters = parameters.data
+      for(var scenario of this.scenarios) {
+        scenario.checkAndUpdateModelParameters(this.modelParameters)
+      }
     },
     async getKeyFigures() {
       let parameters = await axios.get(url + "/keyfigures")
@@ -203,7 +206,7 @@ export const projectStore = defineStore('project', {
     }, 100, {leading: false, trailing: true}),    
 
     // load from http
-    async open(defaultProject) {
+    async open(defaultProject, updateParameters=true) {
       // fetch project file from url
       var project = {}
       if(localStorage.getItem('project')) {
@@ -241,9 +244,12 @@ export const projectStore = defineStore('project', {
         store.metaData = scenario.metaData
         store.keyfigureOverwrites = scenario.key_figure_overwrites
 
+        if(updateParameters) {
+          store.checkAndUpdateModelParameters(this.modelParameters)
+        }
+
         this.scenarios.push(store)
       }
-
       this.scenario.unsolved = true
     }
 

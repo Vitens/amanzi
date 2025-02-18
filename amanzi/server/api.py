@@ -68,8 +68,7 @@ class AmanziAPI():
   
   def report(self, data):
     p = Project(data)
-    s = p.scenarios[int(scenario)]
-    return s.report()
+    return json.dumps(p.report())
 
   def design(self, data, scenario, model):
     p = Project(data)

@@ -27,6 +27,10 @@
           }
         },
         dimensions() {
+
+          console.log(this.params.reservoir_height)
+          console.log(this.params.inlet_elevation)
+
           return {
             bottom: this.params.inlet_elevation-this.params.reservoir_height,
             top: this.params.inlet_elevation+1

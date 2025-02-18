@@ -218,6 +218,17 @@ export const scenarioStore = (uid) => defineStore('scenario/'+uid, {
       }
       this.deselectBlocks()
     },
+    checkAndUpdateModelParameters(parameters) {
+      // check if all models have all parameters defined in modelspec, else set default value
+      for(var m of this.models) {
+        for(var param of parameters[m.type]) {
+          if(!m.configuration.parameters[param.name]) {
+            m.configuration.parameters[param.name] = param.default
+            console.log(m.name, param.name, param.default)
+          }
+        }
+      }
+    },
 
     // block actions
     addModel(modelspecs, defaults, type, name, position, autoConnect) {
