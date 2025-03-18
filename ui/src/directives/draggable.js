@@ -1,12 +1,11 @@
 // Function to calculate the offset of the mouse event relative to an element
-function eventToOffset(evt, elm){
+function eventToOffset(evt, elm, calculateScale=false){
 
   const bounds = elm.getBoundingClientRect()
   // console.log(elm)
   let stylewidth = elm.offsetWidth ? elm.offsetWidth : parseInt(elm.getAttribute('width'))
 
-  // let scale = bounds.width / stylewidth
-  let scale = 1
+  let scale = calculateScale ? bounds.width / stylewidth : 1
 
   return {
     x: (evt.clientX - bounds.left) / scale,
@@ -34,7 +33,7 @@ export default {
       evt.stopPropagation()
 
       // Calculate the initial offset of the mouse event
-      const offset = eventToOffset(evt, el)
+      const offset = eventToOffset(evt, el, args.scale)
 
       // Set the initial x and y positions
       initX = offset.x
@@ -57,7 +56,7 @@ export default {
       evt.stopPropagation()
 
       // Calculate the current offset of the mouse event and the distance moved since the start
-      const offset = eventToOffset(evt, el)
+      const offset = eventToOffset(evt, el, args.scale)
       let dx = offset.x - initX,
         dy = offset.y - initY
 
@@ -80,7 +79,7 @@ export default {
 
       // Call the end function if it exists, with the distance moved and other arguments
       if(args.end){
-        const offset = eventToOffset(evt, el),
+        const offset = eventToOffset(evt, el, args.scale),
           dx = offset.x - initX,
           dy = offset.y - initY
 

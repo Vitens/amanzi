@@ -4,7 +4,7 @@
     ref="model"
     class="model"
     :class="blockClasses"
-    v-draggable="{start: startMove, move, end: endMove, snap: 5}"
+    v-draggable="{start: startMove, move, end: endMove, snap: 5, scale: true}"
     :style="{left: info.position.x + 'px', top: info.position.y + 'px'}"
     @mousedown="select"
     @dblclick="edit"
