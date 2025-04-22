@@ -42,7 +42,7 @@ parameters:
         range: [-30, 40]
       air_system_pressure_loss:
         uom: Pa
-        default: 500
+        default: 25
         range: [0, 2000]
   
 

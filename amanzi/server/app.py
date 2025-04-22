@@ -53,8 +53,8 @@ def keyfigures():
 @click.command()
 @click.option('--debug', is_flag=True, help='Run in debug mode', default=False)
 @click.option('--port', type=int, help='Port to run on', default=7331)
-@click.option('--browser', is_flag=True, help='Open browser', default=True)
-def main(debug, port, browser):
+@click.option('--no-browser', is_flag=True, help='Do not open browser', default=False)
+def main(debug, port, no_browser):
 
     banner = [   r"   _                                  _ ", r"  /_\   _ __ ___    __ _  _ __   ____(_)", r" //_\\ | '_ ` _ \  / _` || '_ \ |_  /| |", r"/  _  \| | | | | || (_| || | | | / / | |", r"\_/ \_/|_| |_| |_| \__,_||_| |_|/___||_|"]
 
@@ -63,7 +63,7 @@ def main(debug, port, browser):
 
     # open browser
 
-    if browser:
+    if not no_browser:
         webbrowser.open(f'http://localhost:{port}')
 
     app.run(debug=debug, port=port)

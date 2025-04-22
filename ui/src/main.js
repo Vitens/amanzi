@@ -10,6 +10,8 @@ import piniaPersist from 'pinia-plugin-persist'
 import axios from 'axios'
 import VueCookies from 'vue-cookies'
 
+import posthog from './plugins/posthog'
+
 import en from "./locales/en.json"
 import nl from "./locales/nl.json"
 import de from "./locales/de.json"
@@ -120,6 +122,10 @@ async function loadModels() {
     modelVueNames.push(name)
   }
 
+}
+// use posthog if not in development mode
+if (import.meta.env.MODE != 'development') {
+  app.use(posthog)
 }
 
 // let store use modelspec

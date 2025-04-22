@@ -147,6 +147,7 @@ export default {
       for(var p of params) {
         // skip hidden categories (starting with _)
         if(p.category.startsWith('_')) { continue }
+        if(p.hidden) { continue }
         parameters[p.category] = parameters[p.category] || {}
         parameters[p.category][p.section] = parameters[p.category][p.section] || []
         parameters[p.category][p.section].push(p)
