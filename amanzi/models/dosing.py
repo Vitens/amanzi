@@ -1,10 +1,11 @@
 import numpy as np
 from scipy.optimize import fmin
 from .model import Model
+from periodictable import formula
 from .submodels.balance import Balance
 
 class Dosing(Model, Balance):
-    parametric_model = ['dosing']
+    parametric_model = ['base', 'dosing']
     def __init__(self, config, pp) -> None:
         super().__init__(config, pp)
         config = config.get('configuration', {})
@@ -18,7 +19,21 @@ class Dosing(Model, Balance):
           'ccpp90': lambda s: s.ccpp90
         }
 
-        self.chemical = config.get('chemical', 'NaOH')
+        self.chemical_name = config.get('chemical', 'co2')
+
+        self.chemical = {
+           'co2': 'CO2',
+           'hcl': 'HCl',
+           'h2so4': 'H2SO4',
+           'lye': 'NaOH',
+           'lime': 'Ca(OH)2',
+           'calcite': 'CaCO3',
+           'oxygen': 'O2',
+           'iron_chloride': 'FeCl3',
+           'manganese_chloride': 'MnCl2'
+        }[self.chemical_name]
+
+
         self.dosing = float(config.get('dosage', 1))
         self.mode = config.get('mode', 'constant')
         self.parameter = config.get('setpoint_parameter', 'pH')
@@ -57,6 +72,13 @@ class Dosing(Model, Balance):
       
       return self.dose(solution, self.chemical, self.calculated_dosage)
 
+    @property
+    def context(self):
+      ctx = super().context
+      ctx['dosage'] = self.dosing if self.mode == 'constant' else self.calculated_dosage
+      ctx['chemical_formula'] = self.chemical
+      ctx['chemical_density'] = formula(self.chemical).mass
+      return ctx
 
     def design(self):
 

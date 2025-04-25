@@ -3,7 +3,6 @@
     <el-container>
       <el-aside id="parameters" class="design-config">
         <ParameterInput v-model="editingModel.configuration.parameters" :type="editingModel.type"></ParameterInput>
-
       </el-aside>
       <el-main id="design">
         <el-tabs>

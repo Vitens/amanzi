@@ -19,27 +19,87 @@ outputs:
         uom: gCO2-eq/m3
         equation: "chemicals.get('lye', 0) * db.lye_emission"
         if: "chemicals.get('lye')"
+        parameters:
+          lye_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('lye', 0)"
+          lye_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.lye_emission"
       lime_emissions:
         uom: gCO2-eq/m3
         equation: "chemicals.get('lime', 0) * db.lime_emission"
         if: "chemicals.get('lime')"
+        parameters:
+          lime_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('lime', 0)"
+          lime_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.lime_emission"
       co2_emissions:
         uom: gCO2-eq/m3
         equation: "chemicals.get('co2', 0) * db.co2_emission"
-        if: "chemicals.get('co2')"
+        if: "chemicals.get('co2', False)"
+        parameters:
+          co2_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('co2', 0)"
+          co2_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.co2_emission"
       hcl_emissions:
         uom: gCO2-eq/m3
         equation: "chemicals.get('hcl', 0) * db.hydrochloric_acid_emission"
-        if: "chemicals.get('hcl')"
+        if: "chemicals.get('hcl', False)"
+        parameters:
+          hcl_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('hcl', 0)"
+          hcl_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.hydrochloric_acid_emission"
       garnet_sand_emissions:
         uom: gCO2-eq/m3
         equation: "chemicals.get('garnet_sand', 0) * db.seed_garnet_emission"
-        if: "chemicals.get('garnet_sand')"
+        if: "chemicals.get('garnet_sand', False)"
+        parameters:
+          garnet_sand_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('garnet_sand', 0)"
+          garnet_sand_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.seed_garnet_emission"
       quartz_sand_emissions:
         uom: gCO2-eq/m3
         equation: "chemicals.get('quartz_sand', 0) * db.seed_quartz_sand_emission"
-        if: "chemicals.get('quartz_sand')"
+        if: "chemicals.get('quartz_sand', False)"
+        parameters:
+          quartz_sand_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('quartz_sand', 0)"
+          quartz_sand_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.seed_quartz_sand_emission"
       calcite_emissions:
         uom: gCO2-eq/m3
         equation: "chemicals.get('calcite', 0) * db.seed_calcite_emission"
-        if: "chemicals.get('calcite')"
+        if: "chemicals.get('calcite', False)"
+        parameters:
+          calcite_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('calcite', 0)"
+          calcite_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.seed_calcite_emission"
+      oxygen_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('oxygen', 0) * db.oxygen_emission"
+        if: "chemicals.get('oxygen', False)"
+        parameters:
+          oxygen_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('oxygen', 0)"
+          oxygen_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.oxygen_emission"

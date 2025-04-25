@@ -11,7 +11,7 @@
         </div>
         <div id='dosing-process'>
           <div id="dosing-tank" :class="chemicalClass"></div>
-          <div id="dosing-chemical" v-html="this.params.chemical" :class="chemicalClass"></div>
+          <div id="dosing-chemical" v-html="chemical" :class="chemicalClass"></div>
           <div id="dosage">{{ dosage }} mmol/l</div>
           <Result name="influent" color="blue" :components="resultSet('influent')" />
           <Result name="effluent" color="green" :components="resultSet('effluent')" />
@@ -124,7 +124,7 @@ export default {
     },
     chemical() {
       if(!this.params.chemical) { return "" }
-      return this.chemform(this.params.chemical) 
+      return this.chemform(this.$t('models.dosing.parameters.options.' + this.params.chemical)) 
     },
     chemicalClass() {
       if(!this.params.chemical) { return "" }
@@ -135,13 +135,13 @@ export default {
       // other: O2, FeCl3, MnCl2
 
       switch(chem) {
-        case 'CO2':
-        case 'HCl':
-        case 'H2SO4':
+        case 'co2':
+        case 'hcl':
+        case 'h2so4':
           return 'acid'
-        case 'NaOH':
-        case 'Ca(OH)2':
-        case 'CaCO3':
+        case 'lye':
+        case 'lime':
+        case 'calcite':
           return 'base'
         default:
           return 'other'

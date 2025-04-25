@@ -52,7 +52,7 @@ class Model(ParametricModel):
             # dotmap with chemical consumptions in gAS/m3
             'lye': 0,
             'lime': 0,
-        })
+        }, _dynamic=False)
     
     # placeholder for model quality run
     def run_quality(self, type, total_inflow, solution):

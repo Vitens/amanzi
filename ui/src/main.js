@@ -7,10 +7,10 @@ import { projectStore } from './stores/project'
 import { piniaUndoRedo } from './stores/undo'
 import { createPinia } from 'pinia'
 import piniaPersist from 'pinia-plugin-persist'
-import axios from 'axios'
 import VueCookies from 'vue-cookies'
 
 import posthog from './plugins/posthog'
+import api from './plugins/api'
 
 import en from "./locales/en.json"
 import nl from "./locales/nl.json"
@@ -29,7 +29,7 @@ import VueMasonry from 'vue-masonry-css'
 import 'font-awesome/css/font-awesome.css'
 import 'element-plus/dist/index.css'
 
-let version = "1.0.0"
+let version = "1.0.1"
 
 var chemform = function(chemical) {
   if(chemical == "") { return "" }
@@ -146,5 +146,5 @@ app.config.globalProperties.$modelVues = modelVueNames
 
 app.config.globalProperties.$version = version
 
-app.config.globalProperties.$http = axios
+app.config.globalProperties.$http = api
 app.mount('#app')

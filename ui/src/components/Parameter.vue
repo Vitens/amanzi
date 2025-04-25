@@ -71,6 +71,9 @@ export default {
     value() {
       this.$emit('update:modelValue', this.value)
     },
+    modelValue() {
+      this.value = this.modelValue
+    }
   },
   methods: {
     segmentedOptions(param) {

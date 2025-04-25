@@ -126,13 +126,23 @@
 		"base": {
 			"outputs": {
 				"co2_emissions": "CO₂",
+				"co2_mass_dosage": "Massadosering",
+				"co2_specific_emission": "Spezifische Emissionen",
 				"electricity_consumption": "Stromverbrauch",
 				"electricity_emission_factor": "Emissionsfaktor",
 				"electricity_emissions": "Emissionen aus dem Stromverbrauch",
+				"guartz_sand_mass_dosage": "Massadosering",
 				"hcl_emissions": "Salzsäure",
+				"hcl_mass_dosage": "Massadosering",
+				"hcl_specific_emission": "Spezifische Emissionen",
 				"lime_emissions": "Kalkmilch",
 				"lye_emissions": "Natronlauge",
-				"quartz_sand_emissions": "Silberner Sand"
+				"lye_mass_dosage": "Massendosierung",
+				"lye_specific_emission": "Spezifische Emissionen",
+				"oxygen_emissions": "Sauerstoff",
+				"quartz_sand_emissions": "Silberner Sand",
+				"quartz_sand_mass_dosage": "Massadosering",
+				"quartz_sand_specific_emission": "Spezifische Emissionen"
 			},
 			"sections": {
 				"chemical_emissions": "Chemikalien und Materialien",
@@ -187,29 +197,47 @@
 				"setpoint_warning": "Sollwert mit den aktuellen Einstellungen nicht erreichbar"
 			},
 			"name": "Dosierung",
+			"outputs": {
+				"calcite": "CaCO₃",
+				"chemical_density": "Molare Masse",
+				"chemical_dosage": "Dosierung",
+				"chemical_formula": "Chemische Formel",
+				"chemical_mass_dosage": "Massadosering",
+				"co2": "CO₂",
+				"hcl": "Salzsäure",
+				"lime": "Kalkmilch",
+				"lye": "Natronlauge",
+				"oxygen": "Sauerstoff"
+			},
 			"parameters": {
 				"chemical": "Chemikalie",
 				"dosage": "Dosierung",
 				"mode": "Dosiermodus",
 				"options": {
 					"AggCO2": "AggCO₂",
-					"Ca(OH)2": "Ca(OH)2",
-					"CaCO3": "CaCO3",
+					"calcite": "CaCO3",
 					"CCPP90": "TACC90",
-					"CO2": "CO2",
+					"co2": "CO₂",
 					"constant": "Konstante Dosierung",
-					"FeCl3": "FeCl3",
-					"H2SO4": "H2SO4",
-					"HCl": "HCl",
-					"MnCl2": "MnCl2",
-					"NaOH": "NaOH",
-					"O2": "O2",
+					"effluent": "Abwasser",
+					"h2so4": "H2SO4",
+					"hcl": "HCl",
+					"influent": "Zulauf",
+					"iron_chloride": "FeCl3",
+					"lime": "Ca(OH)2",
+					"lye": "NaOH",
+					"manganese_chloride": "MnCl2",
+					"oxygen": "O2",
 					"pH": "pH",
 					"setpoint": "Zum Sollwert",
 					"SI": "SI"
 				},
+				"position": "Position (visuell)",
 				"setpoint": "Sollwert",
 				"setpoint_parameter": "Parameter"
+			},
+			"sections": {
+				"dosing": "Dosierung"
 			}
 		},
 		"filtration": {
@@ -659,10 +687,26 @@
 		},
 		"output": {
 			"name": "Lieferung",
+			"outputs": {
+				"calculated_head_in": "Berechnete Vorschubhöhe",
+				"calculated_head_out": "Berechnete Abflusshöhe",
+				"distribution_pump_efficiency": "Effiziente Verteilerpumpen",
+				"distribution_pumps_energy_consumption": "Energieverbrauch Verteilerpumpen",
+				"hydraulic_energy_loss": "Hydraulische Energie-Vordrucke",
+				"influent_headloss": "Vorgelagerter hydraulischer Beitrag",
+				"minimal_head": "Minimaler Vordruck",
+				"pump_efficiency": "Netto-Pumpenwirkungsgrad",
+				"pump_head": "Kopf der Verteilerpumpen",
+				"total_headloss": "Hydraulischer Höhenverlust"
+			},
 			"parameters": {
 				"inlet_elevation": "Landehöhe",
 				"integrated_booster": "Verteilerpumpen",
 				"required_pressure": "Verteilungsdruck"
+			},
+			"sections": {
+				"hydraulic_energy": "Hydraulische Energie",
+				"hydraulic_line": "Hydraulische Leitung"
 			}
 		},
 		"plate": {
@@ -871,6 +915,7 @@
 				"seed_volume": "Volumen des Inokulums",
 				"top_surface_area": "Oberfläche der Oberseite des Auslegers",
 				"total_flow": "Gesamtfluss",
+				"total_headloss": "Totalverlust der hydraulischen Höhe",
 				"total_reactor_height": "Gesamthöhe des Reaktors",
 				"velocity_cylindrical": "Zylindrischer Teil",
 				"velocity_top": "Oberseite des Reaktors"

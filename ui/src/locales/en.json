@@ -126,13 +126,23 @@
 		"base": {
 			"outputs": {
 				"co2_emissions": "CO₂",
+				"co2_mass_dosage": "Mass dosage",
+				"co2_specific_emission": "Specific emissions",
 				"electricity_consumption": "Electricity consumption",
 				"electricity_emission_factor": "Emission factor",
 				"electricity_emissions": "Emissions from electricity consumption",
+				"guartz_sand_mass_dosage": "Mass dosage",
 				"hcl_emissions": "Hydrochloric Acid",
+				"hcl_mass_dosage": "Mass dosage",
+				"hcl_specific_emission": "Specific emissions",
 				"lime_emissions": "Milk of lime",
 				"lye_emissions": "Lye",
-				"quartz_sand_emissions": "Quartz sand"
+				"lye_mass_dosage": "Mass dosage",
+				"lye_specific_emission": "Specific emissions",
+				"oxygen_emissions": "Oxygen",
+				"quartz_sand_emissions": "Quartz sand",
+				"quartz_sand_mass_dosage": "Mass dosage",
+				"quartz_sand_specific_emission": "Specific emissions"
 			},
 			"sections": {
 				"chemical_emissions": "Chemicals and materials",
@@ -187,29 +197,47 @@
 				"setpoint_warning": "Setpoint not achievable with current settings"
 			},
 			"name": "Chemical Dosage",
+			"outputs": {
+				"calcite": "CaCO₃",
+				"chemical_density": "Molar Mass",
+				"chemical_dosage": "Dosage",
+				"chemical_formula": "Chemical formula",
+				"chemical_mass_dosage": "Mass dosage",
+				"co2": "CO₂",
+				"hcl": "Hydrochloric Acid",
+				"lime": "Lime",
+				"lye": "Lye",
+				"oxygen": "Oxygen"
+			},
 			"parameters": {
 				"chemical": "Chemical",
 				"dosage": "Dosage",
 				"mode": "Dosing mode",
 				"options": {
 					"AggCO2": "AggCO₂",
-					"Ca(OH)2": "Ca(OH)2",
-					"CaCO3": "CaCO3",
+					"calcite": "CaCO3",
 					"CCPP90": "CCPP90",
-					"CO2": "CO2",
+					"co2": "CO₂",
 					"constant": "Constant dosage",
-					"FeCl3": "FeCl3",
-					"H2SO4": "H2SO4",
-					"HCl": "HCl",
-					"MnCl2": "MnCl2",
-					"NaOH": "NaOH",
-					"O2": "O2",
+					"effluent": "Effluent",
+					"h2so4": "H2SO4",
+					"hcl": "HCl",
+					"influent": "Influent",
+					"iron_chloride": "FeCl3",
+					"lime": "Ca(OH)2",
+					"lye": "NaOH",
+					"manganese_chloride": "MnCl2",
+					"oxygen": "O2",
 					"pH": "pH",
 					"setpoint": "To setpoint",
 					"SI": "SI"
 				},
+				"position": "Position (visual)",
 				"setpoint": "Setpoint",
 				"setpoint_parameter": "Parameter"
+			},
+			"sections": {
+				"dosing": "Dosage"
 			}
 		},
 		"filtration": {
@@ -659,10 +687,26 @@
 		},
 		"output": {
 			"name": "Output",
+			"outputs": {
+				"calculated_head_in": "Calculated head in",
+				"calculated_head_out": "Calculated discharge head",
+				"distribution_pump_efficiency": "Efficiency distribution pumps",
+				"distribution_pumps_energy_consumption": "Energy consumption of distribution pumps",
+				"hydraulic_energy_loss": "Hydraulic energy pre-pressure",
+				"influent_headloss": "Upstream hydraulic contribution",
+				"minimal_head": "Minimum pre-pressure",
+				"pump_efficiency": "Net pump efficiency",
+				"pump_head": "Head of distribution pumps",
+				"total_headloss": "Hydraulic height loss"
+			},
 			"parameters": {
 				"inlet_elevation": "Sump height",
 				"integrated_booster": "Distribution pumps",
 				"required_pressure": "Distribution pressure"
+			},
+			"sections": {
+				"hydraulic_energy": "Hydraulic energy",
+				"hydraulic_line": "Hydraulic line"
 			}
 		},
 		"plate": {
@@ -871,6 +915,7 @@
 				"seed_volume": "Volume of seed material",
 				"top_surface_area": "Surface area of top of cantilever",
 				"total_flow": "Total flow rate",
+				"total_headloss": "Total loss hydraulic height",
 				"total_reactor_height": "Total height of reactor",
 				"velocity_cylindrical": "Cylindrical part",
 				"velocity_top": "Top of reactor"

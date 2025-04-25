@@ -4,7 +4,7 @@ import webbrowser
 
 from .api import AmanziAPI
 
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, abort
 from flask_cors import CORS
 
 
@@ -29,6 +29,7 @@ def serve(path):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
+
 
 @app.route('/api/parameters', methods=['GET'])
 def parameters():

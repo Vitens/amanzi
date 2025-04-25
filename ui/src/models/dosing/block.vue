@@ -7,7 +7,7 @@ export default {
   props: ['model'],
   computed: {
     usedChem() {
-      return this.model.configuration.parameters.chemical ?? 'NaOH'
+      return this.$t('models.dosing.parameters.options.' + (this.model.configuration.parameters.chemical ?? 'lye'))
     }
   }
 }

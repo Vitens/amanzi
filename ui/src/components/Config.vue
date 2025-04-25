@@ -2,11 +2,11 @@
   <div id="config">
     <!-- element ui form with labels on top of the inputs -->
     <el-form label-position="top" v-if="showConfig">
-      <el-form-item :label="$t('ui.sidebar.configuration.name')">
+      <el-form-item :label="$t('ui.sidebar.configuration.name')" @submit.prevent>
         <el-input v-model="editingModel.name"></el-input>
       </el-form-item>
 
-      <Parameter v-for="param in parameters" :key="param.name" :param="param" v-model="editingModel.configuration.parameters[param.name]" :range="[0,1000]" />
+      <Parameter v-for="param in parameters" :key="param.name" :param="param" v-model="editingModel.configuration.parameters[param.name]" :range="param.range" />
 
       <el-button type="primary" @click="$project.scenario.editingModel = editingModel.uid" icon="Edit" class="edit_button" :disabled="editDisabled">{{ $t('ui.sidebar.configuration.edit') }}</el-button>
     </el-form>

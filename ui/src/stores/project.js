@@ -203,7 +203,7 @@ export const projectStore = defineStore('project', {
         this.invalid = true
       }
       this.loading = false
-    }, 100, {leading: false, trailing: true}),    
+    }, 200, {leading: false, trailing: true}),    
 
     // load from http
     async open(defaultProject, updateParameters=true) {

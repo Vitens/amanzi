@@ -1,5 +1,4 @@
 <template>
-  <h1>Hydraulicline</h1>
   <div class="hydraulic-controls">
   <el-select v-model="path_index" placeholder="Select a path" style="width: 90%; margin-bottom: 5px;">
     <el-option v-for="path, idx in filteredPaths" :key="path.map(m => m.uid).join('-')"
@@ -56,10 +55,24 @@
 
             <rect :x="offsets[index] - 5" :y="0" :width="widths[index] + 10" :height="graphDimensions.height - graphDimensions.lowerOffset" fill="rgba(237.5, 189.9, 118.5, 0.1)" stroke="#E6A23C" v-if="component.uid == $project.scenario.editingModel && highlightEditingModel"/>
 
+            <g :class="{'draggable': draggable(component)}">
             <component :is="'hydraulic-' + component.model.type" :config="component.model" :path="path" :position="index"
-            :hydraulics="$project.designState.hydraulics.models[component.model.uid]"
-            :uid="component.model.uid"
-            @anchor="setAnchorpoints" @size="setSize" @booster="setBoosterElevation" :dim="graphDimensions" :offset="offsets[index]" :width="widths[index]" :key="path_index+'-'+component.model.uid" @levels="setLevels"></component>
+              :hydraulics="$project.designState.hydraulics.models[component.model.uid]"
+              :uid="component.model.uid"
+              @anchor="setAnchorpoints" 
+              @size="setSize" 
+              @booster="setBoosterElevation" 
+              :upstream_elevation="upstreamElevation(index)"
+              :downstream_elevation="downstreamElevation(index)"
+              :dim="graphDimensions" 
+              :offset="offsets[index]" 
+              :width="widths[index]" 
+              :key="path_index+'-'+component.model.uid" 
+              @levels="setLevels"
+              v-draggable="{start: startMove, move: move, end: endMove, focus: true, index: index}"
+              >
+            </component>
+            </g>
             <text :x="offsets[index] + widths[index]/2" y="695" text-anchor="middle">{{ component.model.name }}</text>
           </template>
           <template v-else>
@@ -89,6 +102,8 @@ import roundPathCorners from '@/directives/roundpathcorners.js'
 import Groundwater from '@/models/groundwater/hydraulic.vue'
 import Booster from '@/components/Booster.vue'
 import LevelIndicator from '@/components/LevelIndicator.vue'
+import draggable from '../directives/draggable.js'
+import throttle from 'lodash/throttle';
 
 export default {
   components: {
@@ -96,6 +111,7 @@ export default {
     Booster,
     LevelIndicator
   },
+  directives: {draggable},
   data() {
     return {
       debug: false,
@@ -141,6 +157,10 @@ export default {
   },
 
   computed: {
+    stepY() {
+      let range = this.graphDimensions.maxY - this.graphDimensions.minY 
+      return (this.graphDimensions.height - this.graphDimensions.upperOffset - this.graphDimensions.lowerOffset) / range
+    },
     levels() {
       if(Object.keys(this.anchorpoints).length == 0) return []
       let hydraulic_info = this.$project.designState.hydraulics
@@ -153,9 +173,12 @@ export default {
         let m_prev = this.pathComponents[idx-1]
 
         // skip first and last model
-        if(idx == 0 || idx == this.pathComponents.length - 1) continue
+        if(idx == this.pathComponents.length - 1) continue
 
         if(m.type === 'model') {
+
+          // don't add levels for dosing models
+          if(m.model.type == 'dosing') { continue }
 
           if(m.uid in hydraulic_info.models) {
             // add inlet level
@@ -173,9 +196,9 @@ export default {
               }
 
               levels.push({x: anchor.x, y: anchor.y, level: level, anchor: anchor.anchor, above: true, direction: direction})
-              // add outlet level
             }
 
+            // add outlet level
             anchor = this.anchorpoints[m.uid]?.out
 
             if(m_next) {
@@ -185,7 +208,7 @@ export default {
               if(anchor.anchor == 'top') { direction = 'nw' }
             }
 
-            level = model.head_out
+            level = (idx == 0) ? model.head_in : model.head_out
 
             levels.push({x: anchor.x, y: anchor.y, level: level, anchor: anchor.anchor, above: false, direction: direction})
           }
@@ -240,6 +263,9 @@ export default {
     widths() {
       return this.pathComponents.map(component => {
         if(component.type === 'model') {
+          if(component.model.type == 'dosing') {
+            return 30
+          }
           return this.modelWidth
         }
         if(component.type === 'booster') {
@@ -304,10 +330,51 @@ export default {
     }
   },
   methods: {
+    draggable(component) {
+      return component.model.configuration?.parameters?.inlet_elevation !== undefined
+    },
+    startMove(x0, y0, args, evt) {
+      let elevation = this.pathComponents[args.index].model.configuration?.parameters?.inlet_elevation
+
+      if (elevation !== undefined) {
+        this.movingElevation = elevation
+        return true
+      }
+      return false
+    },
+    applyElevation: throttle(function(index, diff) {
+      this.pathComponents[index].model.configuration.parameters.inlet_elevation += diff
+    }, 100),
+    
+    move(dx, dy, args, evt) {
+
+      let step = this.stepY / 2
+
+      if(Math.abs(dy) >= step) {
+        let direction = dy > 0 ? -1 : 1
+        this.applyElevation(args.index, 0.5 * direction)
+      }
+
+      return true
+    },
+    endMove(event) {
+      this.$project.scenario.unsolved = true
+      return true
+    },
     boosterElevation(index) {
       if(Object.keys(this.boosterElevations).length == 0) return -1
       // get uid of previous component
       return this.boosterElevations[this.pathComponents[index-1].uid]
+    },
+    upstreamElevation(index) {
+      if(index == 0) return undefined
+      let component = this.pathComponents[index-1]
+      return this.anchorpoints[component.uid]?.out?.y
+    },
+    downstreamElevation(index) {
+      if(index == this.pathComponents.length - 1) return undefined
+      let component = this.pathComponents[index+1]
+      return this.anchorpoints[component.uid]?.in?.y
     },
     info(component) {
       if(component.type === 'model') {
@@ -360,6 +427,12 @@ export default {
 </script>
 
 <style>
+.draggable {
+  cursor: ns-resize;
+}
+.draggable:hover path {
+  fill: #FCFCFF;
+}
 .hydraulic-container {
   position: relative;
 }

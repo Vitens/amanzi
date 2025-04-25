@@ -8,9 +8,12 @@ parameters:
       
   chemicals:
     general:
+      position:
+        default: influent
+        options: [influent, effluent]
       chemical:
-        default: 'CO2'
-        options: ['CO2', 'HCl', 'H2SO4', 'NaOH' , 'Ca(OH)2', 'CaCO3','O2', 'FeCl3','MnCl2' ]
+        default: 'co2'
+        options: ['co2', 'hcl', 'h2so4', 'lye' , 'lime', 'calcite', 'oxygen', 'iron_chloride', 'manganese_chloride' ]
       mode: 
         default: constant
         options: [constant, setpoint]
@@ -32,3 +35,47 @@ parameters:
         default: 7.0
         range: [0, 14]
     
+outputs:
+  design:
+    dosing:
+      test:
+        equation: "chemical"
+      chemical_formula:
+        equation: "chemical_formula"
+        uom: "-"
+      chemical_density:
+        equation: "chemical_density"
+        uom: "gAS/mol"
+      chemical_dosage:
+        equation: "dosage"
+        uom: "mmol/L"
+      chemical_mass_dosage:
+        equation: "chemical_dosage * chemical_density"
+        uom: "gAS/m3"
+
+  chemicals:
+    dosing:
+      lye:
+        if: "chemical == 'lye'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      lime:
+        if: "chemical == 'lime'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      co2:
+        if: "chemical == 'co2'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      hcl:
+        if: "chemical == 'hcl'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      calcite:
+        if: "chemical == 'calcite'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      oxygen:
+        if: "chemical == 'oxygen'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"

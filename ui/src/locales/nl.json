@@ -126,13 +126,23 @@
 		"base": {
 			"outputs": {
 				"co2_emissions": "CO₂",
+				"co2_mass_dosage": "Massadosering",
+				"co2_specific_emission": "Specifieke uitstoot",
 				"electricity_consumption": "Elektriciteitsverbruik",
 				"electricity_emission_factor": "Emissiefactor",
 				"electricity_emissions": "Uitstoot door elektriciteitsverbruik",
+				"guartz_sand_mass_dosage": "Massadosering",
 				"hcl_emissions": "Zoutzuur",
+				"hcl_mass_dosage": "Massadosering",
+				"hcl_specific_emission": "Specifieke uitstoot",
 				"lime_emissions": "Kalkmelk",
 				"lye_emissions": "Natronloog",
-				"quartz_sand_emissions": "Zilverzand"
+				"lye_mass_dosage": "Massadosering",
+				"lye_specific_emission": "Specifieke uitstoot",
+				"oxygen_emissions": "Zuurstof",
+				"quartz_sand_emissions": "Zilverzand",
+				"quartz_sand_mass_dosage": "Massadosering",
+				"quartz_sand_specific_emission": "Specifieke uitstoot"
 			},
 			"sections": {
 				"chemical_emissions": "Chemicaliën en materialen",
@@ -187,29 +197,47 @@
 				"setpoint_warning": "Setpoint niet haalbaar met huidige instellingen"
 			},
 			"name": "Dosering",
+			"outputs": {
+				"calcite": "CaCO₃",
+				"chemical_density": "Molmassa",
+				"chemical_dosage": "Dosering",
+				"chemical_formula": "Chemische formule",
+				"chemical_mass_dosage": "Massadosering",
+				"co2": "CO₂",
+				"hcl": "Zoutzuur",
+				"lime": "Kalkmelk",
+				"lye": "Natronloog",
+				"oxygen": "Zuurstof"
+			},
 			"parameters": {
 				"chemical": "Chemicalië",
 				"dosage": "Dosering",
 				"mode": "Doseermode",
 				"options": {
 					"AggCO2": "AggCO₂",
-					"Ca(OH)2": "Ca(OH)2",
-					"CaCO3": "CaCO3",
+					"calcite": "CaCO3",
 					"CCPP90": "TACC90",
-					"CO2": "CO2",
+					"co2": "CO₂",
 					"constant": "Constante dosering",
-					"FeCl3": "FeCl3",
-					"H2SO4": "H2SO4",
-					"HCl": "HCl",
-					"MnCl2": "MnCl2",
-					"NaOH": "NaOH",
-					"O2": "O2",
+					"effluent": "Effluent",
+					"h2so4": "H2SO4",
+					"hcl": "HCl",
+					"influent": "Influent",
+					"iron_chloride": "FeCl3",
+					"lime": "Ca(OH)2",
+					"lye": "NaOH",
+					"manganese_chloride": "MnCl2",
+					"oxygen": "O2",
 					"pH": "pH",
 					"setpoint": "Naar setpoint",
 					"SI": "SI"
 				},
+				"position": "Positie (visueel)",
 				"setpoint": "Wenswaarde",
 				"setpoint_parameter": "Parameter"
+			},
+			"sections": {
+				"dosing": "Dosering"
 			}
 		},
 		"filtration": {
@@ -659,10 +687,26 @@
 		},
 		"output": {
 			"name": "Levering",
+			"outputs": {
+				"calculated_head_in": "Berekende aanvoerhoogte",
+				"calculated_head_out": "Berekende afvoerhoogte",
+				"distribution_pump_efficiency": "Rendement distributiepompen",
+				"distribution_pumps_energy_consumption": "Energieverbruik distributiepompen",
+				"hydraulic_energy_loss": "Hydraulische energie voordruk",
+				"influent_headloss": "Hydraulische bijdrage bovenstrooms",
+				"minimal_head": "Minimale voordruk",
+				"pump_efficiency": "Netto pomprendement",
+				"pump_head": "Opvoerhoogte distributiepompen",
+				"total_headloss": "Hydraulisch hoogteverlies"
+			},
 			"parameters": {
 				"inlet_elevation": "Aanvoerhoogte",
 				"integrated_booster": "Distributiepompen",
 				"required_pressure": "Distributiedruk"
+			},
+			"sections": {
+				"hydraulic_energy": "Hydraulische energie",
+				"hydraulic_line": "Hydraulische lijn"
 			}
 		},
 		"plate": {
@@ -871,6 +915,7 @@
 				"seed_volume": "Volume entmateriaal",
 				"top_surface_area": "Oppervlakte bovenkant uitkraging",
 				"total_flow": "Totaal debiet",
+				"total_headloss": "Totaal verlies hydraulische hoogte",
 				"total_reactor_height": "Totale hoogte reactor",
 				"velocity_cylindrical": "Cilindirsch deel",
 				"velocity_top": "Bovenkant reactor"

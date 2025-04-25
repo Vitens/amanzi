@@ -1,5 +1,5 @@
 export default {
-  props: ['config', 'path', 'dim', 'offset', 'width', 'uid', 'position', 'hydraulics'],
+  props: ['config', 'path', 'dim', 'offset', 'width', 'uid', 'position', 'hydraulics', 'upstream_elevation', 'downstream_elevation'],
   mounted() {
     // emit size and anchorpoints when component is mounted
     console.log('mounted', this.uid)
@@ -24,6 +24,9 @@ export default {
     }
   },
   computed: {
+    draggable() {
+      return this.params.inlet_elevation !== undefined
+    },
     // boilerplate levels, override in model
     levels() {
       return []
@@ -63,6 +66,11 @@ export default {
 
   },
   methods: {
+    // get elevation from y position
+    elevation(y) {
+      let distance_from_top = y - this.dim.upperOffset
+      return this.dim.maxY - distance_from_top / this.stepY
+    },
     // get y position from elevation
     y(elevation) {
       let distance_from_top = this.dim.maxY - elevation
