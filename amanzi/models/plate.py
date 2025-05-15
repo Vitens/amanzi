@@ -41,7 +41,7 @@ class Plate(Model, Balance):
     def aerate(self, influent, RQ, recirculation):
         
         air_comps = {
-            'Oxg(g)': 0.208,
+            'O2(g)': 0.208,
             'Ntg(g)': 0.7916,
             'CO2(g)': 0.0004,
             'Mtg(g)': 0,
@@ -75,7 +75,8 @@ class Plate(Model, Balance):
             # process air quality
             for comp in gas_comp:
                 gas_comp[comp] = (air_comps[comp] * fresh_gas_fraction + off_gas[comp] * off_gas_fraction)
-        
+
+
         return inf, air
 
 
@@ -103,7 +104,7 @@ class Plate(Model, Balance):
 
             ch4_data.append({'x': rq, 'y': eff.total('Mtg') * 16040})
             co2_data.append({'x': rq, 'y': eff.total('CO2', 'mg')})
-            o2_data.append({'x': rq, 'y': eff.total('Oxg') * 32})
+            o2_data.append({'x': rq, 'y': eff.total('O2', 'mg') })
 
         return {
             'influent': {
@@ -112,7 +113,7 @@ class Plate(Model, Balance):
                 'n2': self.quality.influent.product.total('Ntg') * 28.0134,
                 'co2': self.quality.influent.product.total('CO2', 'mg'),
                 'h2s': self.quality.influent.product.total('H2S', 'mg'),
-                'o2': self.quality.influent.product.total('Oxg') * 32,
+                'o2': self.quality.influent.product.total('O2', 'mg'),
             },
             'effluent': {
                 'pH': self.quality.effluent.product.pH,
@@ -120,13 +121,13 @@ class Plate(Model, Balance):
                 'n2': self.quality.effluent.product.total('Ntg') * 28.0134,
                 'co2': self.quality.effluent.product.total('CO2','mg'),
                 'h2s': self.quality.effluent.product.total('H2S','mg'),
-                'o2': self.quality.effluent.product.total('Oxg') * 32,
+                'o2': self.quality.effluent.product.total('O2', 'mg'),
             },
             'gas': {
                 'ch4': effluent_gas.dry_fractions['Mtg(g)'] * 100,
                 'n2': effluent_gas.dry_fractions['Ntg(g)'] * 100,
                 'co2': effluent_gas.dry_fractions['CO2(g)'] * 100,
-                'o2': effluent_gas.dry_fractions['Oxg(g)'] * 100,
+                'o2': effluent_gas.dry_fractions['O2(g)'] * 100,
                 'h2s': effluent_gas.dry_fractions['H2Sg(g)'] * 100,
                 'volume': effluent_gas.volume / self.efficiency,
             },
