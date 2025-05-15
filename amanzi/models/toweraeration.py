@@ -9,8 +9,9 @@ from .tower.water_properties import Water
 from .tower.air_properties import Air
 from .tower.packing_properties import packing
 from .tower.compounds import Chemical
-
-
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class Toweraeration(Model, Balance):
@@ -119,16 +120,16 @@ class Toweraeration(Model, Balance):
                 c_in =0.0000001
         else:
             c_in = influent.total(compound, units='mmol')
-
         if compound == 'Oxg':
             solution = influent.copy()
-            oxg_in = influent.total("Oxg", "mmol")
-            o2_in = influent.total("O2", "mmol")
+            # oxg_in = influent.total("Oxg", "mmol")
+            # o2_in = influent.total("O2", "mmol")
 
-            delta = o2_in - oxg_in        
-            solution.add('Oxg', delta, 'mmol')
-            c_in =solution.total("Oxg", "mmol")
-            c_gas =0.208*101325/(8.31446*(273.15+T_gas)) #9.4 mmol/l == 260mg/l
+            # delta = o2_in - oxg_in        
+            # solution.add('Oxg', delta, 'mmol')
+
+            c_in =solution.total("O2", "mmol")
+            c_gas =0.208*101325/(8.31446*(273.15+T_gas)) #9.4 mmol/l == 260mg/l Oxygen in air 
             
 
 
@@ -140,7 +141,7 @@ class Toweraeration(Model, Balance):
 
 
     def oxygen_transfer(self, solution):
-        o2_in_gas = 9.4 # mol/m³
+        o2_in_gas = 9.4 # mol/m³ Oxygen in air
         o2_in = self.quality.influent.product.total("O2", "mmol")
         o2_efficiency = self.calculate_efficiency('Oxg', self.rq,self.packing_height, self.capacity)      
         c_O2_out =-(o2_efficiency*o2_in-o2_in)
@@ -220,6 +221,7 @@ class Toweraeration(Model, Balance):
         return tables
 
     def design(self):
+        logging.debug("Designing toweraeration")
         
         influent= self.quality.influent.product
         ## gets called by design GUI
@@ -281,13 +283,12 @@ class Toweraeration(Model, Balance):
             dp_dry,dp_tot, h_tot ,F, flooding_factor = 0, 0, 0, 0,0
             column_is_flooding = True
         
-       
-     
+    
 
         return {
             'influent': {
                 'pH': self.quality.influent.product.pH,
-                'O2': self.quality.influent.product.total('O2', 'mg'),
+                'O2': self.quality.influent.product.total('O2', 'mg') ,
                 'CO2': self.quality.influent.product.total('CO2', 'mg'),
                 'CH4': self.quality.influent.product.total('Mtg') * 16,
                 
