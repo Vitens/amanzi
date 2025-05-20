@@ -1,5 +1,9 @@
 import numpy as np
 from .solver import Solver
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class QuantitySolver(Solver):
     """
@@ -50,6 +54,7 @@ class QuantitySolver(Solver):
         # collect equations from models
         counter = 0
         for model in self.scenario.models.values():
+            logger.debug(f"equation: {model}")
             for eq, mass in model.equations:
                 all_equations.append(eq)
                 results.append(mass)
