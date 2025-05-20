@@ -4,6 +4,10 @@ import json
 from amanzi import models
 from amanzi.core import Project, Database
 from amanzi.models.parametric import ParametricModel
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class AmanziAPI():
   def __init__(self):
@@ -25,6 +29,7 @@ class AmanziAPI():
     parameters = {}
 
     for n,obj in inspect.getmembers(models, inspect.isclass):
+        logger.debug(f"Found class: {n}")
         if issubclass(obj, ParametricModel) and n != 'Model':
             params = obj({}, None).input_parameters
             parameters[n.lower()] = [p | {'name': n, 'type': type(p['default']).__name__} for n,p in params.items()]

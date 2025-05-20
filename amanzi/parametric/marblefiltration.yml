@@ -1,0 +1,113 @@
+parameters:
+  design:
+    general:
+      spray:
+        default: false
+        uom: '-'
+      number_of_heights:
+        default: 10
+        uom: '-'
+        range: [1, 20]
+      number_of_fractions:
+        default: 10
+        uom: '-'
+        range: [1, 20]
+      number_of_runs:
+        default: 10
+        uom: '-'
+        range: [1, 20]
+      number_of_sieves:
+        default: 7
+        uom: '-'
+        range: [1, 20]
+      bed_height_start:
+        default: 0.8
+        uom: m
+        range: [0.1, 1.0]
+      bed_height_refill:
+        default: 0.5
+        uom: m
+        range: [0.1, 1.0]
+      marble_porosity:
+        default: 0.5
+        uom: '-'
+        range: [0.0, 1.0]
+      marble_density:
+        default: 2.65
+        uom: g/cm3
+        range: [0.0, 10.0]
+      grain_shape:
+        default: 0.665
+        uom: '-'
+        range: [0.0, 1.0] 
+    hydraulic_line:
+      pressurized: # overwrite to enable unique translation
+        default: false
+        uom: '-'
+      pressure_loss_nozzles:
+        if:
+          spray: true
+        default: 1.0
+        uom: mH2O
+        range: [0.01, 10.0]
+      fall_height_to_media:
+        default: 0.5
+        uom: m
+        range: [0.1, 1.0]
+      filter_bottom:
+        default: 0.5
+        uom: m
+        range: [0.1, 1.0]
+
+  operational:
+    filter_loss:
+      Fe_height_start:
+        default: 0.0
+        uom: m
+        range: [0.0, 1.0]
+      Fe_height_end:
+        default: 0.1
+        uom: m
+        range: [0.0, 1.0]
+      NH4_height_start:
+        default: 0.2
+        uom: m
+        range: [0.0, 1.0]
+      NH4_height_end:
+        default: 0.3
+        uom: m
+        range: [0.0, 1.0] 
+      Mn_height_start:
+        default: 0.4
+        uom: m
+        range: [0.0, 1.0] 
+      Mn_height_end:
+        default: 0.5
+        uom: m
+        range: [0.0, 1.0] 
+      filtration_rate:
+        default: 4.6
+        uom: m/h
+        range: [0.0, 10.0]
+      filter_surface:
+        default: 1000
+        uom: m2
+        range: [0.0, 10000.0]
+      volume_filtered:
+        default: 1000
+        uom: m3
+        range: [0.0, 10000.0]
+      supernatant_level:
+        default: 0.2
+        uom: m
+        range: [0.0, 1.0]
+    
+
+outputs:
+  design:
+    general:
+      bed_height:
+        uom: m
+        equation: "bed_height_start + 1"
+
+    
