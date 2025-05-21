@@ -38,8 +38,6 @@ parameters:
 outputs:
   design:
     dosing:
-      test:
-        equation: "chemical"
       chemical_formula:
         equation: "chemical_formula"
         uom: "-"
@@ -52,6 +50,7 @@ outputs:
       chemical_mass_dosage:
         equation: "chemical_dosage * chemical_density"
         uom: "gAS/m3"
+
 
   chemicals:
     dosing:
@@ -71,6 +70,10 @@ outputs:
         if: "chemical == 'hcl'"
         equation: "chemical_mass_dosage"
         uom: "gAS/m3"
+      h2so4:
+        if: "chemical == 'h2so4'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
       calcite:
         if: "chemical == 'calcite'"
         equation: "chemical_mass_dosage"
@@ -79,3 +82,8 @@ outputs:
         if: "chemical == 'oxygen'"
         equation: "chemical_mass_dosage"
         uom: "gAS/m3"
+      iron_chloride:
+        if: "chemical == 'iron_chloride'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      
