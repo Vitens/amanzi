@@ -125,22 +125,22 @@
 		},
 		"base": {
 			"outputs": {
-				"co2_emissions": "CO₂",
-				"co2_mass_dosage": "Massadosering",
-				"co2_specific_emission": "Specifieke uitstoot",
 				"calcite_emissions": "Calciet",
 				"calcite_mass_dosage": "Massadosering",
 				"calcite_specific_emission": "Specifieke uitstoot",
+				"co2_emissions": "CO₂",
+				"co2_mass_dosage": "Massadosering",
+				"co2_specific_emission": "Specifieke uitstoot",
 				"electricity_consumption": "Elektriciteitsverbruik",
 				"electricity_emission_factor": "Emissiefactor",
 				"electricity_emissions": "Uitstoot door elektriciteitsverbruik",
 				"guartz_sand_mass_dosage": "Massadosering",
-				"hcl_emissions": "Zoutzuur",
-				"hcl_mass_dosage": "Massadosering",
-				"hcl_specific_emission": "Specifieke uitstoot",
 				"h2so4_emissions": "Zwavelzuur",
 				"h2so4_mass_dosage": "Massadosering",
 				"h2so4_specific_emission": "Specifieke uitstoot",
+				"hcl_emissions": "Zoutzuur",
+				"hcl_mass_dosage": "Massadosering",
+				"hcl_specific_emission": "Specifieke uitstoot",
 				"iron_chloride_emissions": "IJzerchloride",
 				"iron_chloride_mass_dosage": "Massadosering",
 				"iron_chloride_specific_emission": "Specifieke uitstoot",
@@ -211,19 +211,19 @@
 			},
 			"name": "Dosering",
 			"outputs": {
-				"chemical_name": "Naam",
 				"calcite": "CaCO₃",
 				"chemical_density": "Molmassa",
 				"chemical_dosage": "Dosering",
 				"chemical_formula": "Chemische formule",
 				"chemical_mass_dosage": "Massadosering",
+				"chemical_name": "Naam",
 				"co2": "CO₂",
-				"hcl": "Zoutzuur",
 				"h2so4": "Zwavelzuur",
+				"hcl": "Zoutzuur",
+				"iron_chloride": "IJzerchloride",
 				"lime": "Kalkmelk",
 				"lye": "Natronloog",
-				"oxygen": "Zuurstof",
-				"iron_chloride": "IJzerchloride"
+				"oxygen": "Zuurstof"
 			},
 			"parameters": {
 				"chemical": "Chemicalië",
@@ -1257,7 +1257,8 @@
 				"missing_source": "Het model heeft een bron (grondwaterwinning) nodig om te functioneren",
 				"missing_source_sink": "Het model heeft een bron en een levering nodig"
 			},
-			"press-enter-to-commit": "Druk op enter om op te slaan"
+			"press-enter-to-commit": "Druk op enter om op te slaan",
+			"reset-to-default": "Herstel standaardwaarde"
 		},
 		"menubar": {
 			"add_scenario": "Scenario toevoegen",

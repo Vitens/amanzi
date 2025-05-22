@@ -1,41 +1,41 @@
 <template>
   <div class="parameter">
-    <template v-if="parameter_type(param) == 'number'">
-      <el-form-item :label="$t('models.'+param.namespace+'.parameters.'+param.name)">
-        <NumberInput v-model="value" :min="range[0]" :max="range[1]" :units="formatUnits(param.uom)" :integer="param.type == 'int'" />
-      </el-form-item>
-    </template> 
-    <template v-else-if="parameter_type(param) == 'boolean'">
+    <template v-if="parameter_type(param) == 'boolean'">
       <div class="parameter-boolean">
       <el-checkbox v-model="value" :label="$t('models.'+param.namespace+'.parameters.'+param.name)"/>
+      <span class="parameter-reset-default" v-if="param.default != value" @click="resetDefault" :title="$t('ui.general.reset-to-default')"><i class='fa fa-reply'></i></span>
       </div>
     </template>
-    <template v-else-if="parameter_type(param) == 'select'">
-      <div class="parameter-select">
-      <el-form-item :label="$t('models.'+param.namespace+'.parameters.'+param.name)">
-        <el-radio-group v-model="value">
-          <el-radio-button v-for="option in param.options" :value="option">{{ $t('models.'+param.namespace+'.parameters.options.'+option) }}</el-radio-button>
-        </el-radio-group>
-        <!-- <el-segmented :options="segmentedOptions(param)" v-model="values[param.name]" /> -->
+    <template v-else>
+      <el-form-item>
+      <template v-if="parameter_type(param) == 'number'">
+          <NumberInput v-model="value" :min="range[0]" :max="range[1]" :units="formatUnits(param.uom)" :integer="param.type == 'int'" :defaultValue="param.default"/>
+      </template> 
+      <template v-else-if="parameter_type(param) == 'select'">
+        <div class="parameter-select">
+          <el-radio-group v-model="value">
+            <el-radio-button v-for="option in param.options" :value="option">{{ $t('models.'+param.namespace+'.parameters.options.'+option) }}</el-radio-button>
+          </el-radio-group>
+        </div>
+      </template>
+      <template v-else-if="parameter_type(param) == 'dropdown'">
+        <div class="parameter-select">
+            <el-select v-model="value">
+              <el-option v-for="option in param.options" :label="$t('models.'+param.namespace+'.parameters.options.'+option)" :value="option" />
+            </el-select>
+        </div>
+      </template>
+      <template v-else-if="parameter_type(param) == 'percentage'">
+        <div class="parameter percentage">
+            <el-slider v-model="percentage" :min="range[0]*100" :max="range[1]*100"></el-slider>
+            <span class="value">{{ percentage }}%</span>
+        </div>
+      </template>
+      <template #label>
+            <span class="parameter-label" :class="{'modified': param.default != value}">{{ $t('models.'+param.namespace+'.parameters.'+param.name) }}</span>
+            <span class="parameter-reset-default" v-if="param.default != value" @click="resetDefault" :title="$t('ui.general.reset-to-default')"><i class='fa fa-reply'></i></span>
+      </template>
       </el-form-item>
-      </div>
-    </template>
-    <template v-else-if="parameter_type(param) == 'dropdown'">
-      <div class="parameter-select">
-        <el-form-item :label="$t('models.'+param.namespace+'.parameters.'+param.name)">
-          <el-select v-model="value">
-            <el-option v-for="option in param.options" :label="$t('models.'+param.namespace+'.parameters.options.'+option)" :value="option" />
-          </el-select>
-        </el-form-item>
-      </div>
-    </template>
-    <template v-else-if="parameter_type(param) == 'percentage'">
-      <div class="parameter percentage">
-        <el-form-item :label="$t('models.'+param.namespace+'.parameters.'+param.name)">
-          <el-slider v-model="percentage" :min="range[0]*100" :max="range[1]*100"></el-slider>
-          <span class="value">{{ percentage }}%</span>
-        </el-form-item>
-      </div>
     </template>
   </div>
 </template>
@@ -76,6 +76,14 @@ export default {
     }
   },
   methods: {
+    resetDefault() {
+      if (this.parameter_type(this.param) == 'percentage') {
+        this.percentage = this.param.default * 100
+      }
+      else {
+        this.value = this.param.default
+      }
+    },
     segmentedOptions(param) {
       return param.options.map(o => {
         return {label: this.$t('models.'+param.namespace+'.parameters.options.'+o), value: o}
@@ -111,7 +119,27 @@ export default {
 
 </script>
 <style>
+.parameter {
+  position: relative;
+}
 .parameter .el-input__inner {
   min-width: 20px;
+}
+.parameter-boolean .parameter-reset-default {
+  top: 8px;
+}
+.parameter-reset-default {
+  position: absolute;
+  margin-left: 4px;
+  font-size: 11px;
+  color: var(--el-color-danger-dark-2);
+  border-radius: 2px;
+}
+.parameter-reset-default:hover {
+  color: var(--el-color-danger-light-3);
+  cursor: pointer;
+}
+.parameter .modified {
+  color: var(--el-color-danger-dark-2);
 }
 </style>
