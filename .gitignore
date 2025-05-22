@@ -14,6 +14,7 @@ dist/
 
 .ipynb_checkpoints
 .vscode
+.idea
 
 # Environments
 .env
