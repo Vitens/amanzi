@@ -59,6 +59,17 @@ outputs:
           hcl_specific_emission:
             uom: gCO2-eq/gAS
             equation: "db.hydrochloric_acid_emission"
+      h2so4_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('h2so4', 0) * db.sulphuric_acid_emission"
+        if: "chemicals.get('h2so4', False)"
+        parameters:
+          h2so4_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('h2so4', 0)"
+          h2so4_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.sulphuric_acid_emission"
       garnet_sand_emissions:
         uom: gCO2-eq/m3
         equation: "chemicals.get('garnet_sand', 0) * db.seed_garnet_emission"
@@ -70,6 +81,17 @@ outputs:
           garnet_sand_specific_emission:
             uom: gCO2-eq/gAS
             equation: "db.seed_garnet_emission"
+      iron_chloride_emissions:
+        uom: gCO2-eq/m3
+        equation: "chemicals.get('iron_chloride', 0) * db.iron_chloride_emission"
+        if: "chemicals.get('iron_chloride', False)"
+        parameters:
+          iron_chloride_mass_dosage:
+            uom: "gAS/m3"
+            equation: "chemicals.get('iron_chloride', 0)"
+          iron_chloride_specific_emission:
+            uom: gCO2-eq/gAS
+            equation: "db.iron_chloride_emission"
       quartz_sand_emissions:
         uom: gCO2-eq/m3
         equation: "chemicals.get('quartz_sand', 0) * db.seed_quartz_sand_emission"

@@ -5,6 +5,10 @@ from .tower.compounds import Chemical
 import math
 import numpy as np
 from .tower.air_properties import Air
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class Sandfiltration(Model, Loss):
     parametric_model = ['base', 'model', 'filtration','sprayaerator']
@@ -179,8 +183,9 @@ class Sandfiltration(Model, Loss):
 
     def spray_aeration(self, solution, compound, RQ, fall_height):
         solution = solution.copy()
+
         # replace inert oxygen with free oxygen
-        solution.change({ "O2": solution.total("Oxg"), "Oxg": -solution.total("Oxg")*0.99999})
+        # solution.change({ "O2": solution.total("Oxg"), "Oxg": -solution.total("Oxg")*0.99999})
 
         effciency_co2 = self.calculate_efficiency('CO2', RQ , fall_height)
         effciency_ch4 = self.calculate_efficiency('Mtg', RQ , fall_height)
@@ -189,7 +194,7 @@ class Sandfiltration(Model, Loss):
         # max Oxygen saturation linear interpolation dependend on water temperature (5-20 Celsius)
         # mg/l to mmol/l
         O2_max = (-0.2366*self.quality.influent.product.temperature + 13.801) /32
-        o2_in = self.quality.influent.product.total("Oxg", "mmol") + self.quality.influent.product.total("O2", "mmol")
+        o2_in = self.quality.influent.product.total("O2", "mmol")
         O2_change = abs((O2_max-o2_in)*effciency_O2)
         solution.remove_fraction('CO2', effciency_co2)
         solution.remove_fraction('Mtg', effciency_ch4)
@@ -221,7 +226,7 @@ class Sandfiltration(Model, Loss):
     def design(self):
         values = {
             'pH': lambda s: s.pH,
-            'O2': lambda s: s.total("O2", 'mg') + s.total("Oxg", 'mmol')*32,
+            'O2': lambda s: s.total("O2", 'mg') ,
             'CO2': lambda s: s.total("CO2", 'mg'),
             'HCO3': lambda s: s.total("HCO3", 'mg'),
             'CH4': lambda s: s.total("Mtg") * 16e3,
@@ -236,7 +241,11 @@ class Sandfiltration(Model, Loss):
         if(self.sprayaeration):
             solution = self.spray_aeration(self.quality.influent.product, self.compound, self.RQ, self.fall_height)
             labels = ["spray", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
-            results
+            step_results = {}
+            for n, v in values.items():
+                step_results[n] = v(self.quality.influent.product.copy())
+            results["influent"]= step_results
+            
         else:
             labels = ["influent", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
             solution = self.quality.influent.product.copy()
@@ -251,15 +260,6 @@ class Sandfiltration(Model, Loss):
                 step_results[n] = v(step)
             
             results[labels[i]] = step_results
-
-        if(self.sprayaeration):
-            labels = ["spray", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
-            step_results = {}
-            for n, v in values.items():
-                step_results[n] = v(self.quality.influent.product.copy())
-            results["influent"]= step_results
-            results["influent"]= step_results
-
 
         return {
             'steps': labels,

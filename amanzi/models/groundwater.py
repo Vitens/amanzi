@@ -2,6 +2,9 @@ import numpy as np
 import logging
 from .model import Model
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 class Groundwater(Model):
     parametric_model = ['base', 'groundwater', 'quality']
 
@@ -100,7 +103,6 @@ class Groundwater(Model):
 
         ## equalize solution to ensure all mass balances are solved
         self.solution.equalize('Calcite', 1000, 0)
-
         self.emitter = True
 
     @property
