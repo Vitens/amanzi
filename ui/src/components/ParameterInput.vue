@@ -11,7 +11,7 @@
           
           <span>{{ $t("ui.design.categories."+category) }}</span>
       </template>
-      <el-form label-position="top" @submit.prevent>
+      <el-form label-position="top" @submit.prevent size="default">
       <div v-for="params, section in nonempty(sections)" :id="'section-'+section" class="parameter-section">
         <h3>{{ $t('ui.design.sections.'+section)}}</h3>
         <div class="parameter-group">
@@ -222,6 +222,7 @@ export default {
   max-width: 300px;
 }
 #parameter-input .percentage {
+  display: flex;
 }
 #parameter-input .el-slider {
   width: 230px;
