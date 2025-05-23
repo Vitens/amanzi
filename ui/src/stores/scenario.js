@@ -224,7 +224,6 @@ export const scenarioStore = (uid) => defineStore('scenario/'+uid, {
         for(var param of parameters[m.type]) {
           if(!m.configuration.parameters[param.name]) {
             m.configuration.parameters[param.name] = param.default
-            console.log(m.name, param.name, param.default)
           }
         }
       }

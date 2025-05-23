@@ -74,8 +74,9 @@ const eventBus = mitt()
 window._ = _
 
 // setup i18n
+
 const i18n = createI18n({
-  locale: 'nl',
+  locale: navigator.language.split('-')[0],
   fallbackLocale: 'en',
   messages: { en, nl, de },
   silentTranslationWarn: true,

@@ -50,6 +50,11 @@ export default {
       waterfall: false,
     }
   },
+  watch: {
+    scenario(newVal) {
+      this.path_index = 0
+    }
+  },
   methods: {
     bar_class(model_index) {
       if(!this.waterfall) {
@@ -197,7 +202,8 @@ export default {
       if (!this.$project.scenario) return []
       // Convert model UIDs to names in each path
       if (!this.$project.reportState.results) return []
-      return this.$project.scenario.findAllProductPaths()
+      console.log("computing paths for scenario", this.scenario)
+      return this.$project.scenarios[this.scenario].findAllProductPaths()
     },
     zero() {
       let min, max
@@ -234,11 +240,15 @@ export default {
       let values = []
 
       if(!this.sum) {
-        let path = this.$project.scenario.findAllProductPaths()[this.path_index]
+        let path = this.$project.scenarios[this.scenario].findAllProductPaths()[this.path_index]
         for(var model of path) {
           // find the index of the model in the order
           let m = this.$project.reportState.results[this.scenario].summaries[this.namespace].order.indexOf(model.uid)
-          values.push(this.$project.reportState.results[this.scenario].summaries[this.namespace].models[m][this.metric_index])
+          let val = this.$project.reportState.results[this.scenario].summaries[this.namespace].models[m][this.metric_index]
+          // round to precision of the metric
+          val.value = _.round(val.value, val.precision)
+
+          values.push(val)
         }
       }
       else {

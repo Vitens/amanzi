@@ -42,7 +42,11 @@
       </el-radio-group>
 
       <el-select size='small' v-model="$i18n.locale" class="locale-select">
-        <el-option v-for="locale in $i18n.availableLocales" :key="locale" :label="locale.toUpperCase()" :value="locale" />
+        <el-option v-for="locale in $i18n.availableLocales" :key="locale" :label="localeLabel(locale)" :value="locale" />
+        <template #label>
+          <i class='fa fa-globe'></i>
+          {{ localeLabel($i18n.locale) }}
+        </template>
       </el-select>
       
       </div>
@@ -84,6 +88,15 @@ export default {
     }
   },
   methods: {
+    localeLabel(locale) {
+      // add emoji flag
+      let labels = {
+        'nl': 'NL',
+        'de': 'DE',
+        'en': 'EN'
+      }
+      return labels[locale]
+    },
     feedback() {
       // send email to amanzi@vitens.nl
       // serialize the project and add it to the body
@@ -216,7 +229,10 @@ export default {
 
 .locale-select {
   padding-left: 0px;
-  width: 60px !important;
+  width: 72px !important;
+}
+.locale-select i {
+  margin-right: 3px;
 }
 .solve-project {
   float: right;
