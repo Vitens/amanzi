@@ -1240,6 +1240,14 @@
 			}
 		},
 		"dialogs": {
+			"about": {
+				"acknowledgements": "Verantwoording",
+				"changelog": "Versiegeschiedenis",
+				"developed_by": "Ontwikkeld door Technologie & Onderzoek, Vitens",
+				"license": "Licentie",
+				"remark": "Amanzi is getest en gevalideerd op onze eigen installaties en zuiveringen. Vitens is  echter op geen enkele manier aansprakelijk voor de correctheid, toepasbaarheid en beschikbaarheid van de resultaten en de applicatie.",
+				"title": "Over Amanzi"
+			},
 			"keyfigures": {
 				"title": "Kengetallen"
 			},

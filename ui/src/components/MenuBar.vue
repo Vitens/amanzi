@@ -177,7 +177,7 @@ let menu = [
     name: 'help',
     items: [
       { name: 'tutorial', action: function() {this.$project.tutorial = true} },
-      { name: 'about', action: function() {}, disabled: () => true },
+      { name: 'about', action: function() {this.$project.about = true} },
     ]
   }
 

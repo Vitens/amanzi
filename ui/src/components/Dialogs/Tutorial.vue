@@ -26,13 +26,13 @@
 </template>
 
 <script>
-import Tutorial1 from '../assets/tutorial/Tutorial-1.png'
-import Tutorial2 from '../assets/tutorial/Tutorial-2.gif'
-import Tutorial3 from '../assets/tutorial/Tutorial-3.gif'
-import Tutorial4 from '../assets/tutorial/Tutorial-4.gif'
-import Tutorial5 from '../assets/tutorial/Tutorial-5.gif'
-import Tutorial6 from '../assets/tutorial/Tutorial-6.gif'
-import Tutorial7 from '../assets/tutorial/Tutorial-7.gif'
+import Tutorial1 from '@/assets/tutorial/Tutorial-1.png'
+import Tutorial2 from '@/assets/tutorial/Tutorial-2.gif'
+import Tutorial3 from '@/assets/tutorial/Tutorial-3.gif'
+import Tutorial4 from '@/assets/tutorial/Tutorial-4.gif'
+import Tutorial5 from '@/assets/tutorial/Tutorial-5.gif'
+import Tutorial6 from '@/assets/tutorial/Tutorial-6.gif'
+import Tutorial7 from '@/assets/tutorial/Tutorial-7.gif'
 
 export default {
     name: 'Tutorial',

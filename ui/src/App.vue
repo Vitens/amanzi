@@ -7,6 +7,7 @@
     <Report v-if="reportVisible"></Report>
     <KeyFigures v-if="keyFiguresVisible"></KeyFigures>
     <Tutorial v-if="tutorialVisible"></Tutorial>
+    <About v-if="aboutVisible"></About>
   </el-dialog>
 
   <el-container class="container">
@@ -48,14 +49,14 @@ import LoadingIndicator from './components/LoadingIndicator.vue'
 import Design from './components/Design.vue'
 import KeyFigures from './components/KeyFigures.vue'
 import components from './models/groundwater/assets/components'
-import Tutorial from './components/Tutorial.vue'
-
+import Tutorial from './components/Dialogs/Tutorial.vue'
+import About from './components/Dialogs/About.vue'
 import DefaultProject from './assets/Default-project.json'
 
 export default {
   name: 'App',
   components: {
-    Canvas, Sidebar, Scenariobar, Design, Topbar, LoadingIndicator, Report, KeyFigures, ResultBar, Tutorial
+    Canvas, Sidebar, Scenariobar, Design, Topbar, LoadingIndicator, Report, KeyFigures, ResultBar, Tutorial, About
   },
   data() { return {
     error: false,
@@ -133,20 +134,25 @@ export default {
     tutorialVisible() {
       return this.$project.tutorial
     },
+    aboutVisible() {
+      return this.$project.about
+    },
     dialogVisible() {
-      return this.designVisible || this.reportVisible || this.keyFiguresVisible || this.tutorialVisible
+      return this.designVisible || this.reportVisible || this.keyFiguresVisible || this.tutorialVisible || this.aboutVisible
     },
     dialogTitle() {
       if (!this.dialogVisible) { return '' }
       if (this.reportVisible) { return this.$t('ui.dialogs.report.title') }
       if (this.keyFiguresVisible) { return this.$t('ui.dialogs.keyfigures.title') }
       if (this.tutorialVisible) { return this.$t('ui.dialogs.tutorial.title') }
+      if (this.aboutVisible) { return this.$t('ui.dialogs.about.title') }
       return this.$project.scenario.models.filter(m => m.uid == this.$project.scenario.editingModel)[0].name
     },
     dialogWidth() {
       if(this.reportVisible) { return '1300px' }
       if(this.keyFiguresVisible) { return '1200px' }
-      if(this.tutorialVisible) { return '800px' }
+      if(this.tutorialVisible) { return '1000px' }
+      if(this.aboutVisible) { return '600px' }
       return '98%'
     }
   },
@@ -158,6 +164,7 @@ export default {
       }
       this.$project.report = false
       this.$project.keyfigures = false
+      this.$project.about = false
       this.$project.scenario.editingModel = null
       this.$project.designState = {}
       this.$project.scenario.unsolved = true

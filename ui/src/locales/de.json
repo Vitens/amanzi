@@ -1240,6 +1240,14 @@
 			}
 		},
 		"dialogs": {
+			"about": {
+				"acknowledgements": "Acknowledgments",
+				"changelog": "Versionsgeschichte",
+				"developed_by": "Entwickelt von Technology & Research, Vitens",
+				"license": "Lizenz",
+				"remark": "",
+				"title": "Über Amanzi"
+			},
 			"keyfigures": {
 				"title": "Kennzahlen"
 			},
