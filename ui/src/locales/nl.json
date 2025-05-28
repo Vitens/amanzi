@@ -1136,35 +1136,35 @@
 	"Totaal": "Totaal",
 	"tutorial": [
 		{
-			"body": "This tutorial will guide you through the basic features and functionality of Amanzi-UI. \n\nFollow along to learn how to create and configure your water treatment process.\n\nClick 'Next' to begin the tutorial.",
+			"body": "Dit rondleiding zal u helpen door de basisfuncties en functionaliteit van Amanzi-UI. \n\nVolg deze rondleiding om te leren hoe u uw waterbehandelingsproces kunt maken en configureren.",
 			"title": "Welkom bij Amanzi!"
 		},
 		{
-			"body": "Start by dragging components from the left sidebar onto the canvas or double click them in the library to have them connect automatically. \n\nEvery treatment plant scenario needs a source (abstraction model) and a sink (outlet model).",
+			"body": "Start door componenten van de linkerzijbalk naar het canvas te slepen of dubbelklikken in de bibliotheek om ze automatisch te verbinden. \n\nElk waterbehandelingsscenario heeft een bron (winningmodel) en een afvoer (leveringmodel).",
 			"title": "Processtappen toevoegen"
 		},
 		{
-			"body": "Connect components by clicking and dragging between their connection points. \n\nMake sure all connections for the product stream (blue), waste stream (red) and backwash stream (blue dotted) are made.",
+			"body": "Verbind componenten door te klikken en slepen tussen hun verbindingspunten. \n\nZorg ervoor dat alle verbindingen voor de productstroom (blauw), afvalstroom (rood) en terugspoelstroom (blauwe gestippeld) zijn gemaakt.",
 			"title": "Componenten verbinden"
 		},
 		{
-			"body": "Double click any component or use its Edit model parameter button to open the configuration panel and adjust parameters of this component. \n\nAny changes will show immediatly in the desgin graphs and tables and effect the whole treatment process.",
+			"body": "Dubbelklik op een component of gebruik de knop 'Modelparameter bewerken' om het configuratievenster te openen en de parameters van deze component aan te passen. \n\nAlle wijzigingen worden onmiddellijk in de ontwerpgrafieken en tabellen weergegeven en beïnvloeden het hele waterbehandelingsproces.",
 			"title": "Componenten configureren"
 		},
 		{
-			"body": "Click on the 'Key figure' tab in the right sidebar to set the project wide parameters. \n\nThese parameters will be used for all calculations in this project.",
+			"body": "Klik op de tab 'Kengetallen' in de rechterzijbalk om de projectparameters in te stellen. \n\nDeze parameters worden gebruikt voor alle berekeningen in dit project.",
 			"title": "Project parameters instellen"
 		},
 		{
-			"body": "Use the right sidebar to view calculation results and performance metrics.",
+			"body": "Gebruik de rechterzijbalk om berekingsresultaten en prestatiemetrieken te bekijken.",
 			"title": "Resultaten bekijken"
 		},
 		{
-			"body": "You can create multiple scenarios to compare different design options. \n\nClick on the '+' tab in bottom to create a new scenario. \n\nYou can also edit or delete existing scenarios. \n\nIt is possible to copy and paste components between scenarios with the general ctrl+c and ctrl+v shortcuts.",
+			"body": "U kunt meerdere scenario's maken om verschillende ontwerpopties te vergelijken. \n\nKlik op de knop '+' onderaan om een nieuw scenario te maken. \n\nU kunt ook bestaande scenario's bewerken of verwijderen. \n\nHet is mogelijk om componenten tussen scenario's te kopiëren en plakken met de algemene sneltoetsen ctrl+c en ctrl+v.",
 			"title": "Meerdere scenario's"
 		},
 		{
-			"body": "You've completed the tutorial. Feel free to explore and build your own treatment process.",
+			"body": "U hebt de rondleiding voltooid. Vrijwillig verkennen en bouw uw eigen waterbehandelingsproces.",
 			"title": "Klaar om te beginnen!"
 		}
 	],
