@@ -76,12 +76,14 @@ window._ = _
 // setup i18n
 
 const i18n = createI18n({
-  locale: navigator.language.split('-')[0],
+  locale: navigator.language.split('-')[0] || 'en',
   fallbackLocale: 'en',
   messages: { en, nl, de },
   silentTranslationWarn: true,
   fallbackWarn: false,
-  missingWarn: false
+  missingWarn: false,
+  legacy: false,
+  globalInjection: true
 })
 
 let app = createApp(App)
