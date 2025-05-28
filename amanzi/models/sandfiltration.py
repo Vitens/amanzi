@@ -142,8 +142,10 @@ class Sandfiltration(Model, Loss):
 
         # oxidize methane
         after_ch4 = self.oxidize(influent, "Mtg", "CH4", 2)
-            
-        after_fe = self.oxidize(after_ch4, "[Fe+2]", "Fe+2", 0.25, fe_removal_efficiency).desaturate("Fe(OH)3(a)", 0)
+
+        fe_oxidation= self.oxidize(after_ch4, "[Fe+2]", "Fe+2", 0.25, fe_removal_efficiency)
+        after_fe = fe_oxidation.desaturate("Fe(OH)3(a)", 0)
+        self.waste_iron = after_ch4.total('Fe', 'mg')-after_fe.total('Fe', 'mg')
         
         # oxidize h2
         after_h2s = self.oxidize(after_fe, "[S-2]", "S-2", 2)
@@ -206,11 +208,14 @@ class Sandfiltration(Model, Loss):
         if(type == 'flush'):
             # add load to waste solution
             self.waste_solution = solution.copy()
-            return
+            self.waste_solution.add('Fe', self.waste_iron, 'mg')
+            return self.waste_solution
         
         if(type == 'product'):
             # influent
             solution = solution.copy()
+            print(f"Solution before spray in mmol: {solution.total('O2', 'mmol')}")
+            logging.debug(f"Solution before spray in mg: {solution.total('O2', 'mg')}")
 
             if(self.sprayaeration):
                 solution = self.spray_aeration(solution, self.compound, self.RQ, self.fall_height)
@@ -219,7 +224,6 @@ class Sandfiltration(Model, Loss):
             effluent, _ = self.filtrate(solution)
 
             return effluent
-
         return solution
 
 
