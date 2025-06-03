@@ -133,7 +133,7 @@ export default {
       for(var i in this.steps) {
         var s = this.steps[i]
         var y = this.steps.length - i
-        data[i] = {x:this.values[s][label], y:y}
+        data[i] = {x:_.round(this.values[s][label], 2), y:y}
       }
 
       return [{
