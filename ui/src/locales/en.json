@@ -1144,28 +1144,28 @@
 			"title": "Adding Components"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Connect components by clicking and dragging between their connection points. \n\nMake sure all connections for the product stream (blue), waste stream (red) and backwash stream (blue dotted) are made.",
+			"title": "Connecting components"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Double click any component or use its Edit model parameter button to open the configuration panel and adjust parameters of this component. \n\nAny changes will show immediatly in the desgin graphs and tables and effect the whole treatment process.",
+			"title": "Configure components"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Click on the 'Key figure' tab in the right sidebar to set the project wide parameters. \n\nThese parameters will be used for all calculations in this project.",
+			"title": "Configure project key figures"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Use the right sidebar to view calculation results and performance metrics.",
+			"title": "View results"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "You can create multiple scenarios to compare different design options. \n\nClick on the '+' tab in bottom to create a new scenario. \n\nYou can also edit or delete existing scenarios. \n\nIt is possible to copy and paste components between scenarios with the general ctrl+c and ctrl+v shortcuts.",
+			"title": "Create multiplescenarios"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "You've completed the tutorial. Feel free to explore and build your own treatment process.",
+			"title": "Tutorial completed"
 		}
 	],
 	"ui": {

@@ -2,8 +2,11 @@
       <div class="tutorial-content">
 
         <div class="tutorial-image">
-          <transition name="fade" mode="out-in">
-            <img :src="currentTutorial" alt="Tutorial Animation" :key="currentStep">
+          <transition name="fade" mode="out-in" v-if="currentStep === 0">
+            <img :src="currentTutorial" alt="Tutorial Animation" :key="currentStep" v-if="currentStep === 0"> 
+          </transition>
+          <transition name="fade" mode="out-in" v-if="currentStep > 0">
+            <video :src="currentTutorial" autoplay muted loop :key="currentStep" ></video>
           </transition>
           <div class="tutorial-gradient-overlay"></div>
         </div>
@@ -26,13 +29,13 @@
 </template>
 
 <script>
-import Tutorial1 from '@/assets/tutorial/Tutorial-1.png'
-import Tutorial2 from '@/assets/tutorial/Tutorial-2.gif'
-import Tutorial3 from '@/assets/tutorial/Tutorial-3.gif'
-import Tutorial4 from '@/assets/tutorial/Tutorial-4.gif'
-import Tutorial5 from '@/assets/tutorial/Tutorial-5.gif'
-import Tutorial6 from '@/assets/tutorial/Tutorial-6.gif'
-import Tutorial7 from '@/assets/tutorial/Tutorial-7.gif'
+import Tutorial1 from '../assets/tutorial/Tutorial-1.png'
+import Tutorial2 from '../assets/tutorial/Tutorial-2.mp4'
+import Tutorial3 from '../assets/tutorial/Tutorial-3.mp4'
+import Tutorial4 from '../assets/tutorial/Tutorial-4.mp4'
+import Tutorial5 from '../assets/tutorial/Tutorial-5.mp4'
+import Tutorial6 from '../assets/tutorial/Tutorial-6.mp4'
+import Tutorial7 from '../assets/tutorial/Tutorial-7.mp4'
 
 export default {
     name: 'Tutorial',
@@ -108,6 +111,12 @@ export default {
     position: relative;
     width: 75%;
     height: 100%;
+}
+
+.tutorial-image video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .tutorial-text {

@@ -6,7 +6,7 @@
       <p>{{ $t('ui.dialogs.about.developed_by') }}</p>
       <p class="remark">{{ $t('ui.dialogs.about.remark') }}</p>
     </div>
-    <el-collapse>
+    <el-collapse accordion>
       <el-collapse-item name="changelog">
         <pre>{{ changelog }}</pre>
         <template #title><i class="fa fa-history"></i> {{ $t('ui.dialogs.about.changelog') }}</template>
