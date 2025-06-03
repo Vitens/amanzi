@@ -29,13 +29,13 @@
 </template>
 
 <script>
-import Tutorial1 from '../assets/tutorial/Tutorial-1.png'
-import Tutorial2 from '../assets/tutorial/Tutorial-2.mp4'
-import Tutorial3 from '../assets/tutorial/Tutorial-3.mp4'
-import Tutorial4 from '../assets/tutorial/Tutorial-4.mp4'
-import Tutorial5 from '../assets/tutorial/Tutorial-5.mp4'
-import Tutorial6 from '../assets/tutorial/Tutorial-6.mp4'
-import Tutorial7 from '../assets/tutorial/Tutorial-7.mp4'
+import Tutorial1 from '@/assets/tutorial/Tutorial-1.png'
+import Tutorial2 from '@/assets/tutorial/Tutorial-2.mp4'
+import Tutorial3 from '@/assets/tutorial/Tutorial-3.mp4'
+import Tutorial4 from '@/assets/tutorial/Tutorial-4.mp4'
+import Tutorial5 from '@/assets/tutorial/Tutorial-5.mp4'
+import Tutorial6 from '@/assets/tutorial/Tutorial-6.mp4'
+import Tutorial7 from '@/assets/tutorial/Tutorial-7.mp4'
 
 export default {
     name: 'Tutorial',
