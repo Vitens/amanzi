@@ -31,6 +31,7 @@ class Groundwater(Model):
         c = self.parameters
 
         oxg = c.get('oxygen', 0) if c.get('oxygen', 0) > 0 else 0.00001
+
         h2s = 'Sg' if c.get('oxygen', 0) == 0 else 'S(-2)'
         fe = '[Fe+2]' if c.get('oxygen', 0) == 0 else 'Fe'
         # fe = 'Fe'
@@ -41,7 +42,7 @@ class Groundwater(Model):
 
         h2s_value = max(c.get('hydrogen-sulfide', 0), 0.0000001)
 
-
+        self.pp.ip.debug = True
         self.solution = self.pp.add_solution({
             'pH': c.get('pH', 7),
             'temp': c.get('temperature', 10),
@@ -78,6 +79,7 @@ class Groundwater(Model):
             'PFAS':{}, 'VOC':{}, 'Other':{}}
            )
 
+        self.pp.ip.debug = False
         c = configuration.get('solution', {}) 
 
         for key,value in c.get('PFAS', {}).items():

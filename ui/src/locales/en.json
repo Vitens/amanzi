@@ -100,6 +100,7 @@
 			"seed_dolomite_emission": "Seed dolomite emission",
 			"seed_garnet_emission": "Seed garnet emission",
 			"seed_quartz_sand_emission": "Seed quartz sand emission",
+			"si_lower_limit": "SI lower limit",
 			"sodium_bisulfite_emission": "Sodium bisulfite emission",
 			"sodium_chloride_emission": "Sodium chloride emission",
 			"sulphuric_acid_emission": "Sulfuric acid emission",
@@ -1088,6 +1089,9 @@
 				"dry": "Dry",
 				"effluent-quality": "Effluent Quality",
 				"gas-quality": "Gas Quality",
+				"per_m3": "Per m3",
+				"per_unit": "Per vacuumtower",
+				"total_process": "Total process",
 				"vacuum-pressure": "Vacuum pressure [bara]",
 				"wet": "Wet",
 				"wet-gas-volume": "(wet) gas volume"
@@ -1371,6 +1375,7 @@
 					"o2": "O₂",
 					"pH": "pH",
 					"sc20": "EGV",
+					"SI": "SI",
 					"tds": "TDS"
 				}
 			},
@@ -1437,6 +1442,7 @@
 				"o2": "O₂",
 				"pH": "pH",
 				"sc20": "EGV",
+				"SI": "SI",
 				"tds": "TDS"
 			},
 			"quantity": {
