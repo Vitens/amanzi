@@ -22,6 +22,8 @@ def handler(event, context):
       resp = api.design(json.loads(event['body']), args[3], args[4])
     elif method == 'keyfigures':
       resp = api.keyfigures()
+    elif method == 'version':
+      resp = open("VERSION", "r").read()
     else:
       raise ValueError(f"Invalid method: {method}")
 

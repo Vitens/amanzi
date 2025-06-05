@@ -5,6 +5,7 @@ COPY amanzi ${LAMBDA_TASK_ROOT}/amanzi/
 COPY pyproject.toml ${LAMBDA_TASK_ROOT}/amanzi/pyproject.toml
 COPY LICENSE ${LAMBDA_TASK_ROOT}/amanzi/LICENSE
 COPY README.md ${LAMBDA_TASK_ROOT}/amanzi/README.md
+COPY VERSION ${LAMBDA_TASK_ROOT}/VERSION
 
 # make ui folders (empty)
 RUN mkdir -p ${LAMBDA_TASK_ROOT}/amanzi/ui

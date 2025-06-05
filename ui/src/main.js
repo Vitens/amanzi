@@ -29,7 +29,7 @@ import VueMasonry from 'vue-masonry-css'
 import 'font-awesome/css/font-awesome.css'
 import 'element-plus/dist/index.css'
 
-let version = "1.0.2"
+let version = __VERSION__
 
 var chemform = function(chemical) {
   if(chemical == "") { return "" }
