@@ -86,20 +86,20 @@ export default {
   },
   computed:{
   marbleFiltrationStyle() {
-    let pic = '';
-    if (this.$project.designstate.parameters.spray == 'spray') {
-      if (this.$project.designstate.parameters.dual_media) {
-        pic = './assets/process-spray-double.png';
-      } else {
-        pic = './assets/process-spray.png';
-      }
-    } else {
-      if (this.$project.designstate.parameters.dual_media) {
-        pic = './assets/process-double.png';
-      } else {
-        pic = './assets/process.png';
-      }
-    }
+    let pic = './assets/marblefiltration.png';
+    // if (this.$project.designstate.parameters.spray == 'spray') {
+    //   if (this.$project.designstate.parameters.dual_media) {
+    //     pic = './assets/process-spray-double.png';
+    //   } else {
+    //     pic = './assets/process-spray.png';
+    //   }
+    // } else {
+    //   if (this.$project.designstate.parameters.dual_media) {
+    //     pic = './assets/process-double.png';
+    //   } else {
+    //     pic = './assets/marblefiltration.png';
+    //   }
+    // }
     return pic;
   }
 },
@@ -219,7 +219,7 @@ export default {
   margin: auto;
   width: 1000px;
   height: 400px;
-  background: url('./assets/marblefilter.png') no-repeat center 
+  background: url('./assets/marblefiltration.png') no-repeat center 
 }
 #marblefilter-process[doublelayer="true"] {
   background: url('./assets/marblefilter.png') no-repeat center
