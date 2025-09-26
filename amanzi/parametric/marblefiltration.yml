@@ -1,6 +1,9 @@
 parameters:
   design:
     general:
+      gj:
+        default: false
+        uom: '-'
       spray:
         default: false
         uom: '-'
@@ -13,7 +16,7 @@ parameters:
         uom: '-'
         range: [1, 20]
       number_of_runs:
-        default: 10
+        default: 2
         uom: '-'
         range: [1, 20]
       number_of_sieves:
@@ -28,11 +31,37 @@ parameters:
         default: 0.5
         uom: m
         range: [0.1, 1.0]
+
+      lime_pellets:
+        default: false
+        uom: '-'
+      lime_pellets_density:
+        if:
+          lime_pellets: true
+        default: 2.65
+        uom: g/cm3
+        range: [0.0, 10.0]
+      lime_pellets_diameter:
+        if:
+          lime_pellets: true
+        default: 1.0
+        uom: mm
+        range: [0.0, 10.0]
+      lime_pellets_porosity:
+        if:
+          lime_pellets: true
+        default: 0.5
+        uom: '-'
+        range: [0.0, 1.0]
       marble_porosity:
+        if:
+          lime_pellets: false
         default: 0.5
         uom: '-'
         range: [0.0, 1.0]
       marble_density:
+        if:
+          lime_pellets: false
         default: 2.65
         uom: g/cm3
         range: [0.0, 10.0]
