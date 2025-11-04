@@ -1,7 +1,7 @@
 <template>
   <div :id="namespace" class="quickresult">
     <copy-button :target="'#' + namespace + ' table'"></copy-button>
-    <h1><i class='fa' :class="icon(namespace)"></i>{{ $t('ui.sidebar.' + namespace + '.label') }}</h1>
+    <h3><i class='fa' :class="icon(namespace)"></i>{{ $t('ui.sidebar.' + namespace + '.label') }}</h3>
     <table>
       <tr v-for="metric in metrics">
         <td v-if="!metric.skip_name" :rowspan="metric.rowspan ? metric.rowspan : 1">{{ $t('ui.sidebar.' + namespace + '.' + metric.name) }}</td>
@@ -119,10 +119,10 @@ export default {
   border-bottom: 1px solid #DDD;
 }
 
-.quickresult h1 {
+.quickresult h3 {
   margin: 7px 0px;
 }
-.quickresult h1 i {
+.quickresult h3 i {
   margin-right: 10px;
 }
 

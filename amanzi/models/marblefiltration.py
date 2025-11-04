@@ -721,8 +721,8 @@ class Marblefiltration(Model, Balance):
         return solution
         
         def endsolution(self, solution):
-        effluent = solution.copy()
-        print(self.iron_after_ox[0,-1,0])
+            effluent = solution.copy()
+            print(self.iron_after_ox[0,-1,0])
         
         # effluent.change({'Ca': self.Ca[0,0,0],
         #                  'Mg': self.Mg[0,0,0], 
@@ -738,7 +738,7 @@ class Marblefiltration(Model, Balance):
         #                  'temp': self.Temp, 
                          
         # })
-        return effluent
+            return effluent
 
     def oxidize(self, solution, from_element, to_element, oxygen_consumption, efficiency=1):
         solution = solution.copy()
