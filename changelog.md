@@ -1,3 +1,8 @@
+1.0.3
+*Bug Fixes*
+- Fixed duplicate connections not being removed from the scenario in rare cases
+- Changed font size of the quick results to be smaller
+
 1.0.2
 
 *Minor Features*
