@@ -426,6 +426,8 @@ export const scenarioStore = (uid) => defineStore('scenario/'+uid, {
       return exportObject
     },
     validate() {
+      // check and remove any duplicate connections, not sure how this could happen but it does in some cases, might be due to undo/redo operations or copying/pasting operations
+      this.connections = _.uniqBy(this.connections, (conn) => conn.src + conn.tgt + conn.srcAnchor + conn.tgtAnchor + conn.type)
 
       // check for source and sink nodes
       var source = false
