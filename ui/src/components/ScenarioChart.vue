@@ -27,6 +27,7 @@
 
     <table v-if="$project.reportState.results">
       <tr class="bars">
+        <td class="units"><span>{{ metrics[metric_index].uom }}</span></td>
         <td v-for="model, model_index in columns">
           <div class="zero-line" :style="{bottom: zero + '%'}"></div>
           <div class="score-bar" :style="bar_style(model_index)" :class="bar_class(model_index)">
@@ -35,6 +36,7 @@
         </td>
       </tr>
       <tr class="models">
+        <td></td>
         <td v-for="model, model_index in columns"><span>{{ model }}</span></td>
       </tr>
     </table>
@@ -309,7 +311,7 @@ export default {
   background: white;
 }
 .scenario-chart .bars td:first-child {
-  border-left: 1px solid #DDD;
+  width: 20px;
 }
 
 .scenario-chart table {
@@ -323,6 +325,10 @@ export default {
   font-size: 12px;
   font-weight: bold;
   position: relative;
+}
+.scenario-chart .models td:first-child {
+  min-width: 20px;
+  width: 20px;
 }
 /* .scenario-chart .models td::after {
   position: absolute;
@@ -416,6 +422,15 @@ export default {
 .scenario-chart .negative::after {
   top: unset;
   bottom: -1px;
+}
+.scenario-chart .units span {
+  position: absolute;
+  display: inline-block;
+  transform: rotate(-90deg);
+  left: -50px;
+  width: 100px;
+  text-align: center;
+  font-size: 12px;
 }
 
 .scenario-chart .bars td:last-child .score-bar::after {

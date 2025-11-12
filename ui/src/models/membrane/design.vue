@@ -45,7 +45,7 @@
                 <chart :xmin="1" :xmax="num_modules" :datasets="chart_data('element_results','J')" title="Flux" ylabel="Flux [L/m2/h]" xlabel="Element #" roundXticks></chart>
               </el-col>
               <el-col :lg="12" :sm="12" :xl="8">
-                <chart :xmin="1" :xmax="num_modules" :datasets="chart_data('element_results','P_osm')" :title="$t('models.membrane.design.osmotic_pressure')" ylabel="Flux [L/m2/h]" xlabel="Element #" roundXticks></chart>
+                <chart :xmin="1" :xmax="num_modules" :datasets="chart_data('element_results','P_osm')" :title="$t('models.membrane.design.osmotic_pressure')" ylabel="P_osm [bar]" xlabel="Element #" roundXticks></chart>
               </el-col>
               <el-col :lg="12" :sm="12" :xl="8">
                 <chart :xmin="1" :xmax="num_modules" :datasets="chart_data('element_results','beta')" :title="$t('models.membrane.design.beta_factor')" ylabel="Beta [-]" xlabel="Element #" roundXticks></chart>
