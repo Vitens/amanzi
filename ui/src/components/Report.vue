@@ -6,7 +6,7 @@
           <el-option v-for="(scenario, index) in $project.reportState.scenarios" :key="index" :label="scenario" :value="index"></el-option>
         </el-select>
         <el-switch active-text="Comparison" inactive-text="Single model" v-model="comparison" class="switch-report-compact"></el-switch>
-        <el-switch active-text="Compact" inactive-text="Uitgebreid" v-model="compact" class="switch-report-compact" :disabled="!comparison"></el-switch>
+        <el-switch active-text="Compact" inactive-text="Detailiert" v-model="compact" class="switch-report-compact" :disabled="!comparison"></el-switch>
       </div>
     </el-affix>
     <div id="single-report" v-if="!comparison">
@@ -32,22 +32,22 @@
 
     <div id="report" :class="{compact: compact}" v-if="comparison">
       <div class="metric">
-        <h2>Kwantiteit</h2>
+        <h2>{{ $t('ui.report.general.quantity') }}</h2>
         <ComparisonChart namespace="quantity"></ComparisonChart>
         <ComparisonTable namespace="quantity" v-if="!compact"></ComparisonTable>
       </div>
       <div class="metric">
-      <h2>Waterkwaliteit</h2>
+      <h2>{{ $t('ui.report.general.waterquality') }}</h2>
       <ComparisonChart namespace="quality"></ComparisonChart>
       <ComparisonTable namespace="quality" v-if="!compact"></ComparisonTable>
       </div>
       <div class="metric">
-      <h2>Energie</h2>
+      <h2>{{ $t('ui.report.general.energy') }}</h2>
       <ComparisonChart namespace="energy"></ComparisonChart>
       <ComparisonTable namespace="energy" v-if="!compact"></ComparisonTable>
       </div>
       <div class="metric">
-      <h2>Duurzaamheid</h2>
+      <h2>{{ $t('ui.report.general.sustainability') }}</h2>
       <ComparisonChart namespace="sustainability"></ComparisonChart>
       <ComparisonTable namespace="sustainability" v-if="!compact"></ComparisonTable>
       </div>
