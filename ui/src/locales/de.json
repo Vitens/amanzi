@@ -1394,7 +1394,8 @@
 				"higher_better": "höher ist besser",
 				"lower_better": "niedriger ist besser",
 				"sustainability": "Nachhaltigkeit",
-				"waterquality": "Wasserqualität"
+				"waterquality": "Wasserqualität",
+				"quantity": "Wassermenge"
 			},
 			"quality": {
 				"metrics": {
