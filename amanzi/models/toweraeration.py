@@ -129,6 +129,8 @@ class Toweraeration(Model, Balance):
             # solution.add('Oxg', delta, 'mmol')
 
             c_in =solution.total("O2", "mmol")
+            if c_in == 0:
+                c_in = 0.0000000001
             c_gas =0.208*101325/(8.31446*(273.15+T_gas)) #9.4 mmol/l == 260mg/l Oxygen in air 
             
 
@@ -143,6 +145,8 @@ class Toweraeration(Model, Balance):
     def oxygen_transfer(self, solution):
         o2_in_gas = 9.4 # mol/m³ Oxygen in air
         o2_in = self.quality.influent.product.total("O2", "mmol")
+        if o2_in == 0:
+            o2_in = 0.0000000001
         o2_efficiency = self.calculate_efficiency('Oxg', self.rq,self.packing_height, self.capacity)      
         c_O2_out =-(o2_efficiency*o2_in-o2_in)
         c_o2_change = abs(o2_in-c_O2_out)
