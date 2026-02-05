@@ -117,7 +117,7 @@ parameters:
       silicate:
         uom: mg/l
         default: 0
-        range: [0, 10]
+        range: [0, 80]
         chemical: SiO2
       boron:
         uom: mg/l
