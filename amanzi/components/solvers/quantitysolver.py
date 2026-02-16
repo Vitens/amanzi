@@ -63,12 +63,15 @@ class QuantitySolver(Solver):
                 results.append(mass)
                 counter += 1
 
+        print(len(all_equations))
+        print(len(results))
         
         # construct matrix
         matrix = np.zeros((len(all_equations), len(results)))
         # fill matrix
         for row, eq in enumerate(all_equations):
             for conn, weight in eq:
+                print(row, conn.id, conn)
                 matrix[row, conn.id] = weight  
 
         # solve matrix
@@ -87,8 +90,6 @@ class QuantitySolver(Solver):
         """
         generate a summary of the solver
         """
-
-
 
         production = sum([m.quantity.outflow.get('product', 0) for _,m in self.scenario.models.items() if m.upstream_connections == {}])
 

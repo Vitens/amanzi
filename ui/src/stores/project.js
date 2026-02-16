@@ -16,6 +16,7 @@ export const projectStore = defineStore('project', {
     loading: true,
     report: false,
     tutorial: true,
+    about: false,
     keyfigures: false,
     invalid: false,
     mouseMode: 'select',

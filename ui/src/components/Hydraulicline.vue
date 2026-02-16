@@ -74,6 +74,9 @@
             </component>
             </g>
             <text :x="offsets[index] + widths[index]/2" y="695" text-anchor="middle">{{ component.model.name }}</text>
+            <template v-if="component.model.configuration.parameters.units">
+              <text :x="offsets[index] + widths[index]/2" y="715" text-anchor="middle">N={{ component.model.configuration.parameters.units }}</text>
+            </template>
           </template>
           <template v-else>
             <booster :config="component.booster" :dim="graphDimensions" :offset="offsets[index]" :width="widths[index]" :suggested-elevation="boosterElevation(index)" @size="setSize" @anchor="setAnchorpoints" :uid="component.uid" :key="path_index+'-'+component.uid"></booster>
@@ -127,9 +130,9 @@ export default {
       boosterWidth: 40,
       graphDimensions: {
         width: 1300,  //px
-        height: 700, //px
+        height: 750, //px
         upperOffset: 30, //px
-        lowerOffset: 60, //px
+        lowerOffset: 150, //px
         minY: -4,
         maxY: 8,
         gutter: 40,

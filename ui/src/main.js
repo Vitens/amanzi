@@ -29,7 +29,7 @@ import VueMasonry from 'vue-masonry-css'
 import 'font-awesome/css/font-awesome.css'
 import 'element-plus/dist/index.css'
 
-let version = "1.0.1"
+let version = __VERSION__
 
 var chemform = function(chemical) {
   if(chemical == "") { return "" }
@@ -74,13 +74,16 @@ const eventBus = mitt()
 window._ = _
 
 // setup i18n
+
 const i18n = createI18n({
-  locale: 'nl',
+  locale: navigator.language.split('-')[0] || 'en',
   fallbackLocale: 'en',
   messages: { en, nl, de },
   silentTranslationWarn: true,
   fallbackWarn: false,
-  missingWarn: false
+  missingWarn: false,
+  legacy: false,
+  globalInjection: true
 })
 
 let app = createApp(App)

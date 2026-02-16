@@ -42,6 +42,7 @@ ph_upper_threshold;general;norms;8.3;-;;
 ph_upper_limit;general;norms;9.5;-;;
 sc20_upper_threshold;general;norms;80;mS/m;;
 sc20_upper_limit;general;norms;125;mS/m;;
+si_lower_limit;general;norms;-0.2;-;;
 o2_lower_threshold;general;norms;4;mg/l;;
 o2_lower_limit;general;norms;2;mg/l;;
 hardness_upper_threshold;general;norms;1.43;mmol/l;;

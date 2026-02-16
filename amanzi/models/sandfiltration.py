@@ -27,6 +27,8 @@ class Sandfiltration(Model, Loss):
         self.fall_height = float(self.parameters['fall_height_to_media'])
         self.configuration = config.get('configuration', {})
         self.compound = self.configuration.get('model_component', 'CO2')
+        self.removed_iron = 0
+        self.waste_iron = 0
 
         self.RQ = float(self.parameters['rq'])
 
@@ -142,8 +144,10 @@ class Sandfiltration(Model, Loss):
 
         # oxidize methane
         after_ch4 = self.oxidize(influent, "Mtg", "CH4", 2)
-            
-        after_fe = self.oxidize(after_ch4, "[Fe+2]", "Fe+2", 0.25, fe_removal_efficiency).desaturate("Fe(OH)3(a)", 0)
+
+        fe_oxidation= self.oxidize(after_ch4, "[Fe+2]", "Fe+2", 0.25, fe_removal_efficiency)
+        after_fe = fe_oxidation.desaturate("Fe(OH)3(a)", 0)
+        self.removed_iron = after_ch4.total('Fe', 'mg')-after_fe.total('Fe', 'mg')
         
         # oxidize h2
         after_h2s = self.oxidize(after_fe, "[S-2]", "S-2", 2)
@@ -181,6 +185,16 @@ class Sandfiltration(Model, Loss):
 
         return efficiency
 
+    def wastestream_calculation(self, solution):
+        if self.parameters['backwash_control'] == 'volume':
+            captured_iron = self.removed_iron  * self.parameters['runvolume']/1000
+        else:
+            captured_iron = self.removed_iron * self.parameters['nominal_capacity'] *self.parameters['runtime']/1000
+        self.waste_iron = captured_iron/self._backwash_volume *1000
+        solution = solution.copy()
+        solution.change({'Fe': self.waste_iron}, units='mg')
+        return solution
+    
     def spray_aeration(self, solution, compound, RQ, fall_height):
         solution = solution.copy()
 
@@ -205,12 +219,14 @@ class Sandfiltration(Model, Loss):
 
         if(type == 'flush'):
             # add load to waste solution
-            self.waste_solution = solution.copy()
-            return
+            self.waste_solution = self.wastestream_calculation(solution.copy())
+            return self.waste_solution
         
         if(type == 'product'):
             # influent
             solution = solution.copy()
+            print(f"Solution before spray in mmol: {solution.total('O2', 'mmol')}")
+            logging.debug(f"Solution before spray in mg: {solution.total('O2', 'mg')}")
 
             if(self.sprayaeration):
                 solution = self.spray_aeration(solution, self.compound, self.RQ, self.fall_height)
@@ -219,7 +235,6 @@ class Sandfiltration(Model, Loss):
             effluent, _ = self.filtrate(solution)
 
             return effluent
-
         return solution
 
 

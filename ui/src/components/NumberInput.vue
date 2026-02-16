@@ -9,6 +9,7 @@
 <script>
 
 export default {
+  name: 'NumberInput',
   props: {
     min: { type: Number, default: 0 },
     max: { type: Number, default: 100 },
@@ -19,6 +20,7 @@ export default {
     size: { type: String, default: 'default' },
     units: {type: String, default: ''},
     placeholder: {type: String, default: ''},
+    defaultValue: {type: Number, default: 0},
   },
   emits: ['update:modelValue'],
   created() {
@@ -36,6 +38,10 @@ export default {
       // if step is integer, round to nearest integer
       this.numberValue = this.integer ? Math.round(this.numberValue) : this.numberValue
 
+      this.$emit('update:modelValue', this.numberValue)
+    },
+    resetDefault() {
+      this.numberValue = this.default
       this.$emit('update:modelValue', this.numberValue)
     }
   },
@@ -64,8 +70,7 @@ export default {
       return this.step
       
     }
-  },
-  name: 'NumericInput'
+  }
 
 }
 
@@ -83,8 +88,6 @@ export default {
   left: 50%;
   margin-left: -75px;
   bottom: -25px;
-  
-
 }
 
 </style>

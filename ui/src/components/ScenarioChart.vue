@@ -27,6 +27,7 @@
 
     <table v-if="$project.reportState.results">
       <tr class="bars">
+        <td class="units"><span>{{ metrics[metric_index].uom }}</span></td>
         <td v-for="model, model_index in columns">
           <div class="zero-line" :style="{bottom: zero + '%'}"></div>
           <div class="score-bar" :style="bar_style(model_index)" :class="bar_class(model_index)">
@@ -35,6 +36,7 @@
         </td>
       </tr>
       <tr class="models">
+        <td></td>
         <td v-for="model, model_index in columns"><span>{{ model }}</span></td>
       </tr>
     </table>
@@ -48,6 +50,11 @@ export default {
       metric_index: 0,
       path_index: 0,
       waterfall: false,
+    }
+  },
+  watch: {
+    scenario(newVal) {
+      this.path_index = 0
     }
   },
   methods: {
@@ -197,7 +204,8 @@ export default {
       if (!this.$project.scenario) return []
       // Convert model UIDs to names in each path
       if (!this.$project.reportState.results) return []
-      return this.$project.scenario.findAllProductPaths()
+      console.log("computing paths for scenario", this.scenario)
+      return this.$project.scenarios[this.scenario].findAllProductPaths()
     },
     zero() {
       let min, max
@@ -234,11 +242,15 @@ export default {
       let values = []
 
       if(!this.sum) {
-        let path = this.$project.scenario.findAllProductPaths()[this.path_index]
+        let path = this.$project.scenarios[this.scenario].findAllProductPaths()[this.path_index]
         for(var model of path) {
           // find the index of the model in the order
           let m = this.$project.reportState.results[this.scenario].summaries[this.namespace].order.indexOf(model.uid)
-          values.push(this.$project.reportState.results[this.scenario].summaries[this.namespace].models[m][this.metric_index])
+          let val = this.$project.reportState.results[this.scenario].summaries[this.namespace].models[m][this.metric_index]
+          // round to precision of the metric
+          val.value = _.round(val.value, val.precision)
+
+          values.push(val)
         }
       }
       else {
@@ -299,7 +311,7 @@ export default {
   background: white;
 }
 .scenario-chart .bars td:first-child {
-  border-left: 1px solid #DDD;
+  width: 20px;
 }
 
 .scenario-chart table {
@@ -313,6 +325,10 @@ export default {
   font-size: 12px;
   font-weight: bold;
   position: relative;
+}
+.scenario-chart .models td:first-child {
+  min-width: 20px;
+  width: 20px;
 }
 /* .scenario-chart .models td::after {
   position: absolute;
@@ -406,6 +422,15 @@ export default {
 .scenario-chart .negative::after {
   top: unset;
   bottom: -1px;
+}
+.scenario-chart .units span {
+  position: absolute;
+  display: inline-block;
+  transform: rotate(-90deg);
+  left: -50px;
+  width: 100px;
+  text-align: center;
+  font-size: 12px;
 }
 
 .scenario-chart .bars td:last-child .score-bar::after {

@@ -352,10 +352,10 @@ export default {
   height: 10000px;
 }
 #canvas.gridlines {
-  background-image: linear-gradient(to right, #BBB, 1px, transparent 1px),
-                    linear-gradient(to bottom, #BBB 1px, transparent 1px),
-                    linear-gradient(to right, #DDD 1px, transparent 1px),
-                    linear-gradient(to bottom, #DDD 1px, transparent 1px);
+  background-image: linear-gradient(to right, #DDD, 1px, transparent 1px),
+                    linear-gradient(to bottom, #DDD 1px, transparent 1px),
+                    linear-gradient(to right, #EEE 1px, transparent 1px),
+                    linear-gradient(to bottom, #EEE 1px, transparent 1px);
   background-size: 200px 200px, 200px 200px, 25px 25px, 25px 25px;
   background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
 }

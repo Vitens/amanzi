@@ -100,6 +100,7 @@
 			"seed_dolomite_emission": "Dolomit-Emission",
 			"seed_garnet_emission": "Granat-Emission",
 			"seed_quartz_sand_emission": "Quarzsand-Emission",
+			"si_lower_limit": "SI-Untergrenze",
 			"sodium_bisulfite_emission": "Natriumbisulfit-Emission",
 			"sodium_chloride_emission": "Natriumchlorid-Emission",
 			"sulphuric_acid_emission": "Schwefelsäure-Emission",
@@ -125,23 +126,36 @@
 		},
 		"base": {
 			"outputs": {
+				"calcite_emissions": "Calcite",
+				"calcite_mass_dosage": "Dosierung",
+				"calcite_specific_emission": "Spezifische Emissionen",
 				"co2_emissions": "CO₂",
-				"co2_mass_dosage": "Massadosering",
+				"co2_mass_dosage": "Dosierung",
 				"co2_specific_emission": "Spezifische Emissionen",
 				"electricity_consumption": "Stromverbrauch",
 				"electricity_emission_factor": "Emissionsfaktor",
 				"electricity_emissions": "Emissionen aus dem Stromverbrauch",
-				"guartz_sand_mass_dosage": "Massadosering",
+				"guartz_sand_mass_dosage": "Dosierung",
+				"h2so4_emissions": "Schwefelsäure",
+				"h2so4_mass_dosage": "Dosierung",
+				"h2so4_specific_emission": "Spezifische Emissionen",
 				"hcl_emissions": "Salzsäure",
-				"hcl_mass_dosage": "Massadosering",
+				"hcl_mass_dosage": "Dosierung",
 				"hcl_specific_emission": "Spezifische Emissionen",
+				"iron_chloride_emissions": "Eisenchlorid",
+				"iron_chloride_mass_dosage": "Dosierung",
+				"iron_chloride_specific_emission": "Spezifische Emissionen",
 				"lime_emissions": "Kalkmilch",
+				"lime_mass_dosage": "Dosierung",
+				"lime_specific_emission": "Spezifische Emissionen",
 				"lye_emissions": "Natronlauge",
-				"lye_mass_dosage": "Massendosierung",
+				"lye_mass_dosage": "Dosierung",
 				"lye_specific_emission": "Spezifische Emissionen",
 				"oxygen_emissions": "Sauerstoff",
-				"quartz_sand_emissions": "Silberner Sand",
-				"quartz_sand_mass_dosage": "Massadosering",
+				"oxygen_mass_dosage": "Dosierung",
+				"oxygen_specific_emission": "Spezifische Emissionen",
+				"quartz_sand_emissions": "Quartzsand",
+				"quartz_sand_mass_dosage": "Dosierung",
 				"quartz_sand_specific_emission": "Spezifische Emissionen"
 			},
 			"sections": {
@@ -203,8 +217,11 @@
 				"chemical_dosage": "Dosierung",
 				"chemical_formula": "Chemische Formel",
 				"chemical_mass_dosage": "Massadosering",
+				"chemical_name": "Bezeichnung",
 				"co2": "CO₂",
+				"h2so4": "Schwefelsäure",
 				"hcl": "Salzsäure",
+				"iron_chloride": "Eisenchlorid",
 				"lime": "Kalkmilch",
 				"lye": "Natronlauge",
 				"oxygen": "Sauerstoff"
@@ -1072,6 +1089,9 @@
 				"dry": "Trocken",
 				"effluent-quality": "Abwasserqualität",
 				"gas-quality": "Gasqualität",
+				"per_m3": "Pro m3",
+				"per_unit": "Pro Vakuum-Wasserkessel",
+				"total_process": "Gesamtprozess",
 				"vacuum-pressure": "Unterdrücken [bara]",
 				"wet": "Nat",
 				"wet-gas-volume": "(nasses) Gasvolumen"
@@ -1120,36 +1140,36 @@
 	"Totaal": "Total",
 	"tutorial": [
 		{
-			"body": "This tutorial will guide you through the basic features and functionality of Amanzi-UI. \n\nFollow along to learn how to create and configure your water treatment process.\n\nClick 'Next' to begin the tutorial.",
+			"body": "Dieses Tutorial führt Sie durch die grundlegenden Funktionen und Funktionalitäten von Amanzi-UI. \n\nFolgen Sie dem Leitfaden, um zu lernen, wie Sie Ihr Wasserbehandlungsprozess erstellen und konfigurieren.",
 			"title": "Willkommen bei Amanzi!"
 		},
 		{
-			"body": "Start by dragging components from the left sidebar onto the canvas or double click them in the library to have them connect automatically. \n\nEvery treatment plant scenario needs a source (abstraction model) and a sink (outlet model).",
+			"body": "Starten Sie, indem Sie Komponenten aus der linken Seitenleiste auf den Leinwand ziehen oder doppelklicken Sie sie in der Bibliothek, um sie automatisch zu verbinden. \n\nJedes Wasserbehandlungsszenario benötigt eine Quelle (Gewinnungsmodell) und einen Abgang (Auslieferungsmodell).",
 			"title": "Prozessschritte hinzufügen"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Verbinden Sie die Komponenten, indem Sie eine Verbindung zwischen den Anschlusspunkten mit der Maus ziehen. \n\nStellen Sie sicher, dass alle Verbindungen für den Produktstrom (blau), Abfallstrom (rot) und Rückspulenstrom (blau gestrichelt) hergestellt sind.",
+			"title": "Verbinden von Komponenten"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Doppelklicken Sie auf eine Komponente oder verwenden Sie den Schaltfläche 'Modellparameter bearbeiten', um das Konfigurationsfenster zu öffnen und die Parameter dieser Komponente anzupassen. \n\nAlle Änderungen werden sofort in den Designgraphen und Tabellen angezeigt und beeinflussen den gesamten Wasserbehandlungsprozess.",
+			"title": "Komponenten konfigurieren"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Klicken Sie auf die Registerkarte 'Kennzahlen' in der rechten Seitenleiste, um Projektweite Parameter festzulegen. \n\nDiese Parameter werden für alle Berechnungen in diesem Projekt verwendet.",
+			"title": "Projektweite Parameter festlegen"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Verwenden Sie die rechte Seitenleiste, um Ergebnisse anzuzeigen und Leistungsmetriken zu sehen.",
+			"title": "Ergebnisse anzeigen"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Sie können mehrere Szenarien erstellen, um verschiedene Designoptionen zu vergleichen. \n\nKlicken Sie auf die Schaltfläche '+' am unteren Rand, um ein neues Szenario zu erstellen. \n\nSie können auch Szenarien bearbeiten oder löschen. \n\nEs ist möglich, Komponenten zwischen Szenarien zu kopieren und einzufügen mit den allgemeinen Tastenkombinationen Strg+C und Strg+V.",
+			"title": "Mehrere Szenarien erstellen"
 		},
 		{
-			"body": "",
-			"title": ""
+			"body": "Sie haben das Tutorial abgeschlossen. Freuen Sie sich auf die Erkundung und den Bau Ihres eigenen Wasserbehandlungsprozesses.",
+			"title": "Tutorial abgeschlossen"
 		}
 	],
 	"ui": {
@@ -1224,6 +1244,14 @@
 			}
 		},
 		"dialogs": {
+			"about": {
+				"acknowledgements": "Acknowledgments",
+				"changelog": "Versionsgeschichte",
+				"developed_by": "Entwickelt von Technology & Research, Vitens",
+				"license": "Lizenz",
+				"remark": "",
+				"title": "Über Amanzi"
+			},
 			"keyfigures": {
 				"title": "Kennzahlen"
 			},
@@ -1241,7 +1269,8 @@
 				"missing_source": "Das Modell benötigt eine Quelle (Grundwasserentnahme), um zu funktionieren",
 				"missing_source_sink": "Das Modell braucht eine Quelle und eine Auslieferung"
 			},
-			"press-enter-to-commit": "Drücken die Entertaste"
+			"press-enter-to-commit": "Drücken die Entertaste",
+			"reset-to-default": "Standardwert wiederherstellen"
 		},
 		"menubar": {
 			"add_scenario": "Szenario hinzufügen",
@@ -1347,6 +1376,7 @@
 					"o2": "O₂",
 					"pH": "pH",
 					"sc20": "SC",
+					"SI": "SI",
 					"tds": "TDS"
 				}
 			},
@@ -1381,7 +1411,7 @@
 			"energy": {
 				"label": "Energie",
 				"specific_consumption_distribution": "Vertrieb",
-				"specific_consumption_production": "Klärung",
+				"specific_consumption_production": "Aufbereitung",
 				"total_specific_consumption": "Insgesamt"
 			},
 			"library": {
@@ -1413,6 +1443,7 @@
 				"o2": "O₂",
 				"pH": "pH",
 				"sc20": "SC",
+				"SI": "SI",
 				"tds": "TDS"
 			},
 			"quantity": {
@@ -1438,7 +1469,7 @@
 			"rename_project": "Neuer Name für das Projekt",
 			"rename_project_title": "Name Ändern",
 			"run_project": "Projekt berechnen",
-			"zoom_to_fit": "Passt ins Fenster"
+			"zoom_to_fit": "Passend im Fenster"
 		},
 		"tutorial": {
 			"close": "Schliessen",

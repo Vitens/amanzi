@@ -17,7 +17,7 @@ parameters:
       fall_height_to_media:
         default: 0.5
         uom: m
-        range: [0.1, 1.0]
+        range: [0.1, 2.0]
       filter_bottom:
         default: 0.5
         uom: m

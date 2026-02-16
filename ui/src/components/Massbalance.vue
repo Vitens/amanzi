@@ -13,7 +13,7 @@
         </tr>
       </thead>
       <tr v-for="row, idx in rows">
-        <td>{{ row.name }}</td>
+        <td>{{ $t('ui.report.quality.metrics.'+row.name) }}</td>
         <td v-for="(col) in columns(idx)">{{ format(col.value) }}</td>
         <td>{{ delta(idx).toFixed(2) }}</td>
         <td :class="{increased: delta(idx)>0, decreased: delta(idx)<0}">{{ deltaprec(idx) }}</td>

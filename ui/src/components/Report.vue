@@ -1,6 +1,6 @@
 <template>
-  <div id="report-container">
-    <el-affix target="#report-container" :offset="0">
+  <div id="report-container" ref="report-container">
+    <el-affix :target="reportContainer" :offset="0">
       <div class="report-controls">
         <el-select v-model="scenario" placeholder="Select scenario" @change="metric_index = 0" :disabled="comparison">
           <el-option v-for="(scenario, index) in $project.reportState.scenarios" :key="index" :label="scenario" :value="index"></el-option>
@@ -65,10 +65,23 @@ export default {
     comparison: false,
     compact: false
   }},
+  created() {
+    this.scenario = this.$project.selectedScenario
+  },
+  watch: {
+    scenario(newVal) {
+      console.log("scenario changed to", newVal)
+    }
+  },
   components: {
     ComparisonTable,
     ComparisonChart,
     ScenarioChart
+  },
+  computed: {
+    reportContainer() {
+      return this.$refs['report-container']
+    }
   }
 }
 </script>

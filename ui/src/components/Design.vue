@@ -60,6 +60,7 @@ export default {
   padding: 0px 10px;
   padding-bottom: 15px;
   min-height: 80vh;
+  min-width: 1000px;
 }
 #parameters {
 }
@@ -68,9 +69,6 @@ export default {
   /* min-height: 80vh; */
 }
 .el-overlay-dialog {
-  min-width: 1000px;
-}
-.el-dialog {
   min-width: 1000px;
 }
 .el-dialog__body {

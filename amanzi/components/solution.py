@@ -1,4 +1,5 @@
 from phreeqpython import Solution
+from phreeqpython import Gas
 
 ## additional methods for phreeqpython.Solution
 
@@ -131,6 +132,7 @@ def summary(self):
         {'name': 'tds', 'value': self.tds, 'uom': 'mg/l', 'precision': 1, 'positive': False},
         {'name': 'ccpp90', 'value': self.ccpp90, 'uom': 'mmol/l', 'precision': 2, 'positive': False},
         {'name': 'aggco2', 'value': self.aggCO2, 'uom': 'mg/l', 'precision': 2},
+        {'name': 'SI', 'value': self.si('Calcite'), 'uom': '-', 'precision': 2},
         {'name': 'Fe', 'value': self.total('Fe', 'mg'), 'uom': 'mg/l', 'precision': 2},
         {'name': 'Mn', 'value': self.total('Mn', 'mg'), 'uom': 'mg/l', 'precision': 2},
         {'name': 'NH4', 'value': self.total('[N-3]', 'mmol')*18, 'uom': 'mg/l', 'precision': 2},
@@ -138,6 +140,10 @@ def summary(self):
         {'name': 'Cl', 'value': self.total('Cl', 'mg'), 'uom': 'mg/l', 'precision': 2},
     ]
     return parameters
+
+@property
+def dry_volume(self):
+    return self.volume * (self.total_moles - self.components['H2O(g)']) / self.total_moles
 
 # extend class
 Solution.si90 = si90
@@ -154,3 +160,5 @@ Solution.charge_balance = charge_balance
 Solution.balance_error = balance_error
 Solution.tds = tds
 Solution.summary = summary
+
+Gas.dry_volume = dry_volume

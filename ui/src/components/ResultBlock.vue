@@ -1,8 +1,18 @@
 <template>
-  <div class="result-block" :class="[color, name, compactClass]" v-if="components !== false">
+  <div class="result-block" :class="[color, name, compactClass, multiple ? 'multiple' : '']" v-if="components !== false">
+
+    <div class="result-block-headers" v-if="headers">
+      <div class="result-block-header" v-for="header in headers">{{ header }}</div>
+    </div>
+
     <div class="component" v-for="component in components">
       <label v-html="chemform(component.name)"></label>
-      <div class="value">{{ output(component.value) }}</div>
+      <template v-if="multiple">
+        <div class="value" v-for="value in component.value">{{ output(value) }}</div>
+      </template>
+      <template v-else>
+        <div class="value">{{ output(component.value) }}</div>
+      </template>
       <div class="unit" v-if="!compact"> {{ component.units }}</div>
     </div>
   </div>
@@ -10,6 +20,32 @@
 <script>
 export default {
   name: 'ResultBlock',
+  props: {
+    color: {
+      type: String,
+      default: 'blue'
+    },
+    name: {
+      type: String,
+      default: 'Influent'
+    },
+    components: {
+      type: Array,
+      default: () => []
+    },
+    headers: {
+      type: Array,
+      default: () => []
+    },
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    compact: {
+      type: Boolean,
+      default: false
+    }
+  },
   computed: {
     compactClass() {
       return this.compact ? 'compact' : ''
@@ -48,24 +84,6 @@ export default {
 
     },
   },
-  props: {
-    color: {
-      type: String,
-      default: 'blue'
-    },
-    name: {
-      type: String,
-      default: 'Influent'
-    },
-    components: {
-      type: Array,
-      default: () => []
-    },
-    compact: {
-      type: Boolean,
-      default: false
-    }
-  }
 
 }
 </script>
@@ -83,8 +101,20 @@ export default {
   font-size: 12px;
   padding: 2px;
 }
+.result-block.multiple {
+  width: 200px;
+}
 .result-block.compact label {
   width: 40px;
+}
+.result-block.multiple .result-block-headers {
+  margin-left: 53px;
+  font-weight: bold;
+  color: #333;
+} 
+.result-block.multiple .result-block-header {
+  display: inline-block;
+  width: 50px;
 }
 .result-block.compact .value {
   width: 35px;

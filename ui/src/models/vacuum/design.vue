@@ -5,10 +5,22 @@
       </template>
 
       <div class="process">
+
         <div id="vacuum-process">
+          <el-select class="display-mode" v-model="displayMode">
+              <el-option value="m3" :label="$t('models.vacuum.design.per_m3')"></el-option>
+              <el-option value="unit" :label="$t('models.vacuum.design.per_unit')"></el-option>
+              <el-option value="total" :label="$t('models.vacuum.design.total_process')"></el-option>
+          </el-select>
+
+        <el-input type="number" :min="1" v-model="displayFlow" :step="1" class="display-flow">
+          <template #append>
+            m<sup>3</sup>/h
+          </template>
+        </el-input>
           <Result name="influent" color="blue" :components="resultSet('influent')" />
           <Result name="effluent" color="green" :components="resultSet('effluent')" />
-          <Result name="gas" color="red" :components="resultSet('gas_dry')" />
+          <Result name="gas" color="red" :components="resultSet('gas_wet')" multiple :headers="[$t('models.vacuum.design.wet'), $t('models.vacuum.design.dry')]"/>
         </div>
       </div>
 
@@ -57,7 +69,16 @@ export default {
   props: ['config'],
   data() {
     return {
-      wet: false
+      wet: false,
+      displayMode: 'total',
+      displayFlow: 1,
+    }
+  },
+  watch: {
+    'params.units'() { this.updateDisplayFlow() },
+    'params.nominal_capacity'() { this.updateDisplayFlow() },
+    'displayMode'() {
+      this.updateDisplayFlow()
     }
   },
   computed: {
@@ -102,6 +123,20 @@ export default {
     }
   },
   methods: {
+    updateDisplayFlow() {
+      // update displayflow
+      switch(this.displayMode) {
+        case 'm3':
+          this.displayFlow = 1
+          break
+        case 'unit':
+          this.displayFlow = this.params.nominal_capacity
+          break
+        case 'total':
+          this.displayFlow = this.params.nominal_capacity * this.params.units
+          break
+      }
+    },
     get_output(name) {
       if(this.$project.designState.outputs === undefined) { return "-" }
       if(!(name in this.$project.designState.outputs)) { return "-" }
@@ -116,21 +151,27 @@ export default {
     },
     resultSet(group) {
 
+
       if(!(group in this.$project.designState)) { return false }
 
-      let data = this.$project.designState[group]
+      if(group == 'gas_dry' || group == 'gas_wet') {
+        let wet = this.$project.designState.gas_wet
+        let dry = this.$project.designState.gas_dry
 
-      if(group == 'gas_dry') {
         return [
-          {name: 'Volume', value: data.volume, units: 'm3/h'},
-          {name: '', value: data.normal_volume, units: 'Nm3/h'},
-          {name: 'CH4', value: data.ch4, units: '%'},
-          {name: 'CO2', value: data.co2, units: '%'},
-          {name: 'N2', value: data.n2, units: '%'},
-          {name: 'H2S', value: data.h2s, units: '%'},
+          {name: 'Volume', value: [wet.volume * this.displayFlow, dry.volume * this.displayFlow], units: 'm3/h'},
+          {name: '', value: [wet.normal_volume * this.displayFlow, dry.normal_volume * this.displayFlow], units: 'Nm3/h'},
+          {name: 'CH4', value: [wet.ch4, dry.ch4], units: '%'},
+          {name: 'CO2', value: [wet.co2, dry.co2], units: '%'},
+          {name: 'N2', value: [wet.n2, dry.n2], units: '%'},
+          {name: 'H2S', value: [wet.h2s, dry.h2s], units: '%'},
+          {name: 'H2O', value: [wet.h2o, dry.h2o], units: '%'},
         ]
 
       }
+
+
+      let data = this.$project.designState[group]
 
       return [
         {name: 'pH', value: data.pH, units: '-'},
@@ -186,6 +227,20 @@ export default {
   position: absolute;
   top: 30px;
   left: 30px;
+}
+#vacuum-process .display-mode {
+  position: absolute;
+  width: 150px;
+  top: 10px;
+  left: 0px;
+  z-index: 5;
+}
+#vacuum-process .display-flow {
+  width: 150px;
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  z-index: 5;
 }
 
 </style>
