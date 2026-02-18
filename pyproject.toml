@@ -9,15 +9,15 @@ authors = [
 readme = "README.md"
 license = {file="LICENSE"}
 dependencies = [
-    "numpy",
-    "phreeqpython",
-    "dotmap",
-    "pyaml",
-    "pandas",
-    "scipy",
-    "flask",
-    "flask-cors",
-    "click",
+    "numpy==2.4.2",
+    "phreeqpython==1.5.7",
+    "dotmap==1.3.30",
+    "pyaml==25.7.0",
+    "pandas==3.0.0",
+    "scipy==1.17.0",
+    "flask==3.1.2",
+    "flask-cors==6.0.2",
+    "click==8.3.1",
 ]
 keywords = ["water treatment", "scenario tool", "slimm", "vitens", "drinking water"]
 classifiers = [
