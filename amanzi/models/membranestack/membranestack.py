@@ -1,5 +1,6 @@
 import math
 from dataclasses import dataclass
+import numpy as np
 import pandas as pd
 import os
 from scipy.optimize import fmin, minimize
@@ -184,6 +185,10 @@ class MembraneStack():
     else:
       return P_c, DP_e, V_e, C_c, C_p, Q_p, NDP, J, R_calc, P_osm
   
+  def _to_scalar(self, x):
+    """Convert numpy array/scalar to Python float to prevent array propagation from scipy."""
+    return float(np.asarray(x).ravel()[0])
+
   def run_hydraulics(self, Q_f: float, C_f: float, P_f: float, T: float = 25.0):
     """
     Run the hydraulic calculations for a membrane stack based on the feed flow rate,
@@ -198,13 +203,15 @@ class MembraneStack():
     Returns:
       float, list: total permeate flow rate in m3/h and a list of dictionaries with the results per element
     """
+    # Scipy minimize passes P_f as array; convert at boundary to prevent propagation
+    P_f = self._to_scalar(P_f)
 
     # constants
     DP_PIPES = self.dp_stage # pressure drop in piping between stages in bar
     KP = 0.99 # beta factor constant (Hydranautics)
 
     # initialize variables
-    Q_p_tot = 0 # total permeate flow rate in m3/h
+    Q_p_tot = 0.0 # total permeate flow rate in m3/h
     results = [] # list to store calculation results per element
 
     stage_inflow = Q_f # 1st stage inflow is the feed flow rate of the stack
@@ -217,13 +224,14 @@ class MembraneStack():
       for elem in range(self.elements_per_stage):
         # calculate recovery for each element using fmin to minimize the error, starting at 0.1
         R_e_initial = 0.1 + elem * 0.01 # initial recovery estimate, estimate increase by 0.01 per element
-        R_e = fmin(self.element_recovery, R_e_initial, args=(C_f, Q_f, P_f, T, True), disp=False, xtol=0.001, ftol=0.001)[0]
+        R_e = self._to_scalar(fmin(self.element_recovery, R_e_initial, args=(C_f, Q_f, P_f, T, True), disp=False, xtol=0.001, ftol=0.001)[0])
 
         # calculate results for membrane element using the final recovery estimate
         P_c, DP_e, V_e, C_c, C_p, Q_p, NDP, J, R_e, P_osm = self.element_recovery(R_e, C_f, Q_f, P_f, T, False)
 
-        # calculate beta factor
-        beta = KP * math.exp(Q_p / ((Q_f+(Q_f-Q_p))/2))
+        # calculate beta factor (average of feed and concentrate flow)
+        Q_avg = (Q_f + (Q_f - Q_p)) / 2
+        beta = KP * math.exp(Q_p / Q_avg)
 
         # store results in a dictionary and append
         results.append({
@@ -248,9 +256,7 @@ class MembraneStack():
 
         # set Q_f to Q_f - Q_p for next element calculation
         Q_f = Q_f - Q_p
-        # set C_f to C_c for next element calculation
         C_f = C_c
-        # set P_f to P_c for next element calculation
         P_f = P_c
         # update total permeate flow rate
         Q_p_tot += Q_p * vessels
@@ -281,7 +287,7 @@ class MembraneStack():
     
     res = minimize(optfun, x0=10, method='COBYLA', tol=0.01, options={'disp': False}, args=(Q_perm_target))
 
-    return res.x[0]
+    return self._to_scalar(res.x)
   
   @staticmethod
   def balance_solution(composition):
