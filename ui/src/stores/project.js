@@ -3,8 +3,10 @@ import debounce from 'lodash/debounce';
 import { defineStore } from 'pinia'
 import { scenarioStore } from './scenario'
 
+import backend from '../backend/python'
 
-import axios from 'axios'
+await backend.initialize()
+
 
 let url = import.meta.env.VITE_SERVER_URL
 
@@ -161,21 +163,23 @@ export const projectStore = defineStore('project', {
     },
 
     async loadParameters(type) {
-      let parameters = await axios.get(url + "/parameters")
-      this.modelParameters = parameters.data
+      this.modelParameters = await backend.parameters()
       for(var scenario of this.scenarios) {
         scenario.checkAndUpdateModelParameters(this.modelParameters)
       }
     },
     async getKeyFigures() {
-      let parameters = await axios.get(url + "/keyfigures")
-      console.log(parameters.data)
-      return parameters.data.rows
+      let keyfigures = await backend.keyfigures()
+      return keyfigures.rows
     },
 
     solveDebounced: debounce(async function () {
       // solve network or single model
+      console.log('solving')
       this.loading = true
+
+      console.log(this.loading)
+
 
       let valid = this.scenario.validate()
       if(!valid.valid) {
@@ -186,24 +190,28 @@ export const projectStore = defineStore('project', {
         return
       }
 
+      console.log(this.loading)
       try {
         if(this.report) {
-          let response = await axios.post(url + "/report", this.serialize())
-          this.reportState = response.data
+          let response = await backend.report(this.serialize())
+          this.reportState = response
         }
         else if (this.scenario.editingModel) {
-          let response = await axios.post(url + "/design/" + this.selectedScenario + "/" + this.scenario.editingModel, this.serialize())
-          this.designState = response.data
+          let response = await backend.design(this.serialize(), this.selectedScenario, this.scenario.editingModel)
+          this.designState = response
         } else {
-          let response = await axios.post(url + "/solve/" + this.selectedScenario, this.serialize())
-          this.state = response.data
+          let response = await backend.solve(this.serialize(), this.selectedScenario)
+          this.state = response
         }
         this.invalid = false
       }
       catch (error) {
         this.invalid = true
+        console.log(error)
       }
+      console.log(this.loading)
       this.loading = false
+      console.log(this.loading)
     }, 200, {leading: false, trailing: true}),    
 
     // load from http
