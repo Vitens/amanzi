@@ -16,7 +16,7 @@
     "lodash": "^4.17.23",
     "mitt": "^3.0.1",
     "pinia": "^3.0.4",
-    "pinia-plugin-persist": "^1.0.0",
+    "pyodide": "0.29.3",
     "posthog-js": "^1.352.1",
     "sortablejs": "^1.15.7",
     "vue": "^3.5",

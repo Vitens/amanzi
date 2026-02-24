@@ -11,8 +11,8 @@ async function initPyodide() {
   await py.loadPackage('micropip');
   const pip = py.pyimport('micropip');
   
-  await pip.install('https://amanzi.app/dist/phreeqpython-1.6.1-py3-none-any.whl');
-  await pip.install('https://amanzi.app/dist/amanzi-1.0.11-py2.py3-none-any.whl');
+  await pip.install('https://demo.amanzi.app/dist/phreeqpython-1.6.1-py3-none-any.whl');
+  await pip.install('https://demo.amanzi.app/dist/amanzi-1.0.11-py2.py3-none-any.whl');
 
   const apiModule = py.pyimport('amanzi.server.api');
   api = apiModule.AmanziAPI();

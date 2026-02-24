@@ -252,9 +252,5 @@ export const projectStore = defineStore('project', {
       this.scenario.unsolved = true
     }
 
-  },
-
-  persist: {
-    enabled: false
   }
 })
