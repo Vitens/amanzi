@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.optimize import fmin
+from ..utils.optimize import fmin
 from .model import Model
 from periodictable import formula
 from .submodels.balance import Balance
@@ -61,14 +61,14 @@ class Dosing(Model, Balance):
         dosed.forget() # cleanup dosed function
         return abs(val - self.setpoint)
       
-      opt = fmin(optfun, [0], disp=False, full_output=True)
+      opt = fmin(optfun, [0])
 
-      if(opt[1] > 0.1):
+      if(opt['success'] == False):
         self.calculated_dosage = 0
         self.warning = True
         return solution.copy()
       else:
-        self.calculated_dosage = opt[0][0]
+        self.calculated_dosage = opt['x'][0]
       
       return self.dose(solution, self.chemical, self.calculated_dosage)
 

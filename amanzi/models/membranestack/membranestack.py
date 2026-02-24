@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 import os
-from scipy.optimize import fmin, minimize
+from amanzi.utils.optimize import fmin
 
 class MembraneStack():
 
@@ -154,6 +154,8 @@ class MembraneStack():
     # constants
     OSM_RATIO = 0.6 / 1000 # Osmotic pressure coefficient for TDS in bar/ppm
 
+    R_init = R_init[0]
+
     # calculate pressure drop across element
     DP_e, V_e = self.headloss(Q_f - 0.5*Q_f*R_init, T) # pressure drop across element in bar
     # calculate pressure at concentrate
@@ -224,10 +226,10 @@ class MembraneStack():
       for elem in range(self.elements_per_stage):
         # calculate recovery for each element using fmin to minimize the error, starting at 0.1
         R_e_initial = 0.1 + elem * 0.01 # initial recovery estimate, estimate increase by 0.01 per element
-        R_e = self._to_scalar(fmin(self.element_recovery, R_e_initial, args=(C_f, Q_f, P_f, T, True), disp=False, xtol=0.001, ftol=0.001)[0])
+        R_e = self._to_scalar(fmin(self.element_recovery, [R_e_initial], args=(C_f, Q_f, P_f, T, True), xtol=0.001, ftol=0.001)['x'][0])
 
         # calculate results for membrane element using the final recovery estimate
-        P_c, DP_e, V_e, C_c, C_p, Q_p, NDP, J, R_e, P_osm = self.element_recovery(R_e, C_f, Q_f, P_f, T, False)
+        P_c, DP_e, V_e, C_c, C_p, Q_p, NDP, J, R_e, P_osm = self.element_recovery([R_e], C_f, Q_f, P_f, T, False)
 
         # calculate beta factor (average of feed and concentrate flow)
         Q_avg = (Q_f + (Q_f - Q_p)) / 2
@@ -282,12 +284,13 @@ class MembraneStack():
     Q_perm_target = Q_f * R # target permeate flow rate in m3/h
 
     def optfun(P_f, target):
-      Q_p, _ = self.run_hydraulics(Q_f, C_f, P_f, T)
+      Q_p, _ = self.run_hydraulics(Q_f, C_f, P_f[0], T)
       return abs(Q_p - target)
     
-    res = minimize(optfun, x0=10, method='COBYLA', tol=0.01, options={'disp': False}, args=(Q_perm_target))
+    # res = minimize(optfun, x0=10, method='COBYLA', tol=0.01, options={'disp': False}, args=(Q_perm_target))
+    res = fmin(optfun, [10], args=(Q_perm_target, ))
 
-    return self._to_scalar(res.x)
+    return self._to_scalar(res['x'][0])
   
   @staticmethod
   def balance_solution(composition):

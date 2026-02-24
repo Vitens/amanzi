@@ -3,7 +3,7 @@ import debounce from 'lodash/debounce';
 import { defineStore } from 'pinia'
 import { scenarioStore } from './scenario'
 
-import backend from '../backend/python'
+import backend from '../backend/server'
 
 await backend.initialize()
 
