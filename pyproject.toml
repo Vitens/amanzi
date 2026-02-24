@@ -1,7 +1,7 @@
 [project]
 name = "Amanzi"
 description = "Amanzi scenario tool developed by Vitens"
-version = "1.0.10"
+version = "1.0.11"
 authors = [
     { name="Abel Heinsbroek", email="abel.heinsbroek@vitens.nl" },
     { name="Nils Zickermann", email="nils.zickermann@vitens.nl" }

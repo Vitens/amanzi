@@ -1252,6 +1252,9 @@
 				"remark": "Amanzi is getest en gevalideerd op onze eigen installaties en zuiveringen. Vitens is  echter op geen enkele manier aansprakelijk voor de correctheid, toepasbaarheid en beschikbaarheid van de resultaten en de applicatie.",
 				"title": "Over Amanzi"
 			},
+			"init": {
+				"title": "AMANZI starten..."
+			},
 			"keyfigures": {
 				"title": "Kengetallen"
 			},

@@ -1252,6 +1252,9 @@
 				"remark": "",
 				"title": "Über Amanzi"
 			},
+			"init": {
+				"title": "AMANZI starten..."
+			},
 			"keyfigures": {
 				"title": "Kennzahlen"
 			},

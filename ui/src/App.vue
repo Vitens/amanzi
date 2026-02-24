@@ -2,12 +2,20 @@
 <div id="main">
 
   <!-- design mode dialog -->
-  <el-dialog :model-value="dialogVisible" @closed="closeDialog" :width="dialogWidth" top="20px" :title="dialogTitle">
+  <el-dialog :model-value="dialogVisible" @closed="closeDialog" :width="dialogWidth" top="20px" :title="dialogTitle" class="default">
     <Design v-if="designVisible"></Design>
     <Report v-if="reportVisible"></Report>
     <KeyFigures v-if="keyFiguresVisible"></KeyFigures>
     <Tutorial v-if="tutorialVisible"></Tutorial>
     <About v-if="aboutVisible"></About>
+  </el-dialog>
+
+  <el-dialog :model-value="!initialized" width="400px" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" :align-center="true" class="init">
+    <div class="init-content">
+      <div class="init-title">{{$t('ui.dialogs.init.title')}}</div>
+      <div class="loader"></div>
+    </div>
+
   </el-dialog>
 
   <el-container class="container">
@@ -53,12 +61,16 @@ import Tutorial from './components/Dialogs/Tutorial.vue'
 import About from './components/Dialogs/About.vue'
 import DefaultProject from './assets/Default-project.json'
 
+import backend from './backend/python'
+
+
 export default {
   name: 'App',
   components: {
     Canvas, Sidebar, Scenariobar, Design, Topbar, LoadingIndicator, Report, KeyFigures, ResultBar, Tutorial, About
   },
   data() { return {
+    initialized: false,
     error: false,
     dialog: true,
     sidebar: {
@@ -74,7 +86,18 @@ export default {
       this.$project.tutorial = false
     }
 
+    // initialize backend
+    await backend.initialize()
+    this.initialized = true
+
+    this.$project.backend = backend
+
     this.$project.open(DefaultProject, false)
+
+
+
+
+
     await this.$project.loadParameters()
     this.$project.solve()
 
@@ -239,8 +262,46 @@ body {
 #dialog {
   height: 1000px;
 }
-.el-dialog {
+.el-dialog.default {
   margin-top: 15px !important;
   padding: 0px !important;
 }
+.el-dialog.init {
+  margin-top: 250px !important;
+  padding: 30px 30px !important;
+  border: 3px solid #333;
+  border-radius: 10px;
+}
+.el-dialog.init .el-dialog__header {
+  display: none !important;
+}
+.el-dialog.init .init-content {
+  font-size: 1em;
+  color: #333;
+  width: 340px;
+  text-align: center;
+}
+.init-title {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+/* HTML: <div class="loader"></div> */
+.loader {
+  margin: 0 auto;
+  width: 60px;
+  --b: 8px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--el-color-primary-dark-2);
+  -webkit-mask:
+    repeating-conic-gradient(#0000 0deg,#000 1deg 70deg,#0000 71deg 90deg),
+    radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
+  -webkit-mask-composite: destination-in;
+          mask-composite: intersect;
+  animation: l5 1s infinite;
+}
+@keyframes l5 {to{transform: rotate(.5turn)}}
+
 </style>

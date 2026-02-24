@@ -40,7 +40,7 @@ export default {
     return callWorker('keyfigures');
   },
   async report(data) {
-    return callWorker('report', { json: JSON.stringify(data) });
+    return callWorker('report', { data: JSON.stringify(data) });
   },
   async design(data, scenario, model) {
     return callWorker('design', { data: JSON.stringify(data), scenario, model });

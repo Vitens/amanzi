@@ -3,11 +3,6 @@ import debounce from 'lodash/debounce';
 import { defineStore } from 'pinia'
 import { scenarioStore } from './scenario'
 
-import backend from '../backend/server'
-
-await backend.initialize()
-
-
 let url = import.meta.env.VITE_SERVER_URL
 
 export const projectStore = defineStore('project', {
@@ -15,12 +10,13 @@ export const projectStore = defineStore('project', {
     name: 'Demo', // project name
     version: '0.0.1',    // project version
     debug: {},
-    loading: true,
+    loading: false,
     report: false,
     tutorial: true,
     about: false,
     keyfigures: false,
     invalid: false,
+    backend: null,
     mouseMode: 'select',
     display: {
       debug: false,
@@ -163,13 +159,13 @@ export const projectStore = defineStore('project', {
     },
 
     async loadParameters(type) {
-      this.modelParameters = await backend.parameters()
+      this.modelParameters = await this.backend.parameters()
       for(var scenario of this.scenarios) {
         scenario.checkAndUpdateModelParameters(this.modelParameters)
       }
     },
     async getKeyFigures() {
-      let keyfigures = await backend.keyfigures()
+      let keyfigures = await this.backend.keyfigures()
       return keyfigures.rows
     },
 
@@ -190,14 +186,14 @@ export const projectStore = defineStore('project', {
 
       try {
         if(this.report) {
-          let response = await backend.report(this.serialize())
+          let response = await this.backend.report(this.serialize())
           this.reportState = response
         }
         else if (this.scenario.editingModel) {
-          let response = await backend.design(this.serialize(), this.selectedScenario, this.scenario.editingModel)
+          let response = await this.backend.design(this.serialize(), this.selectedScenario, this.scenario.editingModel)
           this.designState = response
         } else {
-          let response = await backend.solve(this.serialize(), this.selectedScenario)
+          let response = await this.backend.solve(this.serialize(), this.selectedScenario)
           this.state = response
         }
         this.invalid = false
