@@ -4,11 +4,7 @@ import axios from 'axios'
 
 let url = import.meta.env.VITE_SERVER_URL
 
-
 export default {
-  async initialize() {
-    return true
-  },
   async parameters() {
     let parameters = await axios.get(url + '/parameters')
     return parameters.data

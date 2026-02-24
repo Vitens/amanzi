@@ -42,9 +42,6 @@ class QuantitySolver(Solver):
         LinAlgError
             If `a` is singular or not square.
 
-        See Also
-        --------
-        scipy.linalg.solve : Similar function in SciPy.
         """        
 
         all_equations = []

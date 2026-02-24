@@ -1,7 +1,6 @@
 <template>
   <div id="topbar">
     <MenuBar></MenuBar>
-    {{ $project.loading }}
     <div id="buttonbar">
       <div class="left">
       <div class="toggle-left-sidebar" @click="$project.sidebar.left = !$project.sidebar.left" :class="{hidden: !$project.sidebar.left}"></div>

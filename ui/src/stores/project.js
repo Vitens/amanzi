@@ -175,10 +175,8 @@ export const projectStore = defineStore('project', {
 
     solveDebounced: debounce(async function () {
       // solve network or single model
-      console.log('solving')
       this.loading = true
 
-      console.log(this.loading)
 
 
       let valid = this.scenario.validate()
@@ -190,7 +188,6 @@ export const projectStore = defineStore('project', {
         return
       }
 
-      console.log(this.loading)
       try {
         if(this.report) {
           let response = await backend.report(this.serialize())
@@ -207,11 +204,8 @@ export const projectStore = defineStore('project', {
       }
       catch (error) {
         this.invalid = true
-        console.log(error)
       }
-      console.log(this.loading)
       this.loading = false
-      console.log(this.loading)
     }, 200, {leading: false, trailing: true}),    
 
     // load from http
