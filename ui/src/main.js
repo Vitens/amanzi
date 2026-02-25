@@ -6,7 +6,6 @@ import { scenarioStore } from './stores/scenario'
 import { projectStore } from './stores/project'
 import { piniaUndoRedo } from './stores/undo'
 import { createPinia } from 'pinia'
-import piniaPersist from 'pinia-plugin-persist'
 import VueCookies from 'vue-cookies'
 
 import posthog from './plugins/posthog'
@@ -25,6 +24,9 @@ import NumberInput from './components/NumberInput.vue'
 
 // import MasonryWall from '@yeger/vue-masonry-wall'
 import VueMasonry from 'vue-masonry-css'
+
+import pyodideBackend from './backend/python'
+import serverBackend from './backend/server'
 
 import 'font-awesome/css/font-awesome.css'
 import 'element-plus/dist/index.css'
@@ -58,7 +60,6 @@ var chemform = function(chemical) {
 // setup Pinia store
 const pinia = createPinia()
 
-pinia.use(piniaPersist)
 // global variable for pinia
 const shared = ref(100)
 pinia.use(({store}) => {
@@ -88,6 +89,12 @@ const i18n = createI18n({
 
 let app = createApp(App)
 
+// setup backend
+if (import.meta.env.VITE_BACKEND == 'pyodide') {
+app.config.globalProperties.$backend = pyodideBackend
+} else {
+  app.config.globalProperties.$backend = serverBackend
+}
 
 app.use(VueCookies)
 

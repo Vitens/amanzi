@@ -32,6 +32,8 @@ class AmanziAPI():
     return json.dumps(parameters)
   
   def solve(self, data, scenario):
+    if isinstance(data, str):
+      data = json.loads(data)
     p = Project(data)
     p.scenarios[int(scenario)].run_scenario()
     ## get output model
@@ -67,10 +69,14 @@ class AmanziAPI():
     return json.dumps(resp)
   
   def report(self, data):
+    if isinstance(data, str):
+      data = json.loads(data)
     p = Project(data)
     return json.dumps(p.report())
 
   def design(self, data, scenario, model):
+    if isinstance(data, str):
+      data = json.loads(data)
     p = Project(data)
     s = p.scenarios[int(scenario)]
     s.run_scenario(until=model)

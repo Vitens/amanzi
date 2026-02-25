@@ -190,7 +190,6 @@ class Membrane(Model, Splitter):
         {'name': 'Na', 'value': stream.total('Na', 'mg'), 'units': 'mg'},
         {'name': 'Cl', 'value': stream.total('Cl', 'mg'), 'units': 'mg'},
       ]
-    
 
      return {
        'stage_results': stage_results,

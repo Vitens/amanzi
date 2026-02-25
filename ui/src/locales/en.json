@@ -1252,6 +1252,9 @@
 				"remark": "",
 				"title": "About Amanzi"
 			},
+			"init": {
+				"title": "Starting AMANZI..."
+			},
 			"keyfigures": {
 				"title": "Key figures"
 			},

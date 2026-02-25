@@ -2,12 +2,22 @@
 <div id="main">
 
   <!-- design mode dialog -->
-  <el-dialog :model-value="dialogVisible" @closed="closeDialog" :width="dialogWidth" top="20px" :title="dialogTitle">
+  <el-dialog :model-value="dialogVisible" @closed="closeDialog" :width="dialogWidth" top="20px" :title="dialogTitle" class="default">
     <Design v-if="designVisible"></Design>
     <Report v-if="reportVisible"></Report>
     <KeyFigures v-if="keyFiguresVisible"></KeyFigures>
     <Tutorial v-if="tutorialVisible"></Tutorial>
     <About v-if="aboutVisible"></About>
+  </el-dialog>
+
+  <el-dialog :model-value="!initialized" width="500px" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" :align-center="true" class="init" :close-delay="750">
+    <div class="init-content">
+      <div class="init-title">{{$t('ui.dialogs.init.title')}}</div>
+      <div class="loader" :class="{loading: progress.value < 100}"></div>
+      <div class="init-progress">{{ progress.message }}</div>
+      <el-progress :percentage="progress.value" :text-inside="true" :stroke-width="25" :status="progress.value < 100 ? 'active' : 'success'"></el-progress>
+    </div>
+
   </el-dialog>
 
   <el-container class="container">
@@ -59,6 +69,11 @@ export default {
     Canvas, Sidebar, Scenariobar, Design, Topbar, LoadingIndicator, Report, KeyFigures, ResultBar, Tutorial, About
   },
   data() { return {
+    initialized: true,
+    progress: {
+      value: 0,
+      message: 'Initializing...'
+    },
     error: false,
     dialog: true,
     sidebar: {
@@ -73,8 +88,26 @@ export default {
     if (tutorialSkipped) {
       this.$project.tutorial = false
     }
+    if (this.$backend.driver == 'pyodide') {
+      this.initialized = false
+
+      const onProgress = (progress) => {
+        this.progress = progress
+      }
+
+      await this.$backend.initialize(onProgress)
+    }
+
+    this.initialized = true
+
+    this.$project.backend = this.$backend
 
     this.$project.open(DefaultProject, false)
+
+
+
+
+
     await this.$project.loadParameters()
     this.$project.solve()
 
@@ -239,8 +272,62 @@ body {
 #dialog {
   height: 1000px;
 }
-.el-dialog {
+.el-dialog.default {
   margin-top: 15px !important;
   padding: 0px !important;
 }
+.el-dialog.init {
+  margin-top: 250px !important;
+  padding: 30px 30px !important;
+  /* border: 3px solid #333; */
+  border-radius: 15px;
+}
+.el-dialog.init .el-dialog__header {
+  display: none !important;
+}
+.el-dialog.init .init-content {
+  font-size: 1em;
+  color: #333;
+  width: 450px;
+  text-align: center;
+}
+.init-title {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 20px;
+}
+/* HTML: <div class="loader"></div> */
+.loader {
+  margin: 0 auto;
+  margin-bottom: 20px;
+  width: 40px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid var(--el-color-primary);
+  animation:
+    l20-1 1.0s infinite linear alternate,
+    l20-2 2.0s infinite linear;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+.loader.loading {
+  opacity: 1;
+}
+@keyframes l20-1{
+   0%    {clip-path: polygon(50% 50%,0       0,  50%   0%,  50%    0%, 50%    0%, 50%    0%, 50%    0% )}
+   12.5% {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100%   0%, 100%   0%, 100%   0% )}
+   25%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 100% 100%, 100% 100% )}
+   50%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+   62.5% {clip-path: polygon(50% 50%,100%    0, 100%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+   75%   {clip-path: polygon(50% 50%,100% 100%, 100% 100%,  100% 100%, 100% 100%, 50%  100%, 0%   100% )}
+   100%  {clip-path: polygon(50% 50%,50%  100%,  50% 100%,   50% 100%,  50% 100%, 50%  100%, 0%   100% )}
+}
+@keyframes l20-2{ 
+  0%    {transform:scaleY(1)  rotate(0deg)}
+  49.99%{transform:scaleY(1)  rotate(135deg)}
+  50%   {transform:scaleY(-1) rotate(0deg)}
+  100%  {transform:scaleY(-1) rotate(-135deg)}
+}
+
 </style>

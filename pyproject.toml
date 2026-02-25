@@ -1,7 +1,7 @@
 [project]
 name = "Amanzi"
 description = "Amanzi scenario tool developed by Vitens"
-version = "1.0.4"
+version = "1.0.11"
 authors = [
     { name="Abel Heinsbroek", email="abel.heinsbroek@vitens.nl" },
     { name="Nils Zickermann", email="nils.zickermann@vitens.nl" }
@@ -9,12 +9,11 @@ authors = [
 readme = "README.md"
 license = {file="LICENSE"}
 dependencies = [
-    "numpy==2.4.2",
-    "phreeqpython==1.5.7",
+    "numpy==2.2.5",
+    "phreeqpython==1.6.1",
     "dotmap==1.3.30",
     "pyaml==25.7.0",
-    "pandas==3.0.0",
-    "scipy==1.17.0",
+    "pandas==2.3.3",
     "flask==3.1.2",
     "flask-cors==6.0.2",
     "click==8.3.1",
@@ -36,5 +35,5 @@ amanzi = "amanzi.server.app:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.build.targets.wheel.force-include]
-"ui/dist" = "amanzi/ui/dist"
+#[tool.hatch.build.targets.wheel.force-include]
+#"ui/dist" = "amanzi/ui/dist"

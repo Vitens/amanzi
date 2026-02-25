@@ -48,8 +48,6 @@ class QualitySolver(Solver):
 
         solution = model.run_quality(stream_type, total_inflow, influent)
         model.quality['effluent'][stream_type] = solution
-        if stream_type == 'waste':
-            print(model, model.quality['effluent']['waste'])
 
         if self.stop_at_model and model.uid == self.stop_at_model:
             logging.info(f'Interrupted at model {model.uid}')

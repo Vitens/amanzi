@@ -1,7 +1,7 @@
 from .model import Model
 from .submodels.balance import Balance
 import numpy as np
-from scipy.optimize import fmin
+from ..utils.optimize import fmin
 
 class Softening(Model, Balance):
 
@@ -85,12 +85,12 @@ class Softening(Model, Balance):
         rho_p = pellet_density # pellet density kg/m^3
 
         def fn(x):
-            return abs(130 * (v**1.2) / g * (u**0.8)/(dp**1.8) * (rho_w / (rho_p - rho_w)) - (x**3 / (1-x)**0.8))
+            return abs(130 * (v**1.2) / g * (u**0.8)/(dp**1.8) * (rho_w / (rho_p - rho_w)) - (x[0]**3 / (1-x[0])**0.8))
 
 
-        resp = fmin(fn, 0.5, disp=False)
+        resp = fmin(fn, [0.5])
 
-        return resp[0]
+        return resp['x'][0]
 
     def design(self):
 

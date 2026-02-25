@@ -42,9 +42,6 @@ class QuantitySolver(Solver):
         LinAlgError
             If `a` is singular or not square.
 
-        See Also
-        --------
-        scipy.linalg.solve : Similar function in SciPy.
         """        
 
         all_equations = []
@@ -58,15 +55,11 @@ class QuantitySolver(Solver):
                 results.append(mass)
                 counter += 1
 
-        print(len(all_equations))
-        print(len(results))
-        
         # construct matrix
         matrix = np.zeros((len(all_equations), len(results)))
         # fill matrix
         for row, eq in enumerate(all_equations):
             for conn, weight in eq:
-                print(row, conn.id, conn)
                 matrix[row, conn.id] = weight  
 
         # solve matrix

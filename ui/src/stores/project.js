@@ -3,9 +3,6 @@ import debounce from 'lodash/debounce';
 import { defineStore } from 'pinia'
 import { scenarioStore } from './scenario'
 
-
-import axios from 'axios'
-
 let url = import.meta.env.VITE_SERVER_URL
 
 export const projectStore = defineStore('project', {
@@ -13,12 +10,13 @@ export const projectStore = defineStore('project', {
     name: 'Demo', // project name
     version: '0.0.1',    // project version
     debug: {},
-    loading: true,
+    loading: false,
     report: false,
     tutorial: true,
     about: false,
     keyfigures: false,
     invalid: false,
+    backend: null,
     mouseMode: 'select',
     display: {
       debug: false,
@@ -161,21 +159,21 @@ export const projectStore = defineStore('project', {
     },
 
     async loadParameters(type) {
-      let parameters = await axios.get(url + "/parameters")
-      this.modelParameters = parameters.data
+      this.modelParameters = await this.backend.parameters()
       for(var scenario of this.scenarios) {
         scenario.checkAndUpdateModelParameters(this.modelParameters)
       }
     },
     async getKeyFigures() {
-      let parameters = await axios.get(url + "/keyfigures")
-      console.log(parameters.data)
-      return parameters.data.rows
+      let keyfigures = await this.backend.keyfigures()
+      return keyfigures.rows
     },
 
     solveDebounced: debounce(async function () {
       // solve network or single model
       this.loading = true
+
+
 
       let valid = this.scenario.validate()
       if(!valid.valid) {
@@ -188,15 +186,15 @@ export const projectStore = defineStore('project', {
 
       try {
         if(this.report) {
-          let response = await axios.post(url + "/report", this.serialize())
-          this.reportState = response.data
+          let response = await this.backend.report(this.serialize())
+          this.reportState = response
         }
         else if (this.scenario.editingModel) {
-          let response = await axios.post(url + "/design/" + this.selectedScenario + "/" + this.scenario.editingModel, this.serialize())
-          this.designState = response.data
+          let response = await this.backend.design(this.serialize(), this.selectedScenario, this.scenario.editingModel)
+          this.designState = response
         } else {
-          let response = await axios.post(url + "/solve/" + this.selectedScenario, this.serialize())
-          this.state = response.data
+          let response = await this.backend.solve(this.serialize(), this.selectedScenario)
+          this.state = response
         }
         this.invalid = false
       }
@@ -254,9 +252,5 @@ export const projectStore = defineStore('project', {
       this.scenario.unsolved = true
     }
 
-  },
-
-  persist: {
-    enabled: false
   }
 })
