@@ -6,18 +6,24 @@ const pendingRequests = new Map();
 
 // Global listener for worker responses
 worker.onmessage = (e) => {
-  const { id, result, error } = e.data;
-  const { resolve, reject } = pendingRequests.get(id);
+  const { id, result, error, progress } = e.data;
+  const { resolve, reject, onProgress } = pendingRequests.get(id);
+
+  if (onProgress && progress !== undefined) { 
+    onProgress(progress);
+    return;
+  }
+
   pendingRequests.delete(id);
   if (error) reject(new Error(error));
   else resolve(result);
 };
 
 // Helper to send messages to worker
-function callWorker(method, args = {}) {
+function callWorker(method, args = {}, onProgress = null) {
   const id = msgId++;
   return new Promise((resolve, reject) => {
-    pendingRequests.set(id, { resolve, reject });
+    pendingRequests.set(id, { resolve, reject, onProgress });
     try {
       worker.postMessage({ id, method, args });
     }
@@ -30,8 +36,8 @@ function callWorker(method, args = {}) {
 }
 
 export default {
-  async initialize() {
-    return callWorker('initialize');
+  async initialize(onProgress) {
+    return callWorker('initialize', {}, onProgress);
   },
   async parameters() {
     return callWorker('parameters');

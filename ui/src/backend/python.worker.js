@@ -3,20 +3,32 @@ import { loadPyodide, version as pyodideVersion } from 'pyodide';
 let api;
 
 // 1. Setup Pyodide inside the worker
-async function initPyodide() {
+async function initPyodide(id) {
+
+  const sendProgress = (value, message) => {
+    self.postMessage({ id, progress: { value, message } });
+  }
+
+  sendProgress(0, 'Loading Pyodide...');
   const py = await loadPyodide({
     indexURL: `https://cdn.jsdelivr.net/pyodide/v${pyodideVersion}/full/`
   });
-
+  sendProgress(20, 'Loading Micropip...');
   await py.loadPackage('micropip');
   const pip = py.pyimport('micropip');
   
-  await pip.install('https://demo.amanzi.app/dist/phreeqpython-1.6.1-py3-none-any.whl');
-  await pip.install('https://demo.amanzi.app/dist/amanzi-1.0.11-py2.py3-none-any.whl');
+  sendProgress(40, 'Loading PhreeqPython...');
+  await pip.install('/dist/phreeqpython-1.6.1-py3-none-any.whl');
+  sendProgress(60, 'Loading Amanzi Solver...');
+  await pip.install('/dist/amanzi-1.0.11-py2.py3-none-any.whl');
+
+  sendProgress(80, 'Starting Amanzi API...');
 
   const apiModule = py.pyimport('amanzi.server.api');
   api = apiModule.AmanziAPI();
-  
+
+  sendProgress(100, 'Loading done!');
+
   return true;
 }
 
@@ -28,7 +40,7 @@ self.onmessage = async (event) => {
     let result;
     switch (method) {
       case 'initialize':
-        result = await initPyodide();
+        result = await initPyodide(id);
         break;
       case 'parameters':
         result = JSON.parse(api.parameters());

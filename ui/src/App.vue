@@ -10,10 +10,12 @@
     <About v-if="aboutVisible"></About>
   </el-dialog>
 
-  <el-dialog :model-value="!initialized" width="400px" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" :align-center="true" class="init">
+  <el-dialog :model-value="!initialized" width="500px" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" :align-center="true" class="init" :close-delay="750">
     <div class="init-content">
       <div class="init-title">{{$t('ui.dialogs.init.title')}}</div>
-      <div class="loader"></div>
+      <div class="loader" :class="{loading: progress.value < 100}"></div>
+      <div class="init-progress">{{ progress.message }}</div>
+      <el-progress :percentage="progress.value" :text-inside="true" :stroke-width="25" :status="progress.value < 100 ? 'active' : 'success'"></el-progress>
     </div>
 
   </el-dialog>
@@ -71,6 +73,10 @@ export default {
   },
   data() { return {
     initialized: false,
+    progress: {
+      value: 0,
+      message: 'Initializing...'
+    },
     error: false,
     dialog: true,
     sidebar: {
@@ -85,9 +91,11 @@ export default {
     if (tutorialSkipped) {
       this.$project.tutorial = false
     }
+    const onProgress = (progress) => {
+      this.progress = progress
+    }
 
-    // initialize backend
-    await backend.initialize()
+    await backend.initialize(onProgress)
     this.initialized = true
 
     this.$project.backend = backend
@@ -269,8 +277,8 @@ body {
 .el-dialog.init {
   margin-top: 250px !important;
   padding: 30px 30px !important;
-  border: 3px solid #333;
-  border-radius: 10px;
+  /* border: 3px solid #333; */
+  border-radius: 15px;
 }
 .el-dialog.init .el-dialog__header {
   display: none !important;
@@ -278,30 +286,46 @@ body {
 .el-dialog.init .init-content {
   font-size: 1em;
   color: #333;
-  width: 340px;
+  width: 450px;
   text-align: center;
 }
 .init-title {
   font-size: 2.5em;
   font-weight: bold;
-  color: #333;
+  color: #666;
   margin-bottom: 20px;
 }
 /* HTML: <div class="loader"></div> */
 .loader {
   margin: 0 auto;
-  width: 60px;
-  --b: 8px;
+  margin-bottom: 20px;
+  width: 40px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--el-color-primary-dark-2);
-  -webkit-mask:
-    repeating-conic-gradient(#0000 0deg,#000 1deg 70deg,#0000 71deg 90deg),
-    radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
-  -webkit-mask-composite: destination-in;
-          mask-composite: intersect;
-  animation: l5 1s infinite;
+  border: 8px solid var(--el-color-primary);
+  animation:
+    l20-1 1.0s infinite linear alternate,
+    l20-2 2.0s infinite linear;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
-@keyframes l5 {to{transform: rotate(.5turn)}}
+.loader.loading {
+  opacity: 1;
+}
+@keyframes l20-1{
+   0%    {clip-path: polygon(50% 50%,0       0,  50%   0%,  50%    0%, 50%    0%, 50%    0%, 50%    0% )}
+   12.5% {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100%   0%, 100%   0%, 100%   0% )}
+   25%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 100% 100%, 100% 100% )}
+   50%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+   62.5% {clip-path: polygon(50% 50%,100%    0, 100%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+   75%   {clip-path: polygon(50% 50%,100% 100%, 100% 100%,  100% 100%, 100% 100%, 50%  100%, 0%   100% )}
+   100%  {clip-path: polygon(50% 50%,50%  100%,  50% 100%,   50% 100%,  50% 100%, 50%  100%, 0%   100% )}
+}
+@keyframes l20-2{ 
+  0%    {transform:scaleY(1)  rotate(0deg)}
+  49.99%{transform:scaleY(1)  rotate(135deg)}
+  50%   {transform:scaleY(-1) rotate(0deg)}
+  100%  {transform:scaleY(-1) rotate(-135deg)}
+}
 
 </style>
