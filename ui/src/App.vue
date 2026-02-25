@@ -63,9 +63,6 @@ import Tutorial from './components/Dialogs/Tutorial.vue'
 import About from './components/Dialogs/About.vue'
 import DefaultProject from './assets/Default-project.json'
 
-import backend from './backend/python'
-
-
 export default {
   name: 'App',
   components: {
@@ -91,19 +88,19 @@ export default {
     if (tutorialSkipped) {
       this.$project.tutorial = false
     }
-    if (backend.backend == 'pyodide') {
+    if (this.$backend.driver == 'pyodide') {
       this.initialized = false
 
       const onProgress = (progress) => {
         this.progress = progress
       }
 
-      await backend.initialize(onProgress)
+      await this.$backend.initialize(onProgress)
     }
 
     this.initialized = true
 
-    this.$project.backend = backend
+    this.$project.backend = this.$backend
 
     this.$project.open(DefaultProject, false)
 
