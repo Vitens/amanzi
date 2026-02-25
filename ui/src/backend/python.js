@@ -36,6 +36,7 @@ function callWorker(method, args = {}, onProgress = null) {
 }
 
 export default {
+  backend: 'pyodide',
   async initialize(onProgress) {
     return callWorker('initialize', {}, onProgress);
   },

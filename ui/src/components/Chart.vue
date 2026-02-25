@@ -91,10 +91,7 @@ export default {
 
 
   mounted() {
-
-
     this.chart = new Chart(this.$refs.chart, this.options)
-
   },
   watch: {
     options() {
@@ -198,6 +195,7 @@ export default {
 
   methods: {
     update() {
+      if (!this.chart) return
       this.chart.options = this.options.options
       this.chart.data.datasets = this.datasets
       this.chart.update('none')

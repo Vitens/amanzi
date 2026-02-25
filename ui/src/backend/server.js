@@ -5,6 +5,7 @@ import axios from 'axios'
 let url = import.meta.env.VITE_SERVER_URL
 
 export default {
+  backend: 'server',
   async initialize() {
     return true
   },

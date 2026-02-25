@@ -72,7 +72,7 @@ export default {
     Canvas, Sidebar, Scenariobar, Design, Topbar, LoadingIndicator, Report, KeyFigures, ResultBar, Tutorial, About
   },
   data() { return {
-    initialized: false,
+    initialized: true,
     progress: {
       value: 0,
       message: 'Initializing...'
@@ -91,11 +91,16 @@ export default {
     if (tutorialSkipped) {
       this.$project.tutorial = false
     }
-    const onProgress = (progress) => {
-      this.progress = progress
+    if (backend.backend == 'pyodide') {
+      this.initialized = false
+
+      const onProgress = (progress) => {
+        this.progress = progress
+      }
+
+      await backend.initialize(onProgress)
     }
 
-    await backend.initialize(onProgress)
     this.initialized = true
 
     this.$project.backend = backend
