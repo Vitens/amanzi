@@ -157,6 +157,7 @@ export default {
         var resp = [
           {'name': 'pH', 'units': '-', 'value': inf['pH']},
           {'name': 'O2', 'units': 'mg/l', 'value': inf['O2']},
+          {'name': 'CO2', 'units': 'mg/l', 'value': inf['CO2']},
           {'name': 'CH4', 'units': 'μg/l', 'value': inf['CH4']},
         ]
       }
@@ -165,6 +166,7 @@ export default {
         {'name': 'pH', 'units': '-', 'value': inf['pH']},
         {'name': 'O2', 'units': 'mg/l', 'value': inf['O2']},
         {'name': 'CH4', 'units': 'μg/l', 'value': inf['CH4']},
+        {'name': 'CO2', 'units': 'mg/l', 'value': inf['CO2']},
         {'name': 'Fe', 'units': 'mg/l', 'value': inf['Fe']},
         {'name': 'NH4', 'units': 'mg/l', 'value': inf['NH4']},
         {'name': 'Mn', 'units': 'mg/l', 'value': inf['Mn']},

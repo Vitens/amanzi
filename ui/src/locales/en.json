@@ -431,6 +431,8 @@
 			},
 			"design": {
 				"activity": "Activity",
+				"balance-charge": "Balance",
+				"balance-charge-tooltip": "Balance solution by adding Na or Cl ions",
 				"calculated-properties": "Calculated properties",
 				"carbon-equilibrium": "Carbonic acid balance",
 				"ccpp": "CCPP",
@@ -438,7 +440,7 @@
 				"charge": "Charge",
 				"charge-balance": "Balance",
 				"charge-derivation": "Deviation",
-				"charge-inbalance-warning": "The maximum deviation is 2%",
+				"charge-inbalance-warning": "The load of the solution is not balanced. As a result, some parameters such as conductivity and pH may be incorrectly calculated in subsequent treatment steps.",
 				"conductivity": "SC20",
 				"hardness": "Hardness",
 				"m-number": "m-number",
@@ -449,6 +451,7 @@
 				"scaling-potential": "Scaling potential",
 				"scaling-warning": "Groundwater cannot be supersaturated with calcite",
 				"SI": "SI",
+				"tac": "TAC",
 				"tds": "TDS",
 				"total": "Total"
 			},
@@ -1016,7 +1019,10 @@
 				"ambient_temperature": "Ambient temperature",
 				"area_per_nozzle": "Area per nozzle",
 				"blowereficiency": "Efficiency blower for sprayaeration",
+				"ch4_removal_efficiency": "CH4 removal",
+				"co2_removal_efficiency": "CO2 removal",
 				"fall_height": "Fall height over filtration bed",
+				"o2_saturation": "Oxygen to saturation",
 				"rq": "RQ"
 			},
 			"sections": {
@@ -1379,6 +1385,7 @@
 					"pH": "pH",
 					"sc20": "EGV",
 					"SI": "SI",
+					"tac": "TAC",
 					"tds": "TDS"
 				}
 			},
@@ -1446,6 +1453,7 @@
 				"pH": "pH",
 				"sc20": "EGV",
 				"SI": "SI",
+				"tac": "TAC",
 				"tds": "TDS"
 			},
 			"quantity": {

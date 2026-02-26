@@ -90,12 +90,15 @@
               <div class="result">{{ output('charge_balance') }}</div>
               <div class="units">meq/l</div>
             </div>
-            <div class="component" :class="{warning: chargeWarning}">
+            <div class="component total" :class="{warning: chargeWarning}">
               <label>{{ $t('models.groundwater.design.charge-derivation') }}</label>
               <div class="result">{{ output('balance_error') }}</div>
               <div class="units">%</div>
-              <el-tooltip :content="$t('models.groundwater.design.charge-inbalance-warning')" placement="right">
+              <el-tooltip :content="$t('models.groundwater.design.charge-inbalance-warning')" placement="top">
               <div class="component-warning" v-if="chargeWarning"><i class='fa fa-warning'></i></div>
+              </el-tooltip>
+              <el-tooltip :content="$t('models.groundwater.design.balance-charge-tooltip')" placement="top" >
+                <el-button type="success" size="small" @click="balanceCharge" :disabled="!chargeWarning" class="balance-charge-button">{{ $t('models.groundwater.design.balance-charge') }}</el-button>
               </el-tooltip>
             </div>
           </div>
@@ -117,6 +120,11 @@
             <div class="component">
               <label v-html="chemform('CO3')"></label>
               <div class="result">{{ output('CO3', 1) }}</div>
+              <div class="units">mg/l</div>
+            </div>
+            <div class="component total">
+              <label>{{ $t('models.groundwater.design.tac') }}</label>
+              <div class="result">{{ output('tac', 1) }}</div>
               <div class="units">mg/l</div>
             </div>
           </div>
@@ -164,7 +172,7 @@
               <div class="result">{{ output('oxygen_consumption_gas') }}</div>
               <div class="units">mg/l</div>
             </div>
-            <div class="component">
+            <div class="component total">
               <label>{{ $t('models.groundwater.design.total') }}</label>
               <div class="result">{{  output('oxygen_consumption') }}</div>
               <div class="units">mg/l</div>
@@ -233,6 +241,16 @@ export default {
     }
   },
   methods: {
+    balanceCharge(element) {
+      // balance the charge of the solution
+      let error = this.$project.designState.charge_balance
+      if (error > 0) {
+        this.config.parameters['chloride'] += _.round(error * 35.45, 1)
+      } else {
+        this.config.parameters['sodium'] += _.round(-error * 22.99, 1)
+      }
+
+    },
     output(key, precision=2) {
       // if key not in $project.designState, return '-'
       if(!(key in this.$project.designState)) { return '-' }
@@ -345,7 +363,7 @@ export default {
 
 #groundwater-composition .result {
   display: inline-block;
-  width: 40px;
+  width: 45px;
   padding: 0px 15px;
   text-align: right;
 }
@@ -399,6 +417,15 @@ export default {
 }
 .result-block.red .component {
   border-color: #fab6b6 !important;
+}
+
+.balance-charge-button {
+  margin-left: 15px;
+}
+.total {
+  color: #999;
+  font-weight: bold;
+  border-top: 1px solid #EAEAEA;
 }
 
 </style>

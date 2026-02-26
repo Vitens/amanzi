@@ -140,6 +140,7 @@ class Groundwater(Model):
             'h_activity': -np.log10(self.solution.activity('H+', 'mol')),
             'osmotic_pressure': self.solution.osmotic_pressure,
             'tds': self.solution.tds,
+            'tac': self.solution.tac,
             'anions': an,
             'cations': cat,
             'charge_balance': self.solution.charge_balance,

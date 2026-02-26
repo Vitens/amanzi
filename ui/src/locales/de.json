@@ -431,6 +431,8 @@
 			},
 			"design": {
 				"activity": "Tätigkeit",
+				"balance-charge": "Ausbalancieren",
+				"balance-charge-tooltip": "Balancieren durch Zugabe von Na- oder Cl-Ionen",
 				"calculated-properties": "Berechnete Eigenschaften",
 				"carbon-equilibrium": "Kohlendioxid-Bilanz",
 				"ccpp": "TACC",
@@ -438,7 +440,7 @@
 				"charge": "Ladung",
 				"charge-balance": "Gleighgewicht",
 				"charge-derivation": "Abweichung",
-				"charge-inbalance-warning": "Die maximale Abweichung beträgt 2%.",
+				"charge-inbalance-warning": "Die Ladung der Lösung ist nicht im Gleichgewicht. Dadurch können einige Parameter wie Leitfähigkeit und pH in weiteren Reinigungsstufen falsch berechnet werden.",
 				"conductivity": "Leitfähigkeit",
 				"hardness": "Härte",
 				"m-number": "m-Zahl",
@@ -449,6 +451,7 @@
 				"scaling-potential": "Kalkablagerung",
 				"scaling-warning": "Grundwasser kann nicht kalkhaltig sein",
 				"SI": "SI",
+				"tac": "TAC",
 				"tds": "TDS",
 				"total": "Gesamt"
 			},
@@ -1016,7 +1019,10 @@
 				"ambient_temperature": "Umgebungstemperatur",
 				"area_per_nozzle": "Oberfläche pro Sprühkopf",
 				"blowereficiency": "Effizienz Belüfter für Sprühbelüftung",
+				"ch4_removal_efficiency": "CH4 Entfernung",
+				"co2_removal_efficiency": "CO2-Entfernung",
 				"fall_height": "Fallhöhe über Filterbett",
+				"o2_saturation": "Sauerstoff bis zur Sättigung",
 				"rq": "RQ"
 			},
 			"sections": {
@@ -1379,6 +1385,7 @@
 					"pH": "pH",
 					"sc20": "SC",
 					"SI": "SI",
+					"tac": "TAC",
 					"tds": "TDS"
 				}
 			},
@@ -1446,6 +1453,7 @@
 				"pH": "pH",
 				"sc20": "SC",
 				"SI": "SI",
+				"tac": "TAC",
 				"tds": "TDS"
 			},
 			"quantity": {

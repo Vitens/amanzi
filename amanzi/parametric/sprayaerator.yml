@@ -8,28 +8,26 @@ parameters:
         uom: m2
         description: Area of the spray nozzle [m2]
         range: [0.1, 10]
-      blowereficiency:
+  model:
+    sprayaerator:
+      co2_removal_efficiency:
+        default: 0.50
         if:
           spray: true
-        uom: "-"
-        default: 0.75
+        uom: "%"
         range: [0.01, 1]
-  operational:
-    general:
-      rq:
-        default: 2
+      ch4_removal_efficiency:
+        default: 0.30
         if:
           spray: true
-        uom: "-"
-        description: Ratio of air to water flow rate
-        range: [1,5]
-      ambient_temperature:
-        default: 15
+        uom: "%"
+        range: [0.01, 1]
+      o2_saturation:
+        default: 0.8
         if:
           spray: true
-        uom: "C"
-        description: Ambient temperature [C]
-        range: [-30, 40]
+        uom: "%"
+        range: [0.01, 1]
 outputs:
   design:
     general:
@@ -39,29 +37,3 @@ outputs:
         description: Total number of nozzles in the spray aeration unit
         equation: "surface_area / area_per_nozzle"
         uom: '-'
-      total_air_flow:
-        if: "spray"
-        name: Total Air Flow
-        description: Total air flow rate through the spray aeration unit
-        equation: "rq * capacity"
-        uom: m3/h
-  
-  energy:
-    electric_energy:
-      blower_energy:
-        if: "spray"
-        uom: kWh/m3
-        equation: "blower_power(rq, ambient_temperature ,100 ,blowereficiency, Air_density)"
-        precision: 4
-        parameters:
-          blowerefficiency:
-            uom: "-"
-            equation: "blowereficiency"
-            precision: 2
-          resparitoryquotient:
-            uom: "-"
-            equation: "rq"
-            precision: 2  
-
-
-      
