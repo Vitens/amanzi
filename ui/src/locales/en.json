@@ -1463,6 +1463,10 @@
 				"total_distribution": "Distribution",
 				"total_production": "Abstraction"
 			},
+			"scenario": {
+				"label": "Scenario",
+				"notes_placeholder": "Notes"
+			},
 			"sustainability": {
 				"label": "Sustainability",
 				"specific_emission": "Per total m3 delivered",

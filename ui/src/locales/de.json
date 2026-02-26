@@ -1463,6 +1463,10 @@
 				"total_distribution": "Verteilung",
 				"total_production": "Gewinnen"
 			},
+			"scenario": {
+				"label": "Szenario",
+				"notes_placeholder": "Notizen"
+			},
 			"sustainability": {
 				"label": "Nachhaltigkeit",
 				"specific_emission": "Pro insgesamt gelieferter m3",

@@ -1463,6 +1463,10 @@
 				"total_distribution": "Distributie",
 				"total_production": "Winning"
 			},
+			"scenario": {
+				"label": "Scenario",
+				"notes_placeholder": "Notities"
+			},
 			"sustainability": {
 				"label": "Duurzaamheid",
 				"specific_emission": "Per totaal m3 geleverd",
