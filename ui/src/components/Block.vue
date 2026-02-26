@@ -112,7 +112,6 @@ export default {
 
     // Called when the user stops dragging the block
     endMove() {
-      // This method intentionally left blank
       this.$project.scenario.commitMove()
     },
 

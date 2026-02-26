@@ -238,6 +238,7 @@ export const projectStore = defineStore('project', {
         // generate store with random uid
         var store = scenarioStore(Math.random().toString(36).substring(2, 8))
         store.name = scenario.name
+        store.notes = scenario.notes
         store.models = scenario.models
         store.connections = scenario.connections
         store.metaData = scenario.metaData

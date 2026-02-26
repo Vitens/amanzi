@@ -2,6 +2,9 @@
   <el-scrollbar>
 
   <el-collapse v-model="openPanels">
+    <el-collapse-item :title="$t('ui.sidebar.scenario.label')" name="scenario">
+        <el-input v-model="this.$project.scenario.notes" :placeholder="$t('ui.sidebar.scenario.notes_placeholder')" type="textarea" :autosize="{ minRows: 2, maxRows: 12}" @change="this.$project.scenario.unsaved = true"/>
+    </el-collapse-item>
     <el-collapse-item :title="$t('ui.sidebar.library.label')" name="library">
       <Library></Library>
     </el-collapse-item>
@@ -18,7 +21,7 @@ import Config from './Config.vue'
 export default {
   name: 'Sidebar',
   data() { return {
-    openPanels: ['project', 'library', 'config'],
+    openPanels: ['scenario', 'library', 'config'],
   }},
   methods: {
     load() {

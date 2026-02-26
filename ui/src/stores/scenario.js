@@ -7,6 +7,7 @@ export const scenarioStore = (uid) =>
       name: "Scenario1", // scenario name
       uid: uid,
       models: [],
+      notes: "",
       connections: [],
       selectedBlocks: [],
       metaData: {
@@ -482,6 +483,7 @@ export const scenarioStore = (uid) =>
       serialize() {
         var exportObject = {
           name: this.name,
+          notes: this.notes,
           scenario_version: 1,
           models: this.models,
           connections: this.connections,

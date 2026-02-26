@@ -124,7 +124,7 @@ outputs:
             uom: mH2O
             precision: 1
 
-      calculalted_head_in:
+      calculated_head_in:
         equation: "hydraulics.head_in"
         uom: mH2O
       calculated_head_out:

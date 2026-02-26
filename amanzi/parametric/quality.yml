@@ -36,7 +36,7 @@ parameters:
       iron:
         uom: mg/l
         default: 5
-        range: [0, 40]
+        range: [0, 80]
         chemical: Fe
       manganese:
         uom: mg/l
@@ -107,7 +107,7 @@ parameters:
       phosphate:
         uom: mg/l
         default: 0
-        range: [0, 0.5]
+        range: [0, 50]
         chemical: PO4
       fluoride:
         uom: mg/l

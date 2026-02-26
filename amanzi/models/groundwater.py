@@ -17,7 +17,7 @@ class Groundwater(Model):
             return
 
         configuration = config.get('configuration', {})
-        self.constant = self.parameters['yearly_production']
+        self.constant = max(self.parameters['yearly_production'], 0.0000001)
 
         # modify production for minorloss
         if self.minorloss_percentage < 1:
@@ -140,6 +140,7 @@ class Groundwater(Model):
             'h_activity': -np.log10(self.solution.activity('H+', 'mol')),
             'osmotic_pressure': self.solution.osmotic_pressure,
             'tds': self.solution.tds,
+            'tac': self.solution.tac,
             'anions': an,
             'cations': cat,
             'charge_balance': self.solution.charge_balance,

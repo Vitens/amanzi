@@ -354,8 +354,6 @@ class MembraneStack():
     permeate_changes = self.balance_solution(permeate_changes)
     concentrate_changes = self.balance_solution(concentrate_changes)
 
-    print('wtf mate', R_e)
-
     # create the concentrate and permeate solutions and apply the changes
     permeate = feed.copy().change(permeate_changes, units='mol')
     concentrate = feed.copy().change(concentrate_changes, units='mol')

@@ -431,6 +431,8 @@
 			},
 			"design": {
 				"activity": "Activiteit",
+				"balance-charge": "Balanceer",
+				"balance-charge-tooltip": "Balanceer door Na of Cl ionen toe te voegen",
 				"calculated-properties": "Berekende eigenschappen",
 				"carbon-equilibrium": "Koolzuurevenwicht",
 				"ccpp": "TACC",
@@ -438,7 +440,7 @@
 				"charge": "Lading",
 				"charge-balance": "Balans",
 				"charge-derivation": "Afwijking",
-				"charge-inbalance-warning": "De maximale afwijking is 2%",
+				"charge-inbalance-warning": "De lading van de oplossing is niet in balans. Hierdoor kunnen sommige parameters zoals EGV en pH verkeerd berekend worden in verdere zuiveringsstappen",
 				"conductivity": "EGV20",
 				"hardness": "Hardheid",
 				"m-number": "m-getal",
@@ -449,6 +451,7 @@
 				"scaling-potential": "Kalkafzettendheid",
 				"scaling-warning": "Grondwater kan niet kalkafzettend zijn",
 				"SI": "SI",
+				"tac": "TAC",
 				"tds": "TDS",
 				"total": "Totaal"
 			},
@@ -1016,7 +1019,10 @@
 				"ambient_temperature": "Omgevingstemperatuur",
 				"area_per_nozzle": "Oppervlak per sproeier",
 				"blowereficiency": "Rendement sproebeluchting",
+				"ch4_removal_efficiency": "CH4 verwijdering",
+				"co2_removal_efficiency": "CO2 verwijdering",
 				"fall_height": "Valhoogte boven bed",
+				"o2_saturation": "Zuurstof tot verzadiging",
 				"rq": "RQ"
 			},
 			"sections": {
@@ -1067,6 +1073,7 @@
 				"diameter": "Diameter",
 				"fall_height": "Valhoogte boven bed",
 				"options": {
+					"Pall28": "Pall 28",
 					"Raflux25": "Raflux 25",
 					"Raflux50": "Raflux 50",
 					"Raflux90": "Raflux 90"
@@ -1379,6 +1386,7 @@
 					"pH": "pH",
 					"sc20": "EGV",
 					"SI": "SI",
+					"tac": "TAC",
 					"tds": "TDS"
 				}
 			},
@@ -1446,6 +1454,7 @@
 				"pH": "pH",
 				"sc20": "EGV",
 				"SI": "SI",
+				"tac": "TAC",
 				"tds": "TDS"
 			},
 			"quantity": {
@@ -1453,6 +1462,10 @@
 				"loss": "Verlies",
 				"total_distribution": "Distributie",
 				"total_production": "Winning"
+			},
+			"scenario": {
+				"label": "Scenario",
+				"notes_placeholder": "Notities"
 			},
 			"sustainability": {
 				"label": "Duurzaamheid",

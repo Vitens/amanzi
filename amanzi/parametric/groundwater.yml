@@ -4,7 +4,7 @@ parameters:
       yearly_production:
         uom: Mm3
         default: 10.0
-        range: [0.1, 100]
+        range: [0.0, 100]
         quick: true
 
       minimal_capacity:

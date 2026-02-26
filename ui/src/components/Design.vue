@@ -2,7 +2,7 @@
   <div class="design-container">
     <el-container>
       <el-aside id="parameters" class="design-config">
-        <ParameterInput v-model="editingModel.configuration.parameters" :type="editingModel.type"></ParameterInput>
+        <ParameterInput v-model="editingModel.configuration.parameters" :type="editingModel.type" :uid="editingModel.uid"></ParameterInput>
       </el-aside>
       <el-main id="design">
         <el-tabs>
@@ -77,8 +77,8 @@ export default {
 }
 
 .el-dialog__header {
-  padding: 15px !important;
-  height: 20px;
+  padding: 0px !important;
+  /* height: 20px; */
   border-bottom: 2px solid #CCC;
 }
 .design-config {

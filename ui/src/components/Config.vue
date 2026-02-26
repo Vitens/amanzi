@@ -78,11 +78,14 @@ export default {
 }
 </script>
 <style>
-.el-input-group__append {
+#config .el-input-group__append {
   width: 50px;
 }
-.edit_button {
+#config .edit_button {
   width: 100%;
   margin-top: 10px;
+}
+#config .percentage {
+  width: 100%;
 }
 </style>

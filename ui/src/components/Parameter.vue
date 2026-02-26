@@ -28,7 +28,7 @@
       <template v-else-if="parameter_type(param) == 'percentage'">
         <div class="parameter percentage">
             <el-slider v-model="percentage" :min="range[0]*100" :max="range[1]*100"></el-slider>
-            <span class="value">{{ percentage }}%</span>
+            <span class="value">{{ Math.round(percentage) }}%</span>
         </div>
       </template>
       <template #label>
@@ -41,6 +41,7 @@
 </template>
 <script>
 import NumberInput from './NumberInput.vue'
+import _ from 'lodash'
 
 export default {
   components: {NumberInput},

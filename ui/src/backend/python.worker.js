@@ -20,7 +20,7 @@ async function initPyodide(id) {
   sendProgress(40, 'Loading PhreeqPython...');
   await pip.install('/dist/phreeqpython-1.6.1-py3-none-any.whl');
   sendProgress(60, 'Loading Amanzi Solver...');
-  await pip.install('/dist/amanzi-1.0.11-py2.py3-none-any.whl');
+  await pip.install('/dist/amanzi-1.0.5-py2.py3-none-any.whl');
 
   sendProgress(80, 'Starting Amanzi API...');
 

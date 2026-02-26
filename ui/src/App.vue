@@ -8,6 +8,9 @@
     <KeyFigures v-if="keyFiguresVisible"></KeyFigures>
     <Tutorial v-if="tutorialVisible"></Tutorial>
     <About v-if="aboutVisible"></About>
+    <template #header>
+      <DesignHeader v-if="designVisible" :title="dialogTitle"></DesignHeader>
+    </template>
   </el-dialog>
 
   <el-dialog :model-value="!initialized" width="500px" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" :align-center="true" class="init" :close-delay="750">
@@ -62,11 +65,12 @@ import components from './models/groundwater/assets/components'
 import Tutorial from './components/Dialogs/Tutorial.vue'
 import About from './components/Dialogs/About.vue'
 import DefaultProject from './assets/Default-project.json'
+import DesignHeader from './components/DesignHeader.vue'
 
 export default {
   name: 'App',
   components: {
-    Canvas, Sidebar, Scenariobar, Design, Topbar, LoadingIndicator, Report, KeyFigures, ResultBar, Tutorial, About
+    Canvas, Sidebar, Scenariobar, Design, Topbar, LoadingIndicator, Report, KeyFigures, ResultBar, Tutorial, About, DesignHeader
   },
   data() { return {
     initialized: true,
@@ -296,6 +300,9 @@ body {
   font-weight: bold;
   color: #666;
   margin-bottom: 20px;
+}
+.el-dialog__header {
+  padding: 10px !important;
 }
 /* HTML: <div class="loader"></div> */
 .loader {

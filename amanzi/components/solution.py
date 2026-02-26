@@ -111,6 +111,10 @@ def aggCO2(self):
     return -1 * min(0, self.ccpp()) * 44.01
 
 @property
+def tac(self):
+    return self.total('CO2', 'mg') + self.total('HCO3', 'mg') + self.total('CO3', 'mg')
+
+@property
 def tds(self):
     total = (self.density - self.mass/self.volume) * 1e6
     # suptract dissolved gasses
@@ -128,6 +132,7 @@ def summary(self):
         {'name': 'sc20', 'value': self.sc20/10, 'uom': 'mS/m', 'precision': 2},
         {'name': 'o2', 'value': self.total('Oxg')*32 + self.total('O2')*32, 'uom': 'mg/l', 'precision': 2},
         {'name': 'hco3', 'value': self.total('HCO3', 'mg'), 'uom': 'mg/l', 'precision': 2},
+        {'name': 'tac', 'value': self.tac, 'uom': 'mg/l', 'precision': 2},
         {'name': 'hardness', 'value': self.hardness, 'uom': 'mmol/l', 'precision': 2, 'positive': False},
         {'name': 'tds', 'value': self.tds, 'uom': 'mg/l', 'precision': 1, 'positive': False},
         {'name': 'ccpp90', 'value': self.ccpp90, 'uom': 'mmol/l', 'precision': 2, 'positive': False},
@@ -160,5 +165,5 @@ Solution.charge_balance = charge_balance
 Solution.balance_error = balance_error
 Solution.tds = tds
 Solution.summary = summary
-
+Solution.tac = tac
 Gas.dry_volume = dry_volume
