@@ -72,8 +72,6 @@ export default {
   display: flex;
   justify-content: left;
   align-items: center;
-  padding: 6px 10px;
-  padding-top: 8px;
   padding-right: 30px;
   height: 30px;
 }

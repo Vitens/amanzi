@@ -301,6 +301,9 @@ body {
   color: #666;
   margin-bottom: 20px;
 }
+.el-dialog__header {
+  padding: 10px !important;
+}
 /* HTML: <div class="loader"></div> */
 .loader {
   margin: 0 auto;
