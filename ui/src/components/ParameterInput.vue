@@ -1,7 +1,7 @@
 <template>
   <div id="parameter-input">
-  <el-tabs tab-position="left">
-    <el-tab-pane v-for="sections, category in parameters" :id="'category-'+category">
+  <el-tabs tab-position="left" v-model="activeTab">
+    <el-tab-pane v-for="sections, category in parameters" :id="'category-'+category" :name="category">
       <template #label>
         <el-icon size="24px">
           <template v-if="icons[category].includes('fa')">
@@ -35,7 +35,7 @@ export default {
   components: {
     Parameter
   },
-  props: ['modelValue', 'type'],
+  props: ['modelValue', 'type', 'uid'],
   data() { return {
     icons: {
       'design': 'Tools',
@@ -44,6 +44,7 @@ export default {
       'model': 'Help',
       'gas_processing': 'fa-fire'
     },
+    activeTab: 'design',
     editVue: false,
     percentages: {},
     values: {},
@@ -58,6 +59,20 @@ export default {
     }
   },
   watch: {
+    uid() {
+      this.values = _.cloneDeep(this.modelValue)
+      // check if the active tab is still valid
+      if(!Object.keys(this.parameters).includes(this.activeTab)) {
+        this.activeTab = Object.keys(this.parameters)[0]
+      }
+      this.activeTab = 'design'
+      var component = resolveDynamicComponent('edit-'+this.type)
+      if (typeof component == 'object') {
+        this.customEditVue = true
+      } else {
+        this.customEditVue = false
+      }
+    },
     values() {
       this.$emit('update:modelValue', this.values)
     },

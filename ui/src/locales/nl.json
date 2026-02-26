@@ -1073,6 +1073,7 @@
 				"diameter": "Diameter",
 				"fall_height": "Valhoogte boven bed",
 				"options": {
+					"Pall28": "Pall 28",
 					"Raflux25": "Raflux 25",
 					"Raflux50": "Raflux 50",
 					"Raflux90": "Raflux 90"

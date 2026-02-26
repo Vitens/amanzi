@@ -1073,6 +1073,7 @@
 				"diameter": "Durchmesser",
 				"fall_height": "Fallhöhe über dem Bett",
 				"options": {
+					"Pall28": "Pall 28",
 					"Raflux25": "Raflux 25",
 					"Raflux50": "Raflux 50",
 					"Raflux90": "Raflux 90"

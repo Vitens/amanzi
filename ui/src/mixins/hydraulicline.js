@@ -2,7 +2,6 @@ export default {
   props: ['config', 'path', 'dim', 'offset', 'width', 'uid', 'position', 'hydraulics', 'upstream_elevation', 'downstream_elevation'],
   mounted() {
     // emit size and anchorpoints when component is mounted
-    console.log('mounted', this.uid)
     this.$emit('size', this.uid, this.dimensions)
     this.$emit('anchor', this.uid, this.anchorpoints)
     this.$emit('booster', this.uid, this.boosterElevation)
