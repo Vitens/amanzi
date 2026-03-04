@@ -8,9 +8,11 @@
   <el-checkbox v-model="showLevels" border>{{ $t('models.filtration.design.show_levels') }}</el-checkbox>
   <el-checkbox v-model="showModelLevels" border>{{ $t('models.filtration.design.show_model_levels') }}</el-checkbox>
   <el-checkbox v-model="highlightEditingModel" border>{{ $t('models.filtration.design.highlight_editing_model') }}</el-checkbox>
+
+  <CopyButton target="#hydraulic-graph" class="copy-hydraulic-line" :before-copy="beforeCopy" :after-copy="afterCopy" image />
   </div> 
 
-  <div class="hydraulic-container">
+  <div class="hydraulic-container" id="hydraulic-graph" :style="{width: captureWidth}">
   
     <svg width="61" :height="graphDimensions.height" class="hydraulic-axis">
       <!-- Y-axis -->
@@ -107,16 +109,19 @@ import Booster from '@/components/Booster.vue'
 import LevelIndicator from '@/components/LevelIndicator.vue'
 import draggable from '../directives/draggable.js'
 import throttle from 'lodash/throttle';
+import CopyButton from '@/components/CopyButton.vue'
 
 export default {
   components: {
     Groundwater,
     Booster,
-    LevelIndicator
+    LevelIndicator,
+    CopyButton
   },
   directives: {draggable},
   data() {
     return {
+      captureWidth: undefined,
       debug: false,
       highlightEditingModel: false,
       path_index: 0,
@@ -333,6 +338,13 @@ export default {
     }
   },
   methods: {
+    async beforeCopy() {
+      this.captureWidth = this.graphWidth + "px"
+      await this.$nextTick()
+    },
+    async afterCopy() {
+      this.captureWidth = undefined
+    },
     draggable(component) {
       return component.model.configuration?.parameters?.inlet_elevation !== undefined
     },
@@ -438,6 +450,7 @@ export default {
 }
 .hydraulic-container {
   position: relative;
+  background-color: white;
 }
 .hydraulic-controls {
   padding: 10px;
@@ -457,4 +470,11 @@ export default {
   top: 10px;
   z-index: 1000;
 }
+.copy-hydraulic-line {
+  position: absolute;
+  right: 10px;
+  top: 80px;
+  z-index: 1000;
+}
+
 </style>
