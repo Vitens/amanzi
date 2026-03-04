@@ -91,6 +91,7 @@ class ParametricModel():
 
     output = self.output_parameters.get(name)
     ctx = self.context
+
     if 'nominal_capacity' in self.parameters:
       ctx = ctx | {'capacity': self.parameters['nominal_capacity']}
 
@@ -100,8 +101,6 @@ class ParametricModel():
       raise Exception(f"Error calculating {name} for {self.name}")
 
     return result
-
-    
 
   
   @property
