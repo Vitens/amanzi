@@ -118,7 +118,7 @@ export default {
       return sections.filter(section => this.outputs(section).length > 0);
     },
     outputs(section) {
-      return this.table.outputs.filter(p => p.section === section.name);
+      return this.table.outputs.filter(p => p.section === section.name && !p.hidden);
     },
     collapsable(section, index) {
       let outputs = this.outputs(section);

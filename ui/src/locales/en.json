@@ -458,24 +458,16 @@
 			"name": "Abstraction",
 			"outputs": {
 				"average_day": "Average dag",
-				"average_flow": "Average flow",
-				"average_velocity": "Average velocity",
-				"darcy_coefficient": "Darcy coefficient",
 				"delta_head": "Hydraulic pressure loss",
 				"head_at_treatment": "Elevation at treatment entrance",
 				"head_at_well": "Elevation at well",
-				"headloss_per_meter": "Headloss per meter",
-				"headloss_pipe": "Headloss in pipe",
 				"headloss_pipe_": "Headloss in pipe",
 				"hydraulic_energy_loss": "Hydraulic energy loss",
 				"installed_capacity": "Installed capacity",
-				"kinematic_viscosity": "Kinematic viscosity",
 				"minor_losses_": "Minor losses",
 				"production": "Production",
 				"pump_efficiency": "Average efficiency well pump",
 				"required_pump_head": "Required pump head of the well",
-				"reynolds_number": "Reynolds number",
-				"roughness": "Wall roughness",
 				"total_headloss": "Total head loss",
 				"wells_in_use": "Wells in use",
 				"wells_standby": "Wells in standby"
@@ -491,14 +483,6 @@
 				"minor_losses": "Friction loss",
 				"nominal_capacity": "Nominal production",
 				"number_of_wells": "Number of wells",
-				"options": {
-					"PE": "PE",
-					"PVC": "PVC",
-					"Steel": "Steel"
-				},
-				"pipe_inner_diameter": "Internal diameter",
-				"pipe_length": "Pipe length",
-				"pipe_material": "Material",
 				"yearly_production": "Annual production"
 			},
 			"presets": {
@@ -508,8 +492,7 @@
 			"sections": {
 				"capacity": "Productioncapacity",
 				"hydraulic_energy": "Hydraulic energy",
-				"hydraulic_line": "Hydraulic line",
-				"transport_pipe": "Tranasport pipe"
+				"hydraulic_line": "Hydraulic line"
 			},
 			"select-preset": "Select preset"
 		},
@@ -727,6 +710,32 @@
 			"sections": {
 				"hydraulic_energy": "Hydraulic energy",
 				"hydraulic_line": "Hydraulic line"
+			}
+		},
+		"pipeline": {
+			"name": "Transport Pipeline",
+			"outputs": {
+				"average_flow": "Average flow",
+				"average_velocity": "Average velocity",
+				"darcy_coefficient": "Darcy coefficient",
+				"headloss_per_meter": "Headloss per meter",
+				"headloss_pipe": "Headloss in pipe",
+				"kinematic_viscosity": "Kinematic viscosity",
+				"reynolds_number": "Reynolds number",
+				"roughness": "Wall roughness"
+			},
+			"parameters": {
+				"options": {
+					"PE": "PE",
+					"PVC": "PVC",
+					"Steel": "Steel"
+				},
+				"pipe_inner_diameter": "Internal diameter",
+				"pipe_length": "Pipe length",
+				"pipe_material": "Material"
+			},
+			"sections": {
+				"transport_pipe": "Tranasport pipe"
 			}
 		},
 		"plate": {
@@ -1088,6 +1097,22 @@
 				"operation": "Operation",
 				"packing": "Packing material",
 				"removalrates": "Removal efficiency"
+			}
+		},
+		"transport": {
+			"outputs": {
+				"calculated_head_in": "Calculated head in",
+				"calculated_head_out": "Calculated head out",
+				"delta_head": "Headloss",
+				"hydraulic_energy_loss": "Hydraulic energy loss",
+				"hydraulic_energy_loss (2)": "Hydraulic energy loss",
+				"pump_efficiency": "Average. Efficiency of the feed pump",
+				"total_headloss": "Total headloss"
+			},
+			"sections": {
+				"hydraulic_energy": "Hydraulic Energy Consumption",
+				"hydraulic_line": "Hydraulic line",
+				"transport_pipe": "Transport Pipeline"
 			}
 		},
 		"vacuum": {

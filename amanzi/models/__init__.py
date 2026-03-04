@@ -17,3 +17,4 @@ from .membranedegassing import Membranedegassing
 from .toweraeration import Toweraeration
 #from .activatedcarbon import Activatedcarbon
 from .sandtrap import Sandtrap
+from .pipeline import Pipeline

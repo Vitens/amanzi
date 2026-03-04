@@ -358,7 +358,6 @@ class MembraneStack():
     permeate = feed.copy().change(permeate_changes, units='mol')
     concentrate = feed.copy().change(concentrate_changes, units='mol')
 
-
     return concentrate, permeate
       
   def run_quality(self, solution, results):

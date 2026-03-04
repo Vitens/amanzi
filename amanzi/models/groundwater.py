@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 class Groundwater(Model):
-    parametric_model = ['base', 'groundwater', 'quality']
+    parametric_model = ['base', 'groundwater', 'pipeline', 'quality']
 
     def __init__(self, config, pp):
         super().__init__(config, pp)

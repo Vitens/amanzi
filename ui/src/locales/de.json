@@ -458,24 +458,16 @@
 			"name": "Gewinnen",
 			"outputs": {
 				"average_day": "Gemittelter Tag",
-				"average_flow": "Mittlerer Durchfluss ",
-				"average_velocity": "Mittlere Geschwindigkeit",
-				"darcy_coefficient": "Darcy-Koeffizient",
 				"delta_head": "Hydraulischer Druckverlust",
 				"head_at_treatment": "Höhenlage am Eingang der Anlage",
 				"head_at_well": "Höhe Ausgang Quellschacht",
-				"headloss_per_meter": "Hydraulischer Verlust pro laufenden Meter",
-				"headloss_pipe": "Hydraulischer Verlust in der Leitung",
 				"headloss_pipe_": "Hydraulischer Verlust in der Leitung",
 				"hydraulic_energy_loss": "Hydraulischer Energieverlust",
 				"installed_capacity": "Intallierte Kapazität",
-				"kinematic_viscosity": "Kinematische Viskosität",
 				"minor_losses_": "Lokale Verluste",
 				"production": "Produktion",
 				"pump_efficiency": "Durchschn. Effizienz-Brunnenpumpe",
 				"required_pump_head": "Notwendige Förderhöhe der Quelle",
-				"reynolds_number": "Reynolds Zahl",
-				"roughness": "Wandrauheit",
 				"total_headloss": "Gesamter Hóhenverlust",
 				"wells_in_use": "Förderbrunnen in Betrieb",
 				"wells_standby": "Förderbrunnen in Bereitschaft"
@@ -491,14 +483,6 @@
 				"minor_losses": "Reibungsverlust",
 				"nominal_capacity": "Nennproduktion",
 				"number_of_wells": "Anzahl",
-				"options": {
-					"PE": "PE",
-					"PVC": "PVC",
-					"Steel": "Stahl"
-				},
-				"pipe_inner_diameter": "Innendurchmesser",
-				"pipe_length": "Rohrlänge",
-				"pipe_material": "Material",
 				"yearly_production": "Jahresproduktion"
 			},
 			"presets": {
@@ -508,8 +492,7 @@
 			"sections": {
 				"capacity": "Produktionskapazität",
 				"hydraulic_energy": "Hydraulische Energie",
-				"hydraulic_line": "Hydraulische Linie",
-				"transport_pipe": "Transportleitung"
+				"hydraulic_line": "Hydraulische Linie"
 			},
 			"select-preset": "Standardlösung auswählen"
 		},
@@ -727,6 +710,32 @@
 			"sections": {
 				"hydraulic_energy": "Hydraulische Energie",
 				"hydraulic_line": "Hydraulische Leitung"
+			}
+		},
+		"pipeline": {
+			"name": "Transportleitung",
+			"outputs": {
+				"average_flow": "Mittlerer Durchfluss ",
+				"average_velocity": "Mittlere Geschwindigkeit",
+				"darcy_coefficient": "Darcy-Koeffizient",
+				"headloss_per_meter": "Hydraulischer Verlust pro laufenden Meter",
+				"headloss_pipe": "Hydraulischer Verlust in der Leitung",
+				"kinematic_viscosity": "Kinematische Viskosität",
+				"reynolds_number": "Reynolds Zahl",
+				"roughness": "Wandrauheit"
+			},
+			"parameters": {
+				"options": {
+					"PE": "PE",
+					"PVC": "PVC",
+					"Steel": "Stahl"
+				},
+				"pipe_inner_diameter": "Innendurchmesser",
+				"pipe_length": "Rohrlänge",
+				"pipe_material": "Material"
+			},
+			"sections": {
+				"transport_pipe": "Transportleitung"
 			}
 		},
 		"plate": {
@@ -1088,6 +1097,22 @@
 				"operation": "Operation",
 				"packing": "Verpackungsmaterial",
 				"removalrates": "Effizienz der Beseitigung"
+			}
+		},
+		"transport": {
+			"outputs": {
+				"calculated_head_in": "Berechnete Vorschubhöhe",
+				"calculated_head_out": "Berechnete Abflusshöhe",
+				"delta_head": "Hydraulischer Druckverlust",
+				"hydraulic_energy_loss": "Hydraulischer Energieverlust",
+				"hydraulic_energy_loss (2)": "Hydraulischer Energieverlust",
+				"pump_efficiency": "Durchschnitt. Wirkungsgrad der Förderpumpe",
+				"total_headloss": "Totalverlust der hydraulischen Höhe"
+			},
+			"sections": {
+				"hydraulic_energy": "Hydraulischer Energieverbrauch",
+				"hydraulic_line": "Hydraulische Leitung",
+				"transport_pipe": "Transportleitung"
 			}
 		},
 		"vacuum": {

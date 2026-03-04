@@ -1,8 +1,8 @@
 <template>
   <div id="config">
     <!-- element ui form with labels on top of the inputs -->
-    <el-form label-position="top" v-if="showConfig">
-      <el-form-item :label="$t('ui.sidebar.configuration.name')" @submit.prevent>
+    <el-form label-position="top" v-if="showConfig" @submit.prevent>
+      <el-form-item :label="$t('ui.sidebar.configuration.name')">
         <el-input v-model="editingModel.name"></el-input>
       </el-form-item>
 
