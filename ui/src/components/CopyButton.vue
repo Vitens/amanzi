@@ -4,20 +4,61 @@
   </div>
 </template>
 <script>
+import snapdom from '@zumer/snapdom'
 
 export default {
-  props: ['target', 'short'],
+  props: {
+    target: {
+      type: String,
+      required: true
+    },
+    image: {
+      type: Boolean,
+      default: false
+    },
+    beforeCopy: {
+      type: Function,
+      default: () => {}
+    },
+    afterCopy: {
+      type: Function,
+      default: () => {}
+    }
+  },
   data() {
     return {
       copytext: 'Copy'
     }
   },
   methods: {
-    copy() {
+    async copy() {
+      await this.beforeCopy()
+
+      if (this.image) {
+        await this.copyImage()
+      } else {
+        this.copyText()
+      }
+
+      await this.afterCopy()
+
       this.copytext = 'Copied!';
       setTimeout(() => {
         this.copytext = 'Copy';
       }, 800);
+    },
+    async copyImage() {
+      let node = document.querySelector(this.target);
+      let blob = await snapdom.toBlob(node, {type: 'png'});
+
+      const item = new ClipboardItem({
+        'image/png': blob
+      });
+      await navigator.clipboard.write([item]);
+      console.log('copied image to clipboard');
+    },
+
+    copyText() {
 
       // select and copy table to clipboard
       let range = document.createRange();
