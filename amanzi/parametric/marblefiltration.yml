@@ -1,74 +1,12 @@
 parameters:
   design:
     general:
-      gj:
-        default: false
-        uom: '-'
       spray:
         default: false
         uom: '-'
-      number_of_heights:
-        default: 10
-        uom: '-'
-        range: [1, 20]
-      number_of_fractions:
-        default: 10
-        uom: '-'
-        range: [1, 20]
-      number_of_runs:
-        default: 2
-        uom: '-'
-        range: [1, 20]
-      number_of_sieves:
-        default: 7
-        uom: '-'
-        range: [1, 20]
-      bed_height_start:
-        default: 0.8
-        uom: m
-        range: [0.1, 1.0]
-      bed_height_refill:
-        default: 0.5
-        uom: m
-        range: [0.1, 1.0]
-
       lime_pellets:
         default: false
         uom: '-'
-      lime_pellets_density:
-        if:
-          lime_pellets: true
-        default: 2.65
-        uom: g/cm3
-        range: [0.0, 10.0]
-      lime_pellets_diameter:
-        if:
-          lime_pellets: true
-        default: 1.0
-        uom: mm
-        range: [0.0, 10.0]
-      lime_pellets_porosity:
-        if:
-          lime_pellets: true
-        default: 0.5
-        uom: '-'
-        range: [0.0, 1.0]
-      marble_porosity:
-        if:
-          lime_pellets: false
-        default: 0.5
-        uom: '-'
-        range: [0.0, 1.0]
-      marble_density:
-        if:
-          lime_pellets: false
-        default: 2.65
-        uom: g/cm3
-        range: [0.0, 10.0]
-      grain_shape:
-        default: 0.665
-        uom: '-'
-        range: [0.0, 1.0] 
     hydraulic_line:
       pressurized: # overwrite to enable unique translation
         default: false
@@ -82,61 +20,284 @@ parameters:
       fall_height_to_media:
         default: 0.5
         uom: m
-        range: [0.1, 1.0]
+        range: [0.1, 2.0]
       filter_bottom:
         default: 0.5
         uom: m
         range: [0.1, 1.0]
 
-  operational:
-    filter_loss:
-      Fe_height_start:
-        default: 0.0
+
+
+    marblefilter:
+      shape:
+        default: 'rectangular'
+        options: ['rectangular', 'circular']
+      length:
+        default: 10.0
         uom: m
-        range: [0.0, 1.0]
-      Fe_height_end:
-        default: 0.1
+        if:
+          shape: 'rectangular'
+        range: [1.0, 20.0]
+      width:
+        default: 2.5
         uom: m
-        range: [0.0, 1.0]
-      NH4_height_start:
-        default: 0.2
+        if:
+          shape: 'rectangular'
+        range: [0.5, 5.0]
+      diameter:
+        default: 3.0
         uom: m
-        range: [0.0, 1.0]
-      NH4_height_end:
-        default: 0.3
-        uom: m
-        range: [0.0, 1.0] 
-      Mn_height_start:
-        default: 0.4
-        uom: m
-        range: [0.0, 1.0] 
-      Mn_height_end:
+        if:
+          shape: 'circular'
+        range: [0.2, 8.0]    
+      height_lime:
+        if:
+          lime_pellets: true
         default: 0.5
         uom: m
-        range: [0.0, 1.0] 
-      filtration_rate:
-        default: 4.6
-        uom: m/h
-        range: [0.0, 10.0]
-      filter_surface:
-        default: 1000
-        uom: m2
-        range: [0.0, 10000.0]
-      volume_filtered:
-        default: 1000
-        uom: m3
-        range: [0.0, 10000.0]
+        range: [0.1, 10.0]
+      diameter_lime:
+        if:
+          lime_pellets: true
+        default: 1.0
+        uom: mm
+        range: [0.0001, 100.0]
+      height_marble:
+        if:
+          lime_pellets: false
+        default: 1.0
+        uom: m
+        range: [0.1, 10.0]
+      diameter_marble:
+        if:
+          lime_pellets: false
+        default: 1.0
+        uom: mm
+        range: [0.0001, 100.0]
+      porosity_lime:
+        if:
+          lime_pellets: true
+        default: 0.5
+        uom: '-'
+        range: [0.1, 0.6]
+      porosity_marble:
+        if:
+          lime_pellets: false
+        default: 0.5
+        uom: '-'
+        range: [0.1, 0.6]
+      porosity_marble_clogged:
+        if:
+          lime_pellets: false
+        default: 0.25
+        uom: '-'
+        range: [0.1, 0.6]
+      porosity_lime_clogged:
+        if:
+          lime_pellets: true
+        default: 0.25
+        uom: '-'
+        range: [0.1, 0.6]
+
+
+  operational:
+    supernatant:
       supernatant_level:
         default: 0.2
         uom: m
+        range: [0.1, fall_height_to_media]
+    backwash:
+      backwash_pump_efficiency:
+        default: 0.6
+        uom: "-"
+        range: [0.4, 0.8]
+      backwash_head:
+        uom: mH2O
+        default: 5
+        range: [1, 10]
+
+      backwash_control:
+        default: 'time'
+        options: ['time', 'volume']
+      runtime:
+        default: 24.0
+        if:
+          backwash_control: 'time'
+        uom: h
+        range: [1.0, 72.0]
+      runvolume:
+        default: 5000
+        if:
+          backwash_control: 'volume'
+        uom: m3
+        range: [10, 100000]
+
+  model:
+    removal_rates:
+      suppress_iron_removal:
+        default: false
+        uom: '-'
+      iron_removal_efficiency:
+        default: 1.0
+        if:
+          suppress_iron_removal: true
+        uom: '%'
         range: [0.0, 1.0]
+      suppress_ammonium_removal:
+        default: false
+        uom: '-'
+      ammonium_removal_efficiency:
+        default: 1.0
+        if:
+          suppress_ammonium_removal: true
+        uom: '%'
+        range: [0.0, 1.0]
+      suppress_manganese_removal:
+        default: false
+        uom: '-'
+      manganese_removal_efficiency:
+        default: 1.0
+        if:
+          suppress_manganese_removal: true
+        uom: '%'
+        range: [0.0, 1.0]    
     
 
 outputs:
+  hydraulic:
+    hydraulic_line:
+      headloss_influent:
+        uom: mH2O
+        equation: "pressure_loss_nozzles + influent_pressure_loss if spray else influent_pressure_loss"
+      headloss_model:
+        equation: "average_headloss + fall_height_to_media - supernatant_level if not pressurized else average_headloss"
+
   design:
     general:
+      surface_area:
+        uom: m2
+        equation: "length * width if shape == 'rectangular' else 3.1415 * diameter**2 / 4"
+      total_surface:
+        uom: m2
+        equation: "surface_area * units"
       bed_height:
         uom: m
-        equation: "bed_height_start + 1"
+        equation: "height_lime + height_marble"
+      filtration_velocity:
+        uom: m/h
+        equation: "capacity / surface_area"
+      EBCT:
+        uom: min
+        equation: "bed_height / filtration_velocity * 60"
+    pressure_loss:
+      headloss_clean:
+        uom: mH2O
+        equation: "headloss_lime + headloss_marble"
+        parameters:
+          headloss_lime:
+            uom: mH2O
+            equation: "kozeny_carman(porosity_lime, filtration_velocity, diameter_lime) * height_lime"
+            if: "lime_pellets"
+          headloss_marble:
+            uom: mH2O
+            equation: "kozeny_carman(porosity_marble, filtration_velocity, diameter_marble) * height_marble"
+            if not: "lime_pellets"
+      headloss_clogged:
+        uom: mH2O
+        equation: "headloss_lime_clogged + headloss_marble_clogged"
+        parameters:
+          headloss_lime_clogged:
+            uom: mH2O
+            equation: "kozeny_carman(porosity_lime_clogged, filtration_velocity, diameter_lime) * height_lime"
+            if: "lime_pellets"
+          headloss_marble_clogged:
+            uom: mH2O
+            equation: "kozeny_carman(porosity_marble_clogged, filtration_velocity, diameter_marble) * height_marble"
+            if not: "lime_pellets"
+      average_headloss:
+        uom: mH2O
+        equation: "(headloss_clean + headloss_clogged) / 2"
+    backwash:
+      runtime_volume:
+        uom: m3
+        equation: "runtime * capacity if backwash_control == 'time' else runvolume"
+        precision: 0
+      backwash_duration:
+        uom: min
+        equation: "_backwash_duration"
+      backwash_volume:
+        uom: m3
+        equation: "max(_backwash_volume, 0.0001)"
+      max_rate:
+        equation: "max(_backwash_max_rate, 0.01)"
+        uom: 'm/h'
+      bed_expansion:
+        uom: m
+        equation: "expanded_height_lime + expanded_height_marble"
+        parameters:
+          bed_expansion_lime:
+            if: "lime_pellets"
+            equation: "backwash_bed_expansion(diameter_lime, max_rate)"
+            uom: '%'
+          bed_expansion_marble:
+            equation: "backwash_bed_expansion(diameter_marble, max_rate)"
+            uom: '%'
+          expanded_height_marble:
+            precision: 1
+            equation: "height_marble * bed_expansion_marble"
+            uom: m
+          expanded_height_lime:
+            precision: 1
+            if: "lime_pellets"
+            equation: "height_lime * bed_expansion_lime"
+            uom: m
+      backwash_headloss:
+        uom: mH2O
+        equation: "backwash_headloss(diameter_lime, max_rate, height_lime) if lime_pellets else backwash_headloss(diameter_marble, max_rate, height_marble)"
+        parameters:
+          backwash_headloss_lime:
+            if: "lime_pellets"
+            equation: "backwash_headloss(diameter_lime, max_rate, height_lime)"
+          backwash_headloss_marble:
+            equation: "backwash_headloss(diameter_marble, max_rate, height_marble)"
+      backwash_loss:
+        uom: "%"
+        equation: backwash_volume / runtime_volume
+      iron_load:
+        uom: kg/m2
+        equation: "iron_capture / surface_area"
+        parameters:
+          iron_capture:
+            uom: kg
+            equation: "(quality.influent.product.total('Fe', 'mg') - quality.effluent.product.total('Fe', 'mg'))*runtime_volume / 1000" 
+          backwash_iron:
+            uom: mg/L
+            equation: "iron_capture / backwash_volume * 1000"
+
+
+  # sustainability:
+  #   direct_emissions:
+  #     co2_emission:
+  #       if: "spray"
+  #       equation: "quality.influent.product.total('CO2','mg') - aerated.total('CO2','mg')"
+  #       uom: gCO2-eq/m3
+  #       precision: 2
+  #     methane_emission:
+  #       if: "spray"
+  #       equation: "methane_removal * methane_factor"
+  #       uom: gCO2-eq/m3
+  #       precision: 2
+  #       parameters:
+  #         methane_removal:
+  #           uom: "g/m3"
+  #           precision: 2
+  #           equation: "(quality.influent.product.total('Mtg') - aerated.total('Mtg'))*16.04"
+  #         methane_factor:
+  #           uom: "gCO2-eq/gCH4"
+  #           precision: 0
+  #           equation: "db.methane_emission_factor"
+
+
+      
 
     

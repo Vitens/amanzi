@@ -5,7 +5,7 @@
     </template>
 
     <div class="process">
-      <div id="marblefilter-process" :doublelayer="params.dual_media" :sprayer="params.spray">
+      <div id="marblefilter-process"  :sprayer="params.spray">
         <table id="marblefilter-table">
           <tr>
             <th></th>
@@ -221,15 +221,13 @@ export default {
   height: 400px;
   background: url('./assets/marblefiltration.png') no-repeat center 
 }
-#marblefilter-process[doublelayer="true"] {
-  background: url('./assets/marblefilter.png') no-repeat center
+
+
+#marblefilter-process[sprayer="true"] {
+  background: url('./assets/marble-spray.png') no-repeat center
 }
-#marblefilter-process[doublelayer="false"][sprayer="true"] {
-  background: url('./assets/marblefilter.png') no-repeat center
-}
-#marblefilter-process[doublelayer="true"][sprayer="true"] {
-  background: url('./assets/marblefilter.png') no-repeat center
-}
+
+
 #marblefilter-process .spray{ 
   margin: 10px;
 }

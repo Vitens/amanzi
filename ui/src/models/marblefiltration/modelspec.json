@@ -6,7 +6,10 @@
     "defaultImg": "marblefilter.png",
     "anchors": [
       {"position": "left", "direction": "in", "type": "product"},
-      {"position": "right", "direction": "out", "type": "product"}
+      {"position": "right", "direction": "out", "type": "product"},
+      {"position": "bottom", "direction": "out", "type": "waste"},
+      {"position": "top", "direction": "in", "type": "flush"}
+
     
     ],
     "rotatable": false

@@ -50,12 +50,14 @@ class QuantitySolver(Solver):
 
         all_equations = []
         results = []
-        
+        # logger.debug(self.scenario.models.values())
+        # logger.debug(self.scenario.connections.values())
         # collect equations from models
         counter = 0
         for model in self.scenario.models.values():
-            logger.debug(f"equation: {model}")
+            # logger.debug(f"equation: {model}")
             for eq, mass in model.equations:
+                logger.debug(f"Equation: {eq}, Mass: {mass}")
                 all_equations.append(eq)
                 results.append(mass)
                 counter += 1

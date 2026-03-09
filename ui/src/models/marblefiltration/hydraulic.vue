@@ -3,7 +3,6 @@
         <path :d="filterdimensions.rect" fill="white" stroke="black" stroke-width="2"  />
         <path v-if="!this.params.spray && !this.params.pressurized" :d="inlet" fill="white" stroke="black" stroke-width="2"  />
         <path v-if="this.params.spray" :d="sprayunit" fill="none" stroke="black" stroke-width="2"  />
-        <path v-if="this.params.dual_media" :d="antraLayer" fill="grey" stroke="black" stroke-width="2"/>
         <path :d="marbleLayer" fill="white" stroke="black" stroke-width="2"  />
         <path :d="supernatant" fill="none" stroke="#409EFF" stroke-width="2"  />
         <path :d="overflowFix" fill="none" stroke="white" stroke-width="3"  />
@@ -24,7 +23,8 @@
 
       computed: {
       bottom() {
-        return this.params.inlet_elevation-(this.params.fall_height_to_media + this.params.bed_height_start + this.params.filter_bottom + (this.params.dual_media ? this.params.height_anthracite : 0))
+        let bed_height = this.params.height_lime + this.params.height_marble;
+        return this.params.inlet_elevation-(this.params.fall_height_to_media + bed_height + this.params.filter_bottom )
       },
       dimensions() {
         return {
@@ -34,39 +34,29 @@
       },
       anchorpoints() {
         let inlet_y = (this.params.spray || this.params.pressurized) ? this.y(this.params.inlet_elevation) : this.y(this.params.inlet_elevation-0.15)
-
-        // let h_anthracite = this.params.dual_media ? this.params.height_anthracite : 0
-
-        let outlet_y = this.y(this.params.inlet_elevation-this.params.fall_height_to_media - h_anthracite - this.params.bed_height_start - this.params.filter_bottom/2)
-
+        if (this.params.lime_pellets){
+          var bed_height = this.params.height_lime;
+        }
+        else {
+          var bed_height = this.params.height_marble;
+        }
+        let outlet_y = this.y(this.params.inlet_elevation-this.params.fall_height_to_media - bed_height - (this.params.filter_bottom/2))
+        console.log(outlet_y)
         return {
           in: { x: (this.params.spray || this.params.pressurized) ? this.x0+0.1*this.width : this.x0 , y: inlet_y, anchor: 'left'},
           out: { x: this.x0 + 0.9*this.width, y: outlet_y, anchor: 'right'}
         }
       },
-      // antraLayer(){
-      //   let anthraciteHeight = this.params.height_anthracite*this.stepY
-      //   let yAntra = this.y(this.params.inlet_elevation);
-      //   if (this.params.spray){
-      //     yAntra = yAntra + this.params.fall_height_to_media*this.stepY;
-      //     var anthraciteLayer = this.Layer(this.x0+0.1*this.width, yAntra, 0.8*this.width,anthraciteHeight);
-      //   }
-      //   else if(this.params.pressurized){
-      //     yAntra = yAntra + this.params.fall_height_to_media*this.stepY;
-      //     var anthraciteLayer = this.Layer(this.x0+0.1*this.width, yAntra, 0.8*this.width,anthraciteHeight);
-      //   }
-      //   else {
-      //     yAntra = yAntra + this.params.fall_height_to_media*this.stepY;
-      //     var anthraciteLayer = this.Layer(this.x0+0.2*this.width, yAntra, 0.7*this.width,anthraciteHeight);
-      //   }
-      //   return anthraciteLayer;
-      // },
+
       marbleLayer(){
-        let marbleHeight = this.params.bed_height_start*this.stepY;
-        let ymarble = this.y(this.params.inlet_elevation);
-        if (this.params.dual_media){
-          ymarble = ymarble + this.params.height_anthracite*this.stepY;
+        if (this.params.lime_pellets){
+          var marbleHeight = this.params.height_lime*this.stepY;
         }
+        else {
+          var marbleHeight = this.params.height_marble*this.stepY;
+        }
+        let ymarble = this.y(this.params.inlet_elevation);
+
         if (this.params.spray){
           ymarble = ymarble + this.params.fall_height_to_media*this.stepY;
           var marbleLayer = this.Layer(this.x0+0.1*this.width, ymarble, 0.8*this.width, marbleHeight);
@@ -77,17 +67,21 @@
         }
         else {
           ymarble = ymarble + this.params.fall_height_to_media*this.stepY;
+          console.log(ymarble)
           var marbleLayer = this.Layer(this.x0+0.2*this.width, ymarble, 0.7*this.width, marbleHeight);
         }
         return marbleLayer;
       },
       filterdimensions(){
         let distance_to_top = 0.12 // m
-        var filterheight =(this.params.bed_height_start+distance_to_top+this.params.filter_bottom+this.params.fall_height_to_media)*this.stepY;
-
-        if (this.params.dual_media){
-          filterheight = filterheight + this.params.height_anthracite*this.stepY;
+        if (this.params.lime_pellets){
+          var bed_height = this.params.height_lime;
         }
+        else {
+          var bed_height = this.params.height_marble;
+        }
+        var filterheight =(bed_height+distance_to_top+this.params.filter_bottom+this.params.fall_height_to_media)*this.stepY;
+
 
         if (this.params.spray && !this.params.pressurized){
           var filterrect = this.filterwithoutTop(this.x0+0.1*this.width, this.y(this.params.inlet_elevation)-distance_to_top*this.stepY, 0.8*this.width, -filterheight);
