@@ -157,6 +157,7 @@ export default {
         var resp = [
           {'name': 'pH', 'units': '-', 'value': inf['pH']},
           {'name': 'O2', 'units': 'mg/l', 'value': inf['O2']},
+          {'name': 'CO2', 'units': 'mg/l', 'value': inf['CO2']},
           {'name': 'CH4', 'units': 'μg/l', 'value': inf['CH4']},
         ]
       }

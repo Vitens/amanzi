@@ -26,8 +26,6 @@ class Marblefiltration(Model, Loss):
         self.compound = self.configuration.get('model_component', 'CO2')
         self.removed_iron = 0
         self.waste_iron = 0
-
-        self.RQ = float(self.parameters['rq'])
         # self.create_arrays()
 
     @property
@@ -48,27 +46,13 @@ class Marblefiltration(Model, Loss):
     @property
     def _backwash_max_rate(self):
         return max([p['water'] for p in self.backwash_programme] + [0])
-    @property
-    def airDensity(self):
-        return Air(float(self.parameters['ambient_temperature']), 1.023e5).density()
-        
+
     @staticmethod
     def kozeny_carman(p, v, d):
         d /= 1e3 # convert to mm
         v /= 3600 # convert to m/s
         return 180 * 1.3e-6 / 9.81 * (1-p)**2 / p**3 * v/d**2
     
-    @staticmethod
-    def blower_power(Qair,Tair, delta_p, efficiency, air_density):
-        Pin = 101325 # Pa
-        R = 8.31446 # J/(mol*K)
-        kappa = 1.4
-        Mair = 28.97e-3 # kg/mol
-        Tair = Tair + 273.15 # C to K
-        Pavg = Qair * air_density* R * Tair *(kappa/(kappa-1)) * (((Pin+delta_p)/Pin)**((kappa-1)/kappa)-1)/(efficiency*Mair)
-        # conversion J to kWh
-        Pavg = Pavg / 3600000
-        return Pavg
     @staticmethod
     def backwash_bed_expansion(particle_size, max_rate):
         # Formula has a high sensitivity for viscosity --> temperature influence that is not implemented yet

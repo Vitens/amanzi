@@ -27,7 +27,6 @@ class Marblefiltration(Model, Loss):
         self.removed_iron = 0
         self.waste_iron = 0
 
-        self.RQ = float(self.parameters['rq'])
         # self.create_arrays()
 
     @property
@@ -48,27 +47,13 @@ class Marblefiltration(Model, Loss):
     @property
     def _backwash_max_rate(self):
         return max([p['water'] for p in self.backwash_programme] + [0])
-    @property
-    def airDensity(self):
-        return Air(float(self.parameters['ambient_temperature']), 1.023e5).density()
-        
+
     @staticmethod
     def kozeny_carman(p, v, d):
         d /= 1e3 # convert to mm
         v /= 3600 # convert to m/s
         return 180 * 1.3e-6 / 9.81 * (1-p)**2 / p**3 * v/d**2
-    
-    @staticmethod
-    def blower_power(Qair,Tair, delta_p, efficiency, air_density):
-        Pin = 101325 # Pa
-        R = 8.31446 # J/(mol*K)
-        kappa = 1.4
-        Mair = 28.97e-3 # kg/mol
-        Tair = Tair + 273.15 # C to K
-        Pavg = Qair * air_density* R * Tair *(kappa/(kappa-1)) * (((Pin+delta_p)/Pin)**((kappa-1)/kappa)-1)/(efficiency*Mair)
-        # conversion J to kWh
-        Pavg = Pavg / 3600000
-        return Pavg
+
     @staticmethod
     def backwash_bed_expansion(particle_size, max_rate):
         # Formula has a high sensitivity for viscosity --> temperature influence that is not implemented yet
@@ -102,8 +87,6 @@ class Marblefiltration(Model, Loss):
         ctx['_backwash_volume'] = self._backwash_volume
         ctx['_backwash_max_rate'] = self._backwash_max_rate
         ctx['kozeny_carman'] = self.kozeny_carman
-        ctx['blower_power'] = self.blower_power
-        ctx['Air_density'] = self.airDensity
         ctx['backwash_bed_expansion'] = self.backwash_bed_expansion
         ctx['backwash_headloss'] = self.backwash_headloss
         ctx['aerated'] = self.aerated if hasattr(self, 'aerated') else self.quality.influent.product
@@ -158,26 +141,39 @@ class Marblefiltration(Model, Loss):
 
         return efficiency
 
-    def spray_aeration(self, solution, compound, RQ, fall_height):
+    def spray_aeration(self, solution):
         solution = solution.copy()
 
-        # replace inert oxygen with free oxygen
-        # solution.change({ "O2": solution.total("Oxg"), "Oxg": -solution.total("Oxg")*0.99999})
 
-        effciency_co2 = self.calculate_efficiency('CO2', RQ , fall_height)
-        effciency_ch4 = self.calculate_efficiency('Mtg', RQ , fall_height)
-        effciency_O2 = self.calculate_efficiency('Oxg', RQ , fall_height)
+        co2_removal_efficiency = self.parameters['co2_removal_efficiency']
+        ch4_removal_efficiency = self.parameters['ch4_removal_efficiency']
+        o2_saturation = self.parameters['o2_saturation']
+
+        # calculate oxygen saturation and CO2 removal
+        air = self.pp.add_gas({f'O2(g)': 0.21, 'Ntg(g)': 0.79, 'CO2(g)': 0.043/100}, fixed_pressure=True, fixed_volume=False, volume=1000, pressure=1)
+
+        saturated = solution.copy().interact(air)
+
+        max_o2 = saturated.total('O2')
+        min_co2 = saturated.total('CO2')
+
+        saturated.forget()
+
+        o2_to_add = max(0, max_o2 * o2_saturation - solution.total('O2'))
+        co2_to_remove = (solution.total('CO2')-min_co2) * co2_removal_efficiency
+        ch4_to_remove = solution.total('Mtg') * ch4_removal_efficiency
+
+        solution.change({ "O2": o2_to_add, "CO2": -co2_to_remove, "Mtg": -ch4_to_remove })
+
+        # replace inert oxygen with free oxygen
+
+        # effciency_co2 = self.calculate_efficiency('CO2', RQ , fall_height)
+        # effciency_ch4 = self.calculate_efficiency('Mtg', RQ , fall_height)
+        # effciency_O2 = self.calculate_efficiency('Oxg', RQ , fall_height)
 
         # max Oxygen saturation linear interpolation dependend on water temperature (5-20 Celsius)
         # mg/l to mmol/l
-        O2_max = (-0.2366*self.quality.influent.product.temperature + 13.801) /32
-        o2_in = self.quality.influent.product.total("O2", "mmol")
-        O2_change = abs((O2_max-o2_in)*effciency_O2)
-        solution.remove_fraction('CO2', effciency_co2)
-        solution.remove_fraction('Mtg', effciency_ch4)
-        solution.add('O2',O2_change , 'mmol')
         return solution
-    
     def filtrate(self, solution):
         ## Same as sandfiltration.py with the added calcite saturation after each oxidation step
         # suppress removal of elements if set to True
@@ -231,10 +227,9 @@ class Marblefiltration(Model, Loss):
             'Mn': lambda s: s.total("Mn", 'mg'),
         }
         results = {}
-        print(self.sprayaeration)
 
         if(self.sprayaeration):
-            solution = self.spray_aeration(self.quality.influent.product, self.compound, self.RQ, self.fall_height)
+            solution = self.spray_aeration(self.quality.influent.product)
             labels = ["spray", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
             step_results = {}
             for n, v in values.items():
