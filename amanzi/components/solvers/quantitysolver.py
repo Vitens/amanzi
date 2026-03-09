@@ -53,25 +53,25 @@ class QuantitySolver(Solver):
 
         all_equations = []
         results = []
-        
+        # logger.debug(self.scenario.models.values())
+        # logger.debug(self.scenario.connections.values())
         # collect equations from models
         counter = 0
         for model in self.scenario.models.values():
-            logger.debug(f"equation: {model}")
+            # logger.debug(f"equation: {model}")
             for eq, mass in model.equations:
+                logger.debug(f"Equation: {eq}, Mass: {mass}")
                 all_equations.append(eq)
                 results.append(mass)
                 counter += 1
 
-        print(len(all_equations))
-        print(len(results))
-        
+        logger.debug(f"All equations: {all_equations}")
+        logger.debug(f"Results: {results}")
         # construct matrix
         matrix = np.zeros((len(all_equations), len(results)))
         # fill matrix
         for row, eq in enumerate(all_equations):
             for conn, weight in eq:
-                print(row, conn.id, conn)
                 matrix[row, conn.id] = weight  
 
         # solve matrix

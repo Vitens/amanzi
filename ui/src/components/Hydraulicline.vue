@@ -212,11 +212,12 @@ export default {
             }
 
             level = (idx == 0) ? model.head_in : model.head_out
-
+            console.log("level",m.model.type, level)
             levels.push({x: anchor.x, y: anchor.y, level: level, anchor: anchor.anchor, above: false, direction: direction})
           }
         }
       }
+      
       return levels
     },
 
