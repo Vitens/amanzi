@@ -1,6 +1,6 @@
 parameters:
   design:
-    activatedcarbon:
+    filter:
       advanced:
         type: boolean
         default: false
@@ -8,11 +8,11 @@ parameters:
         default: 'rectangular'
         options: ['rectangular', 'circular']
       length:
-        default: 10.0
+        default: 10
         uom: m
         if:
           shape: 'rectangular'
-        range: [1.0, 20.0]
+        range: [1, 20]
       width:
         default: 2.5
         uom: m
@@ -36,55 +36,20 @@ parameters:
       staggered_replacement:
         default: true
       replacement_interval:
-        uom: days
+        uom: 'days'
         default: 1000
         range: [1, 10000]
       replacement_loading:
-        uom: "%"
+        uom: '%'
         default: 0.5
         range: [0.01, 1]
-    backwash:
-      backwash_interval:
-        uom: days
-        default: 30
-        range: [1, 1000]
-      backwash_duration:
-        uom: hours
-        default: 2
-        range: [0.1, 24]
-      backwash_flowrate:
-        uom: m3/h
-        default: 10
-        range: [0.1, 1000]
-      backwash_pump_efficiency:
-        default: 0.6
-        uom: "-"
-        range: [0.4, 0.8]
-      backwash_head:
-        uom: mH2O
-        default: 5
-        range: [1, 10]
-      backwash_control:
-        default: 'time'
-        options: ['time', 'volume']
-      runtime:
-        default: 24.0
-        if:
-          backwash_control: 'time'
-        uom: h
-        range: [1.0, 72.0]
-      runvolume:
-        default: 5000
-        if:
-          backwash_control: 'volume'
-        uom: m3
-        range: [10, 100000]
+
 
   chemicals:
     general:
       packing_type:
-        default: "NORA Supra 0.8"
-        options: ["NORA Supra 0.8", "NORA Supra 1.0", "NORA Supra 1.2", "NORA Supra 1.5", "NORA Supra 2.0"]
+        default: 'NORIT-Supra-0,8'
+        options: ['NORIT-Supra-0,8', 'NORIT-Supra-1,0', 'NORIT-Supra-1,2', 'NORIT-Supra-1,5', 'NORIT-Supra-2,0']
       apparent_density:
         uom: kg/m3
         default: 500
@@ -98,27 +63,26 @@ parameters:
         default: 2000
         range: [1000, 5000]
       bed_porosity:
-        uom: "-"
+        uom: '-'
         default: 0.5
         range: [0.1, 0.9]
+      bed_porosity_clogged:
+        uom: '-'
+        default: 0.3
+        range: [0.1, 0.9]
+    
       particle_porosity:
-        uom: "-"
+        uom: '-'
         default: 0.6
         range: [0.1, 0.9]
-      
-
 
 outputs:
   design:
-    activated_carbon:
+    activatedcarbon:
       volume:
         uom: m3
         equation: "math.pi * (diameter/2)**2 * bed_height"
         precision: 2
-      replacement:
-        uom: days
-        equation: "replacement_interval"
-        precision: 0
       surface_area:
         uom: m2
         equation: "length * width if shape == 'rectangular' else 3.1415 * diameter**2 / 4"
@@ -131,18 +95,41 @@ outputs:
       EBCT:
         uom: min
         equation: "bed_height / filtration_velocity * 60"
-    backwash:
-      runtime_volume:
-        uom: m3
-        equation: "runtime * capacity if backwash_control == 'time' else runvolume"
+    pressure_loss:
+      headloss_clean:
+        uom: mH2O
+        equation: "headloss_clean"
+        parameters:
+          headloss_clean:
+            uom: mH2O
+            equation: "kozeny_carman(bed_porosity, filtration_velocity, particle_diameter) * bed_height"
+      headloss_clogged:
+        uom: mH2O
+        equation: "headloss_clogged"
+        parameters:
+          headloss_clogged:
+            uom: mH2O
+            equation: "kozeny_carman(bed_porosity_clogged, filtration_velocity, particle_diameter) * bed_height"
+      average_headloss:
+        uom: mH2O
+        equation: "(headloss_clean + headloss_clogged) / 2"
+    replacement:
+      replacement_days:
+        uom: days
+        equation: "replacement_interval"
         precision: 0
-      backwash_duration:
-        uom: min
-        equation: "_backwash_duration"
-      backwash_volume:
-        uom: m3
-        equation: "max(_backwash_volume, 0.0001)"
-    
+      carbon_replaced_per_year:
+        uom: kg/year
+        if: "staggered_replacement"
+        equation: "volume * apparent_density * 365 / replacement_interval"
+      carbon_replacment:
+        uom: kg
+        if: "not staggered_replacement"
+        equation: "volume * apparent_density"
+      
+
+
+
   energy:
     backwash:
       backwash_energy:

@@ -1,13 +1,12 @@
 <template>
-    <teleport to="#category-operational">
-      <el-form label-position="top">
+  <teleport defer to="#category-operational" v-if="teleport">      <el-form label-position="top">
         <h3>{{$t("ui.design.sections.backwash_programme") }}</h3>
         <table id="backwash_programme">
           <thead>
             <th>{{ $t('models.filtration.backwash_programme.step') }}</th>
             <th>{{ $t('models.filtration.backwash_programme.time') }}</th>
             <th v-html="$t('models.filtration.backwash_programme.q_water')"></th>
-            <th v-html="$t('models.filtration.backwash_programme.q_air')"</th>
+            <th v-html="$t('models.filtration.backwash_programme.q_air')"></th>
           </thead>
           <tr>
             <td></td>
@@ -32,7 +31,7 @@
         </table>
       </el-form>
     </teleport>
-<teleport to="#category-chemicals">
+  <teleport defer to="#category-chemicals" v-if="teleport">
     <el-form>
         <table id="backwash_programme">
           <thead>
@@ -58,7 +57,7 @@
           
         </table>
     </el-form>
-  </teleport>
+  </teleport> 
 </template>
 
 <script>
@@ -67,9 +66,12 @@ export default {
 props: ['config', 'modelValue'],
   data() { return {
     backwash_steps: 5,
-    backwash: 'increasing'
-  }}
-,
+    backwash: 'increasing',
+    teleport: true
+  }},
+beforeUnmount() {
+    this.teleport = false
+  },
 methods:{
     PFASlist(){
         if(!this.$project.designState.model) { return [] }

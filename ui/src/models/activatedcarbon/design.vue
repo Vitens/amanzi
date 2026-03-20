@@ -9,12 +9,12 @@
           <div id="acfilter-process">
             <Result name="influent" units="ng/l" color="blue" :components="resultSet('influent')" />
             <Result name="effluent" color="green" :components="resultSet('effluent')" />
-            <!-- <table class="hydraulics">
+            <table class="hydraulics">
               <tr><td>Regernatie</td><td>{{ output('model', 'regeneration') }}</td><td>jaar</td></tr>
               <tr><td>Efficiency</td><td>{{ output('model', 'Efficiency2') }}</td><td>%</td></tr>
               <tr><td>EBCT</td><td>{{ output('model', 'EBCT') }}</td><td>min</td></tr>
               <tr><td>Volume</td><td>{{ output('model', 'Volume') }}</td><td>m<sup>3</sup></td></tr>
-            </table> -->
+            </table>
           </div>
         </div>
   
@@ -35,7 +35,7 @@
   
     </el-tab-pane>
   
-  </template>
+</template>
 
 <script>
 import Chart from '@/components/Chart.vue'

@@ -6,8 +6,7 @@
       </el-aside>
       <el-main id="design">
         <el-tabs>
-        <component :is="'design-'+editingModel.type" :config="editingModel.configuration" v-if="editingModel"></component>
-
+          <component :is="'design-'+editingModel.type" :config="editingModel.configuration" v-if="editingModel"></component>
         <el-tab-pane lazy>
           <template #label>
             <el-icon size="14px"><i class='fa fa-exchange'></i></el-icon><span>{{$t('ui.design.categories.massbalance')}}</span>
@@ -45,6 +44,7 @@ export default {
   computed: {
     editingModel() {
       var mdl = this.$project.scenario.models.find(m => m.uid == this.$project.scenario.editingModel)
+      console.log(mdl.name);
       return mdl
     }
   },

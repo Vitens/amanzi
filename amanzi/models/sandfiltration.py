@@ -11,20 +11,19 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 class Sandfiltration(Model, Loss):
-    parametric_model = ['base', 'model', 'sprayaerator','filtration']
+    parametric_model = ['base', 'model', 'sprayaerator','filtration','sandfiltration']
 
 
     def __init__(self, config, pp):
         super().__init__(config, pp)
 
-        config = config.get('configuration', {})
         config = config.get('parameters', {})
 
         self.loss = self.get_output('backwash_loss')
         self.load = 0
         self.waste_solution = None
         self.sprayaeration = config.get('spray', False)
-        self.fall_height = float(self.parameters['fall_height_to_media'])
+        self.fall_height = config.get('fall_height_to_media', 0.5)
         self.configuration = config.get('configuration', {})
         self.compound = self.configuration.get('model_component', 'CO2')
         self.removed_iron = 0

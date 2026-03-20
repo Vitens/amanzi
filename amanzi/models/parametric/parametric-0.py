@@ -23,7 +23,7 @@ class ParametricModel():
       self.process_outputs(model, filename)
 
   def process_parameters(self, model, filename):
-    for category, params in model.get('parameters', {}).items():
+     for category, params in model.get('parameters', {}).items():
       for section, values in params.items():
             for name, param in values.items():
                 if name in self.input_parameters:

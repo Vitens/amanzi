@@ -183,7 +183,7 @@
       </div>
     </div>
     </el-tab-pane>
-    <el-tab-pane id="groundwater-design" :disabled="true">
+    <el-tab-pane id="groundwater-design" :disabled="false">
       <template #label>
         <el-icon size="14px"><i class='fa fa-flask'></i></el-icon><span>Micropollutants</span>
       </template>
