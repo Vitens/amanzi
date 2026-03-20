@@ -1,10 +1,7 @@
 <template>
   <div :id="namespace" class="quickresult">
     <copy-button :target="'#' + namespace + ' table'"></copy-button>
-    <h3>
-      <i class="fa" :class="icon(namespace)"></i
-      >{{ $t("ui.sidebar." + namespace + ".label") }}
-    </h3>
+    <h3><i class='fa' :class="icon(namespace)"></i>{{ $t('ui.sidebar.' + namespace + '.label') }}</h3>
     <table>
       <tr v-for="metric in metrics">
         <td

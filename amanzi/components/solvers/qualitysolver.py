@@ -2,6 +2,10 @@ import logging
 import math
 from typing import Dict, List, Optional, Union
 from .solver import Solver
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class QualitySolver(Solver):
     """
@@ -79,6 +83,7 @@ class QualitySolver(Solver):
                     # set model index if not set
                     model.index = idx if not model.index else model.index
                     # set model effluent quality
+                    logging.debug(f"Model: {model.uid}, Stream type: {stream_type}")
                     model.quality['effluent'][stream_type] = model.emitter_solutions[stream_type].copy()
                     if stream_type == 'waste':
                         print(model, model.quality['effluent']['waste'])

@@ -1,5 +1,9 @@
 import numpy as np
 from .solver import Solver
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class QuantitySolver(Solver):
     """
@@ -46,15 +50,21 @@ class QuantitySolver(Solver):
 
         all_equations = []
         results = []
-        
+        # logger.debug(self.scenario.models.values())
+        # logger.debug(self.scenario.connections.values())
         # collect equations from models
         counter = 0
         for model in self.scenario.models.values():
+            # logger.debug(f"equation: {model}")
             for eq, mass in model.equations:
+                logger.debug(f"Equation: {eq}, Mass: {mass}")
+                logger.debug(f"Equation: {eq}, Mass: {mass}")
                 all_equations.append(eq)
                 results.append(mass)
                 counter += 1
 
+        logger.debug(f"All equations: {all_equations}")
+        logger.debug(f"Results: {results}")
         # construct matrix
         matrix = np.zeros((len(all_equations), len(results)))
         # fill matrix
