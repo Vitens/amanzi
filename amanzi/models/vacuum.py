@@ -18,7 +18,7 @@ class Vacuum(Model, Balance):
       gas_phase = self.pp.add_gas({'Ntg(g)':0, 'Mtg(g)': 0, 'CO2(g)':0, 'O2(g)': 0, 'H2O(g)': 0, 'H2Sg(g)': 0}, pressure = pressure, fixed_pressure = True, fixed_volume = False)
 
       # degassed
-      degassed = solution.copy()
+      degassed = solution.deepcopy()
 
       degassed.interact(gas_phase)
 

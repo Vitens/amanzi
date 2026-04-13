@@ -32,25 +32,25 @@ class Softening(Model, Balance):
 
     def soften(self, solution, base_chemical, base_dosing, acid_chemical, acid_dosing, bypass):
 
-        reactor_in = solution.copy() # reactor influent
+        reactor_in = solution.deepcopy() # reactor influent
 
-        bypass_in = solution.copy() # bypass influent
+        bypass_in = solution.deepcopy() # bypass influent
 
         # dose chemical
-        dosed = reactor_in.copy().add(base_chemical, base_dosing, 'mmol')
+        dosed = reactor_in.deepcopy().add(base_chemical, base_dosing, 'mmol')
 
         if self.fe_capture > 0 and dosed.total('[Fe+2]','mmol') > 0:
             dosed.remove('[Fe+2]CO3', dosed.total('[Fe+2]','mmol') * self.fe_capture, 'mmol')
         if self.mn_capture > 0 and dosed.total('[Mn+2]','mmol') > 0:
             dosed.remove('[Mn+2]CO3', dosed.total('[Mn+2]','mmol') * self.mn_capture, 'mmol')
 
-        softened = dosed.copy().desaturate('Calcite', to_si=self.to_si)
+        softened = dosed.deepcopy().desaturate('Calcite', to_si=self.to_si)
 
         # if acid_position is product or bypass, then acidify
         if self.acid_position == 'reactor-outlet':
-            neutralized = softened.copy().add(acid_chemical, acid_dosing, 'mmol')
+            neutralized = softened.deepcopy().add(acid_chemical, acid_dosing, 'mmol')
         elif self.acid_position == 'bypass':
-            neutralized = bypass_in.copy().add(acid_chemical, acid_dosing, 'mmol')
+            neutralized = bypass_in.deepcopy().add(acid_chemical, acid_dosing, 'mmol')
 
         bypass_solution = bypass_in if self.acid_position != 'bypass' else neutralized
         softened_solution = softened if self.acid_position != 'reactor-outlet' else neutralized
@@ -59,7 +59,7 @@ class Softening(Model, Balance):
         mixed = softened_solution * (1-bypass) + bypass_solution * (bypass)
 
         if self.acid_position == 'after-bypass':
-            neutralized = mixed.copy().add(acid_chemical, acid_dosing, 'mmol')
+            neutralized = mixed.deepcopy().add(acid_chemical, acid_dosing, 'mmol')
         
         effluent = mixed if self.acid_position != 'after-bypass' else neutralized
 

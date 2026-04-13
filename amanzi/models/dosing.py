@@ -43,7 +43,7 @@ class Dosing(Model, Balance):
     
     def dose(self, solution, chemical, dosing):
 
-        dosed = solution.copy().add(chemical, dosing, 'mmol')
+        dosed = solution.deepcopy().add(chemical, dosing, 'mmol')
         return dosed
 
     def run_quality(self, type, total_inflow, solution):
@@ -66,7 +66,7 @@ class Dosing(Model, Balance):
       if(opt['success'] == False):
         self.calculated_dosage = 0
         self.warning = True
-        return solution.copy()
+        return solution.deepcopy()
       else:
         self.calculated_dosage = opt['x'][0]
       

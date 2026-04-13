@@ -20,8 +20,8 @@ class Recycle(Model, Splitter):
     def run_quality(self, type, total_inflow, solution):
         ## remove 95% of NaCl
 
-        self.product_solution = solution.copy()
-        self.waste_solution = solution.copy()
+        self.product_solution = solution.deepcopy()
+        self.waste_solution = solution.deepcopy()
         return solution
 
     # Problem is that run_trace only happens for product, not waste

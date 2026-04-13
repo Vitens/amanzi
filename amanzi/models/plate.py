@@ -49,14 +49,14 @@ class Plate(Model, Balance):
             'H2O(g)': 0,
         }
 
-        gas_comp = air_comps.copy()
+        gas_comp = air_comps.deepcopy()
 
         iterations = 1 if recirculation == 0 else 3
 
         RQ *= self.efficiency
         for _ in range(iterations):
              # copy influent
-            inf = influent.copy()
+            inf = influent.deepcopy()
             # process air
             air = self.pp.add_gas(gas_comp,  pressure=1, volume=RQ, fixed_pressure=True, fixed_volume=False)
             # interact

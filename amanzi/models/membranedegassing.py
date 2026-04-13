@@ -37,8 +37,8 @@ class Membranedegassing(Model, Balance):
     }, pressure = vacuum2, fixed_pressure = True, fixed_volume = False, volume = ((rq2[0] + rq2[1]) / vacuum2))
     
 
-    effluent1 = solution.copy().interact(gas1)
-    effluent2 = effluent1.copy().interact(gas2)
+    effluent1 = solution.deepcopy().interact(gas1)
+    effluent2 = effluent1.deepcopy().interact(gas2)
 
     return effluent1, effluent2, gas1, gas2
 

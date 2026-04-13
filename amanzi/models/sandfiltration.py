@@ -16,21 +16,17 @@ class Sandfiltration(Model, Loss):
 
     def __init__(self, config, pp):
         super().__init__(config, pp)
-
-        config = config.get('parameters', {})
-
+        
         self.loss = self.get_output('backwash_loss')
         self.load = 0
         self.waste_solution = None
-        self.sprayaeration = config.get('spray', False)
-        self.fall_height = config.get('fall_height_to_media', 0.5)
-        self.configuration = config.get('configuration', {})
-        self.compound = self.configuration.get('model_component', 'CO2')
+        self.sprayaeration = self.parameters['spray']
+        self.fall_height = self.parameters['fall_height_to_media']
         self.removed_iron = 0
         self.waste_iron = 0
 
     def oxidize(self, solution, from_element, to_element, oxygen_consumption, efficiency=1):
-        solution = solution.copy()
+        solution = solution.deepcopy()
         to_exchange = solution.total(from_element) * 0.999999 # prevent negative concentrations
         oxygen_available = solution.total("O2") # free oxygen
 
@@ -119,7 +115,7 @@ class Sandfiltration(Model, Loss):
             mn_removal_efficiency = self.parameters['manganese_removal_efficiency']
 
 
-        influent = solution.copy()
+        influent = solution.deepcopy()
         # replace inert oxygen with free oxygen
         influent.change({ "O2": influent.total("Oxg"), "Oxg": -influent.total("Oxg")*0.99999})
 
@@ -139,7 +135,7 @@ class Sandfiltration(Model, Loss):
         after_no2 = self.oxidize(after_nh4, "[N+3]", "N+3", 2)
         after_mn = self.oxidize(after_no2, "[Mn+2]", "Mn+2", 0.5, mn_removal_efficiency).desaturate("Manganite", to_si=0)
 
-        effluent = after_mn.copy()
+        effluent = after_mn.deepcopy()
 
         return effluent, [influent, after_ch4, after_fe, after_h2s, after_nh4, after_no2, after_mn]
     
@@ -172,12 +168,12 @@ class Sandfiltration(Model, Loss):
         else:
             captured_iron = self.removed_iron * self.parameters['nominal_capacity'] *self.parameters['runtime']/1000
         self.waste_iron = captured_iron/self._backwash_volume *1000
-        solution = solution.copy()
+        solution = solution.deepcopy()
         solution.change({'Fe': self.waste_iron}, units='mg')
         return solution
     
     def spray_aeration(self, solution):
-        solution = solution.copy()
+        solution = solution.deepcopy()
 
 
         co2_removal_efficiency = self.parameters['co2_removal_efficiency']
@@ -187,7 +183,7 @@ class Sandfiltration(Model, Loss):
         # calculate oxygen saturation and CO2 removal
         air = self.pp.add_gas({f'O2(g)': 0.21, 'Ntg(g)': 0.79, 'CO2(g)': 0.043/100}, fixed_pressure=True, fixed_volume=False, volume=1000, pressure=1)
 
-        saturated = solution.copy().interact(air)
+        saturated = solution.deepcopy().interact(air)
 
         max_o2 = saturated.total('O2')
         min_co2 = saturated.total('CO2')
@@ -214,24 +210,26 @@ class Sandfiltration(Model, Loss):
 
         if(type == 'flush'):
             # add load to waste solution
-            self.waste_solution = self.wastestream_calculation(solution.copy())
+            self.waste_solution = self.wastestream_calculation(solution.deepcopy())
             return self.waste_solution
         
         if(type == 'product'):
             # influent
-            solution = solution.copy()
+            solution = solution.deepcopy()
 
             if(self.sprayaeration):
                 solution = self.spray_aeration(solution)
-                self.aerated = solution.copy()
+                self.aerated = solution.deepcopy()
 
             effluent, _ = self.filtrate(solution)
+
 
             return effluent
         return solution
 
 
-    def design(self):
+    def design(self):        
+        print(f"Relevant Influent: {self.quality.influent.product.extraneous}")
         values = {
             'pH': lambda s: s.pH,
             'O2': lambda s: s.total("O2", 'mg') ,
@@ -246,17 +244,18 @@ class Sandfiltration(Model, Loss):
         }
         results = {}
 
+        print(f"Spray aeration: {self.sprayaeration}")
         if(self.sprayaeration):
             solution = self.spray_aeration(self.quality.influent.product)
             labels = ["spray", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
             step_results = {}
             for n, v in values.items():
-                step_results[n] = v(self.quality.influent.product.copy())
+                step_results[n] = v(self.quality.influent.product.deepcopy())
             results["influent"]= step_results
             
         else:
             labels = ["influent", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
-            solution = self.quality.influent.product.copy()
+            solution = self.quality.influent.product.deepcopy()
 
         effluent, steps = self.filtrate(solution)
 

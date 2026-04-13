@@ -121,7 +121,7 @@ class Toweraeration(Model, Balance):
         else:
             c_in = influent.total(compound, units='mmol')
         if compound == 'Oxg':
-            solution = influent.copy()
+            solution = influent.deepcopy()
             # oxg_in = influent.total("Oxg", "mmol")
             # o2_in = influent.total("O2", "mmol")
 
@@ -164,7 +164,7 @@ class Toweraeration(Model, Balance):
 
 
     def run_quality(self, type, total_inflow, solution):
-        solution = self.unitcheck(solution.copy())
+        solution = self.unitcheck(solution.deepcopy())
         self.eng_stickl = run_engelstichlmair(self.quality.influent.product.temperature,self.temp_g, self.packing_type)
 
         ## gets called by solver

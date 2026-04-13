@@ -49,6 +49,7 @@ class Activatedcarbon(Model, Loss):
         self.bed_porosity = float(config.get('bed_porosity', 0.4))
         self.particle_porosity = float(config.get('particle_porosity', 0.5))
         self.waste_solution = None
+        self.OMV_capacity = config.get('OMV_capacity',{})
 
         
     @property
@@ -248,12 +249,12 @@ class Activatedcarbon(Model, Loss):
             name= i['name']
             removal_efficiency = i['removalAKF']
             if name in solution.extraneous['PFAS']:
-                solution.extraneous['PFAS'][name]=solution.extraneous['PFAS'][name]*(1-float(removal_efficiency))
+                solution.extraneous['PFAS'][name]=solution.extraneous['PFAS'][name]*(1-(float(removal_efficiency)/100))
         for i in self.scenario['metaData']['customMicroComponents']['Other']  :
             name= i['name']
             removal_efficiency = i['removalAKF']
             if name in solution.extraneous['Other']:
-                solution.extraneous['Other'][name]=solution.extraneous['Other'][name]*(1-float(removal_efficiency))    
+                solution.extraneous['Other'][name]=solution.extraneous['Other'][name]*(1-(float(removal_efficiency)/100))    
         return solution
     
     # def advancedExtraneousRemoval(self, solution):
@@ -275,7 +276,7 @@ class Activatedcarbon(Model, Loss):
     #                 solEffluent[key]= solEffluent[key]+Effluentconc*(1/(self.filternumber))
     #     return solution
     def spray_aeration(self, solution):
-        solution = solution.copy()
+        solution = solution.deepcopy()
 
 
         co2_removal_efficiency = self.parameters['co2_removal_efficiency']
@@ -285,7 +286,7 @@ class Activatedcarbon(Model, Loss):
         # calculate oxygen saturation and CO2 removal
         air = self.pp.add_gas({f'O2(g)': 0.21, 'Ntg(g)': 0.79, 'CO2(g)': 0.043/100}, fixed_pressure=True, fixed_volume=False, volume=1000, pressure=1)
 
-        saturated = solution.copy().interact(air)
+        saturated = solution.deepcopy().interact(air)
 
         max_o2 = saturated.total('O2')
         min_co2 = saturated.total('CO2')
@@ -320,29 +321,22 @@ class Activatedcarbon(Model, Loss):
 
 
     def run_quality(self, type, total_inflow,solution):
-        solution = self.unitcheck(solution.copy())
 
         if(type == 'flush'):
             # add load to waste solution
-            self.waste_solution = self.wastestream_calculation(solution.copy())
+            self.waste_solution = self.wastestream_calculation(solution.deepcopy())
             return self.waste_solution
-        if (type == 'product'):
-            solution = self.simpleExtraneousRemoval(solution.copy())
 
+        if (type == 'product'):
+            solution = solution.deepcopy()
             if(self.sprayaeration):
                 solution = self.spray_aeration(solution)
-                self.aerated = solution.copy()
-            return solution
+                self.aerated = solution.deepcopy()
 
-        # if self.advanced == False:
-        # solution = self.simpleExtraneousRemoval(solution.copy())
+            effluent = self.simpleExtraneousRemoval(solution)
 
-        # if self.advanced == True:
-        #     solution = self.advancedExtraneousRemoval(solution.copy())
-
-
-        #solution = effluent
-       
+            return effluent
+               
         return solution
     
     
@@ -366,7 +360,11 @@ class Activatedcarbon(Model, Loss):
     #     else:
     #         return pos - 1
 
-    def design(self):          
+    def design(self):
+        logging.debug(f"Design Relevant Influent: {self.quality.influent.product.extraneous}")
+
+        influent = self.quality.influent.product.deepcopy()
+        logging.debug(f"Design Start Influent: {influent.extraneous['PFAS']}")
         eff = {}
         peqPFAS={}
         sum4=[]
@@ -413,8 +411,11 @@ class Activatedcarbon(Model, Loss):
         #     sum20= [{'x': idx[k]*bedvolumesPerDay , 'y': sum20[k] } for k in range(len(PSDMcalculation[key].x))]
 
 
-            
-        
+        if(self.sprayaeration):
+            influent = self.spray_aeration(influent)
+            self.aerated = influent.deepcopy()
+        effluent = self.simpleExtraneousRemoval(influent)
+
 
         #print(eff) 
         #Assuming the same adsorption capacity for all compounds in mg/m³ GAC
@@ -433,19 +434,21 @@ class Activatedcarbon(Model, Loss):
         volumeGAC = (self.packing_height* math.pi * (self.dimension/2)**2) 
         regeneration = (volumeGAC *capacityFactor / ((sumPFASinGAC+sumOtherinGAC)*self.capacity*1000)) #capcity divided by amount of organics adsorbed per hour
 
-        relevantInfluent = self.quality.influent.product.extraneous['PFAS'].copy()
-        relevantInfluent.update(self.quality.influent.product.extraneous['Other'])
-        relevantEffluent = self.quality.effluent.product.extraneous['PFAS'].copy()
-        relevantEffluent.update(self.quality.effluent.product.extraneous['Other'])
-        #print(relevantEffluent)
+        # relevantInfluent = influent.extraneous['PFAS'].deepcopy()
+        # relevantInfluent.update(self.quality.influent.product.extraneous['Other'])
+        # relevantEffluent = self.quality.effluent.product.extraneous['PFAS'].deepcopy()
+        # relevantEffluent.update(self.quality.effluent.product.extraneous['Other'])
+        # print(f"Relevant Effluent: {self.quality.effluent.product.extraneous}")
+        # print(f"Relevant Influent: {self.quality.influent.product.extraneous}")
+        logging.debug(f"Design End Influent: {influent.extraneous['PFAS']}")
 
 
 
         
         return {
-            'influent': relevantInfluent
+            'influent': influent.extraneous['PFAS']
             ,
-            'effluent': relevantEffluent
+            'effluent': effluent.extraneous['PFAS']
             ,
             'model': {
                 'regeneration': regeneration/(24*365),

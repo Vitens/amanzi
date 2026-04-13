@@ -355,8 +355,8 @@ class MembraneStack():
     concentrate_changes = self.balance_solution(concentrate_changes)
 
     # create the concentrate and permeate solutions and apply the changes
-    permeate = feed.copy().change(permeate_changes, units='mol')
-    concentrate = feed.copy().change(concentrate_changes, units='mol')
+    permeate = feed.deepcopy().change(permeate_changes, units='mol')
+    concentrate = feed.deepcopy().change(concentrate_changes, units='mol')
 
     return concentrate, permeate
       
@@ -372,7 +372,7 @@ class MembraneStack():
       tuple: stack permeate and concentrate solutions, list of stage permeate and concentrate solutions, list of element permeate and concentrate
     """
 
-    feed_solution = solution.copy() # copy the solution object
+    feed_solution = solution.deepcopy() # copy the solution object
     # get phreeqpython instance
     pp = solution.pp
 
@@ -397,7 +397,7 @@ class MembraneStack():
         element_permeate.append(perm)
         element_concentrate.append(conc)
         # set feed solution to concentrate solution for next element
-        feed_solution = conc.copy()
+        feed_solution = conc.deepcopy()
 
         stage_flows.append(Q_p)
 
@@ -413,12 +413,12 @@ class MembraneStack():
 
       # calculate stage permeate and concentrate composition
       stage_permeate.append(pp.mix_solutions(permeate_mixture))
-      stage_concentrate.append(feed_solution.copy())
+      stage_concentrate.append(feed_solution.deepcopy())
   
     # calculate total stack permeate quality
     total_permeate = sum(stage_permeate_flows)
     stack_permeate_mixture = {stage_permeate[idx]: stage_permeate_flows[idx]/total_permeate for idx in range(len(self.staging))}
     stack_permeate = pp.mix_solutions(stack_permeate_mixture)
-    stack_concentrate = feed_solution.copy()
+    stack_concentrate = feed_solution.deepcopy()
 
     return stack_permeate, stack_concentrate, stage_permeate, stage_concentrate, element_permeate, element_concentrate

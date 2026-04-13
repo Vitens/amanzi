@@ -95,7 +95,7 @@ class Marblefiltration(Model, Loss):
 
 
     def oxidize(self, solution, from_element, to_element, oxygen_consumption, efficiency=1):
-        solution = solution.copy()
+        solution = solution.deepcopy()
         to_exchange = solution.total(from_element) * 0.999999 # prevent negative concentrations
         oxygen_available = solution.total("O2") # free oxygen
 
@@ -112,7 +112,7 @@ class Marblefiltration(Model, Loss):
         else:
             captured_iron = self.removed_iron * self.parameters['nominal_capacity'] *self.parameters['runtime']/1000
         self.waste_iron = captured_iron/self._backwash_volume *1000
-        solution = solution.copy()
+        solution = solution.deepcopy()
         solution.change({'Fe': self.waste_iron}, units='mg')
         solution.saturate("Calcite", 0)
         return solution
@@ -142,7 +142,7 @@ class Marblefiltration(Model, Loss):
         return efficiency
 
     def spray_aeration(self, solution):
-        solution = solution.copy()
+        solution = solution.deepcopy()
 
 
         co2_removal_efficiency = self.parameters['co2_removal_efficiency']
@@ -152,7 +152,7 @@ class Marblefiltration(Model, Loss):
         # calculate oxygen saturation and CO2 removal
         air = self.pp.add_gas({f'O2(g)': 0.21, 'Ntg(g)': 0.79, 'CO2(g)': 0.043/100}, fixed_pressure=True, fixed_volume=False, volume=1000, pressure=1)
 
-        saturated = solution.copy().interact(air)
+        saturated = solution.deepcopy().interact(air)
 
         max_o2 = saturated.total('O2')
         min_co2 = saturated.total('CO2')
@@ -179,7 +179,7 @@ class Marblefiltration(Model, Loss):
         # suppress removal of elements if set to True
 
 
-        influent = solution.copy()
+        influent = solution.deepcopy()
         # replace inert oxygen with free oxygen
         influent.change({ "O2": influent.total("Oxg"), "Oxg": -influent.total("Oxg")*0.99999})
 
@@ -197,7 +197,7 @@ class Marblefiltration(Model, Loss):
         after_no2 = self.oxidize(after_nh4, "[N+3]", "N+3", 2)
         after_mn = self.oxidize(after_no2, "[Mn+2]", "Mn+2", 0.5).desaturate("Manganite", 0)
 
-        effluent = after_mn.copy()
+        effluent = after_mn.deepcopy()
 
         return effluent, [influent, after_ch4, after_fe, after_h2s, after_nh4, after_no2, after_mn]
 
@@ -205,10 +205,10 @@ class Marblefiltration(Model, Loss):
     def run_quality(self, type, total_inflow, solution):
         if(type == 'flush'):
             # add load to waste solution
-            self.waste_solution = self.wastestream_calculation(solution.copy())
+            self.waste_solution = self.wastestream_calculation(solution.deepcopy())
             return self.waste_solution
         if(type == 'product'):
-            solution  = self.quality.influent.product.copy()
+            solution  = self.quality.influent.product.deepcopy()
             effluent, _ = self.filtrate(solution)
             return effluent
 
@@ -233,12 +233,12 @@ class Marblefiltration(Model, Loss):
             labels = ["spray", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
             step_results = {}
             for n, v in values.items():
-                step_results[n] = v(self.quality.influent.product.copy())
+                step_results[n] = v(self.quality.influent.product.deepcopy())
             results["influent"]= step_results
             
         else:
             labels = ["influent", "methane_oxidation", "iron_removal", "h2s_oxidation", "nitrification", "denitrification", "manganese_removal"]
-            solution = self.quality.influent.product.copy()   
+            solution = self.quality.influent.product.deepcopy()   
 
         effluent, steps = self.filtrate(solution)
 

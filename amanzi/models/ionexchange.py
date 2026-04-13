@@ -33,7 +33,7 @@ class Ionexchange(Model, Balance):
         return solution
     
     def run_quality(self, type, total_inflow, solution):
-        effluent = self.simpleExtraneousRemoval(solution.copy())
+        effluent = self.simpleExtraneousRemoval(solution.deepcopy())
 
 
 
@@ -51,7 +51,7 @@ class Ionexchange(Model, Balance):
         
         # self.regenerations = self.resin_load // self.resin_capacity 
     
-        # effluent = solution.copy()
+        # effluent = solution.deepcopy()
         # effluent.change(solution_change)
             
         return effluent
@@ -59,9 +59,9 @@ class Ionexchange(Model, Balance):
     def design(self):
 
         ## Filter for all Mircoorganics that have an assigned removal efficiency
-        relevantInfluent = self.quality.influent.product.extraneous['PFAS'].copy()
+        relevantInfluent = self.quality.influent.product.extraneous['PFAS'].deepcopy()
         relevantInfluent.update(self.quality.influent.product.extraneous['Other'])
-        relevantEffluent = self.quality.effluent.product.extraneous['PFAS'].copy()
+        relevantEffluent = self.quality.effluent.product.extraneous['PFAS'].deepcopy()
         relevantEffluent.update(self.quality.effluent.product.extraneous['Other'])
 
         IEXcompounds = {}

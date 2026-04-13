@@ -52,6 +52,10 @@ class QualitySolver(Solver):
 
         solution = model.run_quality(stream_type, total_inflow, influent)
         model.quality['effluent'][stream_type] = solution
+        # logging.debug(f'Solution: {model.uid} {stream_type} {model.type}')
+        # logging.debug(f'Model influent: {influent.extraneous}')
+        # logging.debug(f'Model effluent: {solution.extraneous}')
+
 
         if self.stop_at_model and model.uid == self.stop_at_model:
             logging.info(f'Interrupted at model {model.uid}')
@@ -84,7 +88,7 @@ class QualitySolver(Solver):
                     model.index = idx if not model.index else model.index
                     # set model effluent quality
                     logging.debug(f"Model: {model.uid}, Stream type: {stream_type}")
-                    model.quality['effluent'][stream_type] = model.emitter_solutions[stream_type].copy()
+                    model.quality['effluent'][stream_type] = model.emitter_solutions[stream_type].deepcopy()
                     if stream_type == 'waste':
                         print(model, model.quality['effluent']['waste'])
     
@@ -253,7 +257,7 @@ class QualitySolver(Solver):
         if total_inflow > 0:
             mixture = {connection.quality.solution: connection.quantity.flow / total_inflow for connection in model.upstream_connections.get(stream_type, [])}
             influent = model.pp.mix_solutions(mixture)
-            model.quality['influent'][stream_type] = influent.copy()
+            model.quality['influent'][stream_type] = influent.deepcopy()
             return influent
         return None
 

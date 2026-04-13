@@ -59,7 +59,7 @@ class Sprayaerator(Model, Balance):
         return efficiency
     
     def run_quality(self, type, total_inflow, solution):
-        solution = self.quality.influent.product.copy()
+        solution = self.quality.influent.product.deepcopy()
         effciency_co2 = self.calculate_efficiency('CO2', self.RQ , self.fall_height, self.sauter)
         effciency_ch4 = self.calculate_efficiency('Mtg', self.RQ , self.fall_height,self.sauter)
         solution.remove_fraction('CO2', effciency_co2)

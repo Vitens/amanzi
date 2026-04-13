@@ -59,7 +59,7 @@
         </tbody>
         </table>
         <br>
-    <h3>{{ $t('models.groundwater.design.pfas')}}</h3>
+    <h3>{{ $t('models.groundwater.design.pfas') }}</h3>
     <table >
         <thead>
             <tr>
@@ -77,11 +77,14 @@
         <tbody>
             <tr v-for="(item, index) in $project.scenario.metaData.customMicroComponents['PFAS'].slice(0, nPFAS)" :key="index">
                 <td > {{ $t('general.solution.components.'+item.name) }} </td>
-                <td> {{ item.name }} </td>         
-
+                <td> {{ item.name }} </td>
                 <td v-html="chemform(item.chemical)" ></td>
                 <td >                 
-                    <number-input v-model="config['solution']['PFAS'][item.name]" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
+                    <unit-number-input
+                        v-model="config['solution']['PFAS'][item.name]"
+                        :unit="item.unit"
+                        :min="0" :max="1000000" class="cheminput" :step="1.0" :placeholder="String(0)"
+                    />
                     <select class="unitselect" v-model="item.unit">
                         <option value="mg/l">mg/l</option>
                         <option value="μg/l">μg/l</option>
@@ -91,24 +94,26 @@
                 <td > {{ item.PEQ}} </td>
 
 
-                <td> <el-input type="number" v-model="item.removalAKF" :min="0" :max="1" :step="0.01"></el-input> </td>
+                <td> <el-input type="number" v-model="item.removalAKF" :min="0" :max="100" :step="1"></el-input> </td>
                 <td>
-                    <el-input type="number" v-model="item.removalRO" :min="0"  :max="1" :step="0.01"></el-input>
+                    <el-input type="number" v-model="item.removalRO" :min="0"  :max="100" :step="1"></el-input>
                 </td>
                 <td>
-                    <el-input type="number" v-model="item.removalIEX" :min="0"  :max="1" :step="0.01"></el-input> 
+                    <el-input type="number" v-model="item.removalIEX" :min="0"  :max="100" :step="1"></el-input> 
                 </td>
                 
                     
             </tr>
-
-
             <tr v-for="(item,index) in $project.scenario.metaData.customMicroComponents['PFAS'].slice(nPFAS)" :key="index">
                 <td>  <el-input type="text" v-model="item.name"></el-input> </td>
                 <td>  <el-input type="text" v-model="item.shortname"></el-input></td>
                 <td><el-input  v-model="item.chemical"></el-input></td>
                 <td>                 
-                    <number-input v-model="config['solution']['PFAS'][item.name]" :min=0 :max=10000 class="cheminput" :step=1.0 :placeholder="String(0)" />
+                    <unit-number-input
+                        v-model="config['solution']['PFAS'][item.name]"
+                        :unit="item.unit"
+                        :min="0" :max="1000000" class="cheminput" :step="1.0" :placeholder="String(0)"
+                    />
                     <select class="unitselect" v-model="item.unit">
                         <option value="mg/l">mg/l</option>
                         <option value="μg/l">μg/l</option>

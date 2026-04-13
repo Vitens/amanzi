@@ -57,14 +57,11 @@ class QuantitySolver(Solver):
         for model in self.scenario.models.values():
             # logger.debug(f"equation: {model}")
             for eq, mass in model.equations:
-                logger.debug(f"Equation: {eq}, Mass: {mass}")
-                logger.debug(f"Equation: {eq}, Mass: {mass}")
                 all_equations.append(eq)
                 results.append(mass)
                 counter += 1
 
-        logger.debug(f"All equations: {all_equations}")
-        logger.debug(f"Results: {results}")
+
         # construct matrix
         matrix = np.zeros((len(all_equations), len(results)))
         # fill matrix

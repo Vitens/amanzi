@@ -10,7 +10,7 @@ class Reservoir(Model):
     def run_quality(self, type, total_inflow, solution):
 
         if type == 'flush':
-            return self.reservoir_solution.copy()
+            return self.reservoir_solution.deepcopy()
 
         if self.parameters.get('integrated_aeration', False):
             co2_removal = self.parameters.get('co2_removal', 0)
@@ -21,7 +21,7 @@ class Reservoir(Model):
             # calculate oxygen saturation and CO2 removal
             air = self.pp.add_gas({f'O2(g)': 0.21, 'Ntg(g)': 0.79, 'CO2(g)': 0.043/100}, fixed_pressure=True, fixed_volume=False, volume=1000, pressure=1)
 
-            saturated = solution.copy().interact(air)
+            saturated = solution.deepcopy().interact(air)
 
             max_o2 = saturated.total('O2')
             min_co2 = saturated.total('CO2')
@@ -34,7 +34,7 @@ class Reservoir(Model):
 
             solution.change({'O2': to_add, 'CO2': -to_remove, 'Mtg': -solution.total('Mtg')*0.999})
 
-        self.reservoir_solution = solution.copy()
+        self.reservoir_solution = solution.deepcopy()
 
         return solution
 

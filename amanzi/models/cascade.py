@@ -45,12 +45,12 @@ class Cascade(Model, Balance):
     #     return solution
     
     def run_quality(self, type, total_inflow, solution):
-        # sol = self.oxygen_cheat(solution.copy()) #temporary?
-        effluent = self.aerate(solution.copy(), self.steps)
+        # sol = self.oxygen_cheat(solution.deepcopy()) #temporary?
+        effluent = self.aerate(solution.deepcopy(), self.steps)
         return effluent
     
     def design(self):
-        influent = self.quality.influent.product.copy()
+        influent = self.quality.influent.product.deepcopy()
         effluent = self.run_quality(None, None, influent)
         
         ph = []
@@ -72,12 +72,12 @@ class Cascade(Model, Balance):
             'H2O(g)': 0,
         }
         air = self.pp.add_gas(air_comp, volume=1000, pressure=1, fixed_pressure=True, fixed_volume=False)
-        oxg_saturation = influent.copy().interact(air).total('O2', 'mmol') # solution saturated with air
+        oxg_saturation = influent.deepcopy().interact(air).total('O2', 'mmol') # solution saturated with air
 
 
         # gas-transfer at constant height & different stepsizes
         for steps in range(1,9): # 8 is the maximum number of steps
-            inf = influent.copy()
+            inf = influent.deepcopy()
             design_effluents = self.aerate(inf, steps)
             ph.append({'x': steps, 'y': design_effluents.pH})
             co2.append({'x': steps, 'y': design_effluents.total("CO2", "mg")})

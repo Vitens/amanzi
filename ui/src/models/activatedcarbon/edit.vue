@@ -48,9 +48,9 @@
           </tr>
           <tr v-for="(value,key) in PFASlist()" :key="key">
             <td>{{ key }} </td>
-            <td><number-input type="number" v-model="config['compound'][key][0]" :step="1" :min="0" :max="100000" size="small"></number-input></td>
+            <!-- <td><number-input type="number" v-model="config['compound'][key][0]" :step="1" :min="0" :max="100000" size="small"></number-input></td>
             <td><number-input type="number" v-model="config['compound'][key][1]" :step="0.01" :min="0" :max="10" size="small"></number-input></td>
-            <td><number-input type="number" v-model="config['compound'][key][2]" :step="1" :min="0" :max="100000" size="small"></number-input></td>
+            <td><number-input type="number" v-model="config['compound'][key][2]" :step="1" :min="0" :max="100000" size="small"></number-input></td> -->
 
 
           </tr>

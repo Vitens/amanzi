@@ -21,6 +21,7 @@ import ElementPlus from 'element-plus'
 import * as Icons from '@element-plus/icons-vue' // Introduce all Icons and name them Icons
 
 import NumberInput from './components/NumberInput.vue'
+import UnitNumberInput from './components/UnitNumberInput.vue'
 
 // import MasonryWall from '@yeger/vue-masonry-wall'
 import VueMasonry from 'vue-masonry-css'
@@ -108,6 +109,7 @@ for (let i in Icons) {
 }
 
 app.component('number-input', NumberInput)
+app.component('unit-number-input', UnitNumberInput)
 
 // load models specification
 var modelspec = {}
