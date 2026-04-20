@@ -7,14 +7,18 @@
     <div class="process">
       <div id="sandfilter-process" :doublelayer="params.dual_media" :sprayer="params.spray">
         <table id="sandfilter-table">
-          <tr>
-            <th></th>
-            <th v-for="h in headers" v-html="chemform(h)"></th>
-          </tr>
-          <tr v-for="s,i in steps">
-            <td>{{i+1}}. {{ $t('models.filtration.design.' + s) }}</td>
-            <td v-for="k in headers" :class="validate(s, k)">{{ output(s, k, 2) }}</td>
-          </tr>
+          <thead>
+            <tr>
+              <th></th>
+              <th v-for="h in headers" v-html="chemform(h)"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="s,i in steps">
+              <td>{{i+1}}. {{ $t('models.filtration.design.' + s) }}</td>
+              <td v-for="k in headers" :class="validate(s, k)">{{ output(s, k, 2) }}</td>
+            </tr>
+          </tbody>
         </table>
 
         <Result name="influent" color="blue" :components="resultSet('influent')">

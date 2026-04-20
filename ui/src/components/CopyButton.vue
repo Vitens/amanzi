@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import snapdom from '@zumer/snapdom'
+import { snapdom } from '@zumer/snapdom'
 
 export default {
   props: {

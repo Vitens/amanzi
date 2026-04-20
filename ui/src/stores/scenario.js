@@ -256,7 +256,11 @@ export const scenarioStore = (uid) =>
         );
         // check if all models have all parameters defined in modelspec, else set default value
         for (var m of this.models) {
-          for (var param of parameters[m.type]) {
+          const modelParameters = parameters?.[m.type];
+          if (!Array.isArray(modelParameters)) {
+            continue;
+          }
+          for (var param of modelParameters) {
             if (!m.configuration.parameters[param.name]) {
               m.configuration.parameters[param.name] = param.default;
             }
@@ -277,7 +281,7 @@ export const scenarioStore = (uid) =>
         model.configuration = model.configuration ? model.configuration : {};
 
         model.configuration.parameters = {};
-
+        console.log(defaults);
         for (var param of defaults) {
           model.configuration.parameters[param.name] = param.default;
         }

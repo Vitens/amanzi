@@ -70,8 +70,10 @@
               <el-switch v-model="saturation_mode_si" active-text="Saturation Index (SI)" inactive-text="Saturation Ration (SR)"></el-switch>
               <table class="element-table">
                 <thead>
-                  <th>Stream</th>
-                  <th v-for="phase in phases" v-html="phase"></th>
+                  <tr>
+                    <th>Stream</th>
+                    <th v-for="phase in phases" v-html="phase"></th>
+                  </tr>
                 </thead>
                 <tbody>
                   <tr v-for="stage in stage_si">
@@ -93,7 +95,9 @@
             </template>
             <table class="element-table">
               <thead>
-                <th v-for="header in headers" v-html="format(header)"></th>
+                <tr>
+                  <th v-for="header in headers" v-html="format(header)"></th>
+                </tr>
               </thead>
               <tbody>
                 <tr v-for="element in $project.designState.element_results">

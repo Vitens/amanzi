@@ -10,6 +10,14 @@ let version = fs.readFileSync('../VERSION', 'utf8')
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:7331',
+        changeOrigin: true
+      }
+    }
+  },
   esbuild: {
     supported: {
       'top-level-await': true

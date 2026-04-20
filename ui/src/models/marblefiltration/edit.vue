@@ -4,31 +4,35 @@
         <h3>{{$t("ui.design.sections.backwash_programme") }}</h3>
         <table id="backwash_programme">
           <thead>
-            <th>{{ $t('models.filtration.backwash_programme.step') }}</th>
-            <th>{{ $t('models.filtration.backwash_programme.time') }}</th>
-            <th v-html="$t('models.filtration.backwash_programme.q_water')"></th>
-            <th v-html="$t('models.filtration.backwash_programme.q_air')"></th>
+            <tr>
+              <th>{{ $t('models.filtration.backwash_programme.step') }}</th>
+              <th>{{ $t('models.filtration.backwash_programme.time') }}</th>
+              <th v-html="$t('models.filtration.backwash_programme.q_water')"></th>
+              <th v-html="$t('models.filtration.backwash_programme.q_air')"></th>
+            </tr>
           </thead>
-          <tr>
-            <td></td>
-            <td>sec</td>
-            <td>m/h</td>
-            <td>Nm<sup>3</sup>/h&middot;m<sup>-2</sup></td>
-          </tr>
-          <tr v-for="step,i in modelValue.backwash_programme">
-            <td>{{ i+1 }}</td>
-            <td><number-input v-model="step.time" :min="0" :max="1000"></number-input></td>
-            <td><number-input v-model="step.water" :min="0" :max="100"></number-input></td>
-            <td><number-input v-model="step.air" :min="0" :max="100"></number-input></td>
-            <td>
-              <i class='fa fa-times-circle remove-step' @click="removeStep(i)" :class="{disabled: modelValue.backwash_programme.length == 1}"></i>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="4">
-              <el-button @click="addStep" type="success" class="add_step_button">{{ $t('models.filtration.backwash_programme.add_step') }}</el-button>
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <td></td>
+              <td>sec</td>
+              <td>m/h</td>
+              <td>Nm<sup>3</sup>/h&middot;m<sup>-2</sup></td>
+            </tr>
+            <tr v-for="step,i in modelValue.backwash_programme">
+              <td>{{ i+1 }}</td>
+              <td><number-input v-model="step.time" :min="0" :max="1000"></number-input></td>
+              <td><number-input v-model="step.water" :min="0" :max="100"></number-input></td>
+              <td><number-input v-model="step.air" :min="0" :max="100"></number-input></td>
+              <td>
+                <i class='fa fa-times-circle remove-step' @click="removeStep(i)" :class="{disabled: modelValue.backwash_programme.length == 1}"></i>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <el-button @click="addStep" type="success" class="add_step_button">{{ $t('models.filtration.backwash_programme.add_step') }}</el-button>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </el-form>
     </teleport>

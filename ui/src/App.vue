@@ -120,10 +120,14 @@ export default {
       // check if unsolved
       // suppress keys
       this.$project.changed = true
-      if (this.$project.scenario.unsolved) { 
+      const scenario = this.$project.scenario
+      if (!scenario) {
+        return
+      }
+      if (scenario.unsolved) { 
         // this.$project.state.quality = []
         this.$project.solve() 
-        this.$project.scenario.unsolved = false
+        scenario.unsolved = false
       }
     })
     // zoom fit
@@ -160,7 +164,7 @@ export default {
 
   computed: {
     designVisible() {
-      return this.$project.scenario.editingModel != null
+      return this.$project.scenario?.editingModel != null
     },
     reportVisible() {
       return this.$project.report
@@ -183,6 +187,7 @@ export default {
       if (this.keyFiguresVisible) { return this.$t('ui.dialogs.keyfigures.title') }
       if (this.tutorialVisible) { return this.$t('ui.dialogs.tutorial.title') }
       if (this.aboutVisible) { return this.$t('ui.dialogs.about.title') }
+      if (!this.$project.scenario) { return '' }
       return this.$project.scenario.models.filter(m => m.uid == this.$project.scenario.editingModel)[0].name
     },
     dialogWidth() {
@@ -202,6 +207,9 @@ export default {
       this.$project.report = false
       this.$project.keyfigures = false
       this.$project.about = false
+      if (!this.$project.scenario) {
+        return
+      }
       this.$project.scenario.editingModel = null
       this.$project.designState = {}
       this.$project.scenario.unsolved = true

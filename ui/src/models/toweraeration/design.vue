@@ -10,11 +10,13 @@
           <Result name="influent" color="blue" :components="resultSet('influent')" />
           <Result name="effluent" color="green" :components="resultSet('effluent')" />
           <table class="hydraulics">
-            <tr><td>{{ $t('models.toweraeration.outputs.F-Factor') }}</td><td>{{ output('model', 'F') }}</td><td>Pa<sup>0.5</sup></td></tr>
-            <tr><td>{{ $t('models.toweraeration.outputs.liquid_loading') }}</td><td>{{ output('model', 'liquid_load') }}</td><td>m<sup>3</sup>/m<sup>2</sup>/u</td></tr>
-            <tr><td>{{ $t('models.toweraeration.outputs.flooding_factor') }}</td><td>{{ output('model', 'flooding_factor') }}</td><td>&percnt;</td></tr>
-            <tr><td>{{ $t('models.toweraeration.outputs.liquid_holdup') }}</td><td>{{ output('model', 'liquid_holdup') }}</td><td>&percnt;</td></tr>
-            <tr><td>{{ $t('models.toweraeration.outputs.pressuredrop') }}</td><td>{{ output('model', 'pressure_drop') }}</td><td>mbar/m</td></tr>
+            <tbody>
+              <tr><td>{{ $t('models.toweraeration.outputs.F-Factor') }}</td><td>{{ output('model', 'F') }}</td><td>Pa<sup>0.5</sup></td></tr>
+              <tr><td>{{ $t('models.toweraeration.outputs.liquid_loading') }}</td><td>{{ output('model', 'liquid_load') }}</td><td>m<sup>3</sup>/m<sup>2</sup>/u</td></tr>
+              <tr><td>{{ $t('models.toweraeration.outputs.flooding_factor') }}</td><td>{{ output('model', 'flooding_factor') }}</td><td>&percnt;</td></tr>
+              <tr><td>{{ $t('models.toweraeration.outputs.liquid_holdup') }}</td><td>{{ output('model', 'liquid_holdup') }}</td><td>&percnt;</td></tr>
+              <tr><td>{{ $t('models.toweraeration.outputs.pressuredrop') }}</td><td>{{ output('model', 'pressure_drop') }}</td><td>mbar/m</td></tr>
+            </tbody>
           </table>
         </div>
       </div>

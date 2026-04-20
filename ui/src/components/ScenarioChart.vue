@@ -26,19 +26,21 @@
     </div>
 
     <table v-if="$project.reportState.results">
-      <tr class="bars">
-        <td class="units"><span>{{ metrics[metric_index].uom }}</span></td>
-        <td v-for="model, model_index in columns">
-          <div class="zero-line" :style="{bottom: zero + '%'}"></div>
-          <div class="score-bar" :style="bar_style(model_index)" :class="bar_class(model_index)">
-            <span class='score-value'>{{ bar_value(model_index) }}</span>
-          </div>
-        </td>
-      </tr>
-      <tr class="models">
-        <td></td>
-        <td v-for="model, model_index in columns"><span>{{ model }}</span></td>
-      </tr>
+      <tbody>
+        <tr class="bars">
+          <td class="units"><span>{{ metrics[metric_index].uom }}</span></td>
+          <td v-for="model, model_index in columns">
+            <div class="zero-line" :style="{bottom: zero + '%'}"></div>
+            <div class="score-bar" :style="bar_style(model_index)" :class="bar_class(model_index)">
+              <span class='score-value'>{{ bar_value(model_index) }}</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="models">
+          <td></td>
+          <td v-for="model, model_index in columns"><span>{{ model }}</span></td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </template>

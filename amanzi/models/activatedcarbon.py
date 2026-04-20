@@ -361,10 +361,9 @@ class Activatedcarbon(Model, Loss):
     #         return pos - 1
 
     def design(self):
-        logging.debug(f"Design Relevant Influent: {self.quality.influent.product.extraneous}")
+        logging.debug(f"Design Influent.product Start: {self.quality.influent.product.extraneous}")
 
         influent = self.quality.influent.product.deepcopy()
-        logging.debug(f"Design Start Influent: {influent.extraneous['PFAS']}")
         eff = {}
         peqPFAS={}
         sum4=[]
@@ -412,9 +411,9 @@ class Activatedcarbon(Model, Loss):
 
 
         if(self.sprayaeration):
-            influent = self.spray_aeration(influent)
+            influent = self.spray_aeration(influent.deepcopy())
             self.aerated = influent.deepcopy()
-        effluent = self.simpleExtraneousRemoval(influent)
+        effluent = self.simpleExtraneousRemoval(influent.deepcopy())
 
 
         #print(eff) 
@@ -440,7 +439,7 @@ class Activatedcarbon(Model, Loss):
         # relevantEffluent.update(self.quality.effluent.product.extraneous['Other'])
         # print(f"Relevant Effluent: {self.quality.effluent.product.extraneous}")
         # print(f"Relevant Influent: {self.quality.influent.product.extraneous}")
-        logging.debug(f"Design End Influent: {influent.extraneous['PFAS']}")
+        logging.debug(f"Design Influent.product End: {self.quality.influent.product.extraneous}")
 
 
 

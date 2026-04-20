@@ -71,7 +71,15 @@ export default {
     },
     parameters() {
       // get quick parameters from the model
-      return this.$project.modelParameters[this.editingModel.type].filter(p => p.quick)
+      const type = this.editingModel?.type
+      if (!type) {
+        return []
+      }
+      const modelParameters = this.$project.modelParameters?.[type]
+      if (!Array.isArray(modelParameters)) {
+        return []
+      }
+      return modelParameters.filter(p => p.quick)
     }
   }
 

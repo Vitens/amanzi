@@ -8,9 +8,11 @@
     <colgroup :span="columns.length" class="comparison-scenarios" />
     <colgroup span="1" />
     <thead>
-      <th></th>
-      <th v-for="col,column_index in columns" @mouseenter="docompare(null, column_index)" @mouseleave="stopcompare(null,column_index)">{{ col }}</th>
-      <th></th>
+      <tr>
+        <th></th>
+        <th v-for="col,column_index in columns" @mouseenter="docompare(null, column_index)" @mouseleave="stopcompare(null,column_index)">{{ col }}</th>
+        <th></th>
+      </tr>
     </thead>
     <tbody>
       <tr v-for="row, row_index in metrics">

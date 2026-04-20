@@ -12,8 +12,10 @@
     </div>
     <table>
       <thead>
-        <th>Scenario</th>
-        <th>{{ $t('ui.report.'+namespace+'.metrics.'+metric.name) }} ({{ metric.uom }}, <span v-if="metric.positive">{{$t('ui.report.general.higher_better')}}</span><span v-else>{{ $t('ui.report.general.lower_better') }}</span> )</th>
+        <tr>
+          <th>Scenario</th>
+          <th>{{ $t('ui.report.'+namespace+'.metrics.'+metric.name) }} ({{ metric.uom }}, <span v-if="metric.positive">{{$t('ui.report.general.higher_better')}}</span><span v-else>{{ $t('ui.report.general.lower_better') }}</span> )</th>
+        </tr>
       </thead>
       <tbody ref="tbody">
         <div class="hover-bar" :style="{left: hoverPosition}" v-if="compare_index != null"></div>

@@ -7,14 +7,18 @@
     <div class="process"> 
       <div id="cascade-process">
         <table id="cascade-table">
-          <tr>
-            <th></th>
-            <th v-for="h in headers" v-html="chemform(h)"></th>
-          </tr>
-          <tr v-for="s in steps">
-            <td>{{$t('models.cascade.design.step') }} {{s}}</td>
-            <td v-for="k in headers"> {{ table(k, s-1) }}</td>
-          </tr>
+          <thead>
+            <tr>
+              <th></th>
+              <th v-for="h in headers" v-html="chemform(h)"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="s in steps">
+              <td>{{$t('models.cascade.design.step') }} {{s}}</td>
+              <td v-for="k in headers"> {{ table(k, s-1) }}</td>
+            </tr>
+          </tbody>
         </table>
         <Result name="influent" color="blue" :components="resultSet('influent')" />
         <Result name="effluent" color="green" :components="resultSet('effluent')" />

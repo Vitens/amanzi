@@ -234,7 +234,8 @@ export const projectStore = defineStore('project', {
       this.selectedScenario = 0
 
       // unserialize scenarios
-      for(var scenario of project.scenarios) {
+      const projectScenarios = Array.isArray(project.scenarios) ? project.scenarios : []
+      for(var scenario of projectScenarios) {
         // generate store with random uid
         var store = scenarioStore(Math.random().toString(36).substring(2, 8))
         store.name = scenario.name
@@ -249,6 +250,10 @@ export const projectStore = defineStore('project', {
         }
 
         this.scenarios.push(store)
+      }
+      
+      if(this.scenarios.length === 0) {
+        this.scenarios.push(scenarioStore(Math.random().toString(36).substring(2, 8)))
       }
       this.scenario.unsolved = true
     }
