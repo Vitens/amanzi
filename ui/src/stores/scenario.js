@@ -290,7 +290,7 @@ export const scenarioStore = (uid) =>
         // autoconnect
         // find closest empty anchor of compatible type and direction for each anchor
         if (autoConnect) {
-          for (var anchor of modelspec.canvas.anchors) {
+          for (var anchor of modelspec.anchors) {
             // find target models that have connections space free
             let target = anchor.direction == "in" ? "out" : "in";
             let closestDistance = Infinity;
@@ -299,7 +299,7 @@ export const scenarioStore = (uid) =>
 
             for (var m of this.models) {
               let spec = modelspecs[m.type];
-              for (var a of spec.canvas.anchors) {
+              for (var a of spec.anchors) {
                 // check if anchor is right type and direction
                 if (a.type != anchor.type || a.direction != target) {
                   continue;

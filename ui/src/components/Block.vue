@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     debug() {
-      return this.$project.display.debug
+      return this.$interface.display.debug
     },
     modelSpec() {
       return this.modelspec[this.info.type]

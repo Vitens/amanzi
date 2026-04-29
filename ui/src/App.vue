@@ -39,18 +39,18 @@
     <el-container class="sub-container">
 
 
-      <el-aside class="sidebar" :class="{hidden: !$project.sidebar.left}">
+      <el-aside class="sidebar" :class="{hidden: !$interface.sidebar.left}">
         <Sidebar></Sidebar>
       </el-aside>
       <el-container>
       <el-main class="main">
-        <div id="error" v-if="$project.invalid"><i class='fa fa-warning'></i>&nbsp;{{ $t($project.invalid_message, $project.invalid_data) }}</div>
+        <div id="error" v-if="$interface.invalid"><i class='fa fa-warning'></i>&nbsp;{{ $t($interface.invalid_message, $interface.invalid_data) }}</div>
         <Canvas></Canvas>
         <ScenarioFeedback />
       </el-main>
       <el-footer height="45px" class="scenarios"><Scenariobar></Scenariobar></el-footer>
       </el-container>
-      <el-aside class="sidebar-right" width="280px" :class="{hidden: !$project.sidebar.right}">
+      <el-aside class="sidebar-right" width="280px" :class="{hidden: !$interface.sidebar.right}">
         <ResultBar></ResultBar>
       </el-aside>
     </el-container>
@@ -100,7 +100,7 @@ export default {
     // check if tutorial was skipped
     const tutorialSkipped = this.$cookies.get('tutorial-skip')
     if (tutorialSkipped) {
-      this.$project.tutorial = false
+      this.$interface.tutorial = false
     }
     if (this.$backend.driver == 'pyodide') {
       this.initialized = false
@@ -114,6 +114,7 @@ export default {
 
     this.initialized = true
 
+    // set backend so that project can access it
     this.$project.backend = this.$backend
 
     const onMigrationNotify = () => {
@@ -173,16 +174,16 @@ export default {
       return this.$project.scenario.editingModel != null
     },
     reportVisible() {
-      return this.$project.report
+      return this.$interface.report
     },
     keyFiguresVisible() {
-      return this.$project.keyfigures
+      return this.$interface.keyfigures
     },
     tutorialVisible() {
-      return this.$project.tutorial
+      return this.$interface.tutorial
     },
     aboutVisible() {
-      return this.$project.about
+      return this.$interface.about
     },
     dialogVisible() {
       return this.designVisible || this.reportVisible || this.keyFiguresVisible || this.tutorialVisible || this.aboutVisible
@@ -206,12 +207,12 @@ export default {
   methods: {
     closeDialog() {
       if (this.tutorialVisible) {
-        this.$project.tutorial = false
+        this.$interface.tutorial = false
         return
       }
-      this.$project.report = false
-      this.$project.keyfigures = false
-      this.$project.about = false
+      this.$interface.report = false
+      this.$interface.keyfigures = false
+      this.$interface.about = false
       this.$project.scenario.editingModel = null
       this.$project.designState = {}
       this.$project.scenario.unsolved = true

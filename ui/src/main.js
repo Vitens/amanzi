@@ -4,6 +4,7 @@ import mitt from 'mitt'
 import _ from 'lodash'
 import { scenarioStore } from './stores/scenario'
 import { projectStore } from './stores/project'
+import { interfaceStore } from './stores/interface'
 import { piniaUndoRedo } from './stores/undo'
 import { createPinia } from 'pinia'
 import VueCookies from 'vue-cookies'
@@ -145,11 +146,13 @@ pinia.use(({store}) => {
 await loadModels()
 
 let store = projectStore()
+let ui = interfaceStore()
 store.currentAmanziVersion = version
 store.$bus = eventBus
 app.config.globalProperties.$bus = eventBus
 app.config.globalProperties.modelspec = modelspec
 app.config.globalProperties.$project = store
+app.config.globalProperties.$interface = ui
 app.config.globalProperties.chemform = chemform
 
 app.config.globalProperties.$store = store.activeScenario

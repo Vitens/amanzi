@@ -138,7 +138,7 @@ export default {
     },
 
     display() {
-      return this.$project.canvas
+      return this.$interface.canvas
     }
   },
   methods: {
@@ -207,7 +207,7 @@ export default {
     },
     startPanSelect(x,y, args,evt) {
       // only pan when middle mouse button is clicked
-      if(evt.which == 2 || this.$project.mouseMode == 'pan') {
+      if(evt.which == 2 || this.$interface.mouseMode == 'pan') {
         this.panning = true
       } else {
         this.selection.active = true
@@ -268,7 +268,7 @@ export default {
       // merge blocks and connections
       let all = [...blocks, ...connections]
 
-      let s = this.$project.canvas.zoom
+      let s = this.$interface.canvas.zoom
 
       // get position on canvas
       let positions = all.map(el => {
@@ -307,9 +307,9 @@ export default {
       
 
       // apply zoom and offset
-      this.$project.canvas.zoom = z
-      this.$project.canvas.left = -left * z + offsetx
-      this.$project.canvas.top = -top * z + offsety
+      this.$interface.canvas.zoom = z
+      this.$interface.canvas.left = -left * z + offsetx
+      this.$interface.canvas.top = -top * z + offsety
 
 
 

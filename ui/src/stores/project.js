@@ -2,6 +2,7 @@ import _ from 'lodash'
 import debounce from 'lodash/debounce';
 import { defineStore } from 'pinia'
 import { scenarioStore } from './scenario'
+import { interfaceStore } from './interface'
 import { migrateProject } from '../lib/projectMigration'
 
 export const projectStore = defineStore('project', {
@@ -9,41 +10,13 @@ export const projectStore = defineStore('project', {
     name: 'Demo', // project name
     version: '0.0.1',    // project version
     debug: {},
-    loading: false,
-    report: false,
-    tutorial: true,
-    about: false,
-    keyfigures: false,
-    invalid: false,
-    backend: null,
-    mouseMode: 'select',
-    display: {
-      debug: false,
-      boosters: true,
-      booster_info: true,
-      flows: true,
-      losses: true,
-    },
-    canvas: {
-      grid: true,
-      left: -5000,
-      top: -5000,
-      zoom: 1,
-      zoomX: 0,
-      zoomY: 0,
-    },          // canvas state
-    sidebar: {
-      left: true,
-      right: true
-    },
+    backend: null, // pointer to backend (pyodide or server)
     keyfigureOverwrites: {},
     modelParameters: {},
     scenarios: [
-      scenarioStore(1),
+      scenarioStore(1), // default scenario
     ],       // list of scenarios
     selectedScenario: 0, // index of selected scenario
-    lastAddedScenarioIndex: null, // briefly set after add/duplicate for tab pulse
-    lastScenarioFeedback: null, // { messageKey } for centered message (add or duplicate)
     state: {}, // state of connections 
     designState: {}, // state of design
     reportState: {}, // state of report
@@ -69,13 +42,6 @@ export const projectStore = defineStore('project', {
     },
   },
   actions: {
-    edit_key_figures() {
-      this.keyfigures = true
-    },
-    run_report() { 
-      this.report = true
-      this.solveDebounced()
-    },
     // patch undo
     patchUndo(state) {
       this.selectedScenario = state.selectedScenario
@@ -189,11 +155,12 @@ export const projectStore = defineStore('project', {
       // select new scenario
       this.selectedScenario = this.scenarios.length - 1
       // feedback: pulse the new tab (new or duplicate) and show centered message
+      const ui = interfaceStore()
       const newIndex = this.scenarios.length - 1
-      this.lastAddedScenarioIndex = newIndex
-      this.lastScenarioFeedback = { messageKey: duplicate ? 'ui.scenariobar.scenario_duplicated' : 'ui.scenariobar.scenario_created' }
-      setTimeout(() => { this.lastAddedScenarioIndex = null }, 900)
-      setTimeout(() => { this.lastScenarioFeedback = null }, 1800)
+      ui.lastAddedScenarioIndex = newIndex
+      ui.lastScenarioFeedback = { messageKey: duplicate ? 'ui.scenariobar.scenario_duplicated' : 'ui.scenariobar.scenario_created' }
+      setTimeout(() => { ui.lastAddedScenarioIndex = null }, 900)
+      setTimeout(() => { ui.lastScenarioFeedback = null }, 1800)
     },
 
     renameScenario(newName) {
@@ -222,6 +189,7 @@ export const projectStore = defineStore('project', {
 
     // serialize to json
     serialize() {
+      const ui = interfaceStore()
 
       const currentVersion = this.currentAmanziVersion || this.version || '0.0.0'
       var exportObject = {
@@ -229,7 +197,7 @@ export const projectStore = defineStore('project', {
           version: this.version,
           amanzi_version: currentVersion,
           project_name: this.name,
-          canvas: this.canvas
+          canvas: ui.canvas
         },
         key_figure_overwrites: this.keyfigureOverwrites,
         scenarios: []
@@ -258,22 +226,23 @@ export const projectStore = defineStore('project', {
     },
 
     solveDebounced: debounce(async function () {
+      const ui = interfaceStore()
       // solve network or single model
-      this.loading = true
+      ui.loading = true
 
 
 
       let valid = this.scenario.validate()
       if(!valid.valid) {
-        this.invalid = true
-        this.invalid_message = valid.message
-        this.invalid_data = valid.data
-        this.loading = false
+        ui.invalid = true
+        ui.invalid_message = valid.message
+        ui.invalid_data = valid.data
+        ui.loading = false
         return
       }
 
       try {
-        if(this.report) {
+        if(ui.report) {
           let response = await this.backend.report(this.serialize())
           this.reportState = response
         }
@@ -284,16 +253,17 @@ export const projectStore = defineStore('project', {
           let response = await this.backend.solve(this.serialize(), this.selectedScenario)
           this.state = response
         }
-        this.invalid = false
+        ui.invalid = false
       }
       catch (error) {
-        this.invalid = true
+        ui.invalid = true
       }
-      this.loading = false
+      ui.loading = false
     }, 200, {leading: false, trailing: true}),    
 
     // load from http
     async open(defaultProject, updateParameters=true) {
+      const ui = interfaceStore()
       // fetch project file from url
       var project = {}
       if(localStorage.getItem('project')) {
@@ -328,9 +298,9 @@ export const projectStore = defineStore('project', {
       this.version = project.metadata?.version ?? this.version
       this.keyfigureOverwrites = project.key_figure_overwrites || {}
       if(project.metadata?.canvas) {
-        this.canvas = { ...this.canvas, ...project.metadata.canvas }
+        ui.canvas = { ...ui.canvas, ...project.metadata.canvas }
       }
-      this.canvas.zoom = 1
+      ui.canvas.zoom = 1
 
       // dispose current scenarios
       for(var scenario of this.scenarios) {

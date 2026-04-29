@@ -1,5 +1,5 @@
 <template>
-  <div id="loading" :class="{loading: $project.loading}">
+  <div id="loading" :class="{loading: $interface.loading}">
     <div class="bar"></div>
   </div>
 </template>

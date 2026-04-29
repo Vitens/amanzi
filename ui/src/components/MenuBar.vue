@@ -52,8 +52,8 @@ let menu = [
       { separator: true },
       { name: 'rename', action: function() { this.rename() } },
       { separator: true },
-      { name: 'keyfigures', action: function() {this.$project.edit_key_figures() } },
-      { name: 'report', action: function() { this.$project.run_report() } }
+      { name: 'keyfigures', action: function() { this.$interface.keyfigures = true } },
+      { name: 'report', action: function() { this.runReport() } }
     ]
     },
     {
@@ -107,45 +107,45 @@ let menu = [
     name: 'display',
     items: [
       { name: 'sidebar_left', shortcut: 'mod+shift+L',
-        checked: function() {return this.$project.sidebar.left},
-        action: function() {this.$project.sidebar.left = !this.$project.sidebar.left}
+        checked: function() {return this.$interface.sidebar.left},
+        action: function() {this.$interface.sidebar.left = !this.$interface.sidebar.left}
        },
       { name: 'sidebar_right', shortcut: 'mod+shift+R',
-        checked: function() {return this.$project.sidebar.right},
-        action: function() {this.$project.sidebar.right = !this.$project.sidebar.right}
+        checked: function() {return this.$interface.sidebar.right},
+        action: function() {this.$interface.sidebar.right = !this.$interface.sidebar.right}
       },
       { separator: true },
       { name: 'grid',
-        checked: function() {return this.$project.canvas.grid},
-        action: function() {this.$project.canvas.grid = !this.$project.canvas.grid}
+        checked: function() {return this.$interface.canvas.grid},
+        action: function() {this.$interface.canvas.grid = !this.$interface.canvas.grid}
        },
       { separator: true },
       { name: 'boosters',
-        checked: function() {return this.$project.display.boosters},
-        action: function() {this.$project.display.boosters = !this.$project.display.boosters}
+        checked: function() {return this.$interface.display.boosters},
+        action: function() {this.$interface.display.boosters = !this.$interface.display.boosters}
        },
       { name: 'booster_head',
-        checked: function() {return this.$project.display.booster_info},
-        disabled: function() {return !this.$project.display.boosters},
-        action: function() {this.$project.display.booster_info = !this.$project.display.booster_info}
+        checked: function() {return this.$interface.display.booster_info},
+        disabled: function() {return !this.$interface.display.boosters},
+        action: function() {this.$interface.display.booster_info = !this.$interface.display.booster_info}
        },
       { name: 'losses', 
-        checked: function() {return this.$project.display.losses},
-        action: function() {this.$project.display.losses = !this.$project.display.losses},
-        disabled: function() {return !this.$project.display.flows}
+        checked: function() {return this.$interface.display.losses},
+        action: function() {this.$interface.display.losses = !this.$interface.display.losses},
+        disabled: function() {return !this.$interface.display.flows}
       },
       { name: 'flows',
-        checked: function() {return this.$project.display.flows},
-        action: function() {this.$project.display.flows = !this.$project.display.flows}
+        checked: function() {return this.$interface.display.flows},
+        action: function() {this.$interface.display.flows = !this.$interface.display.flows}
        },
 
       { separator: true },
       { name: 'zoom_in', shortcut: 'mod plus',
-        disabled: function() {return this.$project.canvas.zoom >= 1.5},
+        disabled: function() {return this.$interface.canvas.zoom >= 1.5},
         action: function() {this.zoom('in')}
        },
       { name: 'zoom_out', shortcut: 'mod minus' ,
-        disabled: function() {return this.$project.canvas.zoom <= 0.25},
+        disabled: function() {return this.$interface.canvas.zoom <= 0.25},
         action: function() {this.zoom('out')}
       },
       { name: 'zoom_fit',
@@ -157,8 +157,8 @@ let menu = [
       },
       { separator: true},
       { name: 'debug',
-        checked: function() {return this.$project.display.debug},
-        action: function() {this.$project.display.debug = !this.$project.display.debug}
+        checked: function() {return this.$interface.display.debug},
+        action: function() {this.$interface.display.debug = !this.$interface.display.debug}
       }
     ]
   },
@@ -176,8 +176,8 @@ let menu = [
   {
     name: 'help',
     items: [
-      { name: 'tutorial', action: function() {this.$project.tutorial = true} },
-      { name: 'about', action: function() {this.$project.about = true} },
+      { name: 'tutorial', action: function() {this.$interface.tutorial = true} },
+      { name: 'about', action: function() {this.$interface.about = true} },
     ]
   }
 
@@ -199,6 +199,10 @@ export default {
     this.$bus.on('renameScenario', () => {this.renameScenario()})
   },
   methods: {
+    runReport() {
+      this.$interface.report = true
+      this.$project.solveDebounced()
+    },
     removeScenario() {
       if (this.$project.scenarios.length <= 1) {
         return;
@@ -283,7 +287,7 @@ export default {
     zoom(direction) {
       let dz = direction == 'in' ? 0.2 : -0.2
       // apply bounds of 0.25 and 1.5
-      let nz = this.$project.canvas.zoom + dz
+      let nz = this.$interface.canvas.zoom + dz
       nz = Math.min(1.5, Math.max(0.25, nz))
 
       this.$bus.emit('setZoom', nz)

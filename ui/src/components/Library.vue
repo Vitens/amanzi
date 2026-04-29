@@ -96,9 +96,9 @@ export default {
       // if no models, set to window position
       if(models.length == 0) { 
 
-        var zoom = this.$project.canvas.zoom
+        var zoom = this.$interface.canvas.zoom
 
-        position = {x: (-this.$project.canvas.left + 100) / zoom, y: (-this.$project.canvas.top + 100) / zoom}
+        position = {x: (-this.$interface.canvas.left + 100) / zoom, y: (-this.$interface.canvas.top + 100) / zoom}
         position.y += 200
       }
       // else, get min y and max x

@@ -3,10 +3,10 @@
     <MenuBar></MenuBar>
     <div id="buttonbar">
       <div class="left">
-      <div class="toggle-left-sidebar" @click="$project.sidebar.left = !$project.sidebar.left" :class="{hidden: !$project.sidebar.left}"></div>
+      <div class="toggle-left-sidebar" @click="$interface.sidebar.left = !$interface.sidebar.left" :class="{hidden: !$interface.sidebar.left}"></div>
       <el-dropdown trigger="click">
         <el-button size="small" class="zoombutton">
-          {{ Math.ceil($project.canvas.zoom * 100) }} %
+          {{ Math.ceil($interface.canvas.zoom * 100) }} %
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>
@@ -36,7 +36,7 @@
         <el-button size='small' @click="$project.$redo" :disabled="$project.redoStack.length == 0"><i class='fa fa-repeat'></i></el-button>
       </el-button-group>
 
-      <el-radio-group size="small" v-model="$project.mouseMode">
+      <el-radio-group size="small" v-model="$interface.mouseMode">
         <el-radio-button value="select"><i class='fa fa-mouse-pointer'></i></el-radio-button>
         <el-radio-button value="pan"><i class='fa fa-arrows'></i></el-radio-button>
       </el-radio-group>
@@ -60,13 +60,13 @@
         <el-button size="small" @click="feedback" type="info" plain class="feedback-button"><i class='fa fa-comment'></i>&nbsp;{{ $t('ui.topbar.feedback') }}</el-button>
 
         <el-badge :value="$project.number_of_overwrites" :max="10" class="solve-project" :hidden="$project.number_of_overwrites == 0">
-          <el-button size="small" @click="$project.edit_key_figures" type="primary" plain class="solve-project"><i class='fa fa-database'></i>&nbsp;{{ $t('ui.topbar.key_figures') }}</el-button>
+          <el-button size="small" @click="openKeyFigures" type="primary" plain class="solve-project"><i class='fa fa-database'></i>&nbsp;{{ $t('ui.topbar.key_figures') }}</el-button>
         </el-badge>
-        <el-button size="small" @click="$project.run_report" type="success" plain class="solve-project"><i class='fa fa-flash'></i>&nbsp; {{ $t('ui.topbar.run_project') }}</el-button>
+        <el-button size="small" @click="runReport" type="success" plain class="solve-project"><i class='fa fa-flash'></i>&nbsp; {{ $t('ui.topbar.run_project') }}</el-button>
 
-        <div class="toggle-fullscreen" @click="toggleFullscreen" :class="{fullscreen: !$project.sidebar.right && !$project.sidebar.left}"></div>
+        <div class="toggle-fullscreen" @click="toggleFullscreen" :class="{fullscreen: !$interface.sidebar.right && !$interface.sidebar.left}"></div>
 
-        <div class="toggle-right-sidebar" @click="$project.sidebar.right = !$project.sidebar.right" :class="{hidden: !$project.sidebar.right}"></div>
+        <div class="toggle-right-sidebar" @click="$interface.sidebar.right = !$interface.sidebar.right" :class="{hidden: !$interface.sidebar.right}"></div>
       </div>
 
     </div>
@@ -105,19 +105,26 @@ export default {
       window.open(`mailto:amanzi@vitens.nl?body=${body}`);
     },
     toggleFullscreen() {
-      if(this.$project.sidebar.right || this.$project.sidebar.left) {
-        this.$project.sidebar.right = false
-        this.$project.sidebar.left = false
+      if(this.$interface.sidebar.right || this.$interface.sidebar.left) {
+        this.$interface.sidebar.right = false
+        this.$interface.sidebar.left = false
       } else {
-        this.$project.sidebar.right = true
-        this.$project.sidebar.left = true
+        this.$interface.sidebar.right = true
+        this.$interface.sidebar.left = true
       }
+    },
+    openKeyFigures() {
+      this.$interface.keyfigures = true
+    },
+    runReport() {
+      this.$interface.report = true
+      this.$project.solveDebounced()
     },
 
     zoom(direction) {
       let dz = direction == 'in' ? 0.2 : -0.2
       // apply bounds of 0.25 and 1.5
-      let nz = this.$project.canvas.zoom + dz
+      let nz = this.$interface.canvas.zoom + dz
       nz = Math.min(1.5, Math.max(0.25, nz))
 
       this.$bus.emit('setZoom', nz)

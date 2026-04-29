@@ -278,17 +278,17 @@ export default {
       return "-"+this.$project.state.connections[this.cid].headloss.toFixed(1) + " m"
     },
     showBoosterInfo() {
-      if(!this.$project.display.booster_info) { return false }
+      if(!this.$interface.display.booster_info) { return false }
       return true
     },
     showLoss() {
-      if(!this.$project.display.losses) { return false }
+      if(!this.$interface.display.losses) { return false }
       if(!this.$project.state.connections || !this.$project.state.connections[this.cid]) { return false }
       if (this.$project.state.connections[this.cid].headloss == 0) { return false }
       return true
     },
     showText() {
-      if(!this.$project.display.flows) { return false }
+      if(!this.$interface.display.flows) { return false }
 
       if(this.src.y == this.tgt.y) {
         return Math.abs(this.src.x - this.tgt.x) > 40
@@ -303,7 +303,7 @@ export default {
              this.connection.tgt+" ("+this.connection.type+")"
     },
     booster() {
-      if(!this.$project.display.boosters) { return false }
+      if(!this.$interface.display.boosters) { return false }
 
       if(!this.$project.state.connections || !this.$project.state.connections[this.cid]) {
         return false

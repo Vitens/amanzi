@@ -14,7 +14,7 @@
         <ul class="scenario-list" ref="scenario-list">
           <li v-for="scenario, idx in $project.scenarios"
               :key="scenario.uid"
-              :class="{ active: idx == $project.selectedScenario, 'just-added': idx === $project.lastAddedScenarioIndex }"
+              :class="{ active: idx == $project.selectedScenario, 'just-added': idx === $interface.lastAddedScenarioIndex }"
               @click="$project.selectScenario(idx)"
               @dblclick="renameScenario"
               :data-idx="idx"
@@ -153,7 +153,7 @@ export default {
 }
 .scroll-arrow {
   flex-shrink: 0;
-  width: 28px;
+  display: none;
   border: none;
   background: rgba(0, 0, 0, 0.06);
   color: #666;
@@ -163,7 +163,7 @@ export default {
   z-index: 1;
 }
 .scroll-arrow.visible {
-  opacity: 1;
+  display: block;
 }
 .scenario-scroll-zone:hover .scroll-arrow.visible {
   opacity: 0.85;
