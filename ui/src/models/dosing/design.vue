@@ -82,7 +82,7 @@ export default {
       }
     },
     warning() {
-      return this.$project.designState.warning
+      return this.$runtime.designState.warning
     },
     setpointUnits() {
 
@@ -99,28 +99,28 @@ export default {
       return '-'
     },
     ccpp90() {
-      if(!this.$project.designState.charts) { return [] }
-      return [{ label: 'Doseercurve TACC90', borderColor: colors.orange, backgroundColor: colors.orange, data: this.$project.designState.charts.ccpp90, showLine: true, radius: 0}]
+      if(!this.$runtime.designState.charts) { return [] }
+      return [{ label: 'Doseercurve TACC90', borderColor: colors.orange, backgroundColor: colors.orange, data: this.$runtime.designState.charts.ccpp90, showLine: true, radius: 0}]
     },
     aggco2() {
-      if(!this.$project.designState.charts) { return [] }
-      return [{ label: 'Doseercurve AggCO2', borderColor: colors.purple, backgroundColor: colors.purple, data: this.$project.designState.charts.agco2, showLine: true, radius: 0}]
+      if(!this.$runtime.designState.charts) { return [] }
+      return [{ label: 'Doseercurve AggCO2', borderColor: colors.purple, backgroundColor: colors.purple, data: this.$runtime.designState.charts.agco2, showLine: true, radius: 0}]
     },
     phdata() {
-      if(!this.$project.designState.charts) { return [] }
-      return [{ label: 'Doseercurve pH', borderColor: colors.red, backgroundColor: colors.red, data: this.$project.designState.charts.ph, showLine: true, radius: 0}]
+      if(!this.$runtime.designState.charts) { return [] }
+      return [{ label: 'Doseercurve pH', borderColor: colors.red, backgroundColor: colors.red, data: this.$runtime.designState.charts.ph, showLine: true, radius: 0}]
     },
     sidata() {
-      if(!this.$project.designState.charts) { return [] }
-      return [{ label: 'Doseercurve SI', borderColor: colors.blue, backgroundColor: colors.blue, data: this.$project.designState.charts.si, showLine: true, radius: 0}]
+      if(!this.$runtime.designState.charts) { return [] }
+      return [{ label: 'Doseercurve SI', borderColor: colors.blue, backgroundColor: colors.blue, data: this.$runtime.designState.charts.si, showLine: true, radius: 0}]
     },
     dosage() {
       if(this.params.mode == 'constant') { 
         if(!this.params.dosage) { return 0 }
         return this.params.dosage
       }
-      if(!this.$project.designState.calculated_dosage) { return 0 }
-      return _.round(this.$project.designState.calculated_dosage, 2)
+      if(!this.$runtime.designState.calculated_dosage) { return 0 }
+      return _.round(this.$runtime.designState.calculated_dosage, 2)
     },
     chemical() {
       if(!this.params.chemical) { return "" }
@@ -153,11 +153,11 @@ export default {
   methods: {
     resultSet(name) {
 
-      if(!(name in this.$project.designState)) {
+      if(!(name in this.$runtime.designState)) {
         return []
       }
 
-      let data = this.$project.designState[name]
+      let data = this.$runtime.designState[name]
 
       let resp = [
         {'name': 'pH', 'units': '-', 'value': data.ph},

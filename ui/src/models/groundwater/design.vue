@@ -226,10 +226,10 @@ export default {
 
     },
     chargeWarning() {
-      return Math.abs(this.$project.designState.balance_error) > 2
+      return Math.abs(this.$runtime.designState.balance_error) > 2
     },
     SIWarning() {
-      return this.$project.designState.SI > 0
+      return this.$runtime.designState.SI > 0
     }
   },
   watch: {
@@ -242,7 +242,7 @@ export default {
   methods: {
     balanceCharge(element) {
       // balance the charge of the solution
-      let error = this.$project.designState.charge_balance
+      let error = this.$runtime.designState.charge_balance
       if (error > 0) {
         this.config.parameters['chloride'] += _.round(error * 35.45, 1)
       } else {
@@ -251,10 +251,10 @@ export default {
 
     },
     output(key, precision=2) {
-      // if key not in $project.designState, return '-'
-      if(!(key in this.$project.designState)) { return '-' }
+      // if key not in $runtime.designState, return '-'
+      if(!(key in this.$runtime.designState)) { return '-' }
 
-      return this.$project.designState[key].toFixed(precision)
+      return this.$runtime.designState[key].toFixed(precision)
 
     },
     chemform(chemical) {

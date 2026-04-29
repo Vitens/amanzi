@@ -68,11 +68,11 @@ export default {
   },
   computed: {
     metrics() {
-      if (!this.$project.state.metrics) {
+      if (!this.$runtime.solveState.metrics) {
         return [];
       }
 
-      var metrics = this.$project.state.metrics[this.namespace];
+      var metrics = this.$runtime.solveState.metrics[this.namespace];
 
       for (var i = 0; i < metrics.length; i++) {
         let metric = metrics[i];

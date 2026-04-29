@@ -12,7 +12,7 @@ export const projectStore = defineStore('project', {
     version: '0.0.1',    // project version
     debug: {},
     backend: null, // pointer to backend (pyodide or server)
-    keyfigureOverwrites: {},
+    keyfigureOverwrites: {}, // project-wide key figure overwrites
     modelParameters: {},
     scenarios: [
       scenarioStore(1), // default scenario
@@ -58,7 +58,7 @@ export const projectStore = defineStore('project', {
       })
       this.selectedScenario = index
       // clear state and set unsolved
-      runtime.state = {}
+      runtime.solveState = {}
       this.scenario.unsolved = true
     },
 
@@ -137,8 +137,8 @@ export const projectStore = defineStore('project', {
         store.keyfigureOverwrites = _.cloneDeep(this.scenario.keyfigureOverwrites)
 
         // reuse original scenario's solve/design state with remapped UIDs
-        if (runtime.state && runtime.state.connections) {
-          runtime.state = this.remapStateForDuplicate(runtime.state, uidMap)
+        if (runtime.solveState && runtime.solveState.connections) {
+          runtime.solveState = this.remapStateForDuplicate(runtime.solveState, uidMap)
         }
         if (runtime.designState && runtime.designState.hydraulics) {
           runtime.designState = this.remapDesignStateForDuplicate(runtime.designState, uidMap)
@@ -250,7 +250,7 @@ export const projectStore = defineStore('project', {
           runtime.designState = response
         } else {
           let response = await this.backend.solve(this.serialize(), this.selectedScenario)
-          runtime.state = response
+          runtime.solveState = response
         }
         ui.invalid = false
       }

@@ -3,7 +3,7 @@
     <el-affix :target="reportContainer" :offset="0">
       <div class="report-controls">
         <el-select v-model="scenario" placeholder="Select scenario" @change="metric_index = 0" :disabled="comparison">
-          <el-option v-for="(scenario, index) in $project.reportState.scenarios" :key="index" :label="scenario" :value="index"></el-option>
+          <el-option v-for="(scenario, index) in $runtime.reportState.scenarios" :key="index" :label="scenario" :value="index"></el-option>
         </el-select>
         <el-switch active-text="Comparison" inactive-text="Single model" v-model="comparison" class="switch-report-compact"></el-switch>
         <el-switch active-text="Compact" inactive-text="Uitgebreid" v-model="compact" class="switch-report-compact" :disabled="!comparison"></el-switch>

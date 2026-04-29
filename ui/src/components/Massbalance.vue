@@ -28,19 +28,19 @@ export default {
   props: ['modelcategory'],
   computed: {
     streams() {
-      if(!this.$project.designState.quality) { return [] }
+      if(!this.$runtime.designState.quality) { return [] }
       return ['product']
 
     },
     rows() {
-      if(!this.$project.designState.quality) { return [] }
+      if(!this.$runtime.designState.quality) { return [] }
 
       if (this.modelcategory == 'waste') {
-        let influent = this.$project.designState.quality.influent_waste
+        let influent = this.$runtime.designState.quality.influent_waste
         return influent
       }
       else {
-        let influent = this.$project.designState.quality.influent_product
+        let influent = this.$runtime.designState.quality.influent_product
         return influent
       }
     },
@@ -53,11 +53,11 @@ export default {
       return value.toFixed(2)
     },
     columns(idx) {
-      if(!this.$project.designState.quality) { return [] }
+      if(!this.$runtime.designState.quality) { return [] }
       if (this.modelcategory == 'waste') {
-        let influent = this.$project.designState.quality.influent_waste
-        if (this.$project.designState.quality.effluent_waste) {
-          let effluent = this.$project.designState.quality.effluent_waste
+        let influent = this.$runtime.designState.quality.influent_waste
+        if (this.$runtime.designState.quality.effluent_waste) {
+          let effluent = this.$runtime.designState.quality.effluent_waste
           return [influent[idx], effluent[idx]]
         }
         else {
@@ -65,8 +65,8 @@ export default {
         }
       }
       else {
-        let influent = this.$project.designState.quality.influent_product
-        let effluent = this.$project.designState.quality.effluent_product
+        let influent = this.$runtime.designState.quality.influent_product
+        let effluent = this.$runtime.designState.quality.effluent_product
         return [influent[idx], effluent[idx]]
     }
   },

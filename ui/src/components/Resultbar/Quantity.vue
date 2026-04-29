@@ -32,21 +32,21 @@ export default {
   components: {CopyButton},
   computed: {
     abstraction() {
-      if(!this.$project.state.quantity) { return "-" }
-      return _.round(this.$project.state.quantity.abstraction, 2)
+      if(!this.$runtime.solveState.quantity) { return "-" }
+      return _.round(this.$runtime.solveState.quantity.abstraction, 2)
     },
     distribution() {
-      if(!this.$project.state.quantity) { return "-" }
-      return _.round(this.$project.state.quantity.distribution, 2)
+      if(!this.$runtime.solveState.quantity) { return "-" }
+      return _.round(this.$runtime.solveState.quantity.distribution, 2)
     },
     absolute_loss() {
-      if(!this.$project.state.quantity) { return "-" }
-      return _.round(this.$project.state.quantity.abstraction - this.$project.state.quantity.distribution, 2)
+      if(!this.$runtime.solveState.quantity) { return "-" }
+      return _.round(this.$runtime.solveState.quantity.abstraction - this.$runtime.solveState.quantity.distribution, 2)
     },
     relative_loss() {
       // water losses as a percentage of the total water abstracted
-      if(!this.$project.state.quantity) { return "-" }
-      return _.round((this.$project.state.quantity.abstraction - this.$project.state.quantity.distribution) / this.$project.state.quantity.abstraction * 100, 2)
+      if(!this.$runtime.solveState.quantity) { return "-" }
+      return _.round((this.$runtime.solveState.quantity.abstraction - this.$runtime.solveState.quantity.distribution) / this.$runtime.solveState.quantity.abstraction * 100, 2)
 
     }
 

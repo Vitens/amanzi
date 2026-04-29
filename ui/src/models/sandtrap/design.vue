@@ -48,10 +48,10 @@ export default {
   },
   computed: {
     outputs() {
-      if(this.$project.designState === undefined) return {}
-      if(this.$project.designState.outputs === undefined) return {}
+      if(this.$runtime.designState === undefined) return {}
+      if(this.$runtime.designState.outputs === undefined) return {}
 
-      return this.$project.designState.outputs
+      return this.$runtime.designState.outputs
     },
     params() {
       return this.config.parameters

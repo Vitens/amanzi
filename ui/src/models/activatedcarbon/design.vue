@@ -92,17 +92,17 @@ export default {
     removal_over_time(){
       var trends = []
       
-      // console.log(this.$project.designState.charts.efficiency_height)
+      // console.log(this.$runtime.designState.charts.efficiency_height)
 
-      if(!this.$project.designState.model) { return [] }
+      if(!this.$runtime.designState.model) { return [] }
      
       var color_index = 0
 
-      for (var compound in this.$project.designState.model.breakthrough) {
-        //console.log(this.$project.designState.charts.efficiency_height[height])
+      for (var compound in this.$runtime.designState.model.breakthrough) {
+        //console.log(this.$runtime.designState.charts.efficiency_height[height])
         var trend = {
           label: compound,
-          data: this.$project.designState.model.breakthrough[compound],
+          data: this.$runtime.designState.model.breakthrough[compound],
           backgroundColor: Object.values(colors)[color_index],
           borderColor: Object.values(colors)[color_index],
           showLine: true,
@@ -137,7 +137,7 @@ export default {
     //   },
     //   deep: true
     // },
-    '$project.designState': {
+    '$runtime.designState': {
       handler(){
         this.loading = false
         console.log(this.loading)
@@ -148,21 +148,21 @@ export default {
   
   methods: {
     output(group, key, precision=2, list=false, index=false) {
-      // if key not in $project.designState, return '-'
+      // if key not in $runtime.designState, return '-'
       const resp = list ? [] : '-'
-      if(!(group in this.$project.designState)) { return resp }
-      if(!(key in this.$project.designState[group])) { return resp }
+      if(!(group in this.$runtime.designState)) { return resp }
+      if(!(key in this.$runtime.designState[group])) { return resp }
 
-      let val = this.$project.designState[group][key]
+      let val = this.$runtime.designState[group][key]
       if(index) {
         val = val[index]
       }
       return list ? val : val.toFixed(precision)
     },
     resultSet(group) {
-      if(!(group in this.$project.designState)) { return false }
+      if(!(group in this.$runtime.designState)) { return false }
 
-      let data = this.$project.designState[group]
+      let data = this.$runtime.designState[group]
 
       let result = []
       for (let [key, value] of Object.entries(data)) {

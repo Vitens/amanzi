@@ -55,11 +55,11 @@ export default {
       })
 
       eq = eq.replaceAll(/(?<!<[^>]*>)\b\w+\b/g, (match) => {
-        if (match in this.$project.designState.outputs) {
-          var color = this.colormap[this.$project.designState.outputs[match].order]
+        if (match in this.$runtime.designState.outputs) {
+          var color = this.colormap[this.$runtime.designState.outputs[match].order]
           return `<span class='tag' style="background-color: ${color};">${match}</span>`
         }
-        if (match in this.$project.designState.parameters) {
+        if (match in this.$runtime.designState.parameters) {
           return `<span class='parameter'>${match}</span>`
         }
         return match
@@ -90,11 +90,11 @@ export default {
       return cmap
     },
     outputs() {
-      if(!this.$project.designState.outputs) { return [] }
+      if(!this.$runtime.designState.outputs) { return [] }
 
-      var resp = Object.keys(this.$project.designState.outputs).map(key => ({
+      var resp = Object.keys(this.$runtime.designState.outputs).map(key => ({
         name: key,
-        ...this.$project.designState.outputs[key]
+        ...this.$runtime.designState.outputs[key]
       }))
 
       return resp

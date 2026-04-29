@@ -72,9 +72,9 @@ props: ['config', 'modelValue'],
 ,
 methods:{
     PFASlist(){
-        if(!this.$project.designState.model) { return [] }
+        if(!this.$runtime.designState.model) { return [] }
 
-        return this.$project.designState.model.PFAS
+        return this.$runtime.designState.model.PFAS
     },
     addStep() {
       this.modelValue.backwash_programme.push({time: 0, water: 0, air: 0})

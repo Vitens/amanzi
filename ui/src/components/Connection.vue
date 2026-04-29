@@ -274,8 +274,8 @@ export default {
 
   computed: {
     loss() {
-      if(!this.$project.state.connections || !this.$project.state.connections[this.cid]) { return "" }
-      return "-"+this.$project.state.connections[this.cid].headloss.toFixed(1) + " m"
+      if(!this.$runtime.solveState.connections || !this.$runtime.solveState.connections[this.cid]) { return "" }
+      return "-"+this.$runtime.solveState.connections[this.cid].headloss.toFixed(1) + " m"
     },
     showBoosterInfo() {
       if(!this.$interface.display.booster_info) { return false }
@@ -283,8 +283,8 @@ export default {
     },
     showLoss() {
       if(!this.$interface.display.losses) { return false }
-      if(!this.$project.state.connections || !this.$project.state.connections[this.cid]) { return false }
-      if (this.$project.state.connections[this.cid].headloss == 0) { return false }
+      if(!this.$runtime.solveState.connections || !this.$runtime.solveState.connections[this.cid]) { return false }
+      if (this.$runtime.solveState.connections[this.cid].headloss == 0) { return false }
       return true
     },
     showText() {
@@ -305,10 +305,10 @@ export default {
     booster() {
       if(!this.$interface.display.boosters) { return false }
 
-      if(!this.$project.state.connections || !this.$project.state.connections[this.cid]) {
+      if(!this.$runtime.solveState.connections || !this.$runtime.solveState.connections[this.cid]) {
         return false
       }
-      return this.$project.state.connections[this.cid].booster
+      return this.$runtime.solveState.connections[this.cid].booster
     },
     boosterInfo() {
       
@@ -319,7 +319,7 @@ export default {
     },
     boosterHead() {
       if(!this.booster) { return "" }
-      return "+" + this.$project.state.connections[this.cid].booster_head.toFixed(1) + " m"
+      return "+" + this.$runtime.solveState.connections[this.cid].booster_head.toFixed(1) + " m"
     },
     boosterTriangle() {
       var center = this.boosterPoint
@@ -338,11 +338,11 @@ export default {
     },
     flow() {
       // if cid in state, return value
-      if(!this.$project.state.connections) {
+      if(!this.$runtime.solveState.connections) {
         return "!"
       }
-      if(this.$project.state.connections[this.cid]) {
-        return _.round(this.$project.state.connections[this.cid].flow, 2)
+      if(this.$runtime.solveState.connections[this.cid]) {
+        return _.round(this.$runtime.solveState.connections[this.cid].flow, 2)
       } else {
         return "?"
       }

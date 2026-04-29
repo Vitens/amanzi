@@ -165,23 +165,4 @@ app.config.globalProperties.$version = version
 
 app.config.globalProperties.$http = api
 
-// Backward-compatible aliases while runtime state is moved out of project store.
-Object.defineProperties(store, {
-  state: {
-    get() { return runtime.state },
-    set(value) { runtime.state = value },
-    configurable: true
-  },
-  designState: {
-    get() { return runtime.designState },
-    set(value) { runtime.designState = value },
-    configurable: true
-  },
-  reportState: {
-    get() { return runtime.reportState },
-    set(value) { runtime.reportState = value },
-    configurable: true
-  }
-})
-
 app.mount('#app')

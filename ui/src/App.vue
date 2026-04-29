@@ -133,7 +133,7 @@ export default {
       // suppress keys
       this.$project.changed = true
       if (this.$project.scenario.unsolved) { 
-        // this.$project.state.quality = []
+        // this.$runtime.solveState.quality = []
         this.$project.solve() 
         this.$project.scenario.unsolved = false
       }
@@ -214,7 +214,7 @@ export default {
       this.$interface.keyfigures = false
       this.$interface.about = false
       this.$project.scenario.editingModel = null
-      this.$project.designState = {}
+      this.$runtime.designState = {}
       this.$project.scenario.unsolved = true
     },
   }

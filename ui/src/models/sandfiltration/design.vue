@@ -111,11 +111,11 @@ export default {
       if (parseFloat(val) < 0.2) { return 'warning' }
     },
     output(step, key, precision) {
-      if(this.$project.designState.values == undefined) { return "-" }
+      if(this.$runtime.designState.values == undefined) { return "-" }
 
-      if(!(step in this.$project.designState.values)) { return "-" }
+      if(!(step in this.$runtime.designState.values)) { return "-" }
 
-      let val = this.$project.designState.values[step][key]
+      let val = this.$runtime.designState.values[step][key]
       
       return val > 100 ? val.toFixed(0) : val.toFixed(precision)
     },
@@ -149,9 +149,9 @@ export default {
     resultSet(name) {
 
       if (this.values == undefined) { return [] }
-      if(!(name in this.$project.designState.values)) { return [] }
+      if(!(name in this.$runtime.designState.values)) { return [] }
 
-      let inf = this.$project.designState.values[name]
+      let inf = this.$runtime.designState.values[name]
       
       if (name ==='spray') {
         var resp = [
@@ -185,16 +185,16 @@ export default {
         return this.config.parameters
       },
     headers() {
-      return this.$project.designState.names
+      return this.$runtime.designState.names
     },
     steps() {
-      return this.$project.designState.steps
+      return this.$runtime.designState.steps
     },
     values() {
-      return this.$project.designState.values
+      return this.$runtime.designState.values
     },
     names() {
-      return this.$project.designState.names
+      return this.$runtime.designState.names
     },
     influentData() {
       return this.resultSet('Influent')

@@ -36,7 +36,7 @@ export default {
       this.$project.scenario.deselectBlocks();
       this.$bus.emit('selection-changed');
       // clear designstate
-      this.$project.designState = {};
+      this.$runtime.designState = {};
       // set new model as editing model and selected block
       this.$project.scenario.editingModel = uid;
 

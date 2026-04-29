@@ -138,25 +138,25 @@ export default {
       }
     },
     get_output(name) {
-      if(this.$project.designState.outputs === undefined) { return "-" }
-      if(!(name in this.$project.designState.outputs)) { return "-" }
-      let output = this.$project.designState.outputs[name]
+      if(this.$runtime.designState.outputs === undefined) { return "-" }
+      if(!(name in this.$runtime.designState.outputs)) { return "-" }
+      let output = this.$runtime.designState.outputs[name]
       return output.value.toFixed(output.precision)
     },
     output(group, key) {
       const resp = []
-      if(!(group in this.$project.designState)) { return resp }
-      if(!(key in this.$project.designState[group])) { return resp }
-      return this.$project.designState[group][key]
+      if(!(group in this.$runtime.designState)) { return resp }
+      if(!(key in this.$runtime.designState[group])) { return resp }
+      return this.$runtime.designState[group][key]
     },
     resultSet(group) {
 
 
-      if(!(group in this.$project.designState)) { return false }
+      if(!(group in this.$runtime.designState)) { return false }
 
       if(group == 'gas_dry' || group == 'gas_wet') {
-        let wet = this.$project.designState.gas_wet
-        let dry = this.$project.designState.gas_dry
+        let wet = this.$runtime.designState.gas_wet
+        let dry = this.$runtime.designState.gas_dry
 
         return [
           {name: 'Volume', value: [wet.volume * this.displayFlow, dry.volume * this.displayFlow], units: 'm3/h'},
@@ -171,7 +171,7 @@ export default {
       }
 
 
-      let data = this.$project.designState[group]
+      let data = this.$runtime.designState[group]
 
       return [
         {name: 'pH', value: data.pH, units: '-'},

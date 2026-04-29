@@ -83,17 +83,17 @@ export default {
     removal_over_d_sauter(){
       var trends = []
       
-      // console.log(this.$project.designState.charts.efficiency_height)
+      // console.log(this.$runtime.designState.charts.efficiency_height)
 
-      if(!this.$project.designState.efficiency) { return [] }
+      if(!this.$runtime.designState.efficiency) { return [] }
      
       var color_index = 0
 
-      for (var height in this.$project.designState.efficiency.Sauter) {
-        //console.log(this.$project.designState.charts.efficiency_height[height])
+      for (var height in this.$runtime.designState.efficiency.Sauter) {
+        //console.log(this.$runtime.designState.charts.efficiency_height[height])
         var trend = {
           label: height + 'm',
-          data: this.$project.designState.efficiency.Sauter[height],
+          data: this.$runtime.designState.efficiency.Sauter[height],
           backgroundColor: Object.values(colors)[color_index],
           borderColor: Object.values(colors)[color_index],
           showLine: true,
@@ -110,21 +110,21 @@ export default {
 
   methods: {
     output(group, key, precision=2, list=false, index=false) {
-      // if key not in $project.designState, return '-'
+      // if key not in $runtime.designState, return '-'
       const resp = list ? [] : '-'
-      if(!(group in this.$project.designState)) { return resp }
-      if(!(key in this.$project.designState[group])) { return resp }
+      if(!(group in this.$runtime.designState)) { return resp }
+      if(!(key in this.$runtime.designState[group])) { return resp }
 
-      let val = this.$project.designState[group][key]
+      let val = this.$runtime.designState[group][key]
       if(index) {
         val = val[index]
       }
       return list ? val : val.toFixed(precision)
     },
     resultSet(group) {
-      if(!(group in this.$project.designState)) { return false }
+      if(!(group in this.$runtime.designState)) { return false }
 
-      let data = this.$project.designState[group]
+      let data = this.$runtime.designState[group]
 
       return [
         {name: 'pH', value: data.pH, units: '-'},

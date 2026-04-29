@@ -65,8 +65,8 @@ export default {
       return classes
     },
     hydraulics() {
-      if (this.$project.state.hydraulics && this.$project.state.hydraulics[this.info.uid]) {
-        return this.$project.state.hydraulics[this.info.uid]
+      if (this.$runtime.solveState.hydraulics && this.$runtime.solveState.hydraulics[this.info.uid]) {
+        return this.$runtime.solveState.hydraulics[this.info.uid]
       }
     }
   },

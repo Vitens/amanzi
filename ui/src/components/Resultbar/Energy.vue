@@ -33,20 +33,20 @@ export default {
   components: {CopyButton},
   computed: {
     specific_consumption_production() {
-      if(!this.$project.state.energy) { return "-" }
-      return _.round(this.$project.state.energy.specific_consumption_production, 3)
+      if(!this.$runtime.solveState.energy) { return "-" }
+      return _.round(this.$runtime.solveState.energy.specific_consumption_production, 3)
     },
     specific_consumption_distribution() {
-      if(!this.$project.state.energy) { return "-" }
-      return _.round(this.$project.state.energy.specific_consumption_distribution, 3)
+      if(!this.$runtime.solveState.energy) { return "-" }
+      return _.round(this.$runtime.solveState.energy.specific_consumption_distribution, 3)
     },
     total_consumption() {
-      if(!this.$project.state.energy) { return "-" }
-      return _.round(this.$project.state.energy.total_consumption, 0)
+      if(!this.$runtime.solveState.energy) { return "-" }
+      return _.round(this.$runtime.solveState.energy.total_consumption, 0)
     },
     total_specific_consumption() {
-      if(!this.$project.state.energy) { return "-" }
-      return _.round(this.$project.state.energy.specific_consumption, 3)
+      if(!this.$runtime.solveState.energy) { return "-" }
+      return _.round(this.$runtime.solveState.energy.specific_consumption, 3)
     }
   }
 

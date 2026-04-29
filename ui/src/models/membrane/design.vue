@@ -96,7 +96,7 @@
                 <th v-for="header in headers" v-html="format(header)"></th>
               </thead>
               <tbody>
-                <tr v-for="element in $project.designState.element_results">
+                <tr v-for="element in $runtime.designState.element_results">
                   <td v-for="value, idx in element">{{formatValue(idx, value)}}</td>
                 </tr>
               </tbody>  
@@ -139,9 +139,9 @@ export default {
   },
   methods: {
     resultSet(stream) {
-      if(!this.$project.designState.streams) { return false }
+      if(!this.$runtime.designState.streams) { return false }
       // return first five rows
-      return this.$project.designState.streams[stream].slice(0,5)
+      return this.$runtime.designState.streams[stream].slice(0,5)
     },
     recovery(stage) {
       if(!this.stage_results || stage > this.stage_results.length) return '-'
@@ -150,9 +150,9 @@ export default {
     chart_data(dataset_name, metric) {
 
 
-      if(!this.$project.designState[dataset_name]) { return [] }
+      if(!this.$runtime.designState[dataset_name]) { return [] }
 
-      var element_results = this.$project.designState[dataset_name]
+      var element_results = this.$runtime.designState[dataset_name]
 
       // generate chart dataset
       var datasets = []
@@ -232,26 +232,26 @@ export default {
       return this.config.parameters
     }, 
     components() {
-      if(!this.$project.designState.stage_results) { return [] }
-      return this.$project.designState.stage_results[0].feed_quality.map(c => c.name)
+      if(!this.$runtime.designState.stage_results) { return [] }
+      return this.$runtime.designState.stage_results[0].feed_quality.map(c => c.name)
     },
     phases() {
-      if(!this.$project.designState.supersaturation) { return [] }
+      if(!this.$runtime.designState.supersaturation) { return [] }
       let resp = []
-      for(var phase in this.$project.designState.supersaturation[0]) {
-        if(this.$project.designState.supersaturation[0][phase] > -999) {
+      for(var phase in this.$runtime.designState.supersaturation[0]) {
+        if(this.$runtime.designState.supersaturation[0][phase] > -999) {
           resp.push(phase)
         }
       }
       return resp
     },
     headers() {
-      if(!this.$project.designState.element_results) { return [] }
-      return Object.keys(this.$project.designState.element_results[0])
+      if(!this.$runtime.designState.element_results) { return [] }
+      return Object.keys(this.$runtime.designState.element_results[0])
     },
     flux_chart() {
-      if(this.$project.designState && this.$project.designState.charts) {
-        return this.$project.designState.charts.flux
+      if(this.$runtime.designState && this.$runtime.designState.charts) {
+        return this.$runtime.designState.charts.flux
       }
       return []
     },
@@ -265,11 +265,11 @@ export default {
       return this.config.parameters.modules_per_vessel
     },
     stage_results() {
-      if (!this.$project.designState) return false
-      return this.$project.designState.stage_results
+      if (!this.$runtime.designState) return false
+      return this.$runtime.designState.stage_results
     },
     stage_si() {
-      if (!this.$project.designState.stage_results) return []
+      if (!this.$runtime.designState.stage_results) return []
 
       let resp = []
 

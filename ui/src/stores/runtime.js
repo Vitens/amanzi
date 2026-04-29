@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 export const runtimeStore = defineStore('runtime', {
   state: () => ({
-    state: {},
+    solveState: {},
     designState: {},
     reportState: {},
   }),
