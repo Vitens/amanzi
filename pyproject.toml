@@ -30,7 +30,7 @@ homepage = "https://github.com/Vitens/amanzi"
 repository = "https://github.com/Vitens/amanzi"
 
 [project.scripts]
-amanzi = "amanzi.server.app:main"
+amanzi-server = "amanzi.server.app:main"
 
 [build-system]
 requires = ["hatchling"]
