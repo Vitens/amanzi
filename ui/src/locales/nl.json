@@ -1290,6 +1290,14 @@
 		"dialogs": {
 			"about": {
 				"acknowledgements": "Verantwoording",
+				"citation": {
+					"bibtex": "BibTeX",
+					"copy_bibtex": "Kopieer BibTeX",
+					"copy_plain_text": "Kopieer platte tekst",
+					"description": "Citeer de software met een van de onderstaande formaten als je Amanzi gebruikt in onderzoek.",
+					"plain_text": "Platte tekst",
+					"title": "Citeren"
+				},
 				"changelog": "Versiegeschiedenis",
 				"developed_by": "Ontwikkeld door Technologie & Onderzoek, Vitens",
 				"license": "Licentie",

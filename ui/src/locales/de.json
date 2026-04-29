@@ -1290,6 +1290,14 @@
 		"dialogs": {
 			"about": {
 				"acknowledgements": "Acknowledgments",
+				"citation": {
+					"bibtex": "BibTeX",
+					"copy_bibtex": "BibTeX kopieren",
+					"copy_plain_text": "Klartext kopieren",
+					"description": "Wenn Sie Amanzi in der Forschung verwenden, zitieren Sie die Software bitte mit einem der folgenden Formate.",
+					"plain_text": "Klartext",
+					"title": "Zitieren"
+				},
 				"changelog": "Versionsgeschichte",
 				"developed_by": "Entwickelt von Technology & Research, Vitens",
 				"license": "Lizenz",
