@@ -3,6 +3,7 @@ import debounce from 'lodash/debounce';
 import { defineStore } from 'pinia'
 import { scenarioStore } from './scenario'
 import { interfaceStore } from './interface'
+import { runtimeStore } from './runtime'
 import { migrateProject } from '../lib/projectMigration'
 
 export const projectStore = defineStore('project', {
@@ -17,9 +18,6 @@ export const projectStore = defineStore('project', {
       scenarioStore(1), // default scenario
     ],       // list of scenarios
     selectedScenario: 0, // index of selected scenario
-    state: {}, // state of connections 
-    designState: {}, // state of design
-    reportState: {}, // state of report
     lastMigrationChanges: [], // migration toast rows; cleared in notifyMigrationIfNeeded
     migrationAppliedOnLastOpen: false,
     migrationNotifyFrom: '',
@@ -54,12 +52,13 @@ export const projectStore = defineStore('project', {
     },
 
     selectScenario(index) {
+      const runtime = runtimeStore()
       this.$pushUndo({
         selectedScenario: this.selectedScenario
       })
       this.selectedScenario = index
       // clear state and set unsolved
-      this.state = {}
+      runtime.state = {}
       this.scenario.unsolved = true
     },
 
@@ -114,6 +113,7 @@ export const projectStore = defineStore('project', {
     },
 
     addScenario(name, duplicate) {
+      const runtime = runtimeStore()
       // create new scenariostore
       var store = scenarioStore(Math.random().toString(36).substring(2, 8))
       // copy models and connections from current scenario
@@ -137,11 +137,11 @@ export const projectStore = defineStore('project', {
         store.keyfigureOverwrites = _.cloneDeep(this.scenario.keyfigureOverwrites)
 
         // reuse original scenario's solve/design state with remapped UIDs
-        if (this.state && this.state.connections) {
-          this.state = this.remapStateForDuplicate(this.state, uidMap)
+        if (runtime.state && runtime.state.connections) {
+          runtime.state = this.remapStateForDuplicate(runtime.state, uidMap)
         }
-        if (this.designState && this.designState.hydraulics) {
-          this.designState = this.remapDesignStateForDuplicate(this.designState, uidMap)
+        if (runtime.designState && runtime.designState.hydraulics) {
+          runtime.designState = this.remapDesignStateForDuplicate(runtime.designState, uidMap)
         }
       }
 
@@ -227,10 +227,9 @@ export const projectStore = defineStore('project', {
 
     solveDebounced: debounce(async function () {
       const ui = interfaceStore()
+      const runtime = runtimeStore()
       // solve network or single model
       ui.loading = true
-
-
 
       let valid = this.scenario.validate()
       if(!valid.valid) {
@@ -244,14 +243,14 @@ export const projectStore = defineStore('project', {
       try {
         if(ui.report) {
           let response = await this.backend.report(this.serialize())
-          this.reportState = response
+          runtime.reportState = response
         }
         else if (this.scenario.editingModel) {
           let response = await this.backend.design(this.serialize(), this.selectedScenario, this.scenario.editingModel)
-          this.designState = response
+          runtime.designState = response
         } else {
           let response = await this.backend.solve(this.serialize(), this.selectedScenario)
-          this.state = response
+          runtime.state = response
         }
         ui.invalid = false
       }

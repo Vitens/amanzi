@@ -5,6 +5,7 @@ import _ from 'lodash'
 import { scenarioStore } from './stores/scenario'
 import { projectStore } from './stores/project'
 import { interfaceStore } from './stores/interface'
+import { runtimeStore } from './stores/runtime'
 import { piniaUndoRedo } from './stores/undo'
 import { createPinia } from 'pinia'
 import VueCookies from 'vue-cookies'
@@ -147,12 +148,14 @@ await loadModels()
 
 let store = projectStore()
 let ui = interfaceStore()
+let runtime = runtimeStore()
 store.currentAmanziVersion = version
 store.$bus = eventBus
 app.config.globalProperties.$bus = eventBus
 app.config.globalProperties.modelspec = modelspec
 app.config.globalProperties.$project = store
 app.config.globalProperties.$interface = ui
+app.config.globalProperties.$runtime = runtime
 app.config.globalProperties.chemform = chemform
 
 app.config.globalProperties.$store = store.activeScenario
@@ -161,4 +164,24 @@ app.config.globalProperties.$modelVues = modelVueNames
 app.config.globalProperties.$version = version
 
 app.config.globalProperties.$http = api
+
+// Backward-compatible aliases while runtime state is moved out of project store.
+Object.defineProperties(store, {
+  state: {
+    get() { return runtime.state },
+    set(value) { runtime.state = value },
+    configurable: true
+  },
+  designState: {
+    get() { return runtime.designState },
+    set(value) { runtime.designState = value },
+    configurable: true
+  },
+  reportState: {
+    get() { return runtime.reportState },
+    set(value) { runtime.reportState = value },
+    configurable: true
+  }
+})
+
 app.mount('#app')
