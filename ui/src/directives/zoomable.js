@@ -28,7 +28,6 @@ function isLikelyMouseWheel(evt, delta) {
   // Trackpads more often emit fractional deltas and/or horizontal deltas.
   const absX = Math.abs(delta.x)
   const absY = Math.abs(delta.y)
-  console.log(absX, absY)
   return absX === 0 && Number.isInteger(delta.y) && absY >= 10
 }
 

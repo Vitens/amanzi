@@ -45,7 +45,7 @@
     tabindex=-1
     :style="{transform: 'translate('+display.zoomX+'px,'+display.zoomY+'px)scale('+display.zoom+')translate('+(-display.zoomX)+'px,'+(-display.zoomY)+'px)', left: display.left + 'px', top: display.top + 'px', 'transform-origin': 'left top'}"
     v-draggable="{start: startPanSelect, move: panSelect, end: endPanSelect, focus: true}"
-    :class="{gridlines: display.grid}"
+    :class="{gridlines: display.grid, panning: panning}"
     v-zoomable="{zoom, pan: panTrackpad}"
     @dragover='allowDrop'
     @drop='dropBlock'
@@ -377,5 +377,7 @@ export default {
   opacity: 1;
 }
 
-
+#canvas.panning {
+  cursor: grabbing;
+}
 </style>
