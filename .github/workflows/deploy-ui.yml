@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 env:
-  PHREEQPYTHON_WHEEL: phreeqpython-1.6.2+pyodide-py3-none-any.whl
+  PHREEQPYTHON_WHEEL: phreeqpython-1.6.2-py3-none-any.whl
   PHREEQPYTHON_WHEEL_URL: https://github.com/Vitens/phreeqpython/releases/download/v1.6.2/phreeqpython-1.6.2+pyodide-py3-none-any.whl
 
 jobs:

@@ -1,7 +1,7 @@
 import { loadPyodide, version as pyodideVersion } from 'pyodide';
 
 const AMANZI_WHEEL_FILENAME = import.meta.env.VITE_AMANZI_WHEEL_FILENAME || 'amanzi-1.0.5-py2.py3-none-any.whl';
-const PHREEQPYTHON_WHEEL_FILENAME = 'phreeqpython-1.6.2+pyodide-py3-none-any.whl';
+const PHREEQPYTHON_WHEEL_FILENAME = 'phreeqpython-1.6.2-py3-none-any.whl';
 
 function distUrl(filename) {
   const appBaseUrl = new URL(import.meta.env.BASE_URL, self.location.origin);
