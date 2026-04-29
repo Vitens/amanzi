@@ -267,16 +267,16 @@ export const scenarioStore = (uid) =>
       // block actions
       addModel(modelspecs, defaults, type, name, position, autoConnect) {
         var modelspec = modelspecs[type];
-        const model = _.cloneDeep(modelspec.template);
-        model.uid = this.generateUID();
-
-        model.name = this.suggestName(name);
-
-        model.type = modelspec.name;
-        model.category = modelspec.category;
-        model.configuration = model.configuration ? model.configuration : {};
-
-        model.configuration.parameters = {};
+        const model = {
+          uid: this.generateUID(),
+          name: this.suggestName(name),
+          type: modelspec.name,
+          category: modelspec.category,
+          configuration: {
+            parameters: {},
+          },
+          position: position,
+        };
 
         for (var param of defaults) {
           model.configuration.parameters[param.name] = param.default;
@@ -545,7 +545,7 @@ export const scenarioStore = (uid) =>
           }
 
           // loop over anchors, check if all connections are made
-          for (var a of spec.canvas.anchors) {
+          for (var a of spec.anchors) {
             if (a.optional) {
               continue;
             } // skip optional anchors

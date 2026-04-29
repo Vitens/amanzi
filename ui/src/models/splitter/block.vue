@@ -1,12 +1,29 @@
 <template>
 </template>
 <script>
-
-export default {
-  name: 'block-splitter',
-  mounted() {
-  }
+const properties = {
+  name: 'splitter',
+  category: 'main',
+  anchors: [
+    {
+      position: 'left',
+      direction: 'in',
+      type: 'product'
+    },
+    {
+      position: 'right',
+      direction: 'out',
+      type: 'product'
+    },
+    {
+      position: 'bottom',
+      direction: 'out',
+      type: 'product'
+    }
+  ]
 }
+
+export { properties }
 
 
 </script>
@@ -15,7 +32,7 @@ export default {
   width: 60px !important;
   height: 60px !important;
   outline: none !important;
-  background: url('./assets/splitter.png') center center no-repeat;
+  background: url('./assets/block.png') center center no-repeat;
   background-color: transparent !important;
   background-size: 75%;
 }

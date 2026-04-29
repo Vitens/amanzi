@@ -114,22 +114,21 @@ var modelspec = {}
 var modelVueNames = []
 
 async function loadModels() {
-  const models = import.meta.glob('./models/*/*.json')
- for(const path in models) {
-    let spec = await models[path]()
-    modelspec[spec.name] = JSON.parse(JSON.stringify(spec))
-  }
-
-  const modelVues = import.meta.glob('./models/*/*.vue', {'eager': true})
-  for(const path in modelVues) {
+  const models = import.meta.glob('./models/*/*.vue', {'eager': true})
+  for(const path in models) {
     let split = path.split('/')
     let model = split[2]
     let type = split[3].split('.')[0]
     // let mdl = await modelVues[path]()
-    let mdl = modelVues[path]
+    let mdl = models[path]
     let name = _.startCase(_.camelCase(type+"-"+model)).replace(" ","")
     app.component(name, mdl.default)
     modelVueNames.push(name)
+
+    if (type == 'block') {
+      const properties = models[path].properties
+      modelspec[model] = properties
+    }
   }
 
 }

@@ -14,7 +14,7 @@
     <div class="model-content">
       <component :is="'block-'+info.type" :model="info"></component>
     </div>
-    <endpoint :uid="info.uid" :info="e" v-for="e in modelSpec.canvas.anchors" :key="info.uid+e.position" :connected="isConnected(e)"></endpoint>
+    <endpoint :uid="info.uid" :info="e" v-for="e in modelSpec.anchors" :key="info.uid+e.position" :connected="isConnected(e)"></endpoint>
     <div class="extended-info" v-if="debug">
       <label class="hydraulics_name">UID:</label>
       <span class="hydraulics_value">{{ info.uid }}</span>

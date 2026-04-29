@@ -6,6 +6,33 @@
 
 </template>
 <script>
+const properties = {
+  name: 'sandfiltration',
+  category: 'main',
+  anchors: [
+    {
+      position: 'left',
+      direction: 'in',
+      type: 'product'
+    },
+    {
+      position: 'right',
+      direction: 'out',
+      type: 'product'
+    },
+    {
+      position: 'top',
+      direction: 'in',
+      type: 'flush'
+    },
+    {
+      position: 'bottom',
+      direction: 'out',
+      type: 'waste'
+    }
+  ]
+}
+
 export default {
   name: 'sandfiltration',
   props: ['model'],
@@ -18,13 +45,15 @@ export default {
     }
   }
 }
+
+export { properties }
 </script>
 
 <style>
 .sandfiltration-logo {
   width: 100px;
   height: 100px;
-  background-image: url('assets/sandfilter.png');
+  background-image: url('assets/block.png');
   background-position: 0px 6px;  
 }
 .sandfiltration-logo.spray {

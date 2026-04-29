@@ -21,7 +21,7 @@
       </el-row>
 
     </div>
-    <el-scrollbar max-height="445px" v-if="displayMode == 'grid'">
+    <el-scrollbar max-height="545px" v-if="displayMode == 'grid'">
       <template v-for="category in categories">
         <div class="blocks-category">{{ $t('ui.sidebar.library.categories.'+category) }}</div>
         <div id="blocks-grid">
@@ -86,7 +86,7 @@ export default {
       blocks = blocks.filter(block => block.category == category);
 
       return blocks.sort((a, b) =>
-        a.localizedName.localeCompare(b.localizedName)
+        a.name.localeCompare(b.name)
       );
     },
     addModel(block) {
@@ -114,7 +114,7 @@ export default {
       this.$project.scenario.addModel(this.modelspec, this.$project.modelParameters[block.name],block.name, name, position, true);
     },
     getImageUrl(block) {
-      const imageUrl = new URL(`../models/${block.name}/assets/${block.canvas.defaultImg}`, import.meta.url).href;
+      const imageUrl = new URL(`../models/${block.name}/assets/block.png`, import.meta.url).href;
       return `url(${imageUrl})`;
     },
     startDrag(name, evt) {
