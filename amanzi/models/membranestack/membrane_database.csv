@@ -1,0 +1,7 @@
+﻿name;supplier;rejection;area;spacer_height;test_production;test_concentration;test_pressure;test_recovery;test_temperature;max_pressure;max_temperature;max_feed;min_brine;max_pressure_drop;comments
+ESPA2-LD;Hydranautics;0.996;37.2;34;1.579166667;1500;10.34;0.15;25;41.37;45;19.3;2.7;1.034;
+ESPA2-LD-MAX;Hydranautics;0.996;40.9;34;1.891666667;1500;10.34;0.15;25;41.37;45;19.3;2.7;1.034;
+ESPA4-LD;Hydranautics;0.992;37.2;34;1.891666667;500;6.89;0.15;25;41.37;45;19.3;2.7;1.034;
+ESPA4-MAX;Hydranautics;0.992;40.9;28;2.083333333;500;6.89;0.15;25;41.37;45;19.3;2.7;1.034;
+AK-400H;Suez;0.9965;37.2;34;1.733333333;500;7.93;0.15;25;27.58;50;19.3;2.7;1.034;max_feed, min_brine not given by specsheet
+AK-440H;Suez;0.9965;40.9;28;1.891666667;500;7.93;0.15;25;27.58;50;19.3;2.7;1.034;max_feed, min_brine not given by specsheet

@@ -1,0 +1,58 @@
+parameters:
+  design:
+    transport_pipe:
+      pipe_length:
+        uom: m
+        default: 1000
+        range: [100, 50000]
+        quick: true
+      pipe_inner_diameter:
+        uom: mm
+        default: 450
+        range: [100, 2500]
+        quick: true
+  hydraulic:
+    hydraulic_line:
+      pressurized:
+        default: true
+        hidden: true
+
+outputs:
+  design:
+    transport_pipe:
+      pipeline_capacity:
+        uom: m3/h
+        precision: 0
+        equation: "quantity.inflow.product * 1e6 / 24 / 365"
+        if: "False" # hidden by default
+  
+  hydraulic:
+    hydraulic_line:
+      total_headloss:
+        uom: m
+        precision: 1
+        equation: "headloss_pipe"
+      calculated_head_in:
+        uom: mH2O
+        precision: 1
+        equation: "hydraulics.head_in"
+      calculated_head_out:
+        uom: mH2O
+        precision: 1
+        equation: "hydraulics.head_out"
+    
+  energy:
+    hydraulic_energy:
+      hydraulic_energy_loss:
+        uom: "kWh/m3"
+        equation: "1/3600 * delta_head * 9.81 * 1/(pump_efficiency)"
+        precision: 3
+        parameters:
+          delta_head:
+            uom: mH2O
+            equation: "total_headloss"
+            precision: 1
+          pump_efficiency:
+            uom: "%"
+            equation: "hydraulics.efficiency"
+            precision: 0

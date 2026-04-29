@@ -1,0 +1,48 @@
+{
+  "name": "activatedcarbon",
+  "hidden": true,
+  "localizedName": "Actiev kool filtratie",
+  "canvas": {
+    "defaultImg": "acfilter.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"}
+    
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "loss": 0.1,
+      "diameter" : 2,
+      "packing_height" : 2,
+      "packing_type" : "NORA Supra 0.8",
+      "volumeflow" : 200,
+      "capacity" : 200,
+      "advanced": false ,
+      "interval":1000,
+      "filternumber":1,
+      "backwash_programme": [
+        {"time": 600, "water": 50, "air": 0}],
+      "compound":{ 
+                    "PFBS": [456.94, 0.411, 1], 
+                    "PFPeS": [1521, 0.3521, 1],
+                    "PFHxS": [3832.9, 0.3136, 1],
+                    "PFHpS": [4588.9, 0.286, 1],
+                    "PFOS": [7222, 0.2525, 1],
+                    "PFDS": [0.1, 1, 1], 
+                    "TFA": [215.1, 0.343, 1],
+                    "PFBA": [255, 0.4942, 1],
+                    "PFPeA": [1160, 0.4252, 1],
+                    "PFHxA": [4179, 0.3607, 1],
+                    "PFHpA": [498, 0.3144, 1],
+                    "PFOA": [1718, 0.2808, 1],
+                    "PFDA": [6371, 0.2415, 1],
+                    "PFUnDA": [14603, 0.2233, 1],
+                    "PFDoDA": [18106, 0.2076, 1],
+                    "PFTrDA": [25862, 0.1972, 1],
+                    "PFTeDA": [30582, 0.1858, 1] }
+ 
+    }
+  }
+}

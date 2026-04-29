@@ -1,0 +1,89 @@
+parameters:
+  design:
+    hydraulic_line:
+      pressurized:
+        default: true
+        uom: '-'
+        hidden: true
+      
+  chemicals:
+    general:
+      position:
+        default: influent
+        options: [influent, effluent]
+      chemical:
+        default: 'co2'
+        options: ['co2', 'hcl', 'h2so4', 'lye' , 'lime', 'calcite', 'oxygen', 'iron_chloride', 'manganese_chloride' ]
+      mode: 
+        default: constant
+        options: [constant, setpoint]
+      setpoint_parameter:
+        if: 
+          mode: setpoint
+        default: 'pH'
+        options: ['pH', 'SI', 'AggCO2', 'CCPP90']
+      dosage:
+        if: 
+          mode: constant
+        uom: 'mmol/L'
+        default: 0.2
+        range: [0, 5]
+      setpoint:
+        if: 
+          mode: setpoint
+        uom: ""
+        default: 7.0
+        range: [0, 14]
+    
+outputs:
+  design:
+    dosing:
+      chemical_formula:
+        equation: "chemical_formula"
+        uom: "-"
+      chemical_density:
+        equation: "chemical_density"
+        uom: "gAS/mol"
+      chemical_dosage:
+        equation: "dosage"
+        uom: "mmol/L"
+      chemical_mass_dosage:
+        equation: "chemical_dosage * chemical_density"
+        uom: "gAS/m3"
+
+
+  chemicals:
+    dosing:
+      lye:
+        if: "chemical == 'lye'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      lime:
+        if: "chemical == 'lime'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      co2:
+        if: "chemical == 'co2'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      hcl:
+        if: "chemical == 'hcl'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      h2so4:
+        if: "chemical == 'h2so4'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      calcite:
+        if: "chemical == 'calcite'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      oxygen:
+        if: "chemical == 'oxygen'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      iron_chloride:
+        if: "chemical == 'iron_chloride'"
+        equation: "chemical_mass_dosage"
+        uom: "gAS/m3"
+      

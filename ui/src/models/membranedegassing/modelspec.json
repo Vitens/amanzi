@@ -1,0 +1,35 @@
+{
+  "name": "membranedegassing",
+  "category": "main",
+  "localizedName": "Membraanontgassing",
+  "canvas": {
+    "defaultImg": "membranedegasser.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "units": 1,
+      "capacity": 200,
+      "membranes_per_stage": 5,
+      "num_stages": 2,
+      "vacuum1": 0.1,
+      "stages": [
+        {
+          "nitrogen_rq": 0.1,
+          "carbon_dioxide_rq": 0.1,
+          "vacuum": 0.1
+        },
+        {
+          "nitrogen_rq": 0.1,
+          "carbon_dioxide_rq": 0.1,
+          "vacuum": 0.1
+        }
+      ]
+
+    }
+  }
+}

@@ -1,0 +1,156 @@
+name: Plaatbeluchting
+metadata:
+  version: 1.0.0
+  description: Plate Aeration
+
+## Input parameters:
+parameters:
+  design:
+    hydraulic_line:
+      pressurized:
+        default: false
+        uom: '-'
+        hidden: true
+    plate_aeration:
+      type:
+        options: ['Metal', 'Foil']
+        default: Metal
+      length:
+        uom: m
+        default: 1.0
+        range: [0.1, 10.0]
+      width:
+        uom: m
+        default: 1.0
+        range: [0.1, 10.0]
+      hole_diameter:
+        uom: mm
+        default: 1.5
+        range: [0.5, 3.0]
+      recirculation:
+        default: 0.0
+        uom: '%'
+        range: [0.0, 0.8]
+  operational:
+    general:
+      RQ:
+        uom: '-'
+        default: 50
+        range: [0, 100]
+      contact_time:
+        uom: s
+        default: 10
+        range: [1, 100]
+    blowerspecifications:
+      supply_fan_pressure_difference:
+        uom: Pa
+        default: 100
+        range: [10, 2000]
+      exhaust_fan_pressure_difference:
+        uom: Pa
+        default: 100
+        range: [10, 2000]
+      recirculation_fan_pressure_difference:
+        uom: Pa
+        default: 100
+        range: [10, 2000]
+      supply_fan_efficiency:
+        uom: '-'
+        default: 0.75
+        range: [0.5, 1]
+      exhaust_fan_efficiency:
+        uom: '-'
+        default: 0.75
+        range: [0.5, 1]
+      recirculation_fan_efficiency:
+        uom: '-'
+        default: 0.75
+        range: [0.5, 1]
+  model:
+    plate_aeration:
+      efficiency:
+        uom: '-'
+        default: 0.02
+        range: [0.01, 1]
+    
+## Output parameters:
+outputs:
+  design:
+    general:
+      surface:
+        name: Surface Area
+        description: Surface area of the plate aeration
+        uom: m2
+        equation: "length * width"
+      surface_load:
+        name: Surface Load
+        description: The surface load of the plate aeration
+        uom: m3/m2
+        equation: "surface / capacity"
+        max: 
+          limit: 20
+          description: "Maximum surface load is 20 m3/m2"
+      watercolumn_height:
+        name: Water Height
+        description: Height of water column over the aeration holes
+        uom: m
+        equation: "capacity / (length/contact_time * width * 3600)"
+      air_flow:
+        name: Process Air Flow
+        description: Air flow through the plate aeration
+        uom: m3/h
+        equation: "capacity * RQ"  
+      supply_fan_flow:
+        name: Supply Fan Air Flow
+        description: Air flow through the fan
+        uom: m3/h
+        equation: "air_flow"
+      recirculation_fan_flow:
+        name: Recirculation Fan Air Flow
+        show: "recirculation"
+        description: Air flow through the recirculation fan
+        uom: m3/h
+        equation: "air_flow * recirculation"
+      exhaust_fan_flow:
+        name: Exhaust Fan Air Flow
+        description: Air flow through the exhaust fan
+        uom: m3/h
+        equation: "air_flow * (1 - recirculation) if recirculation > 0 else air_flow"
+ 
+  energy:
+    electric_energy:
+      supply_blower_energy:
+        uom: kWh/m3
+        equation: "blower_power(RQ, 20 ,deltaP ,efficiency_supply, Air_density)"
+        precision: 3
+        parameters:
+          deltaP:
+            uom: Pa
+            equation: "supply_fan_pressure_difference"
+          efficiency_supply:
+            uom: "-"
+            equation: "supply_fan_efficiency"
+      recirculation_blower_energy:
+        uom: kWh/m3
+        equation: "blower_power(RQ*recirculation, 20 ,deltaP_recirc ,efficiency_recirculation, Air_density)"
+        precision: 3
+        parameters:
+          deltaP_recirc:
+            uom: Pa
+            equation: "recirculation_fan_pressure_difference"
+          efficiency_recirculation:
+            uom: "-"
+            equation: "recirculation_fan_efficiency"
+          
+      exhaust_blower_energy:
+        uom: kWh/m3
+        equation: "blower_power(RQ*(1-recirculation), 20 ,deltaP_exhaust, efficiency_exhaust, Air_density)"
+        precision: 3
+        parameters:
+          deltaP_exhaust:
+            uom: Pa
+            equation: "exhaust_fan_pressure_difference"
+          efficiency_exhaust:
+            uom: "-"
+            equation: "exhaust_fan_efficiency"
+          

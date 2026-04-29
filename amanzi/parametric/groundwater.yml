@@ -1,0 +1,116 @@
+parameters:
+  design:
+    general:
+      yearly_production:
+        uom: Mm3
+        default: 10.0
+        range: [0.0, 100]
+        quick: true
+
+      minimal_capacity:
+        uom: m3/h
+        default: 500
+        range: [1, 10000]
+      nominal_capacity:
+        uom: m3/h
+        default: 1000
+        range: [1, 10000]
+      maximal_capacity:
+        uom: m3/h
+        default: 1500
+        range: [1, 10000]
+    well_design:
+      number_of_wells:
+        default: 4
+        uom: "-"
+        range: [1, 40]
+      average_well_capacity:
+        uom: m3/h
+        default: 100
+        range: [1, 500]
+      average_elevation:
+        uom: m
+        default: 0.0
+        range: [-10, 50]
+      average_groundwater_level:
+        uom: m
+        default: -1.0
+        range: [-10, 20]
+      average_drawdown:
+        uom: m
+        default: 3.0
+        range: [0.1, 10]
+      minor_losses:
+        uom: mH2O
+        default: 1.0
+        range: [0.0, 3.0]
+    
+    
+outputs:
+  hydraulic:
+    hydraulic_line:
+      total_headloss:
+        uom: mH2O
+        equation: "headloss_pipe + minor_losses"
+        parameters:
+          headloss_pipe_:
+            uom: mH2O
+            equation: "headloss_pipe"
+          minor_losses_:
+            uom: mH2O
+            equation: "minor_losses"
+      head_at_treatment:
+        uom: mH2O
+        equation: "hydraulics.head_out"
+      head_at_well:
+        uom: mH2O
+        equation: "hydraulics.head_in"
+      required_pump_head:
+        precision: 1
+        uom: mH2O
+        equation: "head_at_well - average_groundwater_level + average_drawdown"
+
+  design:
+    capacity:
+      installed_capacity:
+        uom: 'm3/h'
+        equation: "number_of_wells * average_well_capacity"
+        precision: 0
+      production:
+        uom: 'm3/h'
+        equation: "capacity"
+        precision: 0
+        validation: "capacity < installed_capacity"
+      wells_in_use:
+        uom: "-"
+        equation: "math.ceil(capacity / average_well_capacity)"
+        precision: 0
+        validation: "wells_in_use <= number_of_wells"
+      wells_standby:
+        uom: "-"
+        equation: "max(0,number_of_wells - wells_in_use)"
+        precision: 0
+        validation: "wells_standby > 0"
+    transport_pipe:
+      pipeline_capacity:
+        uom: m3/h
+        equation: "capacity"
+        hidden: true
+        precision: 0
+
+
+  energy:
+    hydraulic_energy:
+      hydraulic_energy_loss:
+        uom: "kWh/m3"
+        equation: "1/3600 * delta_head * 9.81 * 1/(pump_efficiency)"
+        precision: 3
+        parameters:
+          delta_head:
+            uom: mH2O
+            equation: "required_pump_head - head_at_treatment"
+          pump_efficiency:
+            equation: "db.well_efficiency/100"
+            uom: "%"
+            precision: 0
+        

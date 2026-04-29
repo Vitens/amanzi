@@ -1,0 +1,90 @@
+parameters:
+  design:
+    vessel:
+      diameter:
+        default: 2.0
+        uom: m
+        range: [0.1, 10.0]
+      spray_height:
+        default: 1.0
+        uom: m
+        range: [0, 5.0]
+      bed_height:
+        default: 3.0
+        uom: m
+        range: [0, 10.0]
+    hydraulic_line:
+      pressurized:
+        default: false
+        if: "false"
+      pressure_loss_nozzles:
+        default: 2.0
+        uom: mH2O
+        range: [0.01, 10.0]
+    vacuum_system:
+      vacuum_pump:
+        default: liquid_ring
+        options: ["liquid_ring", "screw"]
+        uom: '-'
+  operational:
+    vacuum:
+      vacuum_pressure:
+        default: 0.2
+        uom: bara
+        range: [0.05, 0.5]
+  
+
+      
+      
+
+
+
+
+
+outputs:
+  design:
+    vessel:
+      total_height:
+        uom: m
+        equation: "bed_height + spray_height"
+        precision: 1
+      surface:
+        uom: m2
+        equation: "0.25 * 3.1415 * diameter**2"
+        precision: 1
+      surface_load:
+        uom: m3/m2
+        equation: "capacity / surface"
+        precision: 1
+      velocity:
+        uom: m/s
+        equation: "capacity / surface"
+        precision: 1
+
+  hydraulic:
+    hydraulic_line:
+      headloss_influent:
+        uom: mH2O
+        equation: "pressure_loss_nozzles + influent_pressure_loss"
+      headloss_model:
+        uom: mH2O
+        equation: "bed_height + spray_height"
+  
+  energy:
+    vacuum_system:
+      vacuum_pumps:
+        equation: "isothermic_energy * 1/vacuum_efficiency"
+        uom: "kWh/m3"
+        parameters:
+          isothermic_energy:
+            uom: kWh/m3
+            equation: "_gas.volume/3600 * vacuum_pressure * 1e5 * math.log(101325/(vacuum_pressure * 1e5)) * 1e-3"
+            precision: 3
+          vacuum_efficiency:
+            uom: "%"
+            equation: "0.25 if vacuum_pump == 'liquid_ring' else 0.35"
+            precision: 1
+          vacuum_pump_rating:
+            uom: kW
+            equation: "capacity * isothermic_energy * 1/vacuum_efficiency"
+            precision: 1

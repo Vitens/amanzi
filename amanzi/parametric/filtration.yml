@@ -1,0 +1,298 @@
+parameters:
+  design:
+    general:
+      spray:
+        default: false
+        uom: '-'
+    hydraulic_line:
+      pressurized: # overwrite to enable unique translation
+        default: false
+        uom: '-'
+      pressure_loss_nozzles:
+        if:
+          spray: true
+        default: 1.0
+        uom: mH2O
+        range: [0.01, 10.0]
+      fall_height_to_media:
+        default: 0.5
+        uom: m
+        range: [0.1, 2.0]
+      filter_bottom:
+        default: 0.5
+        uom: m
+        range: [0.1, 1.0]
+
+    sandfilter:
+      shape:
+        default: 'rectangular'
+        options: ['rectangular', 'circular']
+      length:
+        default: 10.0
+        uom: m
+        if:
+          shape: 'rectangular'
+        range: [1.0, 20.0]
+      width:
+        default: 2.5
+        uom: m
+        if:
+          shape: 'rectangular'
+        range: [0.5, 5.0]
+      diameter:
+        default: 3.0
+        uom: m
+        if:
+          shape: 'circular'
+        range: [0.2, 8.0]
+      dual_media:
+        default: false
+        uom: '-'
+      height_anthracite:
+        default: 0.5
+        if:
+          dual_media: true
+        uom: m
+        range: [0.1, 2.0]
+      diameter_anthracite:
+        default: 1.3
+        if:
+          dual_media: true
+        uom: mm
+        range: [0.1, 3.0]
+      porosity_anthracite:
+        default: 0.45
+        if:
+          dual_media: true
+        uom: "-"
+        range: [0.1, 0.6]
+      porosity_anthracite_clogged:
+        if:
+          dual_media: true
+        default: 0.25
+        uom: "-"
+        range: [0.1, 0.6]
+      height_sand:
+        default: 1.0
+        uom: m
+        range: [0.5, 3.0]
+      diameter_sand:
+        default: 1.3
+        uom: mm
+        range: [0.1, 3.0]
+      porosity_sand:
+        default: 0.45
+        uom: "-"
+        range: [0.1, 0.6]
+      porosity_sand_clogged:
+        default: 0.25
+        uom: "-"
+        range: [0.1, 0.6]
+  operational:
+    supernatant:
+      supernatant_level:
+        default: 0.2
+        uom: m
+        range: [0.1, fall_height_to_media]
+    backwash:
+      backwash_pump_efficiency:
+        default: 0.6
+        uom: "-"
+        range: [0.4, 0.8]
+      backwash_head:
+        uom: mH2O
+        default: 5
+        range: [1, 10]
+
+      backwash_control:
+        default: 'time'
+        options: ['time', 'volume']
+      runtime:
+        default: 24.0
+        if:
+          backwash_control: 'time'
+        uom: h
+        range: [1.0, 500.0]
+      runvolume:
+        default: 5000
+        if:
+          backwash_control: 'volume'
+        uom: m3
+        range: [10, 100000]
+
+
+      
+  model:
+    removal_rates:
+      suppress_iron_removal:
+        default: false
+        uom: '-'
+      iron_removal_efficiency:
+        default: 1.0
+        if:
+          suppress_iron_removal: true
+        uom: '%'
+        range: [0.0, 1.0]
+      suppress_ammonium_removal:
+        default: false
+        uom: '-'
+      ammonium_removal_efficiency:
+        default: 1.0
+        if:
+          suppress_ammonium_removal: true
+        uom: '%'
+        range: [0.0, 1.0]
+      suppress_manganese_removal:
+        default: false
+        uom: '-'
+      manganese_removal_efficiency:
+        default: 1.0
+        if:
+          suppress_manganese_removal: true
+        uom: '%'
+        range: [0.0, 1.0]    
+
+outputs:
+  hydraulic:
+    hydraulic_line:
+      headloss_influent:
+        uom: mH2O
+        equation: "pressure_loss_nozzles + influent_pressure_loss if spray else influent_pressure_loss"
+      headloss_model:
+        equation: "average_headloss + fall_height_to_media - supernatant_level if not pressurized else average_headloss"
+
+  design:
+    general:
+      surface_area:
+        uom: m2
+        equation: "length * width if shape == 'rectangular' else 3.1415 * diameter**2 / 4"
+      total_surface:
+        uom: m2
+        equation: "surface_area * units"
+      bed_height:
+        uom: m
+        equation: "height_sand + height_anthracite"
+      filtration_velocity:
+        uom: m/h
+        equation: "capacity / surface_area"
+      EBCT:
+        uom: min
+        equation: "bed_height / filtration_velocity * 60"
+    pressure_loss:
+      headloss_clean:
+        uom: mH2O
+        equation: "headloss_sand + headloss_anthracite if dual_media else headloss_sand"
+        parameters:
+          headloss_anthracite:
+            uom: mH2O
+            equation: "kozeny_carman(porosity_anthracite, filtration_velocity, diameter_anthracite) * height_anthracite"
+            if: "dual_media"
+          headloss_sand:
+            uom: mH2O
+            equation: "kozeny_carman(porosity_sand, filtration_velocity, diameter_sand) * height_sand"
+            if: "dual_media"
+      headloss_clogged:
+        uom: mH2O
+        equation: "headloss_sand_clogged + headloss_anthracite_clogged if dual_media else headloss_sand_clogged"
+        parameters:
+          headloss_anthracite_clogged:
+            uom: mH2O
+            equation: "kozeny_carman(porosity_anthracite_clogged, filtration_velocity, diameter_anthracite) * height_anthracite"
+            if: "dual_media"
+          headloss_sand_clogged:
+            uom: mH2O
+            equation: "kozeny_carman(porosity_sand_clogged, filtration_velocity, diameter_sand) * height_sand"
+            if: "dual_media"
+      average_headloss:
+        uom: mH2O
+        equation: "(headloss_clean + headloss_clogged) / 2"
+    backwash:
+      runtime_volume:
+        uom: m3
+        equation: "runtime * capacity if backwash_control == 'time' else runvolume"
+        precision: 0
+      backwash_duration:
+        uom: min
+        equation: "_backwash_duration"
+      backwash_volume:
+        uom: m3
+        equation: "max(_backwash_volume, 0.0001)"
+      max_rate:
+        equation: "max(_backwash_max_rate, 0.01)"
+        uom: 'm/h'
+      bed_expansion:
+        uom: m
+        equation: "expanded_height_sand + expanded_height_anthracite if dual_media else expanded_height_sand"
+        parameters:
+          bed_expansion_anthracite:
+            if: "dual_media"
+            equation: "backwash_bed_expansion(diameter_anthracite, max_rate)"
+            uom: '%'
+          bed_expansion_sand:
+            equation: "backwash_bed_expansion(diameter_sand, max_rate)"
+            uom: '%'
+          expanded_height_sand:
+            precision: 1
+            equation: "height_sand * bed_expansion_anthracite"
+            uom: m
+          expanded_height_anthracite:
+            precision: 1
+            if: "dual_media"
+            equation: "height_anthracite * bed_expansion_anthracite"
+            uom: m
+      backwash_headloss:
+        uom: mH2O
+        equation: "backwash_headloss(diameter_sand, max_rate, height_sand)+ backwash_headloss(diameter_anthracite, max_rate, height_anthracite) if dual_media else backwash_headloss(diameter_sand, max_rate, height_sand)"
+        parameters:
+          backwash_headloss_anthracite:
+            if: "dual_media"
+            equation: "backwash_headloss(diameter_anthracite, max_rate, height_anthracite)"
+          backwash_headloss_sand:
+            equation: "backwash_headloss(diameter_sand, max_rate, height_sand)"
+      backwash_loss:
+        uom: "%"
+        equation: backwash_volume / runtime_volume
+      iron_load:
+        uom: kg/m2
+        equation: "iron_capture / surface_area"
+        parameters:
+          iron_capture:
+            uom: kg
+            equation: "(quality.influent.product.total('Fe', 'mg') - quality.effluent.product.total('Fe', 'mg'))*runtime_volume / 1000" 
+          backwash_iron:
+            uom: mg/L
+            equation: "iron_capture / backwash_volume * 1000"
+
+  energy:
+    backwash:
+      backwash_energy:
+        uom: kWh/m3
+        equation: "backwash_power_consumption / runtime_volume"
+        parameters:
+          backwash_power_consumption:
+            uom: kWh
+            equation: "backwash_volume * 9.81 * backwash_head * 1/backwash_pump_efficiency / 3600"
+
+
+  sustainability:
+    direct_emissions:
+      co2_emission:
+        if: "spray"
+        equation: "quality.influent.product.total('CO2','mg') - aerated.total('CO2','mg')"
+        uom: gCO2-eq/m3
+        precision: 2
+      methane_emission:
+        if: "spray"
+        equation: "methane_removal * methane_factor"
+        uom: gCO2-eq/m3
+        precision: 2
+        parameters:
+          methane_removal:
+            uom: "g/m3"
+            precision: 2
+            equation: "(quality.influent.product.total('Mtg') - aerated.total('Mtg'))*16.04"
+          methane_factor:
+            uom: "gCO2-eq/gCH4"
+            precision: 0
+            equation: "db.methane_emission_factor"
+

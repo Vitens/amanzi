@@ -1,0 +1,240 @@
+parameters:
+  design:
+    membrane_degassing:
+      num_stages:
+        default: 'double'
+        options: [single, double]
+      membranes_per_stage:
+        default: 4
+        range: [1, 10]
+      membrane_type:
+        default: EXF14x40
+        options: [EXF14x40, EXF14x28]
+      vacuum_type:
+        default: liquid-ring 
+        options: ['liquid-ring', 'screw']
+      nitrogen_source:
+        default: cryogenic
+        options: ['cryogenic', 'PSA']
+      nitrogen_purity:
+        default: 4
+        uom: '-'
+        range: [4, 5]
+    hydraulic_line:
+      inlet_elevation:
+        default: 0
+      pressurized:
+        default: true
+        hidden: true
+      pressure_loss_cartridge_filter:
+        default: 2.0
+        uom: mH2O
+        range: [0.01, 20.0]
+  operational:
+    stage_1:
+      n2_rq_stage_1:
+        default: 0.00
+        uom: Nm3/m3
+        range: [0.0, 1.0]
+      co2_rq_stage_1:
+        default: 0.02
+        uom: Nm3/m3
+        range: [0.0, 1.0]
+      vacuum_stage_1:
+        default: 0.10
+        uom: bara
+        range: [0.01, 1.0]
+    stage_2:
+      n2_rq_stage_2:
+        default: 0.00
+        uom: Nm3/m3
+        range: [0.0, 1.0]
+        if:
+          num_stages: 'double'
+      co2_rq_stage_2:
+        default: 0.00
+        uom: Nm3/m3
+        range: [0.0, 1.0]
+        if:
+          num_stages: 'double'
+      vacuum_stage_2:
+        default: 0.10
+        uom: bara
+        range: [0.01, 1.0]
+        if:
+          num_stages: 'double'
+
+  gas_processing:
+    methane_processing:
+      _placeholder: # empty placeholder to force methane_processing to be above vent_processing
+        default: false
+        hidden: true
+        uom: '-'
+    vent_processing:
+      vent_flare:
+        default: false
+        uom: '-'
+        if:
+          num_stages: 'double'
+
+
+
+outputs:
+  hydraulic:
+    hydraulic_line:
+      headloss_model:
+        equation: "total_pressure_loss + pressure_loss_cartridge_filter"
+
+      integrated_booster:
+        uom: '-'
+        equation: "1"
+  design:
+    general:
+      total_membranes:
+        uom: '-'
+        precision: 0
+        equation: "membranes_per_stage * (1 if num_stages == 'single' else 2)"
+        parameters:
+          total_membranes_process:
+            uom: '-'
+            precision: 0
+            equation: "total_membranes * units"
+      membrane_load:
+        uom: m3/h
+        precision: 1
+        equation: "capacity / membranes_per_stage"
+      membrane_pressure_loss:
+        uom: mH2O
+        precision: 2
+        equation: "pressure_loss(membrane_load, membrane_type)"
+      total_pressure_loss:
+        uom: mH2O
+        precision: 2
+        equation: "membrane_pressure_loss * (1 if num_stages == 'single' else 2)"
+        if: 'num_stages == "double"'
+
+    gas_production:
+      vacuum_pressure:
+        uom: bara
+        equation: "vacuum_stage_1"
+    gas_composition:
+      _placeholder1: # empty placeholder
+        uom: '-'
+        if: "False"
+        equation: "0"
+    gas_quality:
+      _placeholder2: # empty placeholder
+        uom: '-'
+        if: "False"
+        equation: "0"
+    stage_2_gas:
+      stage_2_vacuum_pressure:
+        uom: bara
+        equation: "vacuum_stage_2"
+        if: "num_stages == 'double'"
+      stage_2_gas_production_per_m3:
+        uom: Nm3/m3
+        equation: "_gas2.volume * vacuum_stage_2"
+        precision: 3
+        if: "num_stages == 'double'"
+      stage_2_gas_production_per_unit:
+        uom: Nm3/m3
+        equation: "stage_2_gas_production_per_m3 * capacity"
+        precision: 1
+        if: "num_stages == 'double'"
+      stage_2_methane_content:
+        uom: '%'
+        equation: "_gas2.fractions['Mtg(g)']"
+        precision: 1
+        if: "num_stages == 'double'"
+      stage_2_co2_content:
+        uom: '%'
+        equation: "_gas2.fractions['CO2(g)']"
+        precision: 1
+        if: "num_stages == 'double'"
+
+  energy:
+    vacuum_pumps:
+      vacuum_pump_stage_1:
+        equation: "isothermic_energy * 1/vacuum_efficiency"
+        uom: "kWh/m3"
+        parameters:
+          isothermic_energy:
+            uom: kWh/m3
+            equation: "_gas.volume/3600 * vacuum_stage_1 * 1e5 * math.log(101325/(vacuum_stage_1 * 1e5)) * 1e-3"
+            precision: 3
+          vacuum_efficiency:
+            uom: "%"
+            equation: "0.25 if vacuum_type == 'liquid-ring' else 0.35"
+            precision: 1
+          vacuum_pump_rating:
+            uom: kW
+            equation: "capacity * isothermic_energy * 1/vacuum_efficiency"
+            precision: 1
+      vacuum_pump_stage_2:
+        equation: "isothermic_energy2 * 1/vacuum_efficiency2"
+        uom: "kWh/m3"
+        if: "num_stages == 'double'"
+        parameters:
+          isothermic_energy2:
+            uom: kWh/m3
+            equation: "_gas2.volume/3600 * vacuum_stage_2 * 1e5 * math.log(101325/(vacuum_stage_2 * 1e5)) * 1e-3"
+            precision: 3
+          vacuum_efficiency2:
+            uom: "%"
+            equation: "0.25 if vacuum_type == 'liquid-ring' else 0.35"
+            precision: 1
+          vacuum_pump_rating2:
+            uom: kW
+            equation: "capacity * isothermic_energy * 1/vacuum_efficiency"
+            precision: 1
+    nitrogen_supply:
+      psa_consumption:
+        equation: "total_nitrogen_consumption * psa_specific_consumption"
+        uom: kWh/m3
+        if: "nitrogen_source == 'PSA'"
+        parameters:
+          total_nitrogen_consumption:
+            uom: Nm3/m3
+            equation: "n2_rq_stage_1 + n2_rq_stage_2"
+            precision: 3
+          psa_specific_consumption:
+            uom: kWh/Nm3
+            equation: "db.psa_purity_4_power_consumption if nitrogen_purity == 4 else db.psa_purity_5_power_consumption"
+
+      
+    
+  sustainability:
+    direct_emissions:
+      _placeholder3:
+        uom: '-'
+        if: "False"
+        equation: "0"
+
+    direct_emissions_stage_2:
+      co2_emission_stage_2:
+        if: "num_stages == 'double'"
+        equation: "co2_gas_stage_2 + co2_by_burning_stage_2"
+        uom: gCO2-eq/m3
+        parameters:
+          co2_gas_stage_2:
+            uom: gCO2-eq/m3
+            equation: "1.977 * stage_2_co2_content * stage_2_gas_production_per_m3 * 1000"
+          co2_by_burning_stage_2:
+            uom: gCO2-eq/m3
+            equation: "stage_2_methane_content * 0.657 * stage_2_gas_production_per_m3 * 1000 * 44/16" # 1 mol CH4 produces 1 mol CO2
+            if: "vent_flare"
+      ch4_emission_stage_2:
+        if: "not vent_flare and num_stages == 'double'"
+        equation: "stage_2_methane_emitted * methane_factor"
+        uom: gCO2-eq/m3
+        parameters:
+          stage_2_methane_emitted:
+            uom: g/m3
+            equation: "stage_2_methane_content * 0.657 * stage_2_gas_production_per_m3 * 1000"
+          stage_2_methane_factor:
+            uom: gCO2-eq/gCH4
+            equation: "db.methane_emission_factor"
+
+
+

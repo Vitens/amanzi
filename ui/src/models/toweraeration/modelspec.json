@@ -1,0 +1,25 @@
+{
+  "name": "toweraeration",
+  "category": "main",
+  "localizedName": "Torenbeluchting",
+  "canvas": {
+    "defaultImg": "toweraerator.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "nominal_capacity": 200,
+      "RQ": 50,
+      "diameter": 2.5,
+      "packing_height": 3,
+      "packing_type": "Raflux50",
+      "model_component": "CO2",
+      "air_temp": 15, 
+      "influent":[]
+    }
+  }
+}

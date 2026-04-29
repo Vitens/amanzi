@@ -1,0 +1,23 @@
+{
+  "name": "sandfiltration",
+  "localizedName": "Zandfiltratie",
+  "category": "main",
+  "canvas": {
+    "defaultImg": "sandfilter.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"},
+      {"position": "top", "direction": "in", "type": "flush"},
+      {"position": "bottom", "direction": "out", "type": "waste"}
+    
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "backwash_programme": [
+        {"time": 600, "water": 50, "air": 0}
+      ]
+    }
+  }
+}

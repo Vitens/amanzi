@@ -1,0 +1,55 @@
+parameters:
+  design:
+    hydraulic_line:
+      integrated_booster:
+        default: true
+      inlet_elevation:
+        default: 0.0
+        uom: m
+        range: [-10, 100.0]
+      required_pressure:
+        default: 35.0
+        uom: mH2O
+        range: [10, 100.0]
+
+outputs:
+  hydraulic:
+    hydraulic_line:
+      calculated_head_in:
+        equation: "hydraulics.head_in"
+        uom: mH2O
+      calculated_head_out:
+        equation: "hydraulics.head_out"
+        uom: mH2O
+      total_headloss:
+        equation: "required_pressure + inlet_elevation"
+      influent_headloss:
+        equation: "hydraulics.head_in - hydraulics.head_out"
+        uom: mH2O
+      pump_head:
+        equation: "hydraulics.booster_head"
+        uom: mH2O
+      minimal_head:
+        equation: "inlet_elevation + 1 if integrated_booster else 0"
+        uom: mH2O
+  energy:
+    hydraulic_energy:
+      hydraulic_energy_loss:
+        uom: "kWh/m3"
+        equation: "1/3600 * influent_headloss * 9.81 * 1/(pump_efficiency)"
+        precision: 3
+        parameters:
+          pump_efficiency:
+            equation: "hydraulics.efficiency"
+            uom: "%"
+            precision: 0
+      distribution_pumps_energy_consumption:
+        uom: "kWh/m3"
+        equation: "1/3600 * pump_head * 9.81 * 1/(distribution_pump_efficiency)"
+        if: "pump_head > 0"
+        precision: 3
+        parameters:
+          distribution_pump_efficiency:
+            equation: "db.booster_efficiency / 100"
+            uom: "%"
+            precision: 0

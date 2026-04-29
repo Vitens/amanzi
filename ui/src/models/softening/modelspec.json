@@ -1,0 +1,17 @@
+{
+  "name": "softening",
+  "localizedName": "Ontharding",
+  "category": "main",
+  "canvas": {
+    "defaultImg": "softening.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+    }
+  }
+}

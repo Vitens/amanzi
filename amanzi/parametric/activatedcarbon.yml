@@ -1,0 +1,154 @@
+parameters:
+  design:
+    activatedcarbon:
+      advanced:
+        type: boolean
+        default: false
+      shape:
+        default: 'rectangular'
+        options: ['rectangular', 'circular']
+      length:
+        default: 10.0
+        uom: m
+        if:
+          shape: 'rectangular'
+        range: [1.0, 20.0]
+      width:
+        default: 2.5
+        uom: m
+        if:
+          shape: 'rectangular'
+        range: [0.5, 5.0]
+      diameter:
+        default: 3.0
+        uom: m
+        if:
+          shape: 'circular'
+        range: [0.2, 8.0]
+      bed_height:
+        uom: m
+        default: 2.0
+        range: [0.1, 10]
+
+
+  operational:
+    general:
+      staggered_replacement:
+        default: true
+      replacement_interval:
+        uom: days
+        default: 1000
+        range: [1, 10000]
+      replacement_loading:
+        uom: "%"
+        default: 0.5
+        range: [0.01, 1]
+    backwash:
+      backwash_interval:
+        uom: days
+        default: 30
+        range: [1, 1000]
+      backwash_duration:
+        uom: hours
+        default: 2
+        range: [0.1, 24]
+      backwash_flowrate:
+        uom: m3/h
+        default: 10
+        range: [0.1, 1000]
+      backwash_pump_efficiency:
+        default: 0.6
+        uom: "-"
+        range: [0.4, 0.8]
+      backwash_head:
+        uom: mH2O
+        default: 5
+        range: [1, 10]
+      backwash_control:
+        default: 'time'
+        options: ['time', 'volume']
+      runtime:
+        default: 24.0
+        if:
+          backwash_control: 'time'
+        uom: h
+        range: [1.0, 72.0]
+      runvolume:
+        default: 5000
+        if:
+          backwash_control: 'volume'
+        uom: m3
+        range: [10, 100000]
+
+  chemicals:
+    general:
+      packing_type:
+        default: "NORA Supra 0.8"
+        options: ["NORA Supra 0.8", "NORA Supra 1.0", "NORA Supra 1.2", "NORA Supra 1.5", "NORA Supra 2.0"]
+      apparent_density:
+        uom: kg/m3
+        default: 500
+        range: [100, 2000]
+      particle_diameter:
+        uom: mm
+        default: 0.8
+        range: [0.1, 10]
+      particle_density:
+        uom: kg/m3
+        default: 2000
+        range: [1000, 5000]
+      bed_porosity:
+        uom: "-"
+        default: 0.5
+        range: [0.1, 0.9]
+      particle_porosity:
+        uom: "-"
+        default: 0.6
+        range: [0.1, 0.9]
+      
+
+
+outputs:
+  design:
+    activated_carbon:
+      volume:
+        uom: m3
+        equation: "math.pi * (diameter/2)**2 * bed_height"
+        precision: 2
+      replacement:
+        uom: days
+        equation: "replacement_interval"
+        precision: 0
+      surface_area:
+        uom: m2
+        equation: "length * width if shape == 'rectangular' else 3.1415 * diameter**2 / 4"
+      total_surface:
+        uom: m2
+        equation: "surface_area * units"
+      filtration_velocity:
+        uom: m/h
+        equation: "capacity / surface_area"
+      EBCT:
+        uom: min
+        equation: "bed_height / filtration_velocity * 60"
+    backwash:
+      runtime_volume:
+        uom: m3
+        equation: "runtime * capacity if backwash_control == 'time' else runvolume"
+        precision: 0
+      backwash_duration:
+        uom: min
+        equation: "_backwash_duration"
+      backwash_volume:
+        uom: m3
+        equation: "max(_backwash_volume, 0.0001)"
+    
+  energy:
+    backwash:
+      backwash_energy:
+        uom: kWh/m3
+        equation: "backwash_power_consumption / runtime_volume"
+        parameters:
+          backwash_power_consumption:
+            uom: kWh
+            equation: "backwash_volume * 9.81 * backwash_head * 1/backwash_pump_efficiency / 3600"

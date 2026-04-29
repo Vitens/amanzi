@@ -1,0 +1,1 @@
+{"name":"dosing","category":"main","localizedName":"Dosering","canvas":{"defaultImg":"dosing.png","anchors":[{"position":"left","direction":"in","type":"product"},{"position":"right","direction":"out","type":"product"}],"rotatable":false},"template":{"configuration":{"parameters":{"chemical":"lye","dosage":0.2,"mode":"constant","setpoint_parameter":"pH","setpoint":7}}}}
