@@ -2,6 +2,7 @@
 <script>
 const properties = {
   name: 'sprayaerator',
+  hidden: true,
   category: 'main',
   anchors: [
     {

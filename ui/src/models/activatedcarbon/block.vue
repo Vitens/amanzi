@@ -3,6 +3,7 @@
 const properties = {
   name: 'activatedcarbon',
   category: 'main',
+  hidden: true,
   anchors: [
     {
       position: 'left',

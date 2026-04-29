@@ -278,6 +278,7 @@ export const scenarioStore = (uid) =>
           position: position,
         };
 
+        defaults = defaults || [];
         for (var param of defaults) {
           model.configuration.parameters[param.name] = param.default;
         }

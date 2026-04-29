@@ -5,6 +5,7 @@
 const properties = {
   name: 'ionexchange',
   category: 'main',
+  hidden: true,
   anchors: [
     {
       position: 'left',
