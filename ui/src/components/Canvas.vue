@@ -46,7 +46,7 @@
     :style="{transform: 'translate('+display.zoomX+'px,'+display.zoomY+'px)scale('+display.zoom+')translate('+(-display.zoomX)+'px,'+(-display.zoomY)+'px)', left: display.left + 'px', top: display.top + 'px', 'transform-origin': 'left top'}"
     v-draggable="{start: startPanSelect, move: panSelect, end: endPanSelect, focus: true}"
     :class="{gridlines: display.grid}"
-    v-zoomable="{zoom}"
+    v-zoomable="{zoom, pan: panTrackpad}"
     @dragover='allowDrop'
     @drop='dropBlock'
     
@@ -205,6 +205,10 @@ export default {
         }
       }
     },
+    panTrackpad(dx,dy, args, evt) {
+      this.display.left -= dx 
+      this.display.top -= dy
+    },
     startPanSelect(x,y, args,evt) {
       // only pan when middle mouse button is clicked
       if(evt.which == 2 || this.$interface.mouseMode == 'pan') {
@@ -238,7 +242,7 @@ export default {
       var nz = this.display.zoom + dz
 
       if(nz < 0.25) { dz = 0.25 - this.display.zoom; nz = 0.25 }
-      if(nz > 1.5) { dz = 1.5 - this.display.zoom; nz = 1.5 }
+      if(nz > 2.0) { dz = 2.0 - this.display.zoom; nz = 2.0 }
 
       let z = this.display.zoom
 
