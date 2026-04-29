@@ -1,5 +1,6 @@
 <template>
   <div class="about-dialog">
+    <img class="vitens-logo" src="/logo.jpg" alt="Vitens logo">
     <div class="amanzi-logo"></div>
     <div class="about-text">
       <h1>Amanzi v{{ $version }}</h1>
@@ -44,6 +45,14 @@ export default {
 .about-text {
   padding: 20px 50px;
   text-align: center;
+}
+.vitens-logo {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  height: auto;
+  margin: 16px auto 0;
+  padding: 6px 0 18px;
 }
 .amanzi-logo {
   width: 500px;
