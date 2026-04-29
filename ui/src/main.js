@@ -25,7 +25,7 @@ import NumberInput from './components/NumberInput.vue'
 // import MasonryWall from '@yeger/vue-masonry-wall'
 import VueMasonry from 'vue-masonry-css'
 
-// import pyodideBackend from './backend/python'
+import pyodideBackend from './backend/python'
 import serverBackend from './backend/server'
 
 import 'font-awesome/css/font-awesome.css'
@@ -90,10 +90,10 @@ const i18n = createI18n({
 let app = createApp(App)
 
 // setup backend
-if (import.meta.env.VITE_BACKEND == 'pyodide') {
-app.config.globalProperties.$backend = pyodideBackend
-} else {
+if (import.meta.env.VITE_BACKEND == 'server') {
   app.config.globalProperties.$backend = serverBackend
+} else {
+  app.config.globalProperties.$backend = pyodideBackend
 }
 
 app.use(VueCookies)

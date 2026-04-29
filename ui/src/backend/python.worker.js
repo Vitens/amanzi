@@ -1,5 +1,13 @@
 import { loadPyodide, version as pyodideVersion } from 'pyodide';
 
+const AMANZI_WHEEL_FILENAME = import.meta.env.VITE_AMANZI_WHEEL_FILENAME || 'amanzi-1.0.5-py2.py3-none-any.whl';
+const PHREEQPYTHON_WHEEL_FILENAME = 'phreeqpython-1.6.2+pyodide-py3-none-any.whl';
+
+function distUrl(filename) {
+  const appBaseUrl = new URL(import.meta.env.BASE_URL, self.location.origin);
+  return new URL(`dist/${filename}`, appBaseUrl).toString();
+}
+
 let api;
 
 // 1. Setup Pyodide inside the worker
@@ -18,9 +26,9 @@ async function initPyodide(id) {
   const pip = py.pyimport('micropip');
   
   sendProgress(40, 'Loading PhreeqPython...');
-  await pip.install('/dist/phreeqpython-1.6.1-py3-none-any.whl');
+  await pip.install(distUrl(PHREEQPYTHON_WHEEL_FILENAME));
   sendProgress(60, 'Loading Amanzi Solver...');
-  await pip.install('/dist/amanzi-1.0.5-py2.py3-none-any.whl');
+  await pip.install(distUrl(AMANZI_WHEEL_FILENAME));
 
   sendProgress(80, 'Starting Amanzi API...');
 
