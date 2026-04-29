@@ -20,7 +20,6 @@
             <div class="chemform" v-html="chemform(component.chemical)"></div>
 
             <number-input v-model="config.parameters[component.name]" :min="component.range[0]" :max="component.range[1]" class="cheminput" :step="component.max < 100 ? 0.1 : 1.0" :placeholder="String(component.default)" />
-            
 
             <div class="units">
               {{ component.uom }}
@@ -183,7 +182,7 @@
       </div>
     </div>
     </el-tab-pane>
-    <el-tab-pane id="groundwater-design" :disabled="true">
+    <el-tab-pane id="groundwater-design" :disabled="true" lazy>
       <template #label>
         <el-icon size="14px"><i class='fa fa-flask'></i></el-icon><span>Micropollutants</span>
       </template>
