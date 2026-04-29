@@ -16,11 +16,11 @@ Then open the browser and navigate to http://localhost:8000.
 ## Development
 When developing Amanzi, it is recommended to use the Python backend server as this allows for hot-reloading, faster development and easier debugging. In addition, the user interface must be started in development mode.
 
-To start the Python backend server in development mode, create a virtual environment, install amanzi and run the server:
+To start the Python backend server in development mode, create a virtual environment, install Amanzi and run the backend server:
 ```bash
 python -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -e .
 amanzi-server --no-browser
 ```
 
