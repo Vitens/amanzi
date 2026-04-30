@@ -2,6 +2,7 @@ from .model import Model
 from .submodels.balance import Balance
 import math
 from .tower.compounds import Chemical
+from .breakthrough import BreakthroughInput, select_breakthrough_solver
 
 import warnings
 warnings.simplefilter("ignore")
@@ -41,7 +42,9 @@ class Activatedcarbon(Model, Loss):
         self.capacity = float(config.get('nominal_capacity', 100))
         self.compoundList = self.configurations.get('compound', {'x':0})
         self.advanced = config.get('advanced', False)
+        self.fixed_replacement = config.get('fixed_replacement', True)
         self.renewal = int(config.get('replacement_interval', 1000))
+        self.replacement_loading = float(config.get('replacement_loading', 0.5))
         self.filternumber = int(config.get('units', 1))
         self.apparent_density = float(config.get('apparent_density', 0.5))
         self.particle_density = float(config.get('particle_density', 0.5))
@@ -51,13 +54,18 @@ class Activatedcarbon(Model, Loss):
         self.waste_solution = None
         self.OMV_capacity = config.get('OMV_capacity',{})
 
-        
+
     @property
     def backwash_programme(self):
         config = self.config.get('configuration', {})
         programme = config.get('backwash_programme', [])
         return programme
-    
+    @property
+    def compound_removal_rates(self):
+        config = self.config.get('configuration', {})
+        rates = config.get('compound_removal_rates', {})
+        return rates
+
     @property
     def _backwash_duration(self):
         return sum([p['time'] for p in self.backwash_programme]) / 60
@@ -243,38 +251,115 @@ class Activatedcarbon(Model, Loss):
 
     #     return all_results
 
-    
+    def compound_removal_efficiency(self, group, name, metadata_item):
+        configured = (
+            self.compound_removal_rates
+            .get(group, {})
+            .get(name, {})
+        )
+        if 'removalAKF_simple' in configured:
+            return configured['removalAKF_simple']
+        if 'removal_AKF_simple' in configured:
+            return configured['removal_AKF_simple']
+        return metadata_item.get('removalAKF', 0)
+
     def simpleExtraneousRemoval(self, solution):  
-        for i in self.scenario['metaData']['customMicroComponents']['PFAS']:
+        components = getattr(self, 'scenario', {}).get('metaData', {}).get('customMicroComponents', {})
+        for i in components.get('PFAS', []):
             name= i['name']
-            removal_efficiency = i['removalAKF']
+            removal_efficiency = self.compound_removal_efficiency('PFAS', name, i)
             if name in solution.extraneous['PFAS']:
                 solution.extraneous['PFAS'][name]=solution.extraneous['PFAS'][name]*(1-(float(removal_efficiency)/100))
-        for i in self.scenario['metaData']['customMicroComponents']['Other']  :
+        for i in components.get('Other', [])  :
             name= i['name']
-            removal_efficiency = i['removalAKF']
+            removal_efficiency = self.compound_removal_efficiency('Other', name, i)
             if name in solution.extraneous['Other']:
                 solution.extraneous['Other'][name]=solution.extraneous['Other'][name]*(1-(float(removal_efficiency)/100))    
         return solution
     
-    # def advancedExtraneousRemoval(self, solution):
-    #     # Calculation of average effluent concentration for each compound
-    #     # Using the regeneration of the GAC filter assuming equal distances between each regeneration of a filter
-    #     PSDMcalculation = self.PSDMcalculation(self.quality.influent.product)
-    #     solEffluent=solution.extraneous['PFAS']
-    #     for key in PSDMcalculation:
-    #         idx = PSDMcalculation[key].x
-    #         for j in range(self.filternumber):
-    #             divider = self.renewal/(j+1)
-    #             pos=self.find_closest(idx,divider)
-    #             linFactor= (divider-idx[pos])/divider
-    #             #linear interpolation 
-    #             Effluentconc=PSDMcalculation[key](idx)[pos]+PSDMcalculation[key](idx)[pos]*linFactor
-    #             if j == 0:
-    #                 solEffluent[key]= Effluentconc*(1/(self.filternumber))
-    #             else:
-    #                 solEffluent[key]= solEffluent[key]+Effluentconc*(1/(self.filternumber))
-    #     return solution
+    def breakthrough_input(self, solution):
+        parameters = self.parameters
+        components = getattr(self, 'scenario', {}).get('metaData', {}).get('customMicroComponents', {})
+        volume = self.output_parameters['volume'].calculate(super().context)
+
+        return BreakthroughInput(
+            influent_pfas=solution.extraneous.get('PFAS', {}),
+            metadata_pfas=components.get('PFAS', []),
+            compound_parameters=self.compound_removal_rates.get('PFAS', {}),
+            bed_volume_m3=volume,
+            flow_m3_h=float(parameters.get('nominal_capacity', self.capacity)),
+            apparent_density_kg_m3=float(parameters.get('apparent_density', self.apparent_density)),
+            bed_porosity=float(parameters.get('bed_porosity', self.bed_porosity)),
+            particle_diameter_mm=float(parameters.get('particle_diameter', self.particle_diameter)),
+            replacement_interval_days=float(parameters.get('replacement_interval', self.renewal)),
+            replacement_loading=float(parameters.get('replacement_loading', self.replacement_loading)),
+            max_bed_volumes=parameters.get('breakthrough_bed_volumes'),
+            points=int(parameters.get('breakthrough_points', 200)),
+            axial_dispersion_m2_s=float(parameters.get('axial_dispersion', 1e-8)),
+            mass_transfer_coefficient_s=float(parameters.get('mass_transfer_coefficient', 0.002)),
+            particle_porosity=float(self.particle_porosity),
+            column_length=float(self.packing_height),
+        )
+
+    def breakthrough_calculation(self, solution):
+        solver = select_breakthrough_solver(self.parameters.get('breakthrough_solver', 'cadet'))
+        return solver.run(self.breakthrough_input(solution))
+
+    def should_run_breakthrough(self):
+        return bool(self.parameters.get('run_breakthrough', False))
+
+    def _bed_volumes_at_replacement(self):
+        volume = self.output_parameters['volume'].calculate(super().context)
+        flow_m3_h = float(self.parameters.get('nominal_capacity', self.capacity))
+        replacement_interval_days = float(self.parameters.get('replacement_interval', self.renewal))
+        return flow_m3_h * 24 * replacement_interval_days / max(volume, 1e-9)
+
+    @staticmethod
+    def _interpolate_curve(series, x_value):
+        if not series:
+            return 0
+        if x_value <= series[0]['x']:
+            return series[0]['y']
+        for index in range(1, len(series)):
+            left = series[index - 1]
+            right = series[index]
+            if x_value <= right['x']:
+                span = right['x'] - left['x']
+                if span == 0:
+                    return right['y']
+                fraction = (x_value - left['x']) / span
+                return left['y'] + (right['y'] - left['y']) * fraction
+        return series[-1]['y']
+
+    def advancedExtraneousRemoval(self, solution, breakthrough_result=None):
+        # if breakthrough_result is None and not self.should_run_breakthrough():
+        #     return self.simpleExtraneousRemoval(solution)
+
+        effluent = solution.deepcopy()
+        result = breakthrough_result or self.breakthrough_calculation(solution)
+        target_bed_volumes = self._bed_volumes_at_replacement()
+        filter_count = max(int(self.parameters.get('units', self.filternumber)), 1)
+        staggered = self.parameters.get('staggered_replacement', False)
+
+        for compound, series in result.breakthrough.items():
+            if compound not in effluent.extraneous.get('PFAS', {}):
+                continue
+
+            if staggered:
+                ratios = [
+                    self._interpolate_curve(series, target_bed_volumes * (index + 1) / filter_count)
+                    for index in range(filter_count)
+                ]
+                ratio = sum(ratios) / len(ratios)
+            else:
+                ratio = self._interpolate_curve(series, target_bed_volumes)
+
+            effluent.extraneous['PFAS'][compound] = solution.extraneous['PFAS'][compound] * ratio
+
+        return effluent
+
+
+    
     def spray_aeration(self, solution):
         solution = solution.deepcopy()
 
@@ -310,9 +395,9 @@ class Activatedcarbon(Model, Loss):
         return solution
     def unitcheck(self,solution):
         # ng/l is the default unit for PFAS influent and effluent
-        for i in self.scenario['metaData']['customMicroComponents']['PFAS']:
+        components = getattr(self, 'scenario', {}).get('metaData', {}).get('customMicroComponents', {})
+        for i in components.get('PFAS', []):
             if i['name'] in solution.extraneous['PFAS']:
-                print(f"PFAS: {i['name']} {solution.extraneous['PFAS'][i['name']]}")
                 if i['unit'] == 'mg/l':
                     solution.extraneous['PFAS'][i['name']] = self.quality.influent.product.extraneous['PFAS'][i['name']]*1000000
                 elif i['unit'] == 'μg/l':
@@ -333,7 +418,10 @@ class Activatedcarbon(Model, Loss):
                 solution = self.spray_aeration(solution)
                 self.aerated = solution.deepcopy()
 
-            effluent = self.simpleExtraneousRemoval(solution)
+            if self.advanced:
+                effluent = self.advancedExtraneousRemoval(solution)
+            else:
+                effluent = self.simpleExtraneousRemoval(solution)
 
             return effluent
                
@@ -361,7 +449,6 @@ class Activatedcarbon(Model, Loss):
     #         return pos - 1
 
     def design(self):
-        logging.debug(f"Design Influent.product Start: {self.quality.influent.product.extraneous}")
 
         influent = self.quality.influent.product.deepcopy()
         eff = {}
@@ -369,6 +456,14 @@ class Activatedcarbon(Model, Loss):
         sum4=[]
         sum20=[]
         peq2={}
+        breakthrough_result = None
+        volumeGAC = self.output_parameters['volume'].calculate(super().context) # m³
+        if self.advanced and self.should_run_breakthrough() and influent.extraneous.get('PFAS'):
+            breakthrough_result = self.breakthrough_calculation(influent)
+            eff = breakthrough_result.breakthrough
+            peqPFAS = breakthrough_result.peq_pfas
+            sum4 = breakthrough_result.sum4_pfas
+            sum20 = breakthrough_result.sum20_pfas
         # if self.compoundList != {} and self.compoundList.values() != [0] and self.advanced == True:
         #     PSDMcalculation = self.PSDMcalculation(self.quality.influent.product)
         #     dict_keys = list(PSDMcalculation.keys())
@@ -413,15 +508,21 @@ class Activatedcarbon(Model, Loss):
         if(self.sprayaeration):
             influent = self.spray_aeration(influent.deepcopy())
             self.aerated = influent.deepcopy()
-        effluent = self.simpleExtraneousRemoval(influent.deepcopy())
+        if self.advanced:
+            effluent = self.advancedExtraneousRemoval(influent.deepcopy(), breakthrough_result)
+        else:
+            effluent = self.simpleExtraneousRemoval(influent.deepcopy())
 
 
         #print(eff) 
         #Assuming the same adsorption capacity for all compounds in mg/m³ GAC
-        iodineNumber = 1000 #g/kg GAC
-        bedporosity = 0.5
-        GACdensity = 500 #kg/m³
-        capacityFactor = GACdensity*bedporosity*iodineNumber*1000 #mg/m³ GAC
+        #Average adsorption capacity for PFAS 
+        volumeGAC =self.output_parameters['volume'].calculate(super().context) # m³
+        adsorption_capacities = {}
+        for key, value in self.compound_removal_rates['PFAS'].items():
+            adsorption_capacities[key] = value['adsorptionCapacity_simple']
+        average_adsorption_capacity = sum(adsorption_capacities.values())/max(len(adsorption_capacities), 1)*1000 #mg/kgGAC
+        capacityFactor = self.apparent_density*average_adsorption_capacity #mg/m³GAC
         if 'PFAS' in self.quality.influent.product.extraneous and self.quality.influent.product.extraneous['PFAS'] != {}:
             sumPFASinGAC = (sum(self.quality.influent.product.extraneous['PFAS'].values())-sum(self.quality.effluent.product.extraneous['PFAS'].values()))*1e-6 #sum of all PFAS in mg/l
         else:
@@ -430,18 +531,11 @@ class Activatedcarbon(Model, Loss):
             sumOtherinGAC = (sum(self.quality.influent.product.extraneous['Other'].values())-sum(self.quality.effluent.product.extraneous['Other'].values()))*1e-6 #sum of all Other in mg/l
         else:
             sumOtherinGAC = 0.00000000001
-        volumeGAC = (self.packing_height* math.pi * (self.dimension/2)**2) 
-        regeneration = (volumeGAC *capacityFactor / ((sumPFASinGAC+sumOtherinGAC)*self.capacity*1000)) #capcity divided by amount of organics adsorbed per hour
-
-        # relevantInfluent = influent.extraneous['PFAS'].deepcopy()
-        # relevantInfluent.update(self.quality.influent.product.extraneous['Other'])
-        # relevantEffluent = self.quality.effluent.product.extraneous['PFAS'].deepcopy()
-        # relevantEffluent.update(self.quality.effluent.product.extraneous['Other'])
-        # print(f"Relevant Effluent: {self.quality.effluent.product.extraneous}")
-        # print(f"Relevant Influent: {self.quality.influent.product.extraneous}")
-        logging.debug(f"Design Influent.product End: {self.quality.influent.product.extraneous}")
-
-
+        # volumeGAC: int | float = (self.packing_height* math.pi * (self.dimension/2)**2) 
+        if self.fixed_replacement:
+            regeneration = (volumeGAC *capacityFactor / ((sumPFASinGAC+sumOtherinGAC)*self.capacity*1000))*self.replacement_loading/24 #capcity divided by amount of organics adsorbed per day
+        else:
+            regeneration = self.renewal
 
         
         return {

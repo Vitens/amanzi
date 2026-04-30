@@ -1,9 +1,6 @@
 parameters:
   design:
     filter:
-      advanced:
-        type: boolean
-        default: false
       shape:
         default: 'rectangular'
         options: ['rectangular', 'circular']
@@ -33,13 +30,17 @@ parameters:
 
   operational:
     general:
-      staggered_replacement:
+      fixed_replacement:
         default: true
       replacement_interval:
         uom: 'days'
-        default: 1000
+        default: 500
+        if:
+          fixed_replacement: true
         range: [1, 10000]
       replacement_loading:
+        if:
+          fixed_replacement: false
         uom: '%'
         default: 0.5
         range: [0.01, 1]
@@ -75,7 +76,46 @@ parameters:
         uom: '-'
         default: 0.6
         range: [0.1, 0.9]
-
+  model:
+    mode:
+      advanced:
+        type: boolean
+        default: false
+      staggered_replacement:
+        if:
+          advanced: true
+        type: boolean
+        default: false
+      breakthrough_solver:
+        if:
+          advanced: true
+        default: cadet
+        options: [fallback, cadet]
+      breakthrough_bed_volumes:
+        if:
+          advanced: true
+        uom: BV
+        default: 0
+        range: [0, 1000000]
+      breakthrough_points:
+        if:
+          advanced: true
+        default: 200
+        range: [10, 1000]
+      axial_dispersion:
+        if:
+          advanced: true
+        uom: m2/s
+        default: 0.00000001
+        range: [0, 0.001]
+      mass_transfer_coefficient:
+        if:
+          advanced: true
+        uom: 1/s
+        default: 0.002
+        range: [0.000001, 1]
+      
+        
 outputs:
   design:
     activatedcarbon:

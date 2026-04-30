@@ -113,6 +113,70 @@
 		}
 	},
 	"models": {
+		"activatedcarbon": {
+			"name": "Aktivkohlefiltration",
+			"parameters": {
+				"advanced": "Erweitert",
+				"shape": "Form",
+				"length": "Länge",
+				"width": "Breite",
+				"diameter": "Durchmesser",
+				"bed_height": "Betthöhe",
+				"bed_porosity": "Bettporosität",
+				"bed_porosity_clogged": "Bettporosität verstopft",
+				"particle_diameter": "Partikeldurchmesser",
+				"particle_porosity": "Partikelporosität",
+				"particle_density": "Partikeldichte",
+				"packing_type": "Kohletyp",
+				"apparent_density": "Schüttdichte",
+				"fixed_replacement": "Festes Austauschintervall",
+				"replacement_interval": "Austauschintervall",
+				"replacement_loading": "max. Beladung vor dem Austausch",
+				"staggered_replacement": "Gestaffelter Austausch",
+				"breakthrough_solver": "Durchbruch-Solver",
+				"breakthrough_bed_volumes": "Durchbruch-Bettvolumen",
+				"breakthrough_points": "Punkte der Durchbruchskurve",
+				"axial_dispersion": "Axiale Dispersion",
+				"mass_transfer_coefficient": "Stoffübergangskoeffizient",
+				"options": {
+					"fallback": "Fallback",
+					"cadet": "CADET",
+					"NORIT-Supra-0,8": "NORIT Supra 0,8",
+					"NORIT-Supra-1,0": "NORIT Supra 1,0",
+					"NORIT-Supra-1,2": "NORIT Supra 1,2",
+					"NORIT-Supra-1,5": "NORIT Supra 1,5",
+					"NORIT-Supra-2,0": "NORIT Supra 2,0"
+				}
+			},
+			"design": {
+				"compound": "Komponente",
+				"removal_akf": "AKF-Entfernung",
+				"adsorption_capacity": "Adsorptionskapazität",
+				"freundlich_k": "Freundlich K",
+				"freundlich_1n": "Freundlich 1/n",
+				"loading_q": "Beladung q"
+			},
+			"options": {
+				"shape": {
+					"rectangular": "Rechteckig",
+					"circular": "Rund"
+				}
+			},
+			"outputs": {
+				"volume": "Volumen",
+				"replacement": "Austausch",
+				"total_surface": "Gesamtfläche",
+				"filtration_velocity": "Filtrationsgeschwindigkeit",
+				"EBCT": "EBCT",
+				"headloss_clean": "Druckverlust sauber",
+				"headloss_clogged": "Druckverlust verstopft",
+				"average_headloss": "Durchschnittlicher Druckverlust"
+			},
+			"sections": {
+				"activatedcarbon": "Aktivkohle",
+				"pressure_loss": "Druckverlust"
+			}
+		},
 		"aeration": {
 			"outputs": {
 				"co2_emission": "CO2-Emissionen",

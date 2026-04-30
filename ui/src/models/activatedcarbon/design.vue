@@ -11,7 +11,7 @@
             <Result name="effluent" color="green" :components="resultSet('effluent')" />
             <table class="hydraulics">
               <tbody>
-                <tr><td>Regernatie</td><td>{{ output('model', 'regeneration') }}</td><td>jaar</td></tr>
+                <tr><td>Regernatie</td><td>{{ output('model', 'regeneration') }}</td><td>days</td></tr>
                 <tr><td>Efficiency</td><td>{{ output('model', 'Efficiency2') }}</td><td>%</td></tr>
                 <tr><td>EBCT</td><td>{{ output('model', 'EBCT') }}</td><td>min</td></tr>
                 <tr><td>Volume</td><td>{{ output('model', 'Volume') }}</td><td>m<sup>3</sup></td></tr>
@@ -21,9 +21,14 @@
         </div>
   
         <el-row v-if="params.advanced">
+          <el-col :span="24" class="breakthrough-actions">
+            <el-button type="primary" :loading="breakthroughLoading" @click="runBreakthrough">
+              Run CADET breakthrough simulation
+            </el-button>
+          </el-col>
           <el-col :span="12">
             
-            <chart :datasets="removal_over_time" title="" xlabel="Bedvolumes" ylabel="Concentration " :designvalue="params.interval" :targetvalue="1" :ymax="1" :ymin="0"></chart>
+            <chart :datasets="removal_over_time" title="" xlabel="Bedvolumes" ylabel="Concentration " :designvalue="params.replacement_interval" :targetvalue="1" :ymax="1" :ymin="0"></chart>
   
           </el-col>
           <el-col :span="12">
@@ -76,6 +81,7 @@ export default {
     return {
       loading: true,
       simple: true,
+      breakthroughLoading: false,
     }
     },
 
@@ -173,6 +179,21 @@ export default {
       return result
       
     },
+    async runBreakthrough(){
+      this.breakthroughLoading = true
+      this.loading = true
+      try {
+        const scenarioIndex = this.$project.selectedScenario
+        const modelUid = this.$project.scenario.editingModel
+        const payload = JSON.parse(JSON.stringify(this.$project.serialize()))
+        const model = payload.scenarios[scenarioIndex].models.find(model => model.uid === modelUid)
+        model.configuration.parameters.run_breakthrough = true
+        this.$project.designState = await this.$project.backend.design(payload, scenarioIndex, modelUid)
+      } finally {
+        this.breakthroughLoading = false
+        this.loading = false
+      }
+    },
     handleSwitch(){
       this.simple = !params.advanced
       
@@ -229,6 +250,9 @@ padding-right: 10px;
 position: absolute;
 right: 10px;
 top: 10px;
+}
+.breakthrough-actions {
+padding: 10px 0;
 }
 .text-bar {
 position: absolute;

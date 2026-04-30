@@ -16,10 +16,13 @@
   },
   "template": {
     "configuration": {
-
           "backwash_programme": [
             {"time": 600, "water": 50, "air": 0}
-          ]
+          ],
+          "compound_removal_rates": {
+            "PFAS": {},
+            "Other": {}
+          }
  
     }
   }

@@ -113,6 +113,70 @@
 		}
 	},
 	"models": {
+		"activatedcarbon": {
+			"name": "Actiefkoolfiltratie",
+			"parameters": {
+				"advanced": "Geavanceerd",
+				"shape": "Vorm",
+				"length": "Lengte",
+				"width": "Breedte",
+				"diameter": "Diameter",
+				"bed_height": "Bedhoogte",
+				"bed_porosity": "Bedporositeit",
+				"bed_porosity_clogged": "Bedporositeit verstopt",
+				"particle_diameter": "Deeltjesdiameter",
+				"particle_porosity": "Deeltjesporositeit",
+				"particle_density": "Deeltjesdichtheid",
+				"packing_type": "Kooltype",
+				"apparent_density": "Schijnbare dichtheid",
+				"fixed_replacement": "Vaste vervangingsinterval",
+				"replacement_interval": "Vervangingsinterval",
+				"replacement_loading": "Vervangingsbelasting",
+				"staggered_replacement": "Gespreide vervanging",
+				"breakthrough_solver": "Doorbraaksolver",
+				"breakthrough_bed_volumes": "Doorbraak bedvolumes",
+				"breakthrough_points": "Punten doorbraakcurve",
+				"axial_dispersion": "Axiale dispersie",
+				"mass_transfer_coefficient": "Massaoverdrachtscoëfficiënt",
+				"options": {
+					"fallback": "Fallback",
+					"cadet": "CADET",
+					"NORIT-Supra-0,8": "NORIT Supra 0,8",
+					"NORIT-Supra-1,0": "NORIT Supra 1,0",
+					"NORIT-Supra-1,2": "NORIT Supra 1,2",
+					"NORIT-Supra-1,5": "NORIT Supra 1,5",
+					"NORIT-Supra-2,0": "NORIT Supra 2,0"
+				}
+			},
+			"design": {
+				"compound": "Component",
+				"removal_akf": "AKF-verwijdering",
+				"adsorption_capacity": "Adsorptiecapaciteit",
+				"freundlich_k": "Freundlich K",
+				"freundlich_1n": "Freundlich 1/n",
+				"loading_q": "Belading q"
+			},
+			"options": {
+				"shape": {
+					"rectangular": "Rechthoekig",
+					"circular": "Rond"
+				}
+			},
+			"outputs": {
+				"volume": "Volume",
+				"replacement": "Vervanging",
+				"total_surface": "Totaal oppervlak",
+				"filtration_velocity": "Filtratiesnelheid",
+				"EBCT": "EBCT",
+				"headloss_clean": "Drukverlies schoon",
+				"headloss_clogged": "Drukverlies verstopt",
+				"average_headloss": "Gemiddeld drukverlies"
+			},
+			"sections": {
+				"activatedcarbon": "Actiefkool",
+				"pressure_loss": "Drukverlies"
+			}
+		},
 		"aeration": {
 			"outputs": {
 				"co2_emission": "CO2 uitstoot",

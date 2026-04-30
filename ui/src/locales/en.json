@@ -158,10 +158,18 @@
 				"particle_density": "Particle density",
 				"packing_type": "Packing type",
 				"apparent_density": "Apparent density", 
+				"fixed_replacement": "Fixed replacement interval",
 				"replacement_interval": "Replacement interval",
 				"replacement_loading": "Replacement loading",
 				"staggered_replacement": "Staggered replacement",
+				"breakthrough_solver": "Breakthrough solver",
+				"breakthrough_bed_volumes": "Breakthrough bed volumes",
+				"breakthrough_points": "Breakthrough curve points",
+				"axial_dispersion": "Axial dispersion",
+				"mass_transfer_coefficient": "Mass transfer coefficient",
 				"options": {
+					"fallback": "Fallback",
+					"cadet": "CADET",
 					"NORIT-Supra-0,8": "NORIT Supra 0.8",
 					"NORIT-Supra-1,0": "NORIT Supra 1.0",
 					"NORIT-Supra-1,2": "NORIT Supra 1.2",
@@ -171,6 +179,14 @@
 
 				
 			}, 
+			"design": {
+				"compound": "Compound",
+				"removal_akf": "AKF removal",
+				"adsorption_capacity": "Adsorption capacity",
+				"freundlich_k": "Freundlich K",
+				"freundlich_1n": "Freundlich 1/n",
+				"loading_q": "Loading q"
+			},
 			"options": {
 				"shape": {
 					"rectangular": "Rectangular",

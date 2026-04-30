@@ -75,8 +75,10 @@ class Groundwater(Model):
         # extraneous properties (i.e. untracked by PHREEQC)
         {'Color': c.get('color', 0),
          'TOC': c.get('total-organic-carbon', 0),
-            'PFAS':{}, 'VOC':{}, 'Other':{}}
-           )
+         'PFAS':{},
+         'VOC':{},
+         'Other':{}}
+        )
 
         c = configuration.get('solution', {}) 
 
