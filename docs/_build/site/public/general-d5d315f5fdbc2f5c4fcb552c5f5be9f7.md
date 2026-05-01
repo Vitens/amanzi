@@ -1,0 +1,4 @@
+#AMANZI
+
+AMANZI is a design tool for water treatment process that allows for design and analysis of different treatment scenarios
+

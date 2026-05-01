@@ -1,0 +1,161 @@
+# Dosing Model
+
+## Overview
+
+The dosing model simulates chemical dosing systems used in water treatment processes. It can operate in two modes: constant dosing or setpoint-controlled dosing, where the dosage is automatically adjusted to achieve a target water quality parameter.
+
+## Model Components
+
+The dosing model inherits from both the base `Model` class and the `Balance` class, enabling it to handle mass balance calculations and chemical addition processes.
+
+## Key Parameters
+
+| Parameter | Description | Units |
+| --- | --- | --- |
+| `chemical` | Type of chemical to be dosed | - |
+| `dosage` | Dosage amount (constant mode) | mmol/L |
+| `mode` | Dosing mode ('constant' or 'setpoint') | - |
+| `setpoint_parameter` | Parameter to control ('pH', 'o2', 'agco2', 'si', 'ccpp90') | - |
+| `setpoint` | Target value for setpoint parameter | - |
+
+## Supported Chemicals
+
+The model supports the following chemicals:
+
+| Chemical Name | Formula | Description |
+| --- | --- | --- |
+| `co2` | CO₂ | Carbon dioxide for pH reduction |
+| `hcl` | HCl | Hydrochloric acid for pH reduction |
+| `h2so4` | H₂SO₄ | Sulfuric acid for pH reduction |
+| `lye` | NaOH | Sodium hydroxide for pH increase |
+| `lime` | Ca(OH)₂ | Calcium hydroxide for pH increase |
+| `calcite` | CaCO₃ | Calcium carbonate for pH increase |
+| `oxygen` | O₂ | Oxygen for oxidation processes |
+| `iron_chloride` | FeCl₃ | Iron chloride for coagulation |
+| `manganese_chloride` | MnCl₂ | Manganese chloride for treatment |
+
+## Dosing Modes
+
+### Constant Dosing Mode
+
+In constant mode, a fixed amount of chemical is added to the water:
+
+$$ C_{effluent} = C_{influent} + \text{dosage} $$
+
+Where:
+- $C_{effluent}$ = effluent concentration (mmol/L)
+- $C_{influent}$ = influent concentration (mmol/L)
+- $\text{dosage}$ = constant dosage amount (mmol/L)
+
+### Setpoint-Controlled Dosing Mode
+
+In setpoint mode, the model automatically calculates the required dosage to achieve a target water quality parameter using optimization.
+
+**Optimization Process:**
+
+1. **Objective Function**: Minimize the difference between actual and target parameter values
+2. **Constraints**: Dosage bounded between 0 and 5 mmol/L
+3. **Method**: Uses scipy's `fmin` optimization function
+
+**Optimization Equation:**
+$$ \min_{x} |f(x) - \text{setpoint}| $$
+
+Subject to: $0 \leq x \leq 5$
+
+Where:
+- $x$ = dosage amount (mmol/L)
+- $f(x)$ = calculated parameter value after dosing
+- $\text{setpoint}$ = target parameter value
+
+## Controlled Parameters
+
+The model can control the following water quality parameters:
+
+### pH
+$$ \text{pH} = -\log_{10}(a_{H^+}) $$
+
+### Dissolved Oxygen (O₂)
+$$ \text{O}_2 = 32 \cdot (C_{O_2} + C_{Oxg}) \text{ mg/L} $$
+
+### Aggressive CO₂
+$$ \text{agCO}_2 = -\min(0, \text{CCPP}) \cdot 44.01 \text{ mg/L} $$
+
+### Saturation Index (SI)
+$$ \text{SI} = \log(\text{IAP}/K_{sp}) $$
+
+### CCPP90
+$$ \text{CCPP90} = \text{CCPP at pH 9.0} $$
+
+## Dosing Calculation
+
+The dosing process follows these steps:
+
+1. **Chemical Selection** - Determine the chemical formula based on configuration
+2. **Dosage Calculation** - Calculate required dosage based on mode
+3. **Solution Addition** - Add chemical to water solution
+4. **Quality Update** - Update water quality parameters
+
+**Dosing Equation:**
+$$ \text{Solution}_{dosed} = \text{Solution}_{influent} + \text{Chemical}_{dosage} $$
+
+## Design Calculations
+
+### Dosage Charts
+
+The model generates performance charts showing the relationship between dosage and water quality parameters:
+
+**Chart Generation Process:**
+1. **Dosage Range**: 0 to 2 mmol/L in 30 steps
+2. **Parameter Calculation**: Calculate each controlled parameter for each dosage
+3. **Chart Data**: Generate x-y data points for visualization
+
+### Influent vs. Effluent Comparison
+
+The model provides direct comparison of:
+- **Influent parameters** - Water quality before dosing
+- **Effluent parameters** - Water quality after dosing
+- **Calculated dosage** - Required dosage for setpoint mode
+- **Warning status** - Optimization convergence issues
+
+## Optimization Convergence
+
+The model includes convergence checking:
+
+**Convergence Criteria:**
+- **Success**: Optimization function value < 0.1
+- **Failure**: Optimization function value ≥ 0.1
+
+**Failure Handling:**
+- Set calculated dosage to 0
+- Set warning flag to True
+- Return original solution without modification
+
+## Context Properties
+
+The model provides additional context for design calculations:
+
+| Property | Description | Units |
+| --- | --- | --- |
+| `dosage` | Actual dosage used | mmol/L |
+| `chemical_formula` | Chemical formula | - |
+| `chemical_density` | Molecular weight of chemical | g/mol |
+
+## Integration with Solver
+
+The dosing model integrates with the overall solver framework by:
+
+1. **Mass Balance** - Calculates water flows through the dosing system
+2. **Quality Calculation** - Processes chemical addition and pH adjustment
+3. **Design Parameters** - Calculates dosage requirements and performance
+4. **Chemical Consumption** - Tracks chemical usage for cost calculations
+5. **Optimization** - Automatically determines optimal dosages
+
+## Applications
+
+Chemical dosing is commonly used for:
+- **pH adjustment** - CO₂, acid, or base addition
+- **Coagulation** - Iron or aluminum salts
+- **Disinfection** - Chlorine or other disinfectants
+- **Corrosion control** - Phosphate or silicate addition
+- **Precipitation** - Lime for hardness removal
+- **Oxidation** - Oxygen or other oxidants

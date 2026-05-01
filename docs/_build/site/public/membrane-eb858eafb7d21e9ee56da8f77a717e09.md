@@ -1,0 +1,173 @@
+# Membrane Model
+
+## Overview
+
+The membrane model simulates reverse osmosis (RO) and nanofiltration (NF) membrane systems used for water desalination and treatment. It performs detailed calculations for multi-stage membrane configurations, including pressure requirements, flow distribution, and water quality changes through each stage and element.
+
+## Model Components
+
+The membrane model inherits from both the base `Model` class and the `Splitter` class, enabling it to handle flow splitting between permeate and concentrate streams.
+
+## Key Parameters
+
+| Parameter | Description | Units |
+| --- | --- | --- |
+| `recovery` | Water recovery ratio | - |
+| `membrane_type` | Type of membrane used | - |
+| `number_of_stages` | Number of membrane stages | - |
+| `stage1_vessels` | Number of vessels in stage 1 | - |
+| `stage2_vessels` | Number of vessels in stage 2 | - |
+| `stage3_vessels` | Number of vessels in stage 3 | - |
+| `modules_per_vessel` | Number of modules per vessel | - |
+| `pressure_loss_between_stages` | Pressure loss between stages | mH₂O |
+| `nominal_capacity` | Design capacity | m³/h |
+| `optiflux` | Optiflux configuration enabled | bool |
+
+## Membrane Stack Configuration
+
+### Staging Configuration
+
+The model calculates the number of vessels per stage:
+
+**Standard Configuration:**
+$$ V_{stage} = V_{base} $$
+
+**Optiflux Configuration:**
+$$ V_{stage} = V_{base} \times 2 $$
+
+Where $V_{base}$ is the base number of vessels per stage.
+
+### Module Configuration
+
+**Standard Configuration:**
+$$ M_{stage} = M_{vessel} $$
+
+**Optiflux Configuration:**
+$$ M_{stage} = M_{vessel} \times 0.5 $$
+
+Where $M_{vessel}$ is the number of modules per vessel.
+
+## Membrane Stack Calculations
+
+### Pressure Calculation
+
+The model calculates the required feed pressure using the membrane stack model:
+
+$$ P_{required} = f(Q_f, C_f, T, R) $$
+
+Where:
+- $P_{required}$ = required feed pressure (bar)
+- $Q_f$ = feed flow rate (m³/h)
+- $C_f$ = feed TDS concentration (ppm)
+- $T$ = water temperature (°C)
+- $R$ = recovery ratio
+
+### Hydraulic Calculations
+
+The model performs detailed hydraulic calculations for each element:
+
+$$ Q_p, \text{results} = f(Q_f, C_f, P_f, T) $$
+
+Where:
+- $Q_p$ = permeate flow rate (m³/h)
+- $\text{results}$ = detailed element results
+
+### Quality Calculations
+
+The model calculates water quality changes through the membrane stack:
+
+$$ \text{permeate}, \text{concentrate}, \text{stage\_permeate}, \text{stage\_concentrate}, \text{element\_permeate}, \text{element\_concentrate} = f(\text{solution}, \text{results}) $$
+
+## Stage Results Calculation
+
+The model calculates comprehensive results for each stage:
+
+### Flow Rates
+- **Feed flow rate**: $Q_f = Q_{element} \times V_{vessels}$
+- **Concentrate flow rate**: $Q_c = Q_{element,last} \times V_{vessels}$
+- **Permeate flow rate**: $Q_p = Q_f - Q_c$
+
+### Pressures
+- **Feed pressure**: $P_f = P_{element,first} + P_{permeate}$
+- **Concentrate pressure**: $P_c = P_{element,last} + P_{permeate}$
+- **Pressure drop**: $D_p = P_f - P_c$
+
+### Recovery
+$$ R = \frac{Q_p}{Q_f} $$
+
+### Flux Calculations
+- **Maximum flux**: $J_{max} = \max(J_{elements})$
+- **Average flux**: $J_{avg} = \text{mean}(J_{elements})$
+- **Minimum flux**: $J_{min} = \min(J_{elements})$
+
+### Concentrations
+- **Feed TDS**: $C_f = C_{element,first}$
+- **Concentrate TDS**: $C_c = C_{element,last}$
+- **Permeate TDS**: $C_p = C_{permeate}$
+
+## Supersaturation Analysis
+
+The model calculates supersaturation indices for scaling components:
+
+### Scaling Components
+- **Calcite (CaCO₃)**: $SI = \log(\text{IAP}/K_{sp})$
+- **Gypsum (CaSO₄)**: $SI = \log(\text{IAP}/K_{sp})$
+- **Hydroxyapatite**: $SI = \log(\text{IAP}/K_{sp})$
+- **Barite (BaSO₄)**: $SI = \log(\text{IAP}/K_{sp})$
+- **Celestite (SrSO₄)**: $SI = \log(\text{IAP}/K_{sp})$
+- **Fluorite (CaF₂)**: $SI = \log(\text{IAP}/K_{sp})$
+- **Silica (SiO₂)**: $SI = \log(\text{IAP}/K_{sp})$
+
+## Design Calculations
+
+### Stream Analysis
+
+The model provides detailed analysis of all streams:
+
+**Influent Stream:**
+- pH, EGV, TDS, Na, Cl concentrations
+
+**Effluent Stream:**
+- pH, EGV, TDS, Na, Cl concentrations
+
+**Concentrate Stream:**
+- pH, EGV, TDS, Na, Cl concentrations
+
+### Element Results
+
+The model provides detailed results for each membrane element:
+- Flow rates (feed, permeate, concentrate)
+- Pressures (feed, permeate, concentrate)
+- Concentrations (feed, permeate, concentrate)
+- Flux rates
+- Recovery ratios
+
+## Context Properties
+
+The model provides additional context for design calculations:
+
+| Property | Description | Units |
+| --- | --- | --- |
+| `calculated_feed_pressure` | Required feed pressure | bar |
+| `membrane` | Membrane properties | - |
+| `element_results` | Detailed element results | DataFrame |
+
+## Integration with Solver
+
+The membrane model integrates with the overall solver framework by:
+
+1. **Mass Balance** - Calculates flow distribution between permeate and concentrate
+2. **Quality Calculation** - Processes water quality changes through membrane stack
+3. **Design Parameters** - Calculates pressure requirements and membrane dimensions
+4. **Energy Calculation** - Determines pumping power requirements
+5. **Concentrate Management** - Generates concentrate stream for downstream processing
+
+## Applications
+
+Membrane systems are commonly used for:
+- **Desalination** - Removal of dissolved salts
+- **Water softening** - Removal of hardness ions
+- **Micropollutant removal** - Removal of organic contaminants
+- **Water reuse** - Treatment of wastewater for reuse
+- **Concentrate treatment** - Further processing of concentrate streams
+- **Brackish water treatment** - Treatment of brackish groundwater
