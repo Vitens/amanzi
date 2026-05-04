@@ -1230,7 +1230,9 @@
 				"schematic": "Schematic"
 			},
 			"parameterlist": {
+				"allowed_values": "Allowed values",
 				"category": "Category",
+				"default": "Default",
 				"equation": "Equation",
 				"parameter": "Parameter",
 				"section": "Section",
