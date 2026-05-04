@@ -148,14 +148,14 @@ class Activatedcarbon(Model, Loss):
     #     #print(EBCT)
 
 
-    #     data = {    'name': ['carbonID', 'rad', 'epor', 'psdfr', 'rhop', 'rhof', 'L', 'wt', 'flrt', 'diam', 'tortu', 'influentID', 'effluentID'],	
+    #     data = {    'name': ['carbonID', 'rad',       'epor', 'psdfr', 'rhop', 'rhof', 'L', 'wt', 'flrt', 'diam', 'tortu', 'influentID', 'effluentID'],	
     #                 'value': ['F400', particleRadius, particlePorosity,  poreSurfaceRatio,  apparentDensity,  particleDensity,  length, massGAC, flowrate,  diameter,    tortuosity, 'influent', 'effluent'],
     #             } 
     #     #default time is days
 
-    #     # data = {    'name': ['carbonID', 'rad', 'flrt','epor', 'psdfr', 'rhop', 'rhof', 'L', 'wt',  'diam', 'tortu', 'influentID', 'effluentID', 'units', 'time','mass_mul' ,'t_mult', 'flow_mult', 'flow_type'],	
-    #     # 'value': ['F400', 0.0513,1892705.892, 0.641, 5, 0.803, 0.62, 180, 8500000,  366, 1, 'influent', 'effluent', 'ug', 'days', 1.0, 1440, 0.001, 'ml'],
-    #     # 'units': ['', 'cm', '', '', 'g/ml', 'g/ml', 'm', 'kg', 'gpm', 'm', '', '', '', '', '', '', '', '', ''],	} 
+    #     # data = { 'name': ['carbonID', 'rad', 'epor',    'psdfr', 'rhop', 'rhof', 'L',   'wt', '         flrt',   'diam',   'tortu', 'influentID', 'effluentID', 'units', 'time','mass_mul' ,'t_mult', 'flow_mult', 'flow_type'],	
+    #     # 'value':        ['F400',    0.0513,    '0.641',    '5', '0.803', '0.62', '180', '8500000', '1892705.892',  '366',   '1', 'influent', 'effluent',        'ug', 'days',   '1.0',      '1440',     '0.001',        'ml'],
+    #     # 'units':        ['',        'cm',       '',         '',  'g/ml', 'g/ml', 'm',       'kg',       'gpm',      'm',     '',    '',         '',             '',     '',     '',     '', '', ''],	} 
     #     df = pd.DataFrame(data, index=data['name'])
     #     df.name=data['value'][0]
     #     # Setting of influent water profile, with compound concentrations in ng/l as default
@@ -289,6 +289,7 @@ class Activatedcarbon(Model, Loss):
             bed_volume_m3=volume,
             flow_m3_h=float(parameters.get('nominal_capacity', self.capacity)),
             apparent_density_kg_m3=float(parameters.get('apparent_density', self.apparent_density)),
+            particle_density_kg_m3=float(parameters.get('particle_density', self.particle_density)),
             bed_porosity=float(parameters.get('bed_porosity', self.bed_porosity)),
             particle_diameter_mm=float(parameters.get('particle_diameter', self.particle_diameter)),
             replacement_interval_days=float(parameters.get('replacement_interval', self.renewal)),
@@ -302,7 +303,11 @@ class Activatedcarbon(Model, Loss):
         )
 
     def breakthrough_calculation(self, solution):
-        solver = select_breakthrough_solver(self.parameters.get('breakthrough_solver', 'cadet'))
+        solver_name = (self.parameters.get('breakthrough_solver') or 'psdm').lower()
+        # Keep legacy option names working after switching to PSDM as default.
+        if solver_name in {'fallback', 'default'}:
+            solver_name = 'psdm'
+        solver = select_breakthrough_solver(solver_name)
         return solver.run(self.breakthrough_input(solution))
 
     def should_run_breakthrough(self):

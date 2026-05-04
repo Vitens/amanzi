@@ -89,8 +89,8 @@ parameters:
       breakthrough_solver:
         if:
           advanced: true
-        default: cadet
-        options: [fallback, cadet]
+        default: psdm
+        options: [fallback, psdm]
       breakthrough_bed_volumes:
         if:
           advanced: true

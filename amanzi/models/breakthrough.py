@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-import importlib
 import logging
 import math
 import sys
-import tempfile
 from typing import Any
 import numpy as np
+import pandas as pd
 
 
 SUM4_PFAS = {"PFOA", "PFOS", "PFHxS", "PFHpS"}
@@ -115,6 +114,7 @@ class BreakthroughInput:
     bed_volume_m3: float
     flow_m3_h: float
     apparent_density_kg_m3: float
+    particle_density_kg_m3: float
     bed_porosity: float
     particle_diameter_mm: float
     replacement_interval_days: float
@@ -237,238 +237,221 @@ class PyodideBreakthroughSolver:
         ]
 
 
-class CadetBreakthroughSolver:
-    """CADET-Python entry point kept optional because CADET-Core is native."""
+class PsdmBreakthroughSolver:
+    """PSDM-backed breakthrough simulation for advanced activated carbon modeling."""
 
-    def __init__(self, allow_fallback: bool = False):
+    def __init__(self, allow_fallback: bool = True):
         self.allow_fallback = allow_fallback
 
     def run(self, inputs: BreakthroughInput) -> BreakthroughResult:
-        try:
-            Cadet = importlib.import_module("cadet").Cadet
-        except ImportError as exc:
-            raise RuntimeError("CADET-Python is not installed") from exc
-
-        try:
-            logging.debug(f"CADET Solver running")
-            return self._run_cadet(Cadet, inputs)
-        except Exception as exc:
-            if self.allow_fallback:
-                logging.exception("CADET breakthrough simulation failed; using fallback solver.")
-                return PyodideBreakthroughSolver().run(inputs)
-            raise RuntimeError(
-                "CADET breakthrough simulation failed. Check that CADET-Core is installed "
-                f"and that cadet.Cadet.cadet_path points to the CADET executable. Original error: {exc}"
-            ) from exc
-
-    def _run_cadet(self, cadet_cls, inputs: BreakthroughInput) -> BreakthroughResult:
-        logging.info(f"Influent PFA: {inputs.influent_pfas}")
-
-        fallback = PyodideBreakthroughSolver()
-        metadata = {str(item["name"]): item for item in inputs.metadata_pfas if item.get("name")}
         compounds = [
             compound
-            for compound, c0_ng_l in inputs.influent_pfas.items()
-            if float(c0_ng_l or 0) > 0
+            for compound, concentration in inputs.influent_pfas.items()
+            if float(concentration or 0) > 0
         ]
         if not compounds:
             return BreakthroughResult()
-        logging.info(f"Compounds: {compounds}")
-        print(f"Compounds: {compounds}")
-        x_values = breakthrough_x_values(inputs)
-        outlet = self._run_multicomponent(cadet_cls, inputs, compounds, x_values)
 
-        breakthrough = {}
+        try:
+            return self._run_psdm(inputs, compounds)
+        except Exception as exc:
+            if self.allow_fallback:
+                logging.exception("PSDM breakthrough simulation failed; using fallback solver.")
+                return PyodideBreakthroughSolver().run(inputs)
+            raise RuntimeError(f"PSDM breakthrough simulation failed. Original error: {exc}") from exc
+
+    def _run_psdm(self, inputs: BreakthroughInput, compounds: list[str]) -> BreakthroughResult:
+        from .psdm.PSDM import PSDM
+
+        metadata = {str(item["name"]): item for item in inputs.metadata_pfas if item.get("name")}
+        x_values = breakthrough_x_values(inputs)
+        time_days = self._bed_volumes_to_days(x_values, inputs)
+
+        column_data = self._column_data(inputs)
+        compound_data = self._compound_data(compounds, inputs, metadata)
+        rawdata = self._raw_data(compounds, time_days, inputs)
+        k_data = self._k_data(compounds, inputs, time_days)
+        print("K_data: ", k_data)
+        print("Compound data: ", compound_data)
+        print("Raw data: ", rawdata)
+        print("Column data: ", column_data)
+
+        column = PSDM(
+            column_data,
+            compound_data,
+            rawdata,
+            nr=8,
+            nz=13,
+            ne=2,
+            chem_type="PFAS",
+            water_type="Organic Free",
+            k_data=k_data,
+            optimize=False,
+            solver="BDF",
+        )
+        model_results = column.run_psdm()
+        print("Model results: ", model_results)
+
+        breakthrough: dict[str, list[dict[str, float]]] = {}
         peq = np.zeros(len(x_values))
         sum4 = np.zeros(len(x_values))
         sum20 = np.zeros(len(x_values))
 
-        for index, compound in enumerate(compounds):
-            c0_ng_l = float(inputs.influent_pfas[compound])
-            y_values = outlet[:, index]
-            breakthrough[compound] = fallback._series(x_values, y_values)
+        for compound in compounds:
+            c0_ng_l = float(inputs.influent_pfas.get(compound, 0) or 0)
+            if c0_ng_l <= 0:
+                continue
+
+            effluent_ng_l = np.asarray(model_results[compound](time_days), dtype=float)
+            ratio = np.clip(effluent_ng_l / max(c0_ng_l, 1e-12), 0, 1)
+            breakthrough[compound] = self._series(x_values, ratio)
 
             peq_factor = float(metadata.get(compound, {}).get("PEQ", 1) or 1)
-            effluent = float(c0_ng_l) * y_values * peq_factor
-            peq += effluent
+            weighted_effluent = effluent_ng_l * peq_factor
+            peq += weighted_effluent
             if compound in SUM4_PFAS:
-                sum4 += effluent
+                sum4 += weighted_effluent
             if compound in SUM20_PFAS:
-                sum20 += effluent
+                sum20 += weighted_effluent
 
         return BreakthroughResult(
             breakthrough=breakthrough,
-            peq_pfas=fallback._series(x_values, peq),
-            sum4_pfas=fallback._series(x_values, sum4),
-            sum20_pfas=fallback._series(x_values, sum20),
+            peq_pfas=self._series(x_values, peq),
+            sum4_pfas=self._series(x_values, sum4),
+            sum20_pfas=self._series(x_values, sum20),
         )
 
-    def _run_multicomponent(
+    def _bed_volumes_to_days(self, bed_volumes: np.ndarray, inputs: BreakthroughInput) -> np.ndarray:
+        bed_volumes_per_day = inputs.flow_m3_h * 24 / max(inputs.bed_volume_m3, 1e-9)
+        return bed_volumes / max(bed_volumes_per_day, 1e-9)
+
+    def _column_data(self, inputs: BreakthroughInput) -> pd.Series:
+        bed_porosity = float(np.clip(inputs.bed_porosity, 0.05, 0.95))
+        particle_porosity = float(np.clip(inputs.particle_porosity, 0.05, 0.95))
+        length_cm = max(float(inputs.column_length), 1e-9) * 100
+        bed_volume_cm3 = max(float(inputs.bed_volume_m3), 1e-12) * 1e6
+        diameter_cm = math.sqrt(4 * (bed_volume_cm3 / length_cm) / math.pi)
+        mass_g = max(float(inputs.bed_volume_m3) * float(inputs.apparent_density_kg_m3) * 1000, 1e-9)
+        apparent_density_g_cm3 = float(inputs.apparent_density_kg_m3) / 1000
+        particle_density_g_cm3 = float(inputs.particle_density_kg_m3) / 1000
+        rhop = particle_density_g_cm3
+        rhof = apparent_density_g_cm3
+        flow_ml_min = max(float(inputs.flow_m3_h), 1e-12) * 1e6 / 60
+
+        return pd.Series(
+            data=[
+                max(float(inputs.particle_diameter_mm), 1e-9) / 20,  #radius in cm 
+                flow_ml_min,  #flow rate in ml/min
+                particle_porosity,  #particle porosity
+                5.0,  #pore to surface diffusion ratio
+                rhop,  #particle density in g/cm3
+                rhof,  #apparent density in g/cm3
+                length_cm,  #Column length in cm
+                mass_g,  #Fixed bed mass in g
+                diameter_cm,  #Column diameter in cm
+                1.0,  #tortuosity
+                "influent",  #influent identifier
+                "effluent",  #effluent identifier
+                "ng",  #units
+                "days",  #time units
+            ],
+            index=[
+                "rad",
+                "flrt",
+                "epor",
+                "psdfr",
+                "rhop",
+                "rhof",
+                "L",
+                "wt",
+                "diam",
+                "tortu",
+                "influentID",
+                "effluentID",
+                "units",
+                "time",
+            ],
+            name="F400",
+        )
+
+    def _compound_data(
         self,
-        cadet_cls,
-        inputs: BreakthroughInput,
         compounds: list[str],
-        x_values: np.ndarray,
-    ) -> np.ndarray:
-        model = cadet_cls()
-        logging.debug("Running CADET breakthrough simulation.")
-
-        ncomp = len(compounds)
-        metadata = {str(item["name"]): item for item in inputs.metadata_pfas if item.get("name")}
-        influent_pfas_ng_l = [float(inputs.influent_pfas[compound]) for compound in compounds]
-        influent_pfas_mol_m3 = [
-            self._influent_mol_m3(compound, concentration, inputs, metadata)
-            for compound, concentration in zip(compounds, influent_pfas_ng_l)
-        ]
-        residence_time_h = inputs.bed_volume_m3 / max(inputs.flow_m3_h, 1e-12)
-        solution_times = x_values * residence_time_h * 3600
-        t_end = max(float(solution_times[-1]), 1)
-        flow_m3_s = max(inputs.flow_m3_h / 3600, 1e-12)
-        mass_transfer = max(inputs.mass_transfer_coefficient_s, 1e-9)
-        freundlich_k = []
-        freundlich_n = []
-        initial_loading = []
-
-        for compound in compounds:
-            params = freundlich_parameters(compound, inputs.compound_parameters.get(compound, {}))
-            freundlich_k.append(float(params.get("freundlich_k", 100) or 100))
-            one_over_n = float(params.get("freundlich_1n", 0.4) or 0.4)
-            freundlich_n.append(1 / max(one_over_n, 1e-12))
-            initial_loading.append(float(params.get("initial_loading_q", 0) or 0))
-
-        model.root.input.model.nunits = 3
-        model.root.input.model.unit_000.unit_type = "INLET"
-        model.root.input.model.unit_000.ncomp = ncomp
-        model.root.input.model.unit_000.inlet_type = "PIECEWISE_CUBIC_POLY"
-        model.root.input.model.unit_000.sec_000.const_coeff = influent_pfas_mol_m3
-
-
-        column = model.root.input.model.unit_001
-        column.unit_type = "GENERAL_RATE_MODEL"
-        column.ncomp = ncomp
-        column.nbound = [1] * ncomp
-        column.col_length = max(inputs.column_length, 1e-9)
-        column.cross_section_area = max(inputs.bed_volume_m3 / max(inputs.column_length, 1e-9), 1e-9)
-        column.col_porosity = inputs.bed_porosity
-        column.par_porosity = inputs.particle_porosity
-        column.par_radius = max(inputs.particle_diameter_mm / 2000, 1e-9)
-        column.col_dispersion = ncomp*[0]#inputs.axial_dispersion_m2_s
-        column.film_diffusion = [mass_transfer] * ncomp
-        column.par_diffusion = [mass_transfer] * ncomp
-        column.adsorption_model = "FREUNDLICH_LDF"
-        column.adsorption.is_kinetic = 1
-        column.adsorption.fldf_kkin = [mass_transfer] * ncomp
-        column.adsorption.fldf_kf = freundlich_k
-        column.adsorption.fldf_n = freundlich_n
-        column.init_cp = [0.0] * ncomp
-        column.init_cs = [0.0] * ncomp
-        column.discretization.spatial_method = "DG"
-        column.discretization.polydeg = 3
-        column.discretization.nelem = 1
-        column.discretization.npar = 5
-
-        particle = column.particle_type_000
-        particle.film_diffusion = [mass_transfer] * ncomp
-        particle.adsorption_model = "FREUNDLICH_LDF"
-        particle.nbound = [1] * ncomp
-        particle.adsorption.is_kinetic = 1
-        particle.adsorption.fldf_kkin = [mass_transfer] * ncomp
-        particle.adsorption.fldf_kf = freundlich_k
-        particle.adsorption.fldf_n = freundlich_n
-        particle.init_cp = [0.0] * ncomp
-        particle.init_cs = [0.0] * ncomp
-        particle.discretization.spatial_method = "DG"
-        particle.discretization.par_polydeg = 3
-        particle.discretization.par_nelem = 1
-
-        if column.unit_type == "GENERAL_RATE_MODEL":
-            self._set_general_rate_discretization(column, [1] * ncomp)
-
-        model.root.input.model.unit_002.unit_type = "OUTLET"
-        model.root.input.model.unit_002.ncomp = ncomp
-        model.root.input.solver.sections.nsec = 1
-        model.root.input.solver.sections.section_times = [0.0, t_end]
-        model.root.input.solver.sections.section_continuity = []
-        model.root.input.model.connections.nswitches = 1
-        model.root.input.model.connections.switch_000.section = 0
-        model.root.input.model.connections.switch_000.connections = [
-            0, 1, -1, -1, flow_m3_s,
-            1, 2, -1, -1, flow_m3_s,
-        ]
-        model.root.input.model.solver.gs_type = 1
-        model.root.input.model.solver.max_krylov = 0
-        model.root.input.model.solver.max_restarts = 10
-        model.root.input.model.solver.schur_safety = 1.0e-8
-
-        model.root.input.solver.nthreads = 1
-        model.root.input.solver.time_integrator.abstol = 1e-6
-        model.root.input.solver.time_integrator.algtol = 1e-10
-        model.root.input.solver.time_integrator.reltol = 1e-6
-        model.root.input.solver.time_integrator.init_step_size = 1e-6
-        model.root.input.solver.time_integrator.max_steps = 1000000
-        model.root.input["return"].unit_001.write_solution_outlet = 1
-        model.root.input.solver.user_solution_times = solution_times
-
-        with tempfile.NamedTemporaryFile(suffix=".h5") as file:
-            model.filename = file.name
-            model.save()
-            data = model.run()
-            if data.return_code != 0:
-                raise RuntimeError(data)
-            model.load()
-
-        outlet = np.array(model.root.output.solution.unit_001.solution_outlet)
-        outlet = outlet.reshape(len(solution_times), ncomp)
-        if outlet.shape[0] != len(x_values):
-            interpolated = [
-                np.interp(solution_times, model.root.output.solution.solution_times, outlet[:, index])
-                for index in range(ncomp)
-            ]
-            outlet = np.column_stack(interpolated)
-        c0 = np.array(influent_pfas_mol_m3)
-        return np.clip(outlet / np.maximum(c0, 1e-30), 0, 1)
-
-    def _set_general_rate_discretization(self,model, n_bound=None, n_col=100) -> None:
-        columns = {'GENERAL_RATE_MODEL'}
-
-        for unit_name, unit in model.root.input.model.items():
-            if 'unit_' in unit_name and unit.unit_type in columns:
-                unit.discretization.ncol = n_col
-                unit.discretization.npar = 5 # discretization resolution of the particle
-                
-                if n_bound is None:
-                    n_bound = unit.ncomp*[0]
-                unit.discretization.nbound = n_bound
-                
-                unit.discretization.par_disc_type = 'EQUIDISTANT_PAR'
-                unit.discretization.use_analytic_jacobian = 1
-                unit.discretization.reconstruction = 'WENO'
-                unit.discretization.gs_type = 1
-                unit.discretization.max_krylov = 0
-                unit.discretization.max_restarts = 10
-                unit.discretization.schur_safety = 1.0e-8
-
-                unit.discretization.weno.boundary_model = 0
-                unit.discretization.weno.weno_eps = 1e-10
-                unit.discretization.weno.weno_order = 1 
-
-    def _influent_mol_m3(
-        self,
-        compound: str,
-        concentration_ng_l: float,
         inputs: BreakthroughInput,
         metadata: dict[str, dict[str, Any]],
-    ) -> float:
-        try:
-            properties = compound_properties(
+    ) -> pd.DataFrame:
+        rows = ["MW", "MolarVol", "BP", "Density", "Solubility", "VaporPress"]
+        data: dict[str, list[float]] = {}
+        for compound in compounds:
+            props = compound_properties(
                 compound,
                 inputs.compound_parameters.get(compound, {}),
                 metadata.get(compound, {}),
             )
-            molecular_weight = molecular_weight_g_mol(properties)
-        except ValueError as exc:
-            raise ValueError(f"Missing molecular weight for {compound}; cannot convert ng/l to mol/m3") from exc
-        return ng_l_to_mol_m3(concentration_ng_l, molecular_weight)
+            data[compound] = [
+                float(props.get("MW", 500)),
+                float(props.get("MolarVol", 200)),
+                float(props.get("BP", 200)),
+                float(props.get("Density", 1.8)),
+                float(props.get("Solubility", 0)),
+                float(props.get("VaporPress", 0)),
+            ]
+        return pd.DataFrame(data, index=pd.Index(rows))
+
+    def _raw_data(
+        self,
+        compounds: list[str],
+        time_days: np.ndarray,
+        inputs: BreakthroughInput,
+    ) -> pd.DataFrame:
+        columns = [
+            (phase, compound)
+            for phase in ("influent", "F400")
+            for compound in compounds
+        ]
+        raw = pd.DataFrame(
+            0.0,
+            index=np.asarray(time_days, dtype=float),
+            columns=pd.MultiIndex.from_tuples(columns, names=["type", "compound"]),
+        )
+        for compound in compounds:
+            c0_ng_l = max(float(inputs.influent_pfas.get(compound, 0) or 0), 1e-9)
+            raw[("influent", compound)] = c0_ng_l
+            raw[("F400", compound)] = 0.0
+        return raw
+
+    def _k_data(
+        self,
+        compounds: list[str],
+        inputs: BreakthroughInput,
+        time_days: np.ndarray,
+    ) -> pd.DataFrame:
+        k_data = pd.DataFrame(
+            index=pd.Index(["K", "1/n", "q", "brk", "AveC"]),
+            columns=pd.Index(compounds),
+            dtype=float,
+        )
+        for compound in compounds:
+            params = freundlich_parameters(compound, inputs.compound_parameters.get(compound, {}))
+            k_data.loc["K", compound] = self._positive(params.get("freundlich_k"), 100)
+            k_data.loc["1/n", compound] = self._positive(params.get("freundlich_1n"), 0.4)
+            k_data.loc["q", compound] = max(float(params.get("initial_loading_q", 1) or 1), 1e-9)
+            k_data.loc["brk", compound] = max(float(time_days[-1]), 1)
+            k_data.loc["AveC", compound] = max(float(inputs.influent_pfas.get(compound, 0) or 0), 1e-9)
+        return k_data
+
+    def _positive(self, value: Any, default: float) -> float:
+        try:
+            value = float(value)
+        except (TypeError, ValueError):
+            value = default
+        return max(value, 1e-9)
+
+    def _series(self, x_values: np.ndarray, y_values: np.ndarray) -> list[dict[str, float]]:
+        return [
+            {"x": float(x), "y": float(y)}
+            for x, y in zip(x_values, y_values)
+        ]
 
 
 def select_breakthrough_solver(preferred: str | None = None):
@@ -476,12 +459,12 @@ def select_breakthrough_solver(preferred: str | None = None):
     if sys.platform == "emscripten":
         return PyodideBreakthroughSolver()
 
-    if preferred == "cadet":
-        try:
-            importlib.import_module("cadet")
-        except ImportError:
-            logging.debug(f"cadet not installed")
-            return PyodideBreakthroughSolver()
-        return CadetBreakthroughSolver(allow_fallback=False)
+    selected = (preferred or "psdm").lower()
+    if selected == "pyodide":
+        return PyodideBreakthroughSolver()
 
-    return PyodideBreakthroughSolver()
+    if selected == "psdm":
+        return PsdmBreakthroughSolver(allow_fallback=True)
+
+    logging.warning("Unknown breakthrough solver '%s', defaulting to PSDM", selected)
+    return PsdmBreakthroughSolver(allow_fallback=True)

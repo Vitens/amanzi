@@ -170,6 +170,7 @@
 				"options": {
 					"fallback": "Fallback",
 					"cadet": "CADET",
+					"psdm": "PSDM",
 					"NORIT-Supra-0,8": "NORIT Supra 0.8",
 					"NORIT-Supra-1,0": "NORIT Supra 1.0",
 					"NORIT-Supra-1,2": "NORIT Supra 1.2",
