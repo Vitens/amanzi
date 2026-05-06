@@ -4,6 +4,9 @@ parameters:
       spray:
         default: false
         uom: '-'
+      lime_pellets:
+        default: false
+        uom: '-'
     hydraulic_line:
       pressurized: # overwrite to enable unique translation
         default: false
@@ -23,7 +26,9 @@ parameters:
         uom: m
         range: [0.1, 1.0]
 
-    sandfilter:
+
+
+    marblefilter:
       shape:
         default: 'rectangular'
         options: ['rectangular', 'circular']
@@ -44,50 +49,57 @@ parameters:
         uom: m
         if:
           shape: 'circular'
-        range: [0.2, 8.0]
-      dual_media:
-        default: false
-        uom: '-'
-      height_anthracite:
+        range: [0.2, 8.0]    
+      height_lime:
+        if:
+          lime_pellets: true
         default: 0.5
-        if:
-          dual_media: true
         uom: m
-        range: [0.1, 2.0]
-      diameter_anthracite:
-        default: 1.3
+        range: [0.1, 10.0]
+      diameter_lime:
         if:
-          dual_media: true
+          lime_pellets: true
+        default: 1.0
         uom: mm
-        range: [0.1, 3.0]
-      porosity_anthracite:
-        default: 0.45
+        range: [0.0001, 100.0]
+      height_marble:
         if:
-          dual_media: true
-        uom: "-"
-        range: [0.1, 0.6]
-      porosity_anthracite_clogged:
-        if:
-          dual_media: true
-        default: 0.25
-        uom: "-"
-        range: [0.1, 0.6]
-      height_sand:
+          lime_pellets: false
         default: 1.0
         uom: m
-        range: [0.5, 3.0]
-      diameter_sand:
-        default: 1.3
+        range: [0.1, 10.0]
+      diameter_marble:
+        if:
+          lime_pellets: false
+        default: 1.0
         uom: mm
-        range: [0.1, 3.0]
-      porosity_sand:
-        default: 0.45
-        uom: "-"
+        range: [0.0001, 100.0]
+      porosity_lime:
+        if:
+          lime_pellets: true
+        default: 0.5
+        uom: '-'
         range: [0.1, 0.6]
-      porosity_sand_clogged:
+      porosity_marble:
+        if:
+          lime_pellets: false
+        default: 0.5
+        uom: '-'
+        range: [0.1, 0.6]
+      porosity_marble_clogged:
+        if:
+          lime_pellets: false
         default: 0.25
-        uom: "-"
+        uom: '-'
         range: [0.1, 0.6]
+      porosity_lime_clogged:
+        if:
+          lime_pellets: true
+        default: 0.25
+        uom: '-'
+        range: [0.1, 0.6]
+
+
   operational:
     supernatant:
       supernatant_level:
@@ -112,7 +124,7 @@ parameters:
         if:
           backwash_control: 'time'
         uom: h
-        range: [1.0, 500.0]
+        range: [1.0, 72.0]
       runvolume:
         default: 5000
         if:
@@ -121,9 +133,8 @@ parameters:
         range: [10, 100000]
       backwash_programme: 
         default: [{"time": 600, "water": 50, "air": 0}]
+        hidden: true
 
-
-      
   model:
     removal_rates:
       suppress_iron_removal:
@@ -153,6 +164,7 @@ parameters:
           suppress_manganese_removal: true
         uom: '%'
         range: [0.0, 1.0]    
+    
 
 outputs:
   hydraulic:
@@ -173,7 +185,7 @@ outputs:
         equation: "surface_area * units"
       bed_height:
         uom: m
-        equation: "height_sand + height_anthracite"
+        equation: "height_lime + height_marble"
       filtration_velocity:
         uom: m/h
         equation: "capacity / surface_area"
@@ -183,28 +195,28 @@ outputs:
     pressure_loss:
       headloss_clean:
         uom: mH2O
-        equation: "headloss_sand + headloss_anthracite if dual_media else headloss_sand"
+        equation: "headloss_lime + headloss_marble"
         parameters:
-          headloss_anthracite:
+          headloss_lime:
             uom: mH2O
-            equation: "kozeny_carman(porosity_anthracite, filtration_velocity, diameter_anthracite) * height_anthracite"
-            if: "dual_media"
-          headloss_sand:
+            equation: "kozeny_carman(porosity_lime, filtration_velocity, diameter_lime) * height_lime"
+            if: "lime_pellets"
+          headloss_marble:
             uom: mH2O
-            equation: "kozeny_carman(porosity_sand, filtration_velocity, diameter_sand) * height_sand"
-            if: "dual_media"
+            equation: "kozeny_carman(porosity_marble, filtration_velocity, diameter_marble) * height_marble"
+            if not: "lime_pellets"
       headloss_clogged:
         uom: mH2O
-        equation: "headloss_sand_clogged + headloss_anthracite_clogged if dual_media else headloss_sand_clogged"
+        equation: "headloss_lime_clogged + headloss_marble_clogged"
         parameters:
-          headloss_anthracite_clogged:
+          headloss_lime_clogged:
             uom: mH2O
-            equation: "kozeny_carman(porosity_anthracite_clogged, filtration_velocity, diameter_anthracite) * height_anthracite"
-            if: "dual_media"
-          headloss_sand_clogged:
+            equation: "kozeny_carman(porosity_lime_clogged, filtration_velocity, diameter_lime) * height_lime"
+            if: "lime_pellets"
+          headloss_marble_clogged:
             uom: mH2O
-            equation: "kozeny_carman(porosity_sand_clogged, filtration_velocity, diameter_sand) * height_sand"
-            if: "dual_media"
+            equation: "kozeny_carman(porosity_marble_clogged, filtration_velocity, diameter_marble) * height_marble"
+            if not: "lime_pellets"
       average_headloss:
         uom: mH2O
         equation: "(headloss_clean + headloss_clogged) / 2"
@@ -224,33 +236,33 @@ outputs:
         uom: 'm/h'
       bed_expansion:
         uom: m
-        equation: "expanded_height_sand + expanded_height_anthracite if dual_media else expanded_height_sand"
+        equation: "expanded_height_lime + expanded_height_marble"
         parameters:
-          bed_expansion_anthracite:
-            if: "dual_media"
-            equation: "backwash_bed_expansion(diameter_anthracite, max_rate)"
+          bed_expansion_lime:
+            if: "lime_pellets"
+            equation: "backwash_bed_expansion(diameter_lime, max_rate)"
             uom: '%'
-          bed_expansion_sand:
-            equation: "backwash_bed_expansion(diameter_sand, max_rate)"
+          bed_expansion_marble:
+            equation: "backwash_bed_expansion(diameter_marble, max_rate)"
             uom: '%'
-          expanded_height_sand:
+          expanded_height_marble:
             precision: 1
-            equation: "height_sand * bed_expansion_anthracite"
+            equation: "height_marble * bed_expansion_marble"
             uom: m
-          expanded_height_anthracite:
+          expanded_height_lime:
             precision: 1
-            if: "dual_media"
-            equation: "height_anthracite * bed_expansion_anthracite"
+            if: "lime_pellets"
+            equation: "height_lime * bed_expansion_lime"
             uom: m
       backwash_headloss:
         uom: mH2O
-        equation: "backwash_headloss(diameter_sand, max_rate, height_sand)+ backwash_headloss(diameter_anthracite, max_rate, height_anthracite) if dual_media else backwash_headloss(diameter_sand, max_rate, height_sand)"
+        equation: "backwash_headloss(diameter_lime, max_rate, height_lime) if lime_pellets else backwash_headloss(diameter_marble, max_rate, height_marble)"
         parameters:
-          backwash_headloss_anthracite:
-            if: "dual_media"
-            equation: "backwash_headloss(diameter_anthracite, max_rate, height_anthracite)"
-          backwash_headloss_sand:
-            equation: "backwash_headloss(diameter_sand, max_rate, height_sand)"
+          backwash_headloss_lime:
+            if: "lime_pellets"
+            equation: "backwash_headloss(diameter_lime, max_rate, height_lime)"
+          backwash_headloss_marble:
+            equation: "backwash_headloss(diameter_marble, max_rate, height_marble)"
       backwash_loss:
         uom: "%"
         equation: backwash_volume / runtime_volume
@@ -265,36 +277,30 @@ outputs:
             uom: mg/L
             equation: "iron_capture / backwash_volume * 1000"
 
-  energy:
-    backwash:
-      backwash_energy:
-        uom: kWh/m3
-        equation: "backwash_power_consumption / runtime_volume"
-        parameters:
-          backwash_power_consumption:
-            uom: kWh
-            equation: "backwash_volume * 9.81 * backwash_head * 1/backwash_pump_efficiency / 3600"
+
+  # sustainability:
+  #   direct_emissions:
+  #     co2_emission:
+  #       if: "spray"
+  #       equation: "quality.influent.product.total('CO2','mg') - aerated.total('CO2','mg')"
+  #       uom: gCO2-eq/m3
+  #       precision: 2
+  #     methane_emission:
+  #       if: "spray"
+  #       equation: "methane_removal * methane_factor"
+  #       uom: gCO2-eq/m3
+  #       precision: 2
+  #       parameters:
+  #         methane_removal:
+  #           uom: "g/m3"
+  #           precision: 2
+  #           equation: "(quality.influent.product.total('Mtg') - aerated.total('Mtg'))*16.04"
+  #         methane_factor:
+  #           uom: "gCO2-eq/gCH4"
+  #           precision: 0
+  #           equation: "db.methane_emission_factor"
 
 
-  sustainability:
-    direct_emissions:
-      co2_emission:
-        if: "spray"
-        equation: "quality.influent.product.total('CO2','mg') - aerated.total('CO2','mg')"
-        uom: gCO2-eq/m3
-        precision: 2
-      methane_emission:
-        if: "spray"
-        equation: "methane_removal * methane_factor"
-        uom: gCO2-eq/m3
-        precision: 2
-        parameters:
-          methane_removal:
-            uom: "g/m3"
-            precision: 2
-            equation: "(quality.influent.product.total('Mtg') - aerated.total('Mtg'))*16.04"
-          methane_factor:
-            uom: "gCO2-eq/gCH4"
-            precision: 0
-            equation: "db.methane_emission_factor"
+      
 
+    
