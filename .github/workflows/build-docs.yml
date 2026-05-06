@@ -1,0 +1,44 @@
+name: Build Documentation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-docs:
+    name: Build HTML docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install MyST
+        run: npm install --global mystmd
+
+      - name: Build HTML docs
+        run: myst build --html docs
+
+      - name: Zip HTML docs
+        run: |
+          cd docs/_build/html
+          zip -r ../../../docs-html.zip .
+
+      - name: Upload docs zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amanzi-docs-html
+          path: docs-html.zip
+
+      # Future stage: publish docs artifact to GitHub Pages.

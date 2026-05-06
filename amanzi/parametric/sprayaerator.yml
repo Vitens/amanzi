@@ -1,0 +1,39 @@
+parameters:
+  design:
+    sprayaerator:
+      area_per_nozzle:
+        default: 1
+        if:
+          spray: true
+        uom: m2
+        description: Area of the spray nozzle [m2]
+        range: [0.1, 10]
+  model:
+    sprayaerator:
+      co2_removal_efficiency:
+        default: 0.50
+        if:
+          spray: true
+        uom: "%"
+        range: [0.01, 1]
+      ch4_removal_efficiency:
+        default: 0.30
+        if:
+          spray: true
+        uom: "%"
+        range: [0.01, 1]
+      o2_saturation:
+        default: 0.8
+        if:
+          spray: true
+        uom: "%"
+        range: [0.01, 1]
+outputs:
+  design:
+    general:
+      total_nozzles:
+        if: "spray"
+        name: Total Nozzles
+        description: Total number of nozzles in the spray aeration unit
+        equation: "surface_area / area_per_nozzle"
+        uom: '-'

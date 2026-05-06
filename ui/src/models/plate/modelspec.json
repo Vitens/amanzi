@@ -1,0 +1,20 @@
+{
+  "name": "plate",
+  "category": "main",
+  "localizedName": "Plaatbeluchting",
+  "canvas": {
+    "defaultImg": "plate.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "rq": 20,
+      "efficiency": 10,
+      "recirculation": 0
+    }
+  }
+}

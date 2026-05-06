@@ -1,0 +1,28 @@
+{
+  "name": "membrane",
+  "category": "main",
+  "localizedName": "Membranen",
+  "canvas": {
+    "defaultImg": "membrane.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"},
+      {"position": "bottom", "direction": "out", "type": "waste"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "optiflux": false,
+      "recovery": 0.8,
+      "capacity": 100, 
+      "day_factor": 0.6, 
+      "flux": 20,
+      "stacks": 6,
+      "stages": 3,
+      "modules": 6,
+      "vessels": {"1":12, "2":6, "3":3},
+      "membrane": "SUEZ AK-400H"
+    }
+  }
+}

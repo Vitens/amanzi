@@ -1,0 +1,137 @@
+parameters:
+  _composition:
+    common:
+      pH:
+        uom: "-"
+        default: 7.0
+        range: [4, 12]
+        chemical: 
+      temperature:
+        uom: °C
+        default: 10
+        range: [5, 40]
+        chemical: 
+    dissolved-gasses:
+      oxygen:
+        uom: mg/l
+        default: 0
+        range: [0, 12]
+        chemical: O2
+      nitrogen:
+        uom: mg/l
+        default: 15
+        range: [0, 30]
+        chemical: N2
+      methane:
+        uom: mg/l
+        default: 1
+        range: [0, 100]
+        chemical: CH4
+      hydrogen-sulfide:
+        uom: mg/l
+        default: 0
+        range: [0, 30]
+        chemical: H2S
+    cations:
+      iron:
+        uom: mg/l
+        default: 5
+        range: [0, 80]
+        chemical: Fe
+      manganese:
+        uom: mg/l
+        default: 0.2
+        range: [0, 5]
+        chemical: Mn
+      ammonium:
+        uom: mg/l
+        default: 1
+        range: [0, 5]
+        chemical: NH4
+      calcium:
+        uom: mg/l
+        default: 60
+        range: [0, 200]
+        chemical: Ca
+      magnesium:
+        uom: mg/l
+        default: 10
+        range: [0, 100]
+        chemical: Mg
+      sodium:
+        uom: mg/l
+        default: 20
+        range: [0, 5000]
+        chemical: Na
+      potassium:
+        uom: mg/l
+        default: 10
+        range: [0, 50]
+        chemical: K
+      barium:
+        uom: mg/l
+        default: 0
+        range: [0, 5]
+        chemical: Ba
+      strontium:
+        uom: mg/l
+        default: 0
+        range: [0, 5]
+        chemical: Sr
+    anions:
+      bicarbonate:
+        uom: mg/l
+        default: 140
+        range: [0, 500]
+        chemical: HCO3
+      chloride:
+        uom: mg/l
+        default: 0
+        range: [0, 5000]
+        chemical: Cl
+      nitrite:
+        uom: mg/l
+        default: 0
+        range: [0, 0.5]
+        chemical: NO2
+      nitrate:
+        uom: mg/l
+        default: 0
+        range: [0, 50]
+        chemical: NO3
+      sulfate:
+        uom: mg/l
+        default: 0
+        range: [0, 250]
+        chemical: SO4
+      phosphate:
+        uom: mg/l
+        default: 0
+        range: [0, 50]
+        chemical: PO4
+      fluoride:
+        uom: mg/l
+        default: 0
+        range: [0, 250]
+        chemical: F
+      silicate:
+        uom: mg/l
+        default: 0
+        range: [0, 80]
+        chemical: SiO2
+      boron:
+        uom: mg/l
+        default: 0
+        range: [0, 5]
+        chemical: B
+    other:
+      total-organic-carbon:
+        uom: mg/l
+        default: 0
+        range: [0, 20]
+        chemical: TOC
+      color:
+        uom: mg/l
+        default: 0
+        range: [0, 100]
+        chemical: 

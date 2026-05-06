@@ -1,0 +1,136 @@
+parameters:
+  gas_processing:
+    methane_processing:
+      flare:
+        default: true
+        uom: '-'
+
+      power_generation:
+        default: true
+        uom: '-'
+
+      power_generator_efficiency:
+        if: 
+          power_generation: true
+        default: 0.35
+        range: [0.1, 0.6]
+        uom: '%'
+      power_generator_availability:
+        if: 
+          power_generation: true
+        default: 0.9
+        range: [0.1, 1.0]
+        uom: '%'
+
+
+outputs:
+  design:
+    gas_production:
+      gas_production_per_m3:
+        uom: Nm3/m3
+        equation: "_gas.volume * vacuum_pressure"
+        precision: 3
+      gas_production_per_unit:
+        uom: Nm3/h
+        equation: "gas_production_per_m3 * capacity"
+      gas_production_total:
+        uom: Nm3/h
+        equation: "gas_production_per_m3 * average_day"
+        parameters:
+          gas_production_max_day:
+            uom: Nm3/h
+            equation: "gas_production_per_m3 * max_day"
+          gas_production_year:
+            uom: Nm3/y
+            precision: 0
+            equation: "gas_production_per_m3 * average_day * 365 * 24"
+    gas_composition:
+      methane_content:
+        uom: '%'
+        equation: "_gas.fractions['Mtg(g)']"
+        precision: 1
+        parameters:
+          methane_content_dry:
+            uom: '%'
+            equation: "_gas.dry_fractions['Mtg(g)']"
+            precision: 1
+      co2_content:
+        uom: '%'
+        equation: "_gas.fractions['CO2(g)']"
+        precision: 1
+      n2_content:
+        uom: '%'
+        equation: "_gas.fractions['Ntg(g)']"
+        precision: 1
+      h2o_content:
+        uom: '%'
+        equation: "_gas.fractions['H2O(g)']"
+        precision: 1
+    gas_quality:
+      gas_density:
+        uom: kg/Nm3
+        equation: "methane_content * 0.717 + co2_content * 1.977 + n2_content * 1.251 + h2o_content * 0.8"
+        precision: 3
+      relative_density:
+        uom: '-'
+        equation: "gas_density / 1.293"
+        precision: 3
+      gross_caloric_value:
+        uom: MJ/Nm3
+        equation: "(methane_content * 39.82)"
+        precision: 1
+      net_caloric_value:
+        uom: MJ/Nm3
+        equation: "gross_caloric_value * 50/55.5"
+        precision: 1
+      gross_wobbe_index:
+        uom: MJ/Nm3
+        equation: "gross_caloric_value / math.sqrt(relative_density)"
+        precision: 1
+      net_wobbe_index:
+        uom: MJ/Nm3
+        equation: "net_caloric_value / math.sqrt(relative_density)"
+        precision: 1
+
+  energy:
+    power_production:
+      power_produced:
+        uom: kWh/m3
+        equation: "-1 * gas_production_per_m3 * power_generator_efficiency * power_generator_availability * net_caloric_value * 1/3.6"
+        if: "power_generation"
+        parameters:
+          generator_electric_rating:
+            uom: kW
+            precision: 0
+            equation: "gas_production_total * net_caloric_value * power_generator_efficiency * 1/3.6"
+          generator_thermal_rating:
+            uom: kW
+            precision: 0
+            equation: "gas_production_total * net_caloric_value * (1-power_generator_efficiency) * 1/3.6"
+
+  sustainability:
+    direct_emissions:
+      co2_emission:
+        equation: "co2_gas + co2_by_burning"
+        uom: gCO2-eq/m3
+        parameters:
+          co2_gas:
+            uom: gCO2-eq/m3
+            equation: "1.977 * co2_content * gas_production_per_m3 * 1000"
+          co2_by_burning:
+            uom: gCO2-eq/m3
+            equation: "methane_content * 0.657 * gas_production_per_m3 * 1000 * 44/16" # 1 mol CH4 produces 1 mol CO2
+            if: "flare or power_generation"
+      ch4_emission:
+        if: "not (flare or power_generation)"
+        equation: "methane_emitted * methane_factor"
+        uom: gCO2-eq/m3
+        parameters:
+          methane_emitted:
+            uom: g/m3
+            equation: "methane_content * 0.657 * gas_production_per_m3 * 1000 * (1 if not power_generation else 1-power_generator_availability)"
+          methane_factor:
+            uom: gCO2-eq/gCH4
+            equation: "db.methane_emission_factor"
+
+

@@ -1,0 +1,80 @@
+parameters:
+  design:
+    general:
+      nominal_capacity:
+        uom: m3/h
+        default: 1000.0
+        range: [10.0, 5000.0]
+    sandtrap:
+      length:
+        uom: m
+        default: 5.0
+        range: [1.0, 20.0]
+      width:
+        uom: m
+        default: 2.0
+        range: [0.1, 10.0]
+      height_at_inlet:
+        uom: m
+        default: 1.0
+        range: [0.1, 10.0]
+      height_at_outlet:
+        uom: m
+        default: 1.5
+        range: [0.1, 10.0]
+      temperature:
+        uom: °C
+        default: 10.0
+        range: [0.0, 40.0]
+    particles:
+      particle_material:
+        default: "quartz-sand"
+        options: ["quartz-sand", "anthracite", "hydro-anthracite", "garnet", "pellets", "basalt", "marble", "gravel", "other"]
+
+      other_particle_density:
+        uom: kg/m3
+        default: 2650.0
+        range: [1000.0, 5000.0]
+        if:
+          particle_material: "other"
+
+      particle_size:
+        uom: mm
+        default: 0.8
+        range: [0.1, 5.0]
+
+outputs:
+  design:
+    sandtrap:
+      surface_area:
+        uom: m2
+        equation: "length * width"
+      volume:
+        uom: m3
+        equation: "(height_at_inlet + height_at_outlet)/2 * length * width"
+      surface_loading:
+        uom: m3/m2/h
+        equation: "capacity / surface_area"
+      water_density:
+        uom: kg/m3
+        equation: "1000.0"
+        precision: 0
+      viscosity:
+        precision: 5
+        uom: Pa.s
+        equation: "dynamic_viscosity(temperature)"
+    settling:
+      particle_density:
+        uom: kg/m3
+        equation: "{'quartz-sand': 2650.0, 'anthracite': 1400.0, 'hydro-anthracite': 1500.0, 'garnet': 3800.0, 'pellets': 2600.0, 'basalt': 2900.0, 'marble': 2700.0, 'gravel': 2600.0, 'other': other_particle_density}[particle_material]"
+        precision: 0
+      settling_velocity:
+        uom: m/h
+        precision: 1
+        equation: "9.81 * (particle_density - water_density) * (particle_size/1000)**2 / (18 * viscosity) * 3600"
+        validation: "settling_velocity > surface_loading"
+    design_check:
+      settling_velocity_check:
+        uom: "-"
+        equation: "'✅' if settling_velocity > surface_loading else '❌'"
+        validation: "settling_velocity > surface_loading"

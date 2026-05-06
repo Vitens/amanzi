@@ -1,0 +1,79 @@
+parameters:
+  design:
+    general:
+      units:
+        default: 1 # overwrite default value
+    hydraulic_line:
+      pressurized:
+        default: false
+        hidden: true
+    cascade:
+      number_of_steps:
+        default: 3
+        range: [1, 8]
+        uom: '-'
+      step_height:
+        default: 0.5
+        range: [0.1, 2.0]
+        uom: m
+      cascade_length:
+        default: 3.0
+        range: [1, 10.0]
+        uom: m
+
+outputs:
+  design:
+    hydraulic_line:
+      headloss_model:
+        equation: "number_of_steps * step_height"
+    general:
+      wier_load:
+        uom: m3/m/h 
+        equation: "capacity / cascade_length"
+      trough_depth:
+        uom: m
+        equation: "step_height * 2/3"
+      trough_width:
+        uom: m
+        equation: "jet_width * 2 / 100"
+        parameters:
+          crest_head:
+            uom: cm
+            equation: "(((capacity/3600)**2) / (9.81 * cascade_length ** 2))**(1/3) * 100"
+          jet_velocity:
+            uom: m/s
+            equation: "(capacity/3600) / (cascade_length * crest_head/100)"
+          fall_time:
+            uom: s
+            equation: "math.sqrt((2*step_height+crest_head) / 9.81)"
+          jet_width:
+            uom: cm
+            equation: "fall_time * jet_velocity * 100"
+      total_height:
+        uom: m
+        equation: "number_of_steps * step_height + trough_depth"
+      total_width:
+        uom: m
+        equation: "number_of_steps * trough_width"
+  
+  energy:
+    blowers:
+      blower_power:
+        uom: kWh/m3
+        equation: "0.001 * capacity"
+        parameters:
+          blower_efficiency:
+            uom: '%'
+            equation: "50"
+          blower_capacity:
+            uom: m3/s
+            equation: "capacity / 3600"
+          blower_pressure:
+            uom: Pa
+            equation: "1000"
+          blower_flow:
+            uom: m3/s
+            equation: "blower_capacity * (1 + 0.1 * blower_pressure / 1000)"
+          blower_power:
+            uom: kW
+            equation: "blower_flow * blower_pressure / 1000 / blower_efficiency"

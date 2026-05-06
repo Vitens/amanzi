@@ -1,0 +1,15 @@
+{
+  "name": "pipeline",
+  "category": "main",
+  "localizedName": "Pipeline",
+  "canvas": {
+    "defaultImg": "pipe.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+  }
+}

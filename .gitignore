@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_store
+
+# Distribution / packaging
+.Python
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+dist/
+
+.ipynb_checkpoints
+.vscode
+.idea
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+
+scribbles/

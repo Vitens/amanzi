@@ -1,0 +1,24 @@
+{
+  "name": "groundwater",
+  "localizedName": "Winning" ,
+  "category": "main",
+  "source": true,
+  "canvas": {
+    "defaultImg": "groundwater.png",
+    "anchors": [
+      {"position": "right", "direction": "out", "type": "product"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "production": 10,
+      "solution": { 
+        "VOC":{},
+        "PFAS":{},
+        "Other":{}
+
+      }
+    }
+  }
+}

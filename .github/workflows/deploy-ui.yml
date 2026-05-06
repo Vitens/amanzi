@@ -1,0 +1,96 @@
+name: Build UI distribution
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  PHREEQPYTHON_WHEEL: phreeqpython-1.6.2-py3-none-any.whl
+  PHREEQPYTHON_WHEEL_URL: https://github.com/Vitens/phreeqpython/releases/download/v1.6.2/phreeqpython-1.6.2+pyodide-py3-none-any.whl
+
+jobs:
+  build:
+    name: Build Pyodide UI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: Build Amanzi wheel and download Pyodide wheels
+        run: |
+          set -euo pipefail
+
+          python -m pip install --upgrade pip build
+
+          rm -rf ui/public/dist
+          mkdir -p ui/public/dist
+
+          python -m build --wheel --outdir ui/public/dist .
+          curl --fail --location "$PHREEQPYTHON_WHEEL_URL" --output "ui/public/dist/$PHREEQPYTHON_WHEEL"
+
+          AMANZI_WHEEL="$(python - <<'PY'
+          from pathlib import Path
+
+          wheels = sorted(Path("ui/public/dist").glob("amanzi-*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"Expected exactly one Amanzi wheel, found {len(wheels)}")
+          print(wheels[0].name)
+          PY
+          )"
+
+          {
+            echo "VITE_BACKEND=pyodide"
+            echo "VITE_AMANZI_WHEEL_FILENAME=$AMANZI_WHEEL"
+          } > ui/.env.production.local
+
+      - name: Install UI dependencies
+        working-directory: ui
+        run: npm ci
+
+      - name: Build UI
+        working-directory: ui
+        run: npm run build
+
+      - name: Package UI dist
+        run: |
+          cd ui/dist
+          zip -r ../../dist.zip .
+
+      - name: Upload dist.zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amanzi-ui-dist
+          path: dist.zip
+
+      - name: Upload dist.zip to GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist.zip --title "$GITHUB_REF_NAME" --notes "Automated UI build for $GITHUB_REF_NAME."
+          fi

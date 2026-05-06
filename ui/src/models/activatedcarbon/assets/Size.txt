@@ -1,0 +1,4 @@
+Small format has to be 100x100 pixels
+
+Large format 1000x370
+or 900x323

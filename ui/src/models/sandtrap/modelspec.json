@@ -1,0 +1,18 @@
+{
+  "name": "sandtrap",
+  "category": "waste",
+  "localizedName": "Zandvanger",
+  "canvas": {
+    "defaultImg": "sandtrap.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "waste"},
+      {"position": "right", "direction": "out", "type": "waste"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "loss": 0.1
+    }
+  }
+}
