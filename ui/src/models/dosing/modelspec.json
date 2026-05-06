@@ -1,0 +1,22 @@
+{
+  "name": "dosing",
+  "category": "main",
+  "localizedName": "Dosering",
+  "canvas": {
+    "defaultImg": "dosing.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {
+      "chemical": "NaOH",
+      "dosage": 1,
+      "mode": "constant",
+      "parameter": "pH",
+      "setpoint": 8
+    }
+  }
+}

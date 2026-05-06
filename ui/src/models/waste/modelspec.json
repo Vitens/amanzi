@@ -1,0 +1,15 @@
+{
+  "name": "waste",
+  "category": "waste",
+  "localizedName": "Afvalstroom",
+  "canvas": {
+    "defaultImg": "waste.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "waste"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {}
+  }
+}

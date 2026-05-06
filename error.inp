@@ -1,0 +1,43 @@
+SOLUTION_RAW                 1738 Solution after simulation 1.
+  -temp                      25
+  -pressure                  1
+  -potential                 0
+  -total_h                   111.02102770325
+  -total_o                   55.517035822626
+  -cb                        0.00036958033268786
+  -density                   0.9972550458258
+  -totals
+    C(4)                     0.0026470689033712
+    Ca                       0.0012516986612224
+    Cl                       0.00098759266695717
+    Mg                       0.00041155741042512
+    Na                       0.00048632724867194
+    O(0)                     4.0641436073343e-14
+  -pH                        7.3984921165596
+  -pe                        10.698644054316
+  -mu                        0.0052079748880384
+  -ah2o                      0.99990236555693
+  -mass_water                0.99999993573743
+  -soln_vol                  1.0030176427663
+  -total_alkalinity          0.0024556663923219
+  -activities
+    C(-4)                    -29.999479202511
+    C(4)                     -5.5823745807602
+    Ca                       -3.0443752620658
+    Cl                       -3.0392238369138
+    E                        -10.698644054316
+    H(0)                     -29.999479202511
+    Mg                       -3.524583396497
+    Na                       -3.3467294191499
+    O(0)                     -29.999479202511
+  -gammas
+REACTION_RAW                 1 
+  -reactant_list
+    O2                       145.28
+  -steps
+    1 
+  -count_steps               0
+  -equal_increments          0
+  -units                     Mol
+  # REACTION workspace variables #
+  -element_list

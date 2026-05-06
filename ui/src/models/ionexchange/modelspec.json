@@ -1,0 +1,17 @@
+{
+  "hidden": true,
+  "name": "ionexchange",
+  "category": "main",
+  "localizedName": "Ionenwisseling",
+  "canvas": {
+    "defaultImg": "ionexchange.png",
+    "anchors": [
+      {"position": "left", "direction": "in", "type": "product"},
+      {"position": "right", "direction": "out", "type": "product"}
+    ],
+    "rotatable": false
+  },
+  "template": {
+    "configuration": {}
+  }
+}
