@@ -20,7 +20,7 @@
             <td> {{ $t('general.solution.components.'+item.name) }}</td>
             <td v-html=chemform(item.chemical)> </td>
             <td>
-                <number-input v-model="config['solution']['VOC'][item.name]" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
+                <number-input v-model="$project.scenario.metaData.customMicroComponents['VOC'][index].concentration" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
                 <select class="unitselect" v-model="$project.scenario.metaData.customMicroComponents['VOC'][index].unit">
                         <option value="mg/l"selected>mg/l</option>
                         <option value="μg/l">μg/l</option>
@@ -36,7 +36,7 @@
             <td>  <el-input  v-model="item.name"></el-input></td>
             <td>  <el-input  v-model="item.chemical"></el-input> </td>
             <td>
-                <number-input v-model="config['solution']['VOC'][item.name]" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
+                <number-input v-model="$project.scenario.metaData.customMicroComponents['VOC'][item].concentration" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
                 <select class="unitselect" v-model="item.unit">
                         <option value="mg/l" selected>mg/l</option>
                         <option value="μg/l">μg/l</option>
@@ -81,7 +81,7 @@
                 <td v-html="chemform(item.chemical)" ></td>
                 <td >                 
                     <unit-number-input
-                        v-model="config['solution']['PFAS'][item.name]"
+                        v-model="$project.scenario.metaData.customMicroComponents['PFAS'][index].concentration"
                         :unit="item.unit"
                         :min="0" :max="1000000" class="cheminput" :step="1.0" :placeholder="String(0)"
                     />
@@ -110,7 +110,7 @@
                 <td><el-input  v-model="item.chemical"></el-input></td>
                 <td>                 
                     <unit-number-input
-                        v-model="config['solution']['PFAS'][item.name]"
+                        v-model="$project.scenario.metaData.customMicroComponents['PFAS'][index].concentration"
                         :unit="item.unit"
                         :min="0" :max="1000000" class="cheminput" :step="1.0" :placeholder="String(0)"
                     />
@@ -162,7 +162,7 @@
 
             <td><el-input v-model="item.chemical"></el-input></td>
             <td >                 
-                <number-input v-model="config['solution']['Other'][item.name]" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
+                <number-input v-model="$project.scenario.metaData.customMicroComponents['Other'][index].concentration" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
                 <select class="unitselect" v-model="item.unit">
                         <option value="mg/l">mg/l</option>
                         <option value="μg/l">μg/l</option>
@@ -222,7 +222,7 @@ export default {
     methods: {
         deleteRow(index, compoundlist, itemName) {
             this.$project.scenario.metaData.customMicroComponents[compoundlist].splice(index, 1);
-            delete this.config['solution'][compoundlist][itemName];
+            delete this.$project.scenario.metaData.customMicroComponents[compoundlist][index] ;
         },
         
         assignName(index, item_name) {
@@ -278,6 +278,7 @@ export default {
                     removalIEX: 1,
                     removalAKF: 1,
                     removalRO: 1,
+                    adsorptionCapacity_simple: 100,
                     unit:'',
 
                     

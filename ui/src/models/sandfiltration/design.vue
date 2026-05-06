@@ -87,14 +87,14 @@ export default {
   computed:{
   sandFiltrationStyle() {
     let pic = '';
-    if (this.$project.designstate.parameters.spray == 'spray') {
-      if (this.$project.designstate.parameters.dual_media) {
+    if (this.$runtime.designstate.parameters.spray == 'spray') {
+      if (this.$runtime.designstate.parameters.dual_media) {
         pic = './assets/process-spray-double.png';
       } else {
         pic = './assets/process-spray.png';
       }
     } else {
-      if (this.$project.designstate.parameters.dual_media) {
+      if (this.$runtime.designstate.parameters.dual_media) {
         pic = './assets/process-double.png';
       } else {
         pic = './assets/process.png';

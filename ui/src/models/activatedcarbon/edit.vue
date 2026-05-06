@@ -50,12 +50,13 @@
           <tr v-for="compound in pfasList" :key="compound">
             <td>{{ compound }}</td>
             <td>
-              <number-input
+              <!-- <number-input
                 :model-value="compoundRemovalRate('PFAS', compound)"
                 @update:modelValue="setCompoundRemovalRate('PFAS', compound, $event)"
                 :min="0"
                 :max="100"
-              ></number-input>
+              ></number-input> -->
+              <number-input v-model="this.$project.scenario.metaData.customMicroComponents.PFAS[compound].removalAKF" :min="0" :max="100" :step="0.01"></number-input>
               <span>%</span>
             </td>
             <td>
@@ -154,7 +155,7 @@ props: ['config', 'modelValue'],
   }},
 computed: {
     pfasList(){
-        return Object.keys(this.$project.designState.model?.PFAS ?? {})
+        return Object.keys(this.$runtime.designState.model?.PFAS ?? {})
     },
     advancedCalculation(){
       return this.modelValue.parameters.advanced
@@ -200,8 +201,16 @@ methods:{
       return defaultValue
     },
     setAdsorptionCapacity(group, compound, value){
-      const item = this.ensureCompound(group, compound)
-      item.adsorptionCapacity_simple = Number(value)
+      const metadata = this.$project.scenario?.metaData?.customMicroComponents?.[group] ?? []
+      const item = metadata.find(item => item.name === compound)
+      if (item) {
+        item.adsorptionCapacity_simple = Number(value)
+      } else {
+        this.$project.scenario.metaData.customMicroComponents[group].push({
+          name: compound,
+          adsorptionCapacity_simple: Number(value)
+        })
+      }
     },
     compoundRemovalRate(group, compound){
       const configured = this.modelValue.compound_removal_rates?.[group]?.[compound]?.removalAKF_simple

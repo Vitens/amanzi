@@ -158,6 +158,7 @@ export default {
             removalIEX: 0,
             removalAKF: 0,
             removalRO: 0,
+            adsorptionCapacity_simple: 100,
             unit: 'ng/l'
             })}})
     this.components.micros[0].components.forEach(item => {

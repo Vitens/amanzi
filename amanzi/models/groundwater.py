@@ -81,7 +81,8 @@ class Groundwater(Model):
         )
 
         c = configuration.get('solution', {}) 
-
+        metadata_components = getattr(self, 'scenario', {}).get('metaData', {}).get('customMicroComponents', {})
+        print(metadata_components)
         for key,value in c.get('PFAS', {}).items():
             if key != "" and key != '':
                 self.solution.extraneous['PFAS'].update({key: value})

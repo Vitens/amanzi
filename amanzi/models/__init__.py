@@ -15,7 +15,7 @@ from .cascade import Cascade
 from .dosing import Dosing
 from .membranedegassing import Membranedegassing
 from .toweraeration import Toweraeration
-#from .activatedcarbon import Activatedcarbon
+from .activatedcarbon import Activatedcarbon
 from .marblefiltration import Marblefiltration
 from .sandtrap import Sandtrap
 from .pipeline import Pipeline
