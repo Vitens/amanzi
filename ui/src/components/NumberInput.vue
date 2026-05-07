@@ -24,7 +24,11 @@ export default {
   },
   emits: ['update:modelValue'],
   created() {
-    this.numberValue = this.modelValue
+    if (this.defaultValue !== 0) {
+      this.numberValue = this.defaultValue
+    } else {
+      this.numberValue = this.modelValue
+    }
   },
   watch: {
     modelValue() {

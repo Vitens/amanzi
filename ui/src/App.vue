@@ -158,12 +158,15 @@ export default {
             removalIEX: 0,
             removalAKF: 0,
             removalRO: 0,
+            adsorptionCapacity_simple: 100,
+            concentration: 0,
             unit: 'ng/l'
             })}})
     this.components.micros[0].components.forEach(item => {
       if (!this.$project.scenario.metaData.customMicroComponents['VOC'].some(existingItem => existingItem.name === item.name)) {
         this.$project.scenario.metaData.customMicroComponents['VOC'].push({
             name: item.name,
+            concentration: 0,
             unit: 'mg/l'
             })}})
 

@@ -3,7 +3,7 @@
 const properties = {
   name: 'activatedcarbon',
   category: 'main',
-  hidden: true,
+  hidden: false,
   anchors: [
     {
       position: 'left',
@@ -14,6 +14,16 @@ const properties = {
       position: 'right',
       direction: 'out',
       type: 'product'
+    },
+    {
+      position: 'top',
+      direction: 'in',
+      type: 'flush'
+    },
+    {
+      position: 'bottom',
+      direction: 'out',
+      type: 'waste'
     }
   ]
 }

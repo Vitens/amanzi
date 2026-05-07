@@ -7,14 +7,13 @@
       <el-main  v-loading='loading'  id="acfilter-design">
         <div class="process">
           <div id="acfilter-process">
-            <Result name="influent" units="ng/l" color="blue" :components="resultSet('influent')" />
+            <Result name="influent" color="blue" :components="resultSet('influent')" />
             <Result name="effluent" color="green" :components="resultSet('effluent')" />
-            <!-- <table class="hydraulics">
-              <tr><td>Regernatie</td><td>{{ output('model', 'regeneration') }}</td><td>jaar</td></tr>
-              <tr><td>Efficiency</td><td>{{ output('model', 'Efficiency2') }}</td><td>%</td></tr>
+            <table class="hydraulics">
+              <tr><td>Regeneration</td><td>{{ output('model', 'regeneration') }}</td><td>days</td></tr>
               <tr><td>EBCT</td><td>{{ output('model', 'EBCT') }}</td><td>min</td></tr>
               <tr><td>Volume</td><td>{{ output('model', 'Volume') }}</td><td>m<sup>3</sup></td></tr>
-            </table> -->
+            </table>
           </div>
         </div>
   
@@ -140,7 +139,6 @@ export default {
     '$runtime.designState': {
       handler(){
         this.loading = false
-        console.log(this.loading)
       },
       deep: true
     }
@@ -198,7 +196,7 @@ height: 400px;
 background: url('./assets/process.png') no-repeat center
 }
 #acfilter-process .influent {
-left: 40%;
+left: 15%;
 top: 15%;
 }
 #acfilter-process .effluent {
@@ -209,7 +207,7 @@ bottom: 2%;
 #acfilter-process .hydraulics {
 position: absolute;
 top: 5%;
-left: 90%;
+left: 70%;
 font-size: 12px;
 width: 200px;
 }

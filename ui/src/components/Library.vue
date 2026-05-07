@@ -81,6 +81,7 @@ export default {
       var blocks = Object.values(this.modelspec).filter(block =>
         this.$t('models.'+block.name+'.name').toLowerCase().includes(this.filter.toLowerCase())
       );
+      console.log(blocks);
       // remove blocks that have a hidden property
       blocks = blocks.filter(block => !block.hidden);
       blocks = blocks.filter(block => block.category == category);

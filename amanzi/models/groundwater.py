@@ -5,6 +5,11 @@ from .model import Model
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
+PFAS=    ['PFBS', 'PFPeS', 'PFHxS', 'PFHpS', 'PFOS', 'PFDS', 'TFA', 'PFBA', 'PFPeA', 'PFHxA', 'PFHpA', 'PFOA', 'PFDA', 'PFUnDA', 'PFDoDA', 'PFTrDA', 'PFTeDA']
+VOC=['Perchloroethylene', 'Trichloroethylene', 'Cis-1-2-Dichlooretheen', 'Vinylchloride', '1-1-1-Trichloroethane', '1-1-Dichloroethane', '1-2-Dichloroethane', 'Tetrachlormethane', 'Trichloromethane', 'Dichloromethane', '1-2-Dichloropropane']
+
+
 class Groundwater(Model):
     parametric_model = ['base', 'groundwater', 'pipeline', 'quality']
 
@@ -75,31 +80,20 @@ class Groundwater(Model):
         # extraneous properties (i.e. untracked by PHREEQC)
         {'Color': c.get('color', 0),
          'TOC': c.get('total-organic-carbon', 0),
-            'PFAS':{}, 'VOC':{}, 'Other':{}}
-           )
+         'PFAS':{},
+         'VOC':{},
+         'Other':{}}
+        )
 
-        c = configuration.get('solution', {}) 
+        for item in c:
+            if item in PFAS and c.get(item, 0) > 0:
+                print(item)
+                self.solution.extraneous['PFAS'].update({item: c.get(item, 0)})
+            if item in VOC and c.get(item, 0) > 0:
+                self.solution.extraneous['VOC'].update({item: c.get(item, 0)})
 
-        for key,value in c.get('PFAS', {}).items():
-            if key != "" and key != '':
-                self.solution.extraneous['PFAS'].update({key: value})
-            if value == 0:
-                del self.solution.extraneous['PFAS'][key]
-        # implement a catch for error when a custom PFAS is added but not named. 
 
-        for key,value in c.get('VOC', {}).items():
-            if key != "":
-                self.solution.extraneous['VOC'].update({key: value})
-            if value == 0:
-                del self.solution.extraneous['VOC'][key]
         
-        for key,value in c.get('Other', {}).items():
-            if key != "":
-                self.solution.extraneous['Other'].update({key: value})
-            
-        #     if value == 0:
-        #         del self.solution.extraneous['Other'][key]
-
 
         ## equalize solution to ensure all mass balances are solved
         self.solution.equalize('Calcite', 1000, 0)

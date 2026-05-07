@@ -113,6 +113,70 @@
 		}
 	},
 	"models": {
+		"activatedcarbon": {
+			"name": "Aktivkohlefiltration",
+			"parameters": {
+				"advanced": "Erweitert",
+				"shape": "Form",
+				"length": "Länge",
+				"width": "Breite",
+				"diameter": "Durchmesser",
+				"bed_height": "Betthöhe",
+				"bed_porosity": "Bettporosität",
+				"bed_porosity_clogged": "Bettporosität verstopft",
+				"particle_diameter": "Partikeldurchmesser",
+				"particle_porosity": "Partikelporosität",
+				"particle_density": "Partikeldichte",
+				"packing_type": "Kohletyp",
+				"apparent_density": "Schüttdichte",
+				"fixed_replacement": "Festes Austauschintervall",
+				"replacement_interval": "Austauschintervall",
+				"replacement_loading": "max. Beladung vor dem Austausch",
+				"staggered_replacement": "Gestaffelter Austausch",
+				"breakthrough_solver": "Durchbruch-Solver",
+				"breakthrough_bed_volumes": "Durchbruch-Bettvolumen",
+				"breakthrough_points": "Punkte der Durchbruchskurve",
+				"axial_dispersion": "Axiale Dispersion",
+				"mass_transfer_coefficient": "Stoffübergangskoeffizient",
+				"options": {
+					"fallback": "Fallback",
+					"cadet": "CADET",
+					"NORIT-Supra-0,8": "NORIT Supra 0,8",
+					"NORIT-Supra-1,0": "NORIT Supra 1,0",
+					"NORIT-Supra-1,2": "NORIT Supra 1,2",
+					"NORIT-Supra-1,5": "NORIT Supra 1,5",
+					"NORIT-Supra-2,0": "NORIT Supra 2,0"
+				}
+			},
+			"design": {
+				"compound": "Komponente",
+				"removal_akf": "AKF-Entfernung",
+				"adsorption_capacity": "Adsorptionskapazität",
+				"freundlich_k": "Freundlich K",
+				"freundlich_1n": "Freundlich 1/n",
+				"loading_q": "Beladung q"
+			},
+			"options": {
+				"shape": {
+					"rectangular": "Rechteckig",
+					"circular": "Rund"
+				}
+			},
+			"outputs": {
+				"volume": "Volumen",
+				"replacement": "Austausch",
+				"total_surface": "Gesamtfläche",
+				"filtration_velocity": "Filtrationsgeschwindigkeit",
+				"EBCT": "EBCT",
+				"headloss_clean": "Druckverlust sauber",
+				"headloss_clogged": "Druckverlust verstopft",
+				"average_headloss": "Durchschnittlicher Druckverlust"
+			},
+			"sections": {
+				"activatedcarbon": "Aktivkohle",
+				"pressure_loss": "Druckverlust"
+			}
+		},
 		"aeration": {
 			"outputs": {
 				"co2_emission": "CO2-Emissionen",
@@ -1309,18 +1373,6 @@
 		}
 	],
 	"ui": {
-		"migration": {
-			"change_log_entry": "{description}: {count} Einheit(en)",
-			"descriptions": {
-				"dosing_chemical_slugs": "Dosierung: chemische Formel in Slug (z. B. NaOH → Lauge)"
-			},
-			"notification_no_model_changes": "Für dieses Projekt wurden keine modellbezogenen Migrationen angewendet (Dateiformatversion wurde aktualisiert).",
-			"notification_title": "Projektdatei aktualisiert",
-			"notification_version_range": "{from} → {to}",
-			"notification_version_tag": "v{version}",
-			"notification_col_version": "Version",
-			"notification_col_change": "Angewendete Änderung"
-		},
 		"design": {
 			"categories": {
 				"chemicals": "Chemikalien",
@@ -1355,8 +1407,7 @@
 				"hydraulic_energy": "Hydraulische Energie",
 				"hydraulic_line": "Hydraulische Linie",
 				"membrane_degassing": "Membran-Entgaser",
-				"methane_processing": "Methanverarbeitung",	
-				"marblefiltration": "Marmorfiltration",
+				"methane_processing": "Methanverarbeitung",
 				"particles": "Partikel",
 				"pellet_bed": "Pelletbett",
 				"plate_aeration": "Plattenbelüfter",
@@ -1395,14 +1446,6 @@
 		"dialogs": {
 			"about": {
 				"acknowledgements": "Acknowledgments",
-				"citation": {
-					"bibtex": "BibTeX",
-					"copy_bibtex": "BibTeX kopieren",
-					"copy_plain_text": "Klartext kopieren",
-					"description": "Wenn Sie Amanzi in der Forschung verwenden, zitieren Sie die Software bitte mit einem der folgenden Formate.",
-					"plain_text": "Klartext",
-					"title": "Zitieren"
-				},
 				"changelog": "Versionsgeschichte",
 				"developed_by": "Entwickelt von Technology & Research, Vitens",
 				"license": "Lizenz",
@@ -1561,9 +1604,7 @@
 		"scenariobar": {
 			"duplicate": "Duplizieren",
 			"remove": "Entfernen",
-			"rename": "Umbenennen",
-			"scenario_created": "Szenario erstellt",
-			"scenario_duplicated": "Szenario dupliziert"
+			"rename": "Umbenennen"
 		},
 		"sidebar": {
 			"configuration": {
@@ -1647,3 +1688,4 @@
 		}
 	}
 }
+
