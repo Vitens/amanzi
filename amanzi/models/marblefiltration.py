@@ -41,6 +41,7 @@ class Marblefiltration(Model, Loss):
 
     @property
     def _backwash_volume(self):
+        print(self.backwash_programme)
         surface = self.output_parameters['surface_area'].calculate(super().context)
         return sum([p['water'] * surface * p['time']/3600 for p in self.backwash_programme])
 

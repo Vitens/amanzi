@@ -20,16 +20,16 @@
             <td> {{ $t('general.solution.components.'+item.name) }}</td>
             <td v-html=chemform(item.chemical)> </td>
             <td>
-                <number-input v-model="$project.scenario.metaData.customMicroComponents['VOC'][index].concentration" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
-                <select class="unitselect" v-model="$project.scenario.metaData.customMicroComponents['VOC'][index].unit">
+                <number-input v-model="config.parameters[item.name]" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
+                <select class="unitselect" v-model="$project.scenario.metaData.customMicroComponents['VOC'].find(item => item.name === item.name).unit">
                         <option value="mg/l"selected>mg/l</option>
                         <option value="μg/l">μg/l</option>
                         <option value="ng/l" >ng/l</option>
                 </select>
             </td>
-            <!-- <td >  {{ parseFloat(item.henry).toFixed(4) }}</td>
-            <td >{{ parseFloat(item.dw).toExponential(4) }} m²/s</td>
-            <td >{{ parseFloat(item.dg).toExponential(3) }} m²/s</td> -->
+            <td >  {{ parseFloat(findHenryNumber(item.name, 'henry')).toFixed(4) }}</td>
+            <td >{{ parseFloat(findHenryNumber(item.name, 'dw')).toExponential(4) }} m²/s</td>
+            <td >{{ parseFloat(findHenryNumber(item.name, 'dg')).toExponential(3) }} m²/s</td>
          
         </tr>
         <tr v-for="(item,index) in $project.scenario.metaData.customMicroComponents['VOC'].slice(nVOC)" :key="index" >
@@ -200,12 +200,17 @@ import components from './assets/components.js'
 export default {
     name: 'Micropollutants',
     props: ['design', 'config'],
+    data() {
+        return {
+            VOCparameters: components.micros[0]
+        }
+    },
     computed: {
         groundwaterParams() {
             return this.$project.modelParameters['groundwater'] || []
         },
         micropollutants() {
-            return this.groundwaterParams.filter(param => param.category === '_composition' && param.section === 'micro-pollutants')
+            return this.groundwaterParams.filter(param => param.category === '_composition' && param.section === 'micropollutants')
         },
         vocComponents() {
             return this.micropollutants.filter(param => param.uom === 'mg/l')
@@ -226,7 +231,6 @@ export default {
         '$project.scenario.metaData.customMicroComponents': {
             deep: true, 
             handler() {
-                console.log('Custom micro components changed, marking scenario as unsolved');
                 this.$project.scenario.unsolved = true
             }
         }
@@ -271,6 +275,15 @@ export default {
             }
 
             return result;
+        },
+        findHenryNumber(name, parameter) {
+            for (const component of this.VOCparameters.components) {
+                if ((component.name.toLowerCase() === name.toLowerCase())) {
+
+                    return component[parameter];
+                }
+            }
+            return 0;
         },
         addCustomComponent(name) {
             if (name === 'VOC') {

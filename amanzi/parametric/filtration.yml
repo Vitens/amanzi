@@ -77,6 +77,10 @@ parameters:
           backwash_control: 'volume'
         uom: m3
         range: [10, 100000]
+      backwash_programme: 
+        default: [{"time": 600, "water": 50, "air": 0}]
+        hidden: true
+
 
 outputs:
   hydraulic:

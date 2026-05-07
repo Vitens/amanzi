@@ -135,7 +135,7 @@ parameters:
         default: 0
         range: [0, 100]
         chemical: 
-    micro-pollutants:
+    micropollutants:
       Perchloroethylene:
         uom: mg/l
         default: 0
@@ -146,7 +146,7 @@ parameters:
         default: 0
         range: [0, 100000000]
         chemical: C2HCl3
-      Cis-1-2-Dichlooretheen:
+      cis-1,2-Dichlooretheen:
         uom: mg/l
         default: 0
         range: [0, 100000000]
@@ -156,17 +156,17 @@ parameters:
         default: 0
         range: [0, 100000000]
         chemical: C2H3Cl
-      1-1-1-Trichloroethane:
+      1,1,1-Trichloroethane:
         uom: mg/l
         default: 0
         range: [0, 100000000]
         chemical: C2H3Cl3
-      1-1-Dichloroethane:
+      1,1-Dichloroethane:
         uom: mg/l
         default: 0
         range: [0, 100000000]
         chemical: C2H4Cl2_1_1
-      1-2-Dichloroethane:
+      1,2-Dichloroethane:
         uom: mg/l
         default: 0
         range: [0, 100000000]
@@ -186,7 +186,7 @@ parameters:
         default: 0
         range: [0, 100000000]
         chemical: CH2Cl2
-      1-2-Dichloropropane:
+      1,2-Dichloropropane:
         uom: mg/l
         default: 0
         range: [0, 100000000]

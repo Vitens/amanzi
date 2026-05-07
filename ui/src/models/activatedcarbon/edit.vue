@@ -290,7 +290,9 @@ methods:{
       else {
         metadata.push({
           name: compound,
-          removalAKF: Number(value)
+          removalAKF: Number(value),
+          adsorptionCapacity_simple: 100
+
         })
       }
     },
