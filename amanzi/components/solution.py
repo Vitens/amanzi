@@ -5,7 +5,7 @@ from phreeqpython import Gas
 
 def si90(self, phase):
 
-    tmp = self.deepcopy()
+    tmp = self.copy()
     tmp.change_temperature(90)
 
     si = tmp.si(phase)
@@ -16,7 +16,7 @@ def si90(self, phase):
 def ccpp(self, temperature=None):
   """ Calculate Calcium Carbonate Precipitation Potential (CCPP)"""
   # create copy of solution
-  tmp = self.deepcopy()
+  tmp = self.copy()
   # raise temperature
   if temperature and temperature is not self.temperature:
       tmp.change_temperature(temperature)
@@ -43,7 +43,7 @@ def hardness(self):
 def sc20(self):
   """ Calculate conductivity at 20 degrees"""
   # create copy of solution
-  tmp = self.deepcopy()
+  tmp = self.copy()
   # raise temperature
   tmp.change_temperature(20)
   # calculate conductivity

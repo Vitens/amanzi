@@ -340,7 +340,7 @@ class Activatedcarbon(Model, Loss):
         # if breakthrough_result is None and not self.should_run_breakthrough():
         #     return self.simpleExtraneousRemoval(solution)
 
-        effluent = solution.deepcopy()
+        effluent = solution.copy()
         result = breakthrough_result or self.breakthrough_calculation(solution)
         target_bed_volumes = self._bed_volumes_at_replacement()
         filter_count = max(int(self.parameters.get('units', self.filternumber)), 1)
@@ -366,7 +366,7 @@ class Activatedcarbon(Model, Loss):
 
     
     def spray_aeration(self, solution):
-        solution = solution.deepcopy()
+        solution = solution.copy()
 
 
         co2_removal_efficiency = self.parameters['co2_removal_efficiency']
@@ -376,7 +376,7 @@ class Activatedcarbon(Model, Loss):
         # calculate oxygen saturation and CO2 removal
         air = self.pp.add_gas({f'O2(g)': 0.21, 'Ntg(g)': 0.79, 'CO2(g)': 0.043/100}, fixed_pressure=True, fixed_volume=False, volume=1000, pressure=1)
 
-        saturated = solution.deepcopy().interact(air)
+        saturated = solution.copy().interact(air)
 
         max_o2 = saturated.total('O2')
         min_co2 = saturated.total('CO2')
@@ -414,14 +414,14 @@ class Activatedcarbon(Model, Loss):
 
         if(type == 'flush'):
             # add load to waste solution
-            self.waste_solution = self.wastestream_calculation(solution.deepcopy())
+            self.waste_solution = self.wastestream_calculation(solution.copy())
             return self.waste_solution
 
         if (type == 'product'):
-            solution = solution.deepcopy()
+            solution = solution.copy()
             if(self.sprayaeration):
                 solution = self.spray_aeration(solution)
-                self.aerated = solution.deepcopy()
+                self.aerated = solution.copy()
 
             if self.advanced:
                 effluent = self.advancedExtraneousRemoval(solution)
@@ -454,7 +454,7 @@ class Activatedcarbon(Model, Loss):
     #         return pos - 1
 
     def design(self):
-        influent = self.quality.influent.product.deepcopy()
+        influent = self.quality.influent.product.copy()
         eff = {}
         peqPFAS={}
         sum4=[]
@@ -510,12 +510,12 @@ class Activatedcarbon(Model, Loss):
 
 
         if(self.sprayaeration):
-            influent = self.spray_aeration(influent.deepcopy())
-            self.aerated = influent.deepcopy()
+            influent = self.spray_aeration(influent.copy())
+            self.aerated = influent.copy()
         if self.advanced:
-            effluent = self.advancedExtraneousRemoval(influent.deepcopy(), breakthrough_result)
+            effluent = self.advancedExtraneousRemoval(influent.copy(), breakthrough_result)
         else:
-            effluent = self.simpleExtraneousRemoval(influent.deepcopy())
+            effluent = self.simpleExtraneousRemoval(influent.copy())
 
 
         #print(eff) 
