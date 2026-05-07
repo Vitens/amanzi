@@ -135,3 +135,144 @@ parameters:
         default: 0
         range: [0, 100]
         chemical: 
+    micro-pollutants:
+      Perchloroethylene:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C2Cl4
+      Trichloroethylene:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C2HCl3
+      Cis-1-2-Dichlooretheen:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C2H2Cl2
+      Vinylchloride:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C2H3Cl
+      1-1-1-Trichloroethane:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C2H3Cl3
+      1-1-Dichloroethane:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C2H4Cl2_1_1
+      1-2-Dichloroethane:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C2H4Cl2_1_2
+      Tetrachlormethane:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: CCl4
+      Trichloromethane:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: CHCl3
+      Dichloromethane:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: CH2Cl2
+      1-2-Dichloropropane:
+        uom: mg/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C3H6Cl2
+      PFBS:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C4HF9O3S
+      PFPeS:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C5HF11O3S
+      PFHxS:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C6HF13O3S
+      PFHpS:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C7HF15O3S
+      PFOS:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C8HF17O3S
+      PFDS:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C10HF21O3S
+      TFA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C2HF3O2
+      PFBA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C4HF7O2
+      PFPeA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C5HF9O2
+      PFHxA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C6HF11O2
+      PFHpA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C7HF13O2
+      PFOA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C8HF15O2
+      PFDA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C10HF19O2
+      PFUnDA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C11HF21O2
+      PFDoDA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C12HF23O2
+      PFTrDA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C13HF25O2
+      PFTeDA:
+        uom: ng/l
+        default: 0
+        range: [0, 100000000]
+        chemical: C14HF27O2

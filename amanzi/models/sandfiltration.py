@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 class Sandfiltration(Model, Loss):
-    parametric_model = ['base', 'model', 'sprayaerator','filtration']
+    parametric_model = ['base', 'model', 'sprayaerator','filtration', 'sandfiltration']
 
 
     def __init__(self, config, pp):

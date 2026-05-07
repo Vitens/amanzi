@@ -1,5 +1,6 @@
 <template>
-  <teleport defer to="#category-operational">      <el-form label-position="top">
+  <teleport defer to="#category-operational" v-if="teleport">     
+     <el-form label-position="top">
         <h3>{{$t("ui.design.sections.backwash_programme") }}</h3>
         <table id="backwash_programme">
           <thead>
@@ -36,28 +37,33 @@
       </el-form>
     </teleport>
 
-  <teleport defer to="#category-model">
-    <el-form v-if="!advancedCalculation">
+  <teleport defer to="#category-model" v-if="teleport">
+    <el-form >
       <table>
         <thead>
           <tr>
             <th>{{ $t('models.activatedcarbon.design.compound') }}</th>
             <th>{{ $t('models.activatedcarbon.design.removal_akf') }}</th>
             <th>{{ $t('models.activatedcarbon.design.adsorption_capacity') }}</th>
+
+          </tr>
+          <tr>
+            <th></th>
+            <th>%</th>
+            <th>mg/gGAC</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="compound in pfasList" :key="compound">
             <td>{{ compound }}</td>
             <td>
-              <!-- <number-input
+              <number-input
                 :model-value="compoundRemovalRate('PFAS', compound)"
                 @update:modelValue="setCompoundRemovalRate('PFAS', compound, $event)"
                 :min="0"
                 :max="100"
-              ></number-input> -->
-              <number-input v-model="this.$project.scenario.metaData.customMicroComponents.PFAS[compound].removalAKF" :min="0" :max="100" :step="0.01"></number-input>
-              <span>%</span>
+              ></number-input>
+              <!-- <number-input v-model="this.$project.scenario.metaData.customMicroComponents.PFAS[compound].removalAKF" :min="0" :max="100" :step="0.01"></number-input> -->
             </td>
             <td>
               <number-input
@@ -66,15 +72,55 @@
                 :min="0"
                 :max="500"
                 :defaultValue="100"
+              />
+          
+            </td>
+          </tr>
+          <tr>
+            <td>Color</td>
+            <td>
+            <number-input
+                :model-value="compoundRemovalRate('Other', 'Color')"
+                @update:modelValue="setCompoundRemovalRate('Other', 'Color', $event)"
+                :min="0"
+                :max="100"
               ></number-input>
-              <span>mg/g</span>
+            </td>
+            <td>
+              <number-input
+                :model-value="adsorptionCapacity('Other', 'Color')"
+                @update:modelValue="setAdsorptionCapacity('Other', 'Color', $event)"
+                :min="0"
+                :max="500"
+                :defaultValue="100"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>TOC</td>
+            <td>
+            <number-input
+                :model-value="compoundRemovalRate('Other', 'Total-Organic-Carbon')"
+                @update:modelValue="setCompoundRemovalRate('Other', 'Total-Organic-Carbon', $event)"
+                :min="0"
+                :max="100"
+              ></number-input>
+            </td>
+            <td>
+              <number-input
+                :model-value="adsorptionCapacity('Other', 'Total-Organic-Carbon')"
+                @update:modelValue="setAdsorptionCapacity('Other', 'Total-Organic-Carbon', $event)"
+                :min="0"
+                :max="500"
+                :defaultValue="100"
+              />
             </td>
           </tr>
         </tbody>
       </table>
     </el-form>
 
-    <el-form v-else>
+    <!-- <el-form v-else>
         <table id="backwash_programme">
           <thead>
             <tr>
@@ -122,7 +168,7 @@
           </tbody>
           
         </table>
-    </el-form>
+    </el-form>   -->
   </teleport> 
 </template>
 
@@ -151,8 +197,12 @@ export default {
 props: ['config', 'modelValue'],
   data() { return {
     backwash_steps: 5,
-    backwash: 'increasing'
+    backwash: 'increasing',
+    teleport: true
   }},
+  beforeUnmount() {
+    this.teleport = false
+  },
 computed: {
     pfasList(){
         return Object.keys(this.$runtime.designState.model?.PFAS ?? {})
@@ -161,6 +211,14 @@ computed: {
       return this.modelValue.parameters.advanced
     }
 },
+watch: {
+        '$project.scenario.metaData.customMicroComponents': {
+            deep: true, 
+            handler() {
+                this.$project.scenario.unsolved = true
+            }
+        }
+    },
 methods:{
     ensureCompound(group, compound){
       if (!this.modelValue.compound_removal_rates) {
@@ -190,7 +248,8 @@ methods:{
       item[key] = Number(value)
     },
     adsorptionCapacity(group, compound){
-      const configured = this.modelValue.compound_removal_rates?.[group]?.[compound]?.adsorptionCapacity_simple
+      console.log(compound)
+      const configured = this.$project.scenario.metaData.customMicroComponents.PFAS.find(item => item.name === compound)?.adsorptionCapacity_simple
       if (configured !== undefined) {
         return Number(configured)
       }
@@ -213,18 +272,27 @@ methods:{
       }
     },
     compoundRemovalRate(group, compound){
-      const configured = this.modelValue.compound_removal_rates?.[group]?.[compound]?.removalAKF_simple
-      if (configured !== undefined) {
-        return Number(configured)
-      }
+      // const configured = this.modelValue.compound_removal_rates?.[group]?.[compound]?.removalAKF_simple
+      // if (configured !== undefined) {
+      //   return Number(configured)
+      // }
 
       const metadata = this.$project.scenario?.metaData?.customMicroComponents?.[group] ?? []
       const fallback = metadata.find(item => item.name === compound)?.removalAKF
       return fallback !== undefined ? Number(fallback) : 0
     },
     setCompoundRemovalRate(group, compound, value){
-      const item = this.ensureCompound(group, compound)
-      item.removalAKF_simple = Number(value)
+      const metadata = this.$project.scenario?.metaData?.customMicroComponents?.[group] ?? []
+      const item = metadata.find(item => item.name === compound)
+      if (item) {
+        item.removalAKF = Number(value)
+      }
+      else {
+        metadata.push({
+          name: compound,
+          removalAKF: Number(value)
+        })
+      }
     },
     addStep() {
       this.modelValue.backwash_programme.push({time: 0, water: 0, air: 0})

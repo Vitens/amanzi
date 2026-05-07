@@ -53,18 +53,22 @@ class Activatedcarbon(Model, Loss):
         self.particle_porosity = float(config.get('particle_porosity', 0.5))
         self.waste_solution = None
         self.OMV_capacity = config.get('OMV_capacity',{})
+        
 
 
     @property
     def backwash_programme(self):
-        config = self.config.get('configuration', {})
-        programme = config.get('backwash_programme', [])
+
+        programme = self.parameters.get('backwash_programme', [])
         return programme
     @property
     def compound_removal_rates(self):
-        config = self.config.get('configuration', {})
-        rates = config.get('compound_removal_rates', {})
-        return rates
+        removal_rates={}
+        for PFAS in self.scenario['metaData']['customMicroComponents']['PFAS']:
+            removal_rates[PFAS['name']] = PFAS['removalAKF']
+        for Other in self.scenario['metaData']['customMicroComponents']['Other']:
+            removal_rates[Other['name']] = Other['removalAKF']
+        return removal_rates
 
     @property
     def _backwash_duration(self):
@@ -252,16 +256,13 @@ class Activatedcarbon(Model, Loss):
     #     return all_results
 
     def compound_removal_efficiency(self, group, name, metadata_item):
-        configured = (
-            self.compound_removal_rates
-            .get(group, {})
-            .get(name, {})
+        configured = next(
+            (item for item in self.scenario['metaData']['customMicroComponents'][group] if item['name'] == name),
+            metadata_item
         )
-        if 'removalAKF_simple' in configured:
-            return configured['removalAKF_simple']
-        if 'removal_AKF_simple' in configured:
-            return configured['removal_AKF_simple']
-        return metadata_item.get('removalAKF', 0)
+   
+
+        return configured['removalAKF']
 
     def simpleExtraneousRemoval(self, solution):  
         components = getattr(self, 'scenario', {}).get('metaData', {}).get('customMicroComponents', {})
@@ -285,7 +286,6 @@ class Activatedcarbon(Model, Loss):
         return BreakthroughInput(
             influent_pfas=solution.extraneous.get('PFAS', {}),
             metadata_pfas=components.get('PFAS', []),
-            compound_parameters=self.compound_removal_rates.get('PFAS', {}),
             bed_volume_m3=volume,
             flow_m3_h=float(parameters.get('nominal_capacity', self.capacity)),
             apparent_density_kg_m3=float(parameters.get('apparent_density', self.apparent_density)),
@@ -454,7 +454,6 @@ class Activatedcarbon(Model, Loss):
     #         return pos - 1
 
     def design(self):
-
         influent = self.quality.influent.product.deepcopy()
         eff = {}
         peqPFAS={}
@@ -524,8 +523,8 @@ class Activatedcarbon(Model, Loss):
         #Average adsorption capacity for PFAS 
         volumeGAC =self.output_parameters['volume'].calculate(super().context) # m³
         adsorption_capacities = {}
-        for key, value in self.compound_removal_rates['PFAS'].items():
-            adsorption_capacities[key] = value['adsorptionCapacity_simple']
+        for value in self.scenario['metaData']['customMicroComponents']['PFAS']:
+            adsorption_capacities[value['name']] = value['adsorptionCapacity_simple']
         average_adsorption_capacity = sum(adsorption_capacities.values())/max(len(adsorption_capacities), 1)*1000 #mg/kgGAC
         capacityFactor = self.apparent_density*average_adsorption_capacity #mg/m³GAC
         if 'PFAS' in self.quality.influent.product.extraneous and self.quality.influent.product.extraneous['PFAS'] != {}:
@@ -538,18 +537,43 @@ class Activatedcarbon(Model, Loss):
             sumOtherinGAC = 0.00000000001
         # volumeGAC: int | float = (self.packing_height* math.pi * (self.dimension/2)**2) 
         if self.fixed_replacement:
-            regeneration = (volumeGAC *capacityFactor / ((sumPFASinGAC+sumOtherinGAC)*self.capacity*1000))*self.replacement_loading/24 #capcity divided by amount of organics adsorbed per day
-        else:
             regeneration = self.renewal
+        else:
+            regeneration = (volumeGAC *capacityFactor / ((sumPFASinGAC+sumOtherinGAC)*self.capacity*1000))*self.replacement_loading/24 #capcity divided by amount of organics adsorbed per day
 
-        
+        color_removal_efficiency = 0
+        toc_removal_efficiency = 0
+
+        for i in self.scenario['metaData']['customMicroComponents']['Other']:
+            if i['name'] == 'Color':
+                color_removal_efficiency = i['removalAKF']
+            if i['name'] == 'TOC':
+                toc_removal_efficiency = i['removalAKF']
+
+        if 'Color' in self.quality.influent.product.extraneous and self.quality.influent.product.extraneous['Color'] != {}:
+            color_removal_efficiency = self.quality.influent.product.extraneous['Color']*color_removal_efficiency
+        if 'TOC' in self.quality.influent.product.extraneous and self.quality.influent.product.extraneous['TOC'] != {}:
+            toc_removal_efficiency = self.quality.influent.product.extraneous['TOC']*toc_removal_efficiency
+
+        influentOMV = {}
+        influentOMV['Color'] = self.quality.influent.product.extraneous['Color']
+        influentOMV['TOC'] = self.quality.influent.product.extraneous['TOC']
+        for key in self.quality.influent.product.extraneous['PFAS']:
+            influentOMV[key] = self.quality.influent.product.extraneous['PFAS'][key]
+
+        effluentOMV = {}
+        effluentOMV['Color'] = self.quality.effluent.product.extraneous['Color']*color_removal_efficiency
+        effluentOMV['TOC'] = self.quality.effluent.product.extraneous['TOC']*toc_removal_efficiency
+        for key in self.quality.effluent.product.extraneous['PFAS']:
+            effluentOMV[key] = self.quality.effluent.product.extraneous['PFAS'][key]
+
         return {
-            'influent': influent.extraneous['PFAS']
+            'influent': influentOMV
             ,
-            'effluent': effluent.extraneous['PFAS']
+            'effluent': effluentOMV
             ,
             'model': {
-                'regeneration': regeneration/(24*365),
+                'regeneration': regeneration,
                 'EBCT' : self.packing_volume/(self.volumeflow/60),
                 'peqPFAS':peqPFAS,
                 'sum4PFAS': sum4,

@@ -26,26 +26,6 @@ parameters:
         uom: m
         default: 2.0
         range: [0.1, 10]
-
-
-  operational:
-    general:
-      fixed_replacement:
-        default: true
-      replacement_interval:
-        uom: 'days'
-        default: 500
-        if:
-          fixed_replacement: true
-        range: [1, 10000]
-      replacement_loading:
-        if:
-          fixed_replacement: false
-        uom: '%'
-        default: 0.5
-        range: [0.01, 1]
-
-
   chemicals:
     general:
       packing_type:
@@ -77,7 +57,21 @@ parameters:
         default: 0.6
         range: [0.1, 0.9]
   model:
-    mode:
+    general:
+      fixed_replacement:
+        default: true
+      replacement_interval:
+        uom: 'days'
+        default: 500
+        if:
+          fixed_replacement: true
+        range: [1, 10000]
+      replacement_loading:
+        if:
+          fixed_replacement: false
+        uom: '%'
+        default: 0.5
+        range: [0.01, 1]
       advanced:
         type: boolean
         default: false
