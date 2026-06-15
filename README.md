@@ -1,5 +1,5 @@
 # Amanzi
-Amanzi is a design and scenario tool for drinking water treatment plants, developed by Vitens. We also have a hosted version of Amanzi available at https://demo.amanzi.app.
+Amanzi is a design and scenario tool for drinking water treatment plants, developed by Vitens. We also have a hosted version of Amanzi available at https://vitens.github.io/amanzi.
 
 ## Background
 Developing scenarios for drinking water treatment plants is a complex task, as it involves many different factors and variables. Amanzi aims to simplify this process by providing a user-friendly interface for building and running scenarios. Amanzi allows for solving a treatment plant designs for quantity, quality, energy, chemicals and sustainability.
