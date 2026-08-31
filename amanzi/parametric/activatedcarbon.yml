@@ -58,56 +58,49 @@ parameters:
         range: [0.1, 0.9]
   model:
     general:
-      fixed_replacement:
-        default: true
+      design_limit:
+        default: sum20PFAS_limit
+        options: [sum4PFAS_limit, sum20PFAS_limit, PEQ_limit]
+      stationary_calculation:
+        default: false
       replacement_interval:
         uom: 'days'
         default: 500
         if:
-          fixed_replacement: true
+          stationary_calculation: true
         range: [1, 10000]
       replacement_loading:
         if:
-          fixed_replacement: false
+          stationary_calculation: false
         uom: '%'
         default: 0.5
         range: [0.01, 1]
-      advanced:
-        type: boolean
-        default: false
       staggered_replacement:
         if:
-          advanced: true
-        type: boolean
-        default: false
-      breakthrough_solver:
+          stationary_calculation: false
+        default: no_staggering
+        options: [no_staggering, limit_staggering, fixed_staggering]
+      fixed_staggering_interval:
         if:
-          advanced: true
-        default: psdm
-        options: [fallback, psdm]
-      breakthrough_bed_volumes:
-        if:
-          advanced: true
-        uom: BV
-        default: 0
-        range: [0, 1000000]
-      breakthrough_points:
-        if:
-          advanced: true
-        default: 200
-        range: [10, 1000]
-      axial_dispersion:
-        if:
-          advanced: true
-        uom: m2/s
-        default: 0.00000001
-        range: [0, 0.001]
+          staggered_replacement: fixed_staggering
+        uom: days
+        default: 500
+        range: [1, 10000]
       mass_transfer_coefficient:
         if:
-          advanced: true
+          stationary_calculation: false
         uom: 1/s
-        default: 0.002
-        range: [0.000001, 1]
+        default: 0.009
+        range: [0.0001, 1]
+      
+      include_doc_competition:
+        if:
+          stationary_calculation: false
+        type: boolean
+        default: true
+
+      
+
       
         
 outputs:
@@ -115,7 +108,7 @@ outputs:
     activatedcarbon:
       volume:
         uom: m3
-        equation: "math.pi * (diameter/2)**2 * bed_height"
+        equation: "length * width * bed_height if shape == 'rectangular' else math.pi * (diameter/2)**2 * bed_height"
         precision: 2
       surface_area:
         uom: m2

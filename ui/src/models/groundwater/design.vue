@@ -220,6 +220,7 @@ export default {
       var params = this.$project.modelParameters['groundwater']
       for(var p of params) {
         if (p.category != '_composition') { continue }
+        if (p.section === '_micropollutants') { continue }
         components[p.section] = components[p.section] || []
         components[p.section].push(p)
       }

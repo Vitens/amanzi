@@ -13,27 +13,32 @@
               <tr><td>Regeneration</td><td>{{ output('model', 'regeneration') }}</td><td>days</td></tr>
               <tr><td>EBCT</td><td>{{ output('model', 'EBCT') }}</td><td>min</td></tr>
               <tr><td>Volume</td><td>{{ output('model', 'Volume') }}</td><td>m<sup>3</sup></td></tr>
+              <tr><td>Bedvolumes per year</td><td>{{ output('model', 'bedvolume_jaar') }}</td><td>bedvolumes</td></tr>
             </table>
           </div>
         </div>
   
-        <el-row v-if="params.advanced">
+        <el-row v-if="!params.stationary_calculation">
           <el-col :span="12">
             
-            <chart :datasets="removal_over_time" title="" xlabel="Bedvolumes" ylabel="Concentration " :designvalue="params.interval" :targetvalue="1" :ymax="1" :ymin="0"></chart>
+            <chart :datasets="removal_over_time" title="" xlabel=" Thousand Bedvolumes " xlabel2="Days" ylabel="Concentration " :designvalue="params.interval" :targetvalue="0.6" :ymax="1" :ymin="0" :xmin2="0" :xmax2="365" :x1x2ratio="bedvolumes_jaar/365"></chart>
   
           </el-col>
           <el-col :span="12">
  
             
-            <chart :datasets="Efficency" title="" xlabel="Bedvolumes" ylabel="PEQ" :designvalue="params.replacement_interval" :targetvalue="1" :ymin="0"></chart>
+            <chart :datasets="Efficency" title="" xlabel=" Thousand Bedvolumes " ylabel="PEQ" :designvalue="designvalue" :targetvalue="4.4" :ymin="0" :suggestedmax="4.4"></chart>
           </el-col>
         </el-row>
-  
       </el-main>
   
     </el-tab-pane>
-  
+    <el-tab-pane id="micropollutants-design" >
+      <template #label>
+        <el-icon size="14px"><i class='fa fa-flask'></i></el-icon><span>Micropollutants</span>
+      </template>
+      <Micropollutants :config="config"></Micropollutants>
+    </el-tab-pane>
   </template>
 
 <script>
@@ -41,7 +46,7 @@ import Chart from '@/components/Chart.vue'
 import Result from '@/components/ResultBlock.vue'
 import Percent from '@/components/Percent.vue'
 import DesignTables from '@/components/DesignTables.vue'
-
+import Micropollutants from './micropollutants.vue'
 const colors = {
   red: '#F56C6C',
   green: '#67C23A',
@@ -67,7 +72,7 @@ const colors = {
 
 
 export default {
-  components: {Chart, Result, Percent , DesignTables},
+  components: {Chart, Result, Percent , DesignTables, Micropollutants},
   props: ['config'],
   data() {
     return {
@@ -78,6 +83,7 @@ export default {
 
   computed: {
     params() {
+      console.log("params", this.config.parameters)
       return this.config.parameters
     },
     Efficency() {
@@ -87,6 +93,16 @@ export default {
         {label: 'Sum20', data: this.output('model', 'sum20PFAS', 2, true), color: colors.green,showLine: true, pointRadius: 0, yAxisID: 'y'}
 
       ]
+    },
+    bedvolumes_jaar(){
+      return this.output('model', 'bedvolume_jaar', 0, true)
+    },
+    designvalue(){
+      const stagger = this.output('model', 'stagger_interval_BV', 0, true)
+      if (typeof stagger === 'number' && stagger > 0) {
+        return stagger / 1000
+      }
+      return this.output('model', 'regeneration_BV', 0, true) / 1000
     },
     removal_over_time(){
       var trends = []

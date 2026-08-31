@@ -84,10 +84,8 @@ class Groundwater(Model):
          'VOC':{},
          'Other':{}}
         )
-
         for item in c:
             if item in PFAS and c.get(item, 0) > 0:
-                print(item)
                 self.solution.extraneous['PFAS'].update({item: c.get(item, 0)})
             if item in VOC and c.get(item, 0) > 0:
                 self.solution.extraneous['VOC'].update({item: c.get(item, 0)})

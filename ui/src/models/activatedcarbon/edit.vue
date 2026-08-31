@@ -18,13 +18,13 @@
               <td>m/h</td>
               <td>Nm<sup>3</sup>/h&middot;m<sup>-2</sup></td>
             </tr>
-            <tr v-for="step,i in modelValue.backwash_programme">
+            <tr v-for="step,i in modelValue.parameters.backwash_programme">
               <td>{{ i+1 }}</td>
               <td><number-input v-model="step.time" :min="0" :max="1000"></number-input></td>
               <td><number-input v-model="step.water" :min="0" :max="100"></number-input></td>
               <td><number-input v-model="step.air" :min="0" :max="100"></number-input></td>
               <td>
-                <i class='fa fa-times-circle remove-step' @click="removeStep(i)" :class="{disabled: modelValue.backwash_programme.length == 1}"></i>
+                <i class='fa fa-times-circle remove-step' @click="removeStep(i)" :class="{disabled: modelValue.parameters.backwash_programme.length == 1}"></i>
               </td>
             </tr>
             <tr>
@@ -37,47 +37,28 @@
       </el-form>
     </teleport>
 
-  <teleport defer to="#category-model" v-if="teleport">
+  <teleport defer to="#category-model" v-if="simpleCalculation">
     <el-form >
       <table>
         <thead>
           <tr>
             <th>{{ $t('models.activatedcarbon.design.compound') }}</th>
             <th>{{ $t('models.activatedcarbon.design.removal_akf') }}</th>
-            <th>{{ $t('models.activatedcarbon.design.adsorption_capacity') }}</th>
-
           </tr>
           <tr>
             <th></th>
             <th>%</th>
-            <th>mg/gGAC</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="compound in pfasList" :key="compound">
             <td>{{ compound }}</td>
             <td>
-              <number-input
-                :model-value="compoundRemovalRate('PFAS', compound)"
-                @update:modelValue="setCompoundRemovalRate('PFAS', compound, $event)"
-                :min="0"
-                :max="100"
-              ></number-input>
-              <!-- <number-input v-model="this.$project.scenario.metaData.customMicroComponents.PFAS[compound].removalAKF" :min="0" :max="100" :step="0.01"></number-input> -->
-            </td>
-            <td>
-              <number-input
-                :model-value="adsorptionCapacity('PFAS', compound)"
-                @update:modelValue="setAdsorptionCapacity('PFAS', compound, $event)"
-                :min="0"
-                :max="500"
-                :defaultValue="100"
-              />
-          
+              <number-input v-model="modelValue.parameters[compound + '_removeAKF']" :min="0" :max="100"></number-input>
             </td>
           </tr>
           <tr>
-            <td>Color</td>
+            <!-- <td>Color</td>
             <td>
             <number-input
                 :model-value="compoundRemovalRate('Other', 'Color')"
@@ -85,15 +66,6 @@
                 :min="0"
                 :max="100"
               ></number-input>
-            </td>
-            <td>
-              <number-input
-                :model-value="adsorptionCapacity('Other', 'Color')"
-                @update:modelValue="setAdsorptionCapacity('Other', 'Color', $event)"
-                :min="0"
-                :max="500"
-                :defaultValue="100"
-              />
             </td>
           </tr>
           <tr>
@@ -105,121 +77,274 @@
                 :min="0"
                 :max="100"
               ></number-input>
-            </td>
-            <td>
-              <number-input
-                :model-value="adsorptionCapacity('Other', 'Total-Organic-Carbon')"
-                @update:modelValue="setAdsorptionCapacity('Other', 'Total-Organic-Carbon', $event)"
-                :min="0"
-                :max="500"
-                :defaultValue="100"
-              />
-            </td>
-          </tr>
+            </td>-->
+          </tr> 
         </tbody>
       </table>
     </el-form>
 
-    <!-- <el-form v-else>
-        <table id="backwash_programme">
+ 
+  </teleport> 
+  <teleport defer to="#category-model" v-if="advancedCalculation">
+    <el-form>
+    <table id="backwash_programme">
           <thead>
             <tr>
               <th>{{ $t('models.activatedcarbon.design.compound') }}</th>
-              <th>{{ $t('models.activatedcarbon.design.freundlich_k') }}</th>
-              <th>{{ $t('models.activatedcarbon.design.freundlich_1n') }}</th>
-              <th>{{ $t('models.activatedcarbon.design.loading_q') }}</th>
+
+              <th>{{ $t('models.activatedcarbon.design.competition_coefficient') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>-</td>
-              <td>µg/g/L/µg</td>
               <td>-</td>
-              <td>µg/g</td>
             </tr>
             <tr v-for="compound in pfasList" :key="compound">
               <td>{{ compound }} </td>
               <td>
                 <number-input
-                  :model-value="compoundParameter('PFAS', compound, 'freundlich_k', 100)"
-                  @update:modelValue="setCompoundParameter('PFAS', compound, 'freundlich_k', $event)"
+                  :model-value="Number(modelValue.parameters[compound + '_competition_coefficient']).toFixed(2)"
+                  @update:modelValue="onCompetitionCoefficientChange(compound, Number($event).toFixed(2))"
                   :min="0"
-                  :max="100000"
-                ></number-input>
-              </td>
-              <td>
-                <number-input
-                  :model-value="compoundParameter('PFAS', compound, 'freundlich_1n', 0.4)"
-                  @update:modelValue="setCompoundParameter('PFAS', compound, 'freundlich_1n', $event)"
-                  :min="0"
-                  :max="1"
+                  :max="100"
                   :step="0.01"
                 ></number-input>
               </td>
+            </tr>
+            <tr v-if="modelValue.parameters.include_doc_competition !== false">
+              <td>DOC</td>
               <td>
                 <number-input
-                  :model-value="compoundParameter('PFAS', compound, 'initial_loading_q', 0)"
-                  @update:modelValue="setCompoundParameter('PFAS', compound, 'initial_loading_q', $event)"
+                  :model-value="Number(modelValue.parameters.DOC_competition_coefficient).toFixed(2)"
+                  @update:modelValue="onCompetitionCoefficientChange('DOC', Number($event).toFixed(2))"
                   :min="0"
-                  :max="100000"
+                  :max="100"
+                  :step="0.01"
                 ></number-input>
               </td>
             </tr>
           </tbody>
           
+
         </table>
-    </el-form>   -->
-  </teleport> 
+    </el-form>  
+
+
+  </teleport>
 </template>
 
 <script>
-const defaultFreundlichParameters = {
-  PFBS: { freundlich_k: 456.94, freundlich_1n: 0.411, initial_loading_q: 1 },
-  PFPeS: { freundlich_k: 1521, freundlich_1n: 0.3521, initial_loading_q: 1 },
-  PFHxS: { freundlich_k: 3840, freundlich_1n: 0.3134, initial_loading_q: 1 },
-  PFHpS: { freundlich_k: 4588.9, freundlich_1n: 0.286, initial_loading_q: 1 },
-  PFOS: { freundlich_k: 7222, freundlich_1n: 0.2525, initial_loading_q: 1 },
-  PFDS: { freundlich_k: 0.1, freundlich_1n: 1, initial_loading_q: 1 },
-  TFA: { freundlich_k: 2.3 * (1000 / (1000 ** 0.343)), freundlich_1n: 0.343, initial_loading_q: 1 },
-  PFBA: { freundlich_k: 255, freundlich_1n: 0.4942, initial_loading_q: 1 },
-  PFPeA: { freundlich_k: 1160, freundlich_1n: 0.4252, initial_loading_q: 1 },
-  PFHxA: { freundlich_k: 4179, freundlich_1n: 0.3607, initial_loading_q: 1 },
-  PFHpA: { freundlich_k: 498, freundlich_1n: 0.3144, initial_loading_q: 1 },
-  PFOA: { freundlich_k: 1718, freundlich_1n: 0.2808, initial_loading_q: 1 },
-  PFDA: { freundlich_k: 6371, freundlich_1n: 0.2415, initial_loading_q: 1 },
-  PFUnDA: { freundlich_k: 14603, freundlich_1n: 0.2233, initial_loading_q: 1 },
-  PFDoDA: { freundlich_k: 18106, freundlich_1n: 0.2076, initial_loading_q: 1 },
-  PFTrDA: { freundlich_k: 25862, freundlich_1n: 0.1972, initial_loading_q: 1 },
-  PFTeDA: { freundlich_k: 30582, freundlich_1n: 0.1858, initial_loading_q: 1 },
-}
+
 
 export default {
 props: ['config', 'modelValue'],
   data() { return {
     backwash_steps: 5,
     backwash: 'increasing',
-    teleport: true
+    teleport: true,
+    syncingCoefficients: false,
   }},
   beforeUnmount() {
     this.teleport = false
   },
+created() {
+  this.ensureDocDefaults()
+  this.syncCompetitionCoefficients()
+},
 computed: {
-    pfasList(){
-        return Object.keys(this.$runtime.designState.model?.PFAS ?? {})
+    pfasList() {
+      return Object.keys(this.$runtime.designState.model?.PFAS ?? {})
+    },
+    freundlichKSignature() {
+      const params = this.modelValue.parameters || {}
+      const compounds = [...this.pfasList]
+      if (!compounds.includes('PFOA')) {
+        compounds.push('PFOA')
+      }
+      compounds.push('DOC')
+      return compounds.map(compound => `${compound}:${params[compound + '_Freundlich_k']}`).join('|')
     },
     advancedCalculation(){
-      return this.modelValue.parameters.advanced
-    }
+      return this.teleport && !this.modelValue.parameters.stationary_calculation
+    },
+    simpleCalculation(){
+      return this.teleport && this.modelValue.parameters.stationary_calculation
+    },
 },
 watch: {
-        '$project.scenario.metaData.customMicroComponents': {
-            deep: true, 
-            handler() {
-                this.$project.scenario.unsolved = true
-            }
-        }
+        '$runtime.designState.model.PFAS': {
+          deep: true,
+          handler() {
+            this.syncCompetitionCoefficients()
+          },
+        },
+        '$runtime.designState.competition_coefficients': {
+          deep: true,
+          immediate: true,
+          handler() {
+            this.syncCompetitionCoefficients()
+          },
+        },
+        freundlichKSignature() {
+          this.syncCompetitionCoefficients()
+        },
+        'modelValue.parameters.include_doc_competition'() {
+          this.syncCompetitionCoefficients()
+          this.$project.scenario.unsolved = true
+        },
+        'modelValue.parameters.DOC_Freundlich_k'() {
+          this.syncCompetitionCoefficients()
+          this.$project.scenario.unsolved = true
+        },
+        'modelValue.parameters.DOC_Freundlich_1n'() {
+          this.$project.scenario.unsolved = true
+        },
     },
 methods:{
+  ensureDocDefaults() {
+    const parameters = this.modelValue.parameters
+    if (parameters.include_doc_competition == null) {
+      parameters.include_doc_competition = true
+    }
+    if (parameters.DOC_Freundlich_k == null) {
+      parameters.DOC_Freundlich_k = 250
+    }
+    if (parameters.DOC_Freundlich_1n == null) {
+      parameters.DOC_Freundlich_1n = 0.45
+    }
+  },
+  activatedCarbonMeta() {
+    const metaData = this.$project.scenario.metaData
+    if (!metaData.activatedcarbon) {
+      metaData.activatedcarbon = {
+        lastPfasCount: null,
+        userEditedCoefficients: {},
+      }
+    }
+    if (!metaData.activatedcarbon.userEditedCoefficients) {
+      metaData.activatedcarbon.userEditedCoefficients = {}
+    }
+    if (!('lastPfasCount' in metaData.activatedcarbon)) {
+      metaData.activatedcarbon.lastPfasCount = null
+    }
+    return metaData.activatedcarbon
+  },
+  getLastPfasCount() {
+    const value = this.activatedCarbonMeta().lastPfasCount
+    return value == null ? null : Number(value)
+  },
+  setLastPfasCount(count) {
+    this.activatedCarbonMeta().lastPfasCount = count == null ? null : count
+  },
+  getUserEditedCoefficients() {
+    return this.activatedCarbonMeta().userEditedCoefficients
+  },
+  competitionCoefficientKey(compound) {
+    return compound + '_competition_coefficient'
+  },
+  markUserEditedCoefficient(compound) {
+    this.getUserEditedCoefficients()[compound] = true
+  },
+  pruneUserEditedCoefficients(pfasList) {
+    const userEditedCoefficients = this.getUserEditedCoefficients()
+    const keep = new Set(pfasList)
+    if (this.modelValue.parameters.include_doc_competition !== false) {
+      keep.add('DOC')
+    }
+    for (const compound of Object.keys(userEditedCoefficients)) {
+      if (!keep.has(compound)) {
+        delete userEditedCoefficients[compound]
+      }
+    }
+  },
+  readCoefficient(compound) {
+    return Number(this.modelValue.parameters[this.competitionCoefficientKey(compound)]) || 0
+  },
+  writeCoefficient(compound, value) {
+    this.modelValue.parameters[this.competitionCoefficientKey(compound)] = value
+  },
+  freundlichK(compound) {
+    const params = this.modelValue.parameters || {}
+    const fromModel = Number(params[compound + '_Freundlich_k'])
+    if (Number.isFinite(fromModel) && fromModel > 0) {
+      return fromModel
+    }
+    const fromConfig = Number(this.config?.parameters?.[compound + '_Freundlich_k'])
+    if (Number.isFinite(fromConfig) && fromConfig > 0) {
+      return fromConfig
+    }
+    return compound === 'PFOA' ? 1718 : compound === 'DOC' ? 250 : 100
+  },
+  affinityWeight(compound) {
+    const kPfoa = Math.max(this.freundlichK('PFOA'), 1e-12)
+    return this.freundlichK(compound) / kPfoa
+  },
+  looksLikeEqualSplit(pfasList) {
+    if (pfasList.length < 2) {
+      return false
+    }
+    const share = 1 / pfasList.length
+    const values = pfasList.map(compound => this.readCoefficient(compound))
+    const sum = values.reduce((total, value) => total + value, 0)
+    const allEqual = values.every(value => Math.abs(value - share) < 0.02)
+    return allEqual && Math.abs(sum - 1) < 0.05
+  },
+  onCompetitionCoefficientChange(compound, value) {
+    const pfasList = this.pfasList
+    if (!pfasList.includes(compound) && compound !== 'DOC') {
+      return
+    }
+
+    const changed = Math.min(100, Math.max(0, Number(value) || 0))
+    this.syncingCoefficients = true
+    try {
+      this.writeCoefficient(compound, changed)
+      this.markUserEditedCoefficient(compound)
+      this.$project.scenario.unsolved = true
+    } finally {
+      this.$nextTick(() => {
+        this.syncingCoefficients = false
+      })
+    }
+  },
+  syncCompetitionCoefficients() {
+    if (this.syncingCoefficients) {
+      return
+    }
+
+    const pfasList = Object.keys(this.$runtime.designState.model?.PFAS ?? {})
+    this.pruneUserEditedCoefficients(pfasList)
+    if (pfasList.length === 0) {
+      return
+    }
+
+    const userEditedCoefficients = this.getUserEditedCoefficients()
+    const migrateEqualSplit = this.looksLikeEqualSplit(pfasList)
+    if (migrateEqualSplit) {
+      for (const compound of pfasList) {
+        delete userEditedCoefficients[compound]
+      }
+    }
+
+    this.syncingCoefficients = true
+    try {
+      for (const compound of pfasList) {
+        if (userEditedCoefficients[compound] && !migrateEqualSplit) {
+          continue
+        }
+        this.writeCoefficient(compound, this.affinityWeight(compound))
+      }
+      if (this.modelValue.parameters.include_doc_competition !== false && !userEditedCoefficients.DOC) {
+        this.writeCoefficient('DOC', this.affinityWeight('DOC'))
+      }
+      this.setLastPfasCount(pfasList.length)
+    } finally {
+      this.$nextTick(() => {
+        this.syncingCoefficients = false
+      })
+    }
+  },
     ensureCompound(group, compound){
       if (!this.modelValue.compound_removal_rates) {
         this.modelValue.compound_removal_rates = {}
@@ -233,69 +358,6 @@ methods:{
       this.modelValue.compound_removal_rates[group][compound].name = compound
       return this.modelValue.compound_removal_rates[group][compound]
     },
-    compoundParameter(group, compound, key, defaultValue){
-      const configured = this.modelValue.compound_removal_rates?.[group]?.[compound]?.[key]
-      if (configured !== undefined) {
-        return Number(configured)
-      }
-      const item = this.ensureCompound(group, compound)
-      const fallback = defaultFreundlichParameters[compound]?.[key] ?? defaultValue
-      item[key] = fallback
-      return fallback
-    },
-    setCompoundParameter(group, compound, key, value){
-      const item = this.ensureCompound(group, compound)
-      item[key] = Number(value)
-    },
-    adsorptionCapacity(group, compound){
-      console.log(compound)
-      const configured = this.$project.scenario.metaData.customMicroComponents.PFAS.find(item => item.name === compound)?.adsorptionCapacity_simple
-      if (configured !== undefined) {
-        return Number(configured)
-      }
-
-      const defaultValue = 100
-      const item = this.ensureCompound(group, compound)
-      item.adsorptionCapacity_simple = defaultValue
-      return defaultValue
-    },
-    setAdsorptionCapacity(group, compound, value){
-      const metadata = this.$project.scenario?.metaData?.customMicroComponents?.[group] ?? []
-      const item = metadata.find(item => item.name === compound)
-      if (item) {
-        item.adsorptionCapacity_simple = Number(value)
-      } else {
-        this.$project.scenario.metaData.customMicroComponents[group].push({
-          name: compound,
-          adsorptionCapacity_simple: Number(value)
-        })
-      }
-    },
-    compoundRemovalRate(group, compound){
-      // const configured = this.modelValue.compound_removal_rates?.[group]?.[compound]?.removalAKF_simple
-      // if (configured !== undefined) {
-      //   return Number(configured)
-      // }
-
-      const metadata = this.$project.scenario?.metaData?.customMicroComponents?.[group] ?? []
-      const fallback = metadata.find(item => item.name === compound)?.removalAKF
-      return fallback !== undefined ? Number(fallback) : 0
-    },
-    setCompoundRemovalRate(group, compound, value){
-      const metadata = this.$project.scenario?.metaData?.customMicroComponents?.[group] ?? []
-      const item = metadata.find(item => item.name === compound)
-      if (item) {
-        item.removalAKF = Number(value)
-      }
-      else {
-        metadata.push({
-          name: compound,
-          removalAKF: Number(value),
-          adsorptionCapacity_simple: 100
-
-        })
-      }
-    },
     addStep() {
       this.modelValue.backwash_programme.push({time: 0, water: 0, air: 0})
     },
@@ -303,6 +365,17 @@ methods:{
       if (this.modelValue.backwash_programme.length > 1) {
         this.modelValue.backwash_programme.splice(i, 1)
       }
+    },
+    resultSet(group) {
+      if(!(group in this.$runtime.designState)) { return false }
+
+      let data = this.$runtime.designState[group]
+
+      let result = []
+      for (let [key, value] of Object.entries(data)) {
+        result.push({name: key, value: value, units: 'ng/l'}) // adjust this line as needed
+      }
+      return result
     }
 }
 }
@@ -334,6 +407,12 @@ methods:{
 }
 #backwash_programme .remove-step:hover {
   opacity: 1;
+}
+.doc-ebc {
+  margin-top: 12px;
+}
+.doc-ebc table {
+  margin-top: 8px;
 }
 
 </style>

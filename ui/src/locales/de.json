@@ -124,6 +124,7 @@
 				"bed_height": "Betthöhe",
 				"bed_porosity": "Bettporosität",
 				"bed_porosity_clogged": "Bettporosität verstopft",
+				"stationary_calculation": "Stationäres Verhalten",
 				"particle_diameter": "Partikeldurchmesser",
 				"particle_porosity": "Partikelporosität",
 				"particle_density": "Partikeldichte",
@@ -133,11 +134,16 @@
 				"replacement_interval": "Austauschintervall",
 				"replacement_loading": "max. Beladung vor dem Austausch",
 				"staggered_replacement": "Gestaffelter Austausch",
+				"staggered_replacement_units_warning": "Gestaffelter Austausch erfordert mehr als eine Einheit.",
 				"breakthrough_solver": "Durchbruch-Solver",
 				"breakthrough_bed_volumes": "Durchbruch-Bettvolumen",
 				"breakthrough_points": "Punkte der Durchbruchskurve",
 				"axial_dispersion": "Axiale Dispersion",
 				"mass_transfer_coefficient": "Stoffübergangskoeffizient",
+				"include_doc_competition": "DOC-Konkurrenz",
+				"DOC_Freundlich_k": "DOC Freundlich K",
+				"DOC_Freundlich_1n": "DOC Freundlich 1/n",
+				"DOC_competition_coefficient": "DOC-Wettbewerbskoeffizient",
 				"options": {
 					"fallback": "Fallback",
 					"cadet": "CADET",
@@ -145,7 +151,10 @@
 					"NORIT-Supra-1,0": "NORIT Supra 1,0",
 					"NORIT-Supra-1,2": "NORIT Supra 1,2",
 					"NORIT-Supra-1,5": "NORIT Supra 1,5",
-					"NORIT-Supra-2,0": "NORIT Supra 2,0"
+					"NORIT-Supra-2,0": "NORIT Supra 2,0",
+					"no_staggering": "Keine Staffelung",
+					"limit_staggering": "Staffelung nach Limit",
+					"fixed_staggering": "Feste Staffelung"
 				}
 			},
 			"design": {
@@ -154,6 +163,8 @@
 				"adsorption_capacity": "Adsorptionskapazität",
 				"freundlich_k": "Freundlich K",
 				"freundlich_1n": "Freundlich 1/n",
+				"competition_coefficient": "Wettbewerbskoeffizient",
+				"include_doc_competition": "DOC-Konkurrenz einbeziehen",
 				"loading_q": "Beladung q"
 			},
 			"options": {

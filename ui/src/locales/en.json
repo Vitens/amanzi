@@ -153,6 +153,8 @@
 				"bed_height": "Bed height",
 				"bed_porosity": "Bed porosity",
 				"bed_porosity_clogged": "Bed porosity clogged",
+				"design_limit": "Design limit",
+				"stationary_calculation": "Stationary calculation",
 				"particle_diameter": "Particle diameter",
 				"particle_porosity": "Particle porosity",
 				"particle_density": "Particle density",
@@ -162,11 +164,16 @@
 				"replacement_interval": "Replacement interval",
 				"replacement_loading": "Replacement loading",
 				"staggered_replacement": "Staggered replacement",
+				"staggered_replacement_units_warning": "Staggered replacement needs more than one unit.",
 				"breakthrough_solver": "Breakthrough solver",
 				"breakthrough_bed_volumes": "Breakthrough bed volumes",
 				"breakthrough_points": "Breakthrough curve points",
 				"axial_dispersion": "Axial dispersion",
 				"mass_transfer_coefficient": "Mass transfer coefficient",
+				"include_doc_competition": "DOC competition",
+				"DOC_Freundlich_k": "DOC Freundlich K",
+				"DOC_Freundlich_1n": "DOC Freundlich 1/n",
+				"DOC_competition_coefficient": "DOC competition coefficient",
 				"options": {
 					"fallback": "Fallback",
 					"cadet": "CADET",
@@ -175,17 +182,26 @@
 					"NORIT-Supra-1,0": "NORIT Supra 1.0",
 					"NORIT-Supra-1,2": "NORIT Supra 1.2",
 					"NORIT-Supra-1,5": "NORIT Supra 1.5",
-					"NORIT-Supra-2,0": "NORIT Supra 2.0"
+					"NORIT-Supra-2,0": "NORIT Supra 2.0",
+					"sum20PFAS_limit": "Sum20 PFAS",
+					"sum4PFAS_limit": "Sum4 PFAS",
+					"PEQ_limit": "PEQ",
+					"no_staggering": "No staggering",
+					"limit_staggering": "Limit staggering",
+					"fixed_staggering": "Fixed staggering"
 				}
 
 				
 			}, 
 			"design": {
 				"compound": "Compound",
+				"doc_params": "Organic carbon parameters",
 				"removal_akf": "AKF removal",
 				"adsorption_capacity": "Adsorption capacity",
 				"freundlich_k": "Freundlich K",
 				"freundlich_1n": "Freundlich 1/n",
+				"competition_coefficient": "Competition coefficient",
+				"include_doc_competition": "Include DOC competition",
 				"loading_q": "Loading q"
 			},
 			"options": {
@@ -526,6 +542,7 @@
 				}
 			},
 			"design": {
+				"abreviation": "Abbreviation",
 				"activity": "Activity",
 				"abbreviation": "Abbreviation",
 				"addCompound": "Add compound",

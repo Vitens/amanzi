@@ -33,6 +33,11 @@
       </template>
       <template #label>
             <span class="parameter-label" :class="{'modified': param.default != value}">{{ $t('models.'+param.namespace+'.parameters.'+param.name) }}</span>
+            <el-tooltip v-if="warning" :content="warning" placement="top">
+              <span class="parameter-warning-wrap">
+                <i class="fa fa-exclamation-circle parameter-warning"></i>
+              </span>
+            </el-tooltip>
             <span class="parameter-reset-default" v-if="param.default != value" @click="resetDefault" :title="$t('ui.general.reset-to-default')"><i class='fa fa-reply'></i></span>
       </template>
       </el-form-item>
@@ -45,7 +50,12 @@ import _ from 'lodash'
 
 export default {
   components: {NumberInput},
-  props: ['param', 'modelValue', 'range'],
+  props: {
+    param: {type: Object, required: true},
+    modelValue: {},
+    range: {type: Array, default: () => [0, 100]},
+    warning: {type: String, default: ''},
+  },
   data() {
     return {
       value: this.modelValue,
@@ -142,5 +152,15 @@ export default {
 }
 .parameter .modified {
   color: var(--el-color-danger-dark-2);
+}
+.parameter-warning-wrap {
+  display: inline-block;
+  margin-left: 6px;
+  line-height: 1;
+}
+.parameter-warning {
+  font-size: 13px;
+  color: var(--el-color-warning);
+  cursor: help;
 }
 </style>

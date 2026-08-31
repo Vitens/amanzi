@@ -1,7 +1,8 @@
 import _ from "lodash";
 import { defineStore } from "pinia";
+import OMVdefaults from "./OMVdefaults";
 
-export const scenarioStore = (uid) =>
+export const scenarioStore = (uid, OMVs) =>
   defineStore("scenario/" + uid, {
     state: () => ({
       name: "Scenario1", // scenario name
@@ -11,7 +12,13 @@ export const scenarioStore = (uid) =>
       connections: [],
       selectedBlocks: [],
       metaData: {
-        customMicroComponents: { VOC: [], PFAS: [], Other: [] },
+        activatedcarbon: {
+          lastPfasCount: null,
+          userEditedCoefficients: {},
+        },
+        customMicroComponents: OMVs
+          ? _.cloneDeep(OMVs)
+          : _.cloneDeep(OMVdefaults),
       },
       keyfigureOverwrites: {},
       editingModel: null,

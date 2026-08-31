@@ -124,6 +124,29 @@
 				"direct_emissions": "Directe uitstoot"
 			}
 		},
+		"activatedcarbon": {
+			"parameters": {
+				"include_doc_competition": "DOC-competitie",
+				"DOC_Freundlich_k": "DOC Freundlich K",
+				"DOC_Freundlich_1n": "DOC Freundlich 1/n",
+				"DOC_competition_coefficient": "DOC-competitiecoëfficiënt",
+				"stationary_calculation": "Stationair gedrag",
+				"staggered_replacement": "Gestaffelde vervanging",
+				"staggered_replacement_units_warning": "Gestaffelde vervanging vereist meer dan één unit.",
+				"options": {
+					"no_staggering": "Geen staffing",
+					"limit_staggering": "Limiet-staffing",
+					"fixed_staggering": "Vaste staffing"
+				}
+			},
+			"design": {
+				"compound": "Component",
+				"competition_coefficient": "Competitiecoëfficiënt",
+				"include_doc_competition": "DOC-competitie meenemen",
+				"freundlich_k": "Freundlich K",
+				"freundlich_1n": "Freundlich 1/n"
+			}
+		},
 		"base": {
 			"outputs": {
 				"calcite_emissions": "Calciet",

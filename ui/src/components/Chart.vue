@@ -40,7 +40,8 @@ const hline = {
 
     if(xScale == undefined || yScale == undefined) return
 
-    if (chart.options.plugins.hline.value < yScale.min || chart.options.plugins.vline.value > yScale.max) return;
+    if (chart.options.plugins.hline.value < yScale.min 
+     && chart.options.plugins.vline.value > yScale.max) return;
 
     chart.ctx.beginPath();
     // tab:red color
@@ -68,6 +69,7 @@ export default {
     default: 'linear'
   },
   xlabel: String,
+  xlabel2: String,
   ylabel: String,
   ylabel2: String,
   title: String,
@@ -77,6 +79,9 @@ export default {
   ymax: Number,
   ymin2: Number,
   ymax2: Number,
+  xmin2: Number,
+  xmax2: Number,
+  x1x2ratio: Number,
   designvalue: Number,
   targetvalue: Number,
   subtitle: String,
@@ -106,7 +111,25 @@ export default {
         text: this.subtitle
       }
     },
+    hasSecondXAxis() {
+      return this.xlabel2 != null && this.x1x2ratio != null && this.x1x2ratio !== 0
+    },
+    x2Min() {
+      if (!this.hasSecondXAxis) return undefined
+      if (this.xmin2 != null) return this.xmin2
+      if (this.xmin != null) return this.xmin * this.x1x2ratio
+      return undefined
+    },
+    x2Max() {
+      if (!this.hasSecondXAxis) return undefined
+      if (this.xmax2 != null) return this.xmax2
+      if (this.xmax != null) return this.xmax * this.x1x2ratio
+      return undefined
+    },
     options() {
+      console.log(this.targetvalue)
+      const x1x2ratio = this.x1x2ratio
+      const roundXticks = this.roundXticks
       let options = {
         plugins: [vline, hline],
         type: 'scatter',
@@ -157,6 +180,38 @@ export default {
               },
               suggestedMin: this.xmin,
               max: this.xmax
+            },
+            x2: {
+              type: this.xtype,
+              position: 'top',
+              display: this.hasSecondXAxis,
+              title: {
+                display: true,
+                text: this.xlabel2
+              },
+              min: this.x2Min,
+              max: this.x2Max,
+              grid: {
+                drawOnChartArea: false
+              },
+              ticks: {
+                reverse: true,
+                callback: function (value) {
+                  if (roundXticks) {
+                    return value.toFixed(0)
+                  }
+                  return value
+                },
+                stepSize: roundXticks ? 1 : undefined,
+                maxTicksLimit: roundXticks ? 10 : undefined,
+                afterBuildTicks: (axis) => {
+                  const xAxis = axis.chart.scales.x
+                  if (!xAxis?.ticks?.length) return
+                  axis.ticks = xAxis.ticks.map((tick) => ({
+                    value: tick.value * x1x2ratio
+                  }))
+                }
+              }
             },
             y: {
               type: this.ytype,

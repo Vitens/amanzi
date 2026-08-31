@@ -5,6 +5,7 @@ import { scenarioStore } from './scenario'
 import { interfaceStore } from './interface'
 import { runtimeStore } from './runtime'
 import { migrateProject } from '../lib/projectMigration'
+import OMVdefaults, { mergeOMVmetaData } from './OMVdefaults';
 
 export const projectStore = defineStore('project', {
   state: () => ({
@@ -15,7 +16,7 @@ export const projectStore = defineStore('project', {
     keyfigureOverwrites: {}, // project-wide key figure overwrites
     modelParameters: {},
     scenarios: [
-      scenarioStore(1), // default scenario
+      scenarioStore(1, OMVdefaults), // default scenario
     ],       // list of scenarios
     selectedScenario: 0, // index of selected scenario
     lastMigrationChanges: [], // migration toast rows; cleared in notifyMigrationIfNeeded
@@ -38,6 +39,7 @@ export const projectStore = defineStore('project', {
       }
       return false
     },
+
   },
   actions: {
     // patch undo
@@ -45,7 +47,15 @@ export const projectStore = defineStore('project', {
       this.selectedScenario = state.selectedScenario
     },
     newProject() {
+      const runtime = runtimeStore()
+      for (var scenario of this.scenarios) {
+        scenario.$dispose()
+      }
+      runtime.solveState = {}
+      runtime.designState = {}
+      runtime.reportState = {}
       this.name = 'New project'
+      this.keyfigureOverwrites = {}
       this.scenarios = []
       this.selectedScenario = 0
       this.addScenario('Scenario 1')
@@ -115,7 +125,10 @@ export const projectStore = defineStore('project', {
     addScenario(name, duplicate) {
       const runtime = runtimeStore()
       // create new scenariostore
-      var store = scenarioStore(Math.random().toString(36).substring(2, 8))
+      var store = scenarioStore(Math.random().toString(36).substring(2, 8), OMVdefaults)
+      if (!duplicate) {
+        store.metaData = mergeOMVmetaData(null)
+      }
       // copy models and connections from current scenario
       if(duplicate) {
         store.models = _.cloneDeep(this.scenario.models)
@@ -311,12 +324,12 @@ export const projectStore = defineStore('project', {
 
       // unserialize scenarios
       for(var scenario of project.scenarios || []) {
-        var store = scenarioStore(Math.random().toString(36).substring(2, 8))
+        var store = scenarioStore(Math.random().toString(36).substring(2, 8), OMVdefaults)
         store.name = scenario.name
         store.notes = scenario.notes ?? ''
         store.models = scenario.models || []
         store.connections = scenario.connections || []
-        store.metaData = scenario.metaData
+        store.metaData = mergeOMVmetaData(scenario.metaData)
         store.keyfigureOverwrites = scenario.key_figure_overwrites || {}
 
         if(updateParameters) {

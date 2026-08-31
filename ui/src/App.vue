@@ -70,7 +70,6 @@ import ScenarioFeedback from './components/ScenarioFeedback.vue'
 import LoadingIndicator from './components/LoadingIndicator.vue'
 import Design from './components/Design.vue'
 import KeyFigures from './components/KeyFigures.vue'
-import components from './models/groundwater/assets/components'
 import Tutorial from './components/Dialogs/Tutorial.vue'
 import About from './components/Dialogs/About.vue'
 import DefaultProject from './assets/Default-project.json'
@@ -94,7 +93,6 @@ export default {
       left: true,
       right: true
     },
-    components: components
   }},
   async mounted() {
     // check if tutorial was skipped
@@ -148,27 +146,6 @@ export default {
         e.returnValue = ''
       }
     })
-
-    this.components.micros[1].components.forEach(item => {
-      if (!this.$project.scenario.metaData.customMicroComponents['PFAS'].some(existingItem => existingItem.name === item.name)) {
-        this.$project.scenario.metaData.customMicroComponents['PFAS'].push({
-            name: item.name,
-            chemical: item.chemical,
-            PEQ: item.PFOAequviliant,
-            removalIEX: 0,
-            removalAKF: 0,
-            removalRO: 0,
-            adsorptionCapacity_simple: 100,
-            concentration: 0,
-            unit: 'ng/l'
-            })}})
-    this.components.micros[0].components.forEach(item => {
-      if (!this.$project.scenario.metaData.customMicroComponents['VOC'].some(existingItem => existingItem.name === item.name)) {
-        this.$project.scenario.metaData.customMicroComponents['VOC'].push({
-            name: item.name,
-            concentration: 0,
-            unit: 'mg/l'
-            })}})
 
   },
 

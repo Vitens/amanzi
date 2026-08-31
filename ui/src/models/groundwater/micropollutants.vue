@@ -7,7 +7,6 @@
             <tr>
                 <th>{{ $t('models.groundwater.design.name') }}</th>
                 <th>{{ $t('models.groundwater.design.chemical_formula') }}</th>
-
                 <th>{{ $t('models.groundwater.design.concentration') }}</th>
                 <th>{{ $t('models.groundwater.design.henry') }} @15°C</th>
                 <th>{{ $t('models.groundwater.design.dw') }} @15°C</th>
@@ -16,18 +15,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item,index) in vocComponents" :key="item.name" >
+        <tr v-for="(item,index) in $project.scenario.metaData.customMicroComponents['VOC']" :key="item.name" >
             <td> {{ $t('general.solution.components.'+item.name) }}</td>
-            <td v-html=chemform(item.chemical)> </td>
+            <td v-html="chemform(item.chemical)"> </td>
             <td>
-                <number-input v-model="config.parameters[item.name]" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
-                <select class="unitselect" v-model="$project.scenario.metaData.customMicroComponents['VOC'].find(item => item.name === item.name).unit">
+                <number-input v-model="item.concentration" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
+                <select class="unitselect" v-model="item.unit">
                         <option value="mg/l"selected>mg/l</option>
                         <option value="μg/l">μg/l</option>
                         <option value="ng/l" >ng/l</option>
                 </select>
             </td>
-            <td >  {{ parseFloat(findHenryNumber(item.name, 'henry')).toFixed(4) }}</td>
+            <td > {{ parseFloat(findHenryNumber(item.name, 'henry')).toFixed(4) }}</td>
             <td >{{ parseFloat(findHenryNumber(item.name, 'dw')).toExponential(4) }} m²/s</td>
             <td >{{ parseFloat(findHenryNumber(item.name, 'dg')).toExponential(3) }} m²/s</td>
          
@@ -36,7 +35,7 @@
             <td>  <el-input  v-model="item.name"></el-input></td>
             <td>  <el-input  v-model="item.chemical"></el-input> </td>
             <td>
-                <number-input v-model="$project.scenario.metaData.customMicroComponents['VOC'][item].concentration" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
+                <number-input v-model="config.parameters[item.name]" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
                 <select class="unitselect" v-model="item.unit">
                         <option value="mg/l" selected>mg/l</option>
                         <option value="μg/l">μg/l</option>
@@ -75,7 +74,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item, index) in pfasComponents" :key="index">
+            <tr v-for="(item, index) in $project.scenario.metaData.customMicroComponents['PFAS']" :key="index">
                 <td > {{ $t('general.solution.components.'+item.name) }} </td>
                 <td> {{ item.name.toUpperCase() }} </td>
                 <td v-html="chemform(item.chemical)" ></td>
@@ -85,21 +84,21 @@
                         :unit="item.unit"
                         :min="0" :max="1000000" class="cheminput" :step="1.0" :placeholder="String(0)"
                     />
-                    <select class="unitselect" v-model="$project.scenario.metaData.customMicroComponents['PFAS'][index].unit">
+                    <select class="unitselect" v-model="item.unit">
                         <option value="mg/l">mg/l</option>
                         <option value="μg/l">μg/l</option>
                         <option value="ng/l" selected>ng/l</option>
                     </select>
                 </td>
-                <td > {{ $project.scenario.metaData.customMicroComponents['PFAS'][index].PEQ }} </td>
+                <td > {{ item.PEQ }} </td>
 
 
-                <td> <el-input type="number" v-model="$project.scenario.metaData.customMicroComponents['PFAS'][index].removalAKF" :min="0" :max="100" :step="1"></el-input> </td>
+                <td> <el-input type="number" v-model="item.removalAKF" :min="0" :max="100" :step="1"></el-input> </td>
                 <td>
-                    <el-input type="number" v-model="$project.scenario.metaData.customMicroComponents['PFAS'][index].removalRO" :min="0"  :max="100" :step="1"></el-input>
+                    <el-input type="number" v-model="item.removalRO" :min="0"  :max="100" :step="1"></el-input>
                 </td>
                 <td>
-                    <el-input type="number" v-model="$project.scenario.metaData.customMicroComponents['PFAS'][index].removalIEX" :min="0"  :max="100" :step="1"></el-input> 
+                    <el-input type="number" v-model="item.removalIEX" :min="0"  :max="100" :step="1"></el-input> 
                 </td>
                 
                     
@@ -110,7 +109,7 @@
                 <td><el-input  v-model="item.chemical"></el-input></td>
                 <td>                 
                     <number-input
-                        v-model="$project.scenario.metaData.customMicroComponents['PFAS'][index].concentration"
+                        v-model="item.concentration"
                         :unit="item.unit"
                         :min="0" :max="1000000" class="cheminput" :step="1.0" :placeholder="String(0)"
                     />
@@ -162,7 +161,7 @@
 
             <td><el-input v-model="item.chemical"></el-input></td>
             <td >                 
-                <number-input v-model="$project.scenario.metaData.customMicroComponents['Other'][index].concentration" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
+                <number-input v-model="item.concentration" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
                 <select class="unitselect" v-model="item.unit">
                         <option value="mg/l">mg/l</option>
                         <option value="μg/l">μg/l</option>
@@ -210,7 +209,7 @@ export default {
             return this.$project.modelParameters['groundwater'] || []
         },
         micropollutants() {
-            return this.groundwaterParams.filter(param => param.category === '_composition' && param.section === 'micropollutants')
+            return this.groundwaterParams.filter(param => param.category === '_composition' && param.section === '_micropollutants')
         },
         vocComponents() {
             return this.micropollutants.filter(param => param.uom === 'mg/l')
@@ -223,11 +222,19 @@ export default {
         },
         nPFAS() {
             return this.pfasComponents.length
+        },
+        groundwaterPfasFingerprint() {
+            return this.pfasComponents
+                .map(param => `${param.name}:${Number(this.config.parameters[param.name] || 0)}`)
+                .join('|')
         }
     },
 
 
     watch: {
+        groundwaterPfasFingerprint() {
+            this.$project.scenario.unsolved = true
+        },
         '$project.scenario.metaData.customMicroComponents': {
             deep: true, 
             handler() {

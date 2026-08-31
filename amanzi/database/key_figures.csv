@@ -62,3 +62,6 @@ na_upper_threshold;general;norms;100;mg/l;;
 na_upper_limit;general;norms;150;mg/l;;
 cl_upper_threshold;general;norms;100;mg/l;;
 cl_upper_limit;general;norms;150;mg/l;;
+sum4PFAS_limit;general;norms;20;ng/l;;
+sum20PFAS_limit;general;norms;100;ng/l;;
+PEQ_limit;general;norms;4.4;ng/l;;
