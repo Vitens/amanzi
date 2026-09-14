@@ -1,0 +1,120 @@
+# Amanzi user documentation — Zensical
+#
+# Authoring (Diátaxis):
+# - Tutorials: one happy path, demo data, no literature, no parameter dumps.
+# - How-tos: one goal, numbered steps, assume a tutorial is already done.
+# - Reference: facts only (controls, units, streams). No "why".
+# - Explanation: why / theory / literature. No click-by-click steps.
+# - Diagrams: Mermaid fenced blocks only (rendered as SVG in the page).
+#   Do not commit duplicate .svg exports of the same diagram.
+
+[project]
+site_name = "Amanzi"
+site_description = "User documentation for the Amanzi drinking-water treatment scenario tool"
+site_author = "Vitens N.V."
+copyright = "© Vitens N.V. — licensed under GPL-3.0"
+docs_dir = "docs"
+site_dir = "site"
+repo_url = "https://github.com/Vitens/amanzi"
+repo_name = "Vitens/amanzi"
+# Placeholder until a public docs URL is chosen (needed for sitemap-based features).
+site_url = "https://vitens.github.io/amanzi/"
+
+nav = [
+  { "Home" = "index.md" },
+  { "Tutorials" = [
+    "tutorials/index.md",
+    { "Open Amanzi" = "tutorials/open-amanzi.md" },
+    { "Your first plant" = "tutorials/first-plant.md" },
+    { "Change one thing" = "tutorials/change-one-thing.md" },
+    { "Compare scenarios" = "tutorials/compare-scenarios.md" },
+    { "Save your work" = "tutorials/save-your-work.md" },
+  ] },
+  { "How-to guides" = [
+    "how-to/index.md",
+    { "Open hosted or local" = "how-to/open-hosted-or-local.md" },
+    { "Save, load, download" = "how-to/save-load-download.md" },
+    { "Add and connect units" = "how-to/add-and-connect-units.md" },
+    { "Configure a unit" = "how-to/configure-a-unit.md" },
+    { "Set key figures" = "how-to/set-key-figures.md" },
+    { "Use design view" = "how-to/use-design-view.md" },
+    { "Compare in the report" = "how-to/compare-in-report.md" },
+    { "Work with micropollutants" = "how-to/work-with-micropollutants.md" },
+    { "Copy between scenarios" = "how-to/copy-between-scenarios.md" },
+    { "Switch language" = "how-to/switch-language.md" },
+  ] },
+  { "Reference" = [
+    "reference/index.md",
+    { "User interface" = "reference/ui.md" },
+    { "Streams" = "reference/streams.md" },
+    { "Results" = "reference/results.md" },
+    { "Key figures" = "reference/key-figures.md" },
+    { "Units of measure" = "reference/units.md" },
+    { "Glossary" = "reference/glossary.md" },
+    { "Limitations" = "reference/limitations.md" },
+    { "Process units" = [
+      "reference/process-units/index.md",
+      { "Abstraction" = "reference/process-units/groundwater.md" },
+      { "Reservoir" = "reference/process-units/reservoir.md" },
+      { "Sand filtration" = "reference/process-units/sandfiltration.md" },
+      { "Marble filtration" = "reference/process-units/marblefiltration.md" },
+      { "Activated carbon" = "reference/process-units/activatedcarbon.md" },
+      { "Tower aeration" = "reference/process-units/toweraeration.md" },
+      { "Spray aeration" = "reference/process-units/sprayaerator.md" },
+      { "Plate aeration" = "reference/process-units/plate.md" },
+      { "Cascade" = "reference/process-units/cascade.md" },
+      { "Pellet softening" = "reference/process-units/softening.md" },
+      { "Chemical dosage" = "reference/process-units/dosing.md" },
+      { "Membrane filtration" = "reference/process-units/membrane.md" },
+      { "Membrane degassing" = "reference/process-units/membranedegassing.md" },
+      { "Vacuum degassing" = "reference/process-units/vacuum.md" },
+      { "Sand trap" = "reference/process-units/sandtrap.md" },
+      { "Transport pipeline" = "reference/process-units/pipeline.md" },
+      { "Backwash water reuse" = "reference/process-units/recycle.md" },
+      { "Splitter" = "reference/process-units/splitter.md" },
+      { "Output" = "reference/process-units/output.md" },
+      { "Waste stream" = "reference/process-units/waste.md" },
+    ] },
+  ] },
+  { "Explanation" = [
+    "explanation/index.md",
+    { "What Amanzi is" = "explanation/what-amanzi-is.md" },
+    { "Drinking-water treatment" = "explanation/drinking-water-treatment.md" },
+    { "Scenarios and flowsheets" = "explanation/scenarios-and-flowsheets.md" },
+    { "Reading water quality" = "explanation/reading-water-quality.md" },
+    { "How Amanzi calculates" = "explanation/how-amanzi-calculates.md" },
+    { "Quantity, energy, chemicals, CO2" = "explanation/quantity-energy-chemicals-co2.md" },
+    { "Aeration" = "explanation/aeration.md" },
+    { "Filtration" = "explanation/filtration.md" },
+    { "Activated carbon and PFAS" = "explanation/activated-carbon-and-pfas.md" },
+    { "Membranes" = "explanation/membranes.md" },
+    { "Softening and dosing" = "explanation/softening-and-dosing.md" },
+    { "Literature" = "explanation/literature.md" },
+  ] },
+]
+
+[project.theme]
+logo = "media/site_logo.png"
+features = [
+  "navigation.tabs",
+  "navigation.indexes",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.path",
+  "toc.follow",
+  "search.suggest",
+  "content.code.copy",
+]
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+pymdownx.details = {}
+pymdownx.highlight.anchor_linenums = true
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]

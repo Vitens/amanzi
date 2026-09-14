@@ -19,21 +19,21 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: "22"
+          python-version: "3.12"
 
-      - name: Install MyST
-        run: npm install --global mystmd
+      - name: Install documentation extra
+        run: pip install ".[docs]"
 
       - name: Build HTML docs
-        run: myst build --html docs
+        run: zensical build
 
       - name: Zip HTML docs
         run: |
-          cd docs/_build/html
-          zip -r ../../../docs-html.zip .
+          cd site
+          zip -r ../docs-html.zip .
 
       - name: Upload docs zip artifact
         uses: actions/upload-artifact@v4

@@ -27,3 +27,8 @@ venv.bak/
 
 
 scribbles/
+
+# Zensical HTML output
+site/
+docs-html.zip
+
