@@ -27,18 +27,27 @@ jobs:
       - name: Install documentation extra
         run: pip install ".[docs]"
 
-      - name: Build HTML docs
+      - name: Build user documentation
         run: zensical build
+
+      - name: Build architecture documentation
+        run: zensical build -f zensical.architecture.toml
 
       - name: Zip HTML docs
         run: |
-          cd site
-          zip -r ../docs-html.zip .
+          (cd site && zip -r ../docs-html.zip .)
+          (cd site-architecture && zip -r ../architecture-html.zip .)
 
-      - name: Upload docs zip artifact
+      - name: Upload user docs zip artifact
         uses: actions/upload-artifact@v4
         with:
           name: amanzi-docs-html
           path: docs-html.zip
 
-      # Future stage: publish docs artifact to GitHub Pages.
+      - name: Upload architecture docs zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amanzi-architecture-html
+          path: architecture-html.zip
+
+      # Future stage: publish docs artifacts to GitHub Pages.

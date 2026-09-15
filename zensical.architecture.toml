@@ -1,0 +1,88 @@
+# Amanzi architecture documentation — Zensical (arc42)
+#
+# Separate from the Diátaxis user site (zensical.toml + docs/).
+# Authoring: architecture/conventions.md
+# - Claims later filled must cite a repo path.
+# - Diagrams: Mermaid only, stable node IDs, no spaces.
+# - No user-tutorial content.
+
+[project]
+site_name = "Amanzi architecture"
+site_description = "Architecture documentation for Amanzi (arc42), for process engineers, auditors, and AI agents"
+site_author = "Vitens N.V."
+copyright = "© Vitens N.V. — licensed under GPL-3.0"
+docs_dir = "architecture"
+site_dir = "site-architecture"
+repo_url = "https://github.com/Vitens/amanzi"
+repo_name = "Vitens/amanzi"
+# Placeholder until a public architecture docs URL is chosen.
+site_url = "https://vitens.github.io/amanzi/architecture/"
+dev_addr = "localhost:8001"
+
+nav = [
+  { "Home" = "index.md" },
+  { "Conventions" = "conventions.md" },
+  { "arc42" = [
+    { "1. Introduction and goals" = "01-introduction-and-goals.md" },
+    { "2. Constraints" = "02-constraints.md" },
+    { "3. Context and scope" = "03-context-and-scope.md" },
+    { "4. Solution strategy" = "04-solution-strategy.md" },
+    { "5. Building block view" = "05-building-block-view.md" },
+    { "6. Runtime view" = "06-runtime-view.md" },
+    { "7. Deployment view" = "07-deployment-view.md" },
+    { "8. Cross-cutting concepts" = "08-crosscutting-concepts.md" },
+    { "9. Architecture decisions" = "09-architecture-decisions.md" },
+    { "10. Quality requirements" = "10-quality-requirements.md" },
+    { "11. Risks and technical debt" = "11-risks-and-technical-debt.md" },
+    { "12. Glossary" = "12-glossary.md" },
+  ] },
+  { "C4" = [
+    { "Context" = "c4/context.md" },
+    { "Containers" = "c4/containers.md" },
+    { "Components" = "c4/components.md" },
+  ] },
+  { "Building blocks" = [
+    { "AmanziAPI" = "building-blocks/amanzi-api.md" },
+    { "Project and Scenario" = "building-blocks/project-scenario.md" },
+    { "Solvers" = "building-blocks/solvers.md" },
+    { "Process models" = "building-blocks/process-models.md" },
+    { "Parametric YAML" = "building-blocks/parametric-yaml.md" },
+    { "Vue SPA" = "building-blocks/vue-spa.md" },
+    { "Pyodide worker" = "building-blocks/pyodide-worker.md" },
+    { "Flask server" = "building-blocks/flask-server.md" },
+    { "Lambda" = "building-blocks/lambda.md" },
+  ] },
+  { "Decisions" = [
+    "decisions/index.md",
+    { "ADR-0001 JSON project" = "decisions/0001-json-project-as-system-of-record.md" },
+    { "ADR-0002 Dual backends" = "decisions/0002-dual-execution-backends.md" },
+    { "ADR-0003 Sequential solvers" = "decisions/0003-sequential-solvers.md" },
+    { "ADR-0004 Parametric YAML" = "decisions/0004-yaml-parametric-models.md" },
+  ] },
+]
+
+[project.theme]
+logo = "media/site_logo.png"
+features = [
+  "navigation.tabs",
+  "navigation.indexes",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.path",
+  "toc.follow",
+  "search.suggest",
+  "content.code.copy",
+]
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+pymdownx.details = {}
+pymdownx.highlight.anchor_linenums = true
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]

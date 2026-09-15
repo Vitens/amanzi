@@ -35,14 +35,25 @@ The user interface will now be available at http://localhost:5173
 Amanzi is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
 
 ## Documentation
-User documentation lives in `docs/` and is built with [Zensical](https://zensical.org/). It follows [Diátaxis](https://diataxis.fr/map/) (tutorials, how-to guides, reference, explanation). From a virtual environment:
+Two Zensical sites live in this repository.
+
+**User documentation** (`docs/`) follows [Diátaxis](https://diataxis.fr/map/) (tutorials, how-to guides, reference, explanation):
 
 ```bash
 pip install -e ".[docs]"
 zensical serve
 ```
 
-Then open http://localhost:8000. Contributor and deployment notes stay in this README and in `lambda/README.md`; they are not part of the user site.
+Open http://localhost:8000.
+
+**Architecture documentation** (`architecture/`) follows [arc42](https://arc42.org/) for process engineers, auditors, and AI agents:
+
+```bash
+pip install -e ".[docs]"
+zensical serve -f zensical.architecture.toml
+```
+
+Open http://localhost:8001. Contributor and deployment notes stay in this README and in `lambda/README.md`; they are not part of the user site.
 
 ## Authors
 - Abel Heinsbroek (Vitens N.V.)
