@@ -45,7 +45,7 @@ outputs:
             equation: "(capacity/3600) / (cascade_length * crest_head/100)"
           fall_time:
             uom: s
-            equation: "math.sqrt((2*step_height+crest_head) / 9.81)"
+            equation: "math.sqrt((2*(step_height+crest_head/100)) / 9.81)"
           jet_width:
             uom: cm
             equation: "fall_time * jet_velocity * 100"
