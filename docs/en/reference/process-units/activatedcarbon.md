@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Activated carbon
 type: reference
 audience: everyone

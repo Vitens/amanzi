@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Glossary
 type: reference
 audience: everyone

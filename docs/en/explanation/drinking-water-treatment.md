@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Drinking-water treatment
 type: explanation
 audience: novice

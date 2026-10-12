@@ -28,7 +28,11 @@ jobs:
         run: pip install ".[docs]"
 
       - name: Build user documentation
-        run: zensical build
+        run: |
+          zensical build
+          zensical build -f zensical.nl.toml
+          zensical build -f zensical.de.toml
+          printf '%s\n' '<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=en/"><link rel="canonical" href="en/"><title>Amanzi</title><p><a href="en/">English</a> · <a href="nl/">Nederlands</a> · <a href="de/">Deutsch</a></p>' > site/index.html
 
       - name: Build architecture documentation
         run: zensical build -f zensical.architecture.toml

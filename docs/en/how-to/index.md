@@ -1,4 +1,5 @@
 ---
+lang: en
 title: How-to guides
 type: how-to
 audience: everyone

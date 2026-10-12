@@ -1,4 +1,5 @@
 ---
+lang: en
 title: What Amanzi is
 type: explanation
 audience: novice

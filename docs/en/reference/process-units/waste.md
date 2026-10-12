@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Waste stream
 type: reference
 audience: everyone

@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Activated carbon and PFAS
 type: explanation
 audience: keyuser

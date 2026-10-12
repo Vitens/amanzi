@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Streams
 type: reference
 audience: everyone

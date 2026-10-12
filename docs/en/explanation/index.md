@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Explanation
 type: explanation
 audience: everyone

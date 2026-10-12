@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Amanzi
 type: landing
 audience: everyone
@@ -43,4 +44,4 @@ flowchart LR
 - Honesty box: design/scenario tool, not SCADA, not a substitute for a licensed design.
 - Link to the demo and to GitHub releases.
 - The four-section map (Mermaid, already drafted).
-- Pointer that English is the documentation language; the app itself can be English, Dutch, or German.
+- Pointer that this documentation and the app are available in English, Dutch, and German (language selector). Architecture documentation stays English.

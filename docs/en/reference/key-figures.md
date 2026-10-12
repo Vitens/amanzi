@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Key figures
 type: reference
 audience: everyone

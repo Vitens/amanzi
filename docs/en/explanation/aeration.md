@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Aeration
 type: explanation
 audience: keyuser

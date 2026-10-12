@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Reading water quality
 type: explanation
 audience: novice

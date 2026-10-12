@@ -1,4 +1,7 @@
-# Amanzi user documentation — Zensical
+# Amanzi user documentation — English
+# Parallel sites: zensical.nl.toml (docs/nl), zensical.de.toml (docs/de).
+# Language switcher links assume the three builds are served together
+# as site/en, site/nl and site/de.
 #
 # Authoring (Diátaxis):
 # - Tutorials: one happy path, demo data, no literature, no parameter dumps.
@@ -13,8 +16,9 @@ site_name = "Amanzi"
 site_description = "User documentation for the Amanzi drinking-water treatment scenario tool"
 site_author = "Vitens N.V."
 copyright = "© Vitens N.V. — licensed under GPL-3.0"
-docs_dir = "docs"
-site_dir = "site"
+docs_dir = "docs/en"
+site_dir = "site/en"
+dev_addr = "localhost:8000"
 repo_url = "https://github.com/Vitens/amanzi"
 repo_name = "Vitens/amanzi"
 # Placeholder until a public docs URL is chosen (needed for sitemap-based features).
@@ -94,6 +98,7 @@ nav = [
 ]
 
 [project.theme]
+language = "en"
 logo = "media/site_logo.png"
 features = [
   "navigation.tabs",
@@ -105,6 +110,21 @@ features = [
   "search.suggest",
   "content.code.copy",
 ]
+
+[[project.extra.alternate]]
+name = "English"
+link = "/en/"
+lang = "en"
+
+[[project.extra.alternate]]
+name = "Nederlands"
+link = "/nl/"
+lang = "nl"
+
+[[project.extra.alternate]]
+name = "Deutsch"
+link = "/de/"
+lang = "de"
 
 [project.theme.icon]
 repo = "fontawesome/brands/github"

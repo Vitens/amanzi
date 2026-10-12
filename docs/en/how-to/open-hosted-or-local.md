@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Open hosted or local
 type: how-to
 audience: everyone

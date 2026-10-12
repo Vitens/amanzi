@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Your first plant
 type: tutorial
 audience: novice

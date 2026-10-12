@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Use design view
 type: how-to
 audience: everyone

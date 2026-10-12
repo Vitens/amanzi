@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Set key figures
 type: how-to
 audience: everyone

@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Open Amanzi
 type: tutorial
 audience: novice
@@ -15,7 +16,7 @@ Open the app and learn the names of the main areas of the screen. Do not build a
 - Wait for the “Starting AMANZI…” progress dialog; the calculation engine loads in the browser.
 - Skip or finish the in-app tutorial; this page continues from a loaded demo project.
 - Name the chrome: left **library**, centre **canvas**, right **result sidebar**, bottom **scenario tabs**, top **menu** (project download/upload, run project, key figures).
-- Point out that English / Dutch / German is a UI setting, not a documentation setting.
+- Point out the language control in the app (English, Dutch, German) and the same three languages on this documentation site.
 
 ## Diagrams
 

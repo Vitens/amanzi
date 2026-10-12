@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Compare scenarios
 type: tutorial
 audience: novice

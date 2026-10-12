@@ -1,4 +1,5 @@
 ---
+lang: en
 title: User interface
 type: reference
 audience: everyone

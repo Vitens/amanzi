@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Add and connect units
 type: how-to
 audience: everyone

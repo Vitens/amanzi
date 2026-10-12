@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Pellet softening
 type: reference
 audience: everyone

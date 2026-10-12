@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Vacuum degassing
 type: reference
 audience: everyone

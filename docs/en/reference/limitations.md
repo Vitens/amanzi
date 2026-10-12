@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Limitations
 type: reference
 audience: everyone
@@ -19,4 +20,4 @@ Facts about what the current product does not do. No workarounds beyond pointing
 - Spray aeration as a standalone library block may error if Sauter diameter is unset (note only if still true when writing).
 - Steady-state models: no time-series plant control, no SCADA.
 - Canvas coordinates are not a map.
-- Documentation language is English only; UI has en/nl/de.
+- User documentation is English, Dutch, and German. Architecture documentation is English only.

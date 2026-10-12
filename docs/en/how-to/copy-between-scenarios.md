@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Copy between scenarios
 type: how-to
 audience: everyone

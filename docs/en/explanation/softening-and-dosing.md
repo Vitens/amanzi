@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Softening and dosing
 type: explanation
 audience: keyuser

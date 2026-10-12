@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Change one thing
 type: tutorial
 audience: novice

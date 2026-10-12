@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Chemical dosage
 type: reference
 audience: everyone

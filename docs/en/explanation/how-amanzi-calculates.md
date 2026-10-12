@@ -1,4 +1,5 @@
 ---
+lang: en
 title: How Amanzi calculates
 type: explanation
 audience: keyuser

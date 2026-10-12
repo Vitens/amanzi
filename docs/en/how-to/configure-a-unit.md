@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Configure a unit
 type: how-to
 audience: everyone

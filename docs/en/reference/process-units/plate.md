@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Plate aeration
 type: reference
 audience: everyone

@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Compare in the report
 type: how-to
 audience: everyone

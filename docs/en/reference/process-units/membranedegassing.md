@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Membrane degassing
 type: reference
 audience: everyone

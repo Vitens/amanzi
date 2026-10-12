@@ -1,4 +1,5 @@
 ---
+lang: en
 title: Quantity, energy, chemicals, CO₂
 type: explanation
 audience: everyone
