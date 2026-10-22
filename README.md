@@ -34,6 +34,30 @@ The user interface will now be available at http://localhost:5173
 ## License
 Amanzi is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
 
+## Documentation
+Two Zensical sites live in this repository.
+
+**User documentation** (`docs/en`, `docs/nl`, `docs/de`) follows [Diátaxis](https://diataxis.fr/map/) (tutorials, how-to guides, reference, explanation). English, Dutch, and German are parallel Markdown trees, same paths, with a language switcher:
+
+```bash
+pip install -e ".[docs]"
+zensical build
+zensical build -f zensical.nl.toml
+zensical build -f zensical.de.toml
+python -m http.server -d site 8000
+```
+
+Open http://localhost:8000/en/ (or `/nl/`, `/de/`). To preview one language while writing: `zensical serve` (English, port 8000), `zensical serve -f zensical.nl.toml` (port 8002), or `zensical serve -f zensical.de.toml` (port 8003). The switcher links assume the three builds are served together from `site/`.
+
+**Architecture documentation** (`architecture/`) follows [arc42](https://arc42.org/) for process engineers, auditors, and AI agents:
+
+```bash
+pip install -e ".[docs]"
+zensical serve -f zensical.architecture.toml
+```
+
+Open http://localhost:8001. Contributor and deployment notes stay in this README and in `lambda/README.md`; they are not part of the user site.
+
 ## Authors
 - Abel Heinsbroek (Vitens N.V.)
 - Nils Zickermann (Vitens N.V.)

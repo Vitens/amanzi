@@ -1,0 +1,140 @@
+# Amanzi user documentation — Nederlands
+# Parallel sites: zensical.toml (docs/en), zensical.de.toml (docs/de).
+# Language switcher links assume the three builds are served together
+# as site/en, site/nl and site/de.
+#
+# Authoring (Diátaxis):
+# - Tutorials: one happy path, demo data, no literature, no parameter dumps.
+# - How-tos: one goal, numbered steps, assume a tutorial is already done.
+# - Reference: facts only (controls, units, streams). No "why".
+# - Explanation: why / theory / literature. No click-by-click steps.
+# - Diagrams: Mermaid fenced blocks only (rendered as SVG in the page).
+#   Do not commit duplicate .svg exports of the same diagram.
+
+[project]
+site_name = "Amanzi"
+site_description = "Gebruikersdocumentatie voor de Amanzi-scenariotool voor drinkwaterzuivering"
+site_author = "Vitens N.V."
+copyright = "© Vitens N.V. — licensed under GPL-3.0"
+docs_dir = "docs/nl"
+site_dir = "site/nl"
+dev_addr = "localhost:8002"
+repo_url = "https://github.com/Vitens/amanzi"
+repo_name = "Vitens/amanzi"
+# Placeholder until a public docs URL is chosen (needed for sitemap-based features).
+site_url = "https://vitens.github.io/amanzi/"
+
+nav = [
+  { "Start" = "index.md" },
+  { "Handleidingen" = [
+    "tutorials/index.md",
+    { "Open Amanzi" = "tutorials/open-amanzi.md" },
+    { "Je eerste installatie" = "tutorials/first-plant.md" },
+    { "Verander één ding" = "tutorials/change-one-thing.md" },
+    { "Scenario’s vergelijken" = "tutorials/compare-scenarios.md" },
+    { "Sla je werk op" = "tutorials/save-your-work.md" },
+  ] },
+  { "Instructies" = [
+    "how-to/index.md",
+    { "Open gehost of lokaal" = "how-to/open-hosted-or-local.md" },
+    { "Opslaan, laden, downloaden" = "how-to/save-load-download.md" },
+    { "Units toevoegen en verbinden" = "how-to/add-and-connect-units.md" },
+    { "Configureer een unit" = "how-to/configure-a-unit.md" },
+    { "Kengetallen instellen" = "how-to/set-key-figures.md" },
+    { "Ontwerpweergave gebruiken" = "how-to/use-design-view.md" },
+    { "Vergelijken in het rapport" = "how-to/compare-in-report.md" },
+    { "Werken met microverontreinigingen" = "how-to/work-with-micropollutants.md" },
+    { "Kopiëren tussen scenario’s" = "how-to/copy-between-scenarios.md" },
+    { "Taal wisselen" = "how-to/switch-language.md" },
+  ] },
+  { "Naslag" = [
+    "reference/index.md",
+    { "Gebruikersinterface" = "reference/ui.md" },
+    { "Stromen" = "reference/streams.md" },
+    { "Resultaten" = "reference/results.md" },
+    { "Kengetallen" = "reference/key-figures.md" },
+    { "Meeteenheden" = "reference/units.md" },
+    { "Begrippenlijst" = "reference/glossary.md" },
+    { "Beperkingen" = "reference/limitations.md" },
+    { "Procesunits" = [
+      "reference/process-units/index.md",
+      { "Winning" = "reference/process-units/groundwater.md" },
+      { "Reservoir" = "reference/process-units/reservoir.md" },
+      { "Zandfiltratie" = "reference/process-units/sandfiltration.md" },
+      { "Marblefiltratie" = "reference/process-units/marblefiltration.md" },
+      { "Aktiefkool" = "reference/process-units/activatedcarbon.md" },
+      { "Torenbeluchting" = "reference/process-units/toweraeration.md" },
+      { "Sproeibeluchting" = "reference/process-units/sprayaerator.md" },
+      { "Plaatbeluchting" = "reference/process-units/plate.md" },
+      { "Cascade" = "reference/process-units/cascade.md" },
+      { "Pelletontharding" = "reference/process-units/softening.md" },
+      { "Dosering" = "reference/process-units/dosing.md" },
+      { "Membraanfiltratie" = "reference/process-units/membrane.md" },
+      { "Membraanontgassing" = "reference/process-units/membranedegassing.md" },
+      { "Vacuumontgassing" = "reference/process-units/vacuum.md" },
+      { "Zandvang" = "reference/process-units/sandtrap.md" },
+      { "Transportleiding" = "reference/process-units/pipeline.md" },
+      { "Spoelwaterhergebruik" = "reference/process-units/recycle.md" },
+      { "Splitsing" = "reference/process-units/splitter.md" },
+      { "Levering" = "reference/process-units/output.md" },
+      { "Afvalstroom" = "reference/process-units/waste.md" },
+    ] },
+  ] },
+  { "Uitleg" = [
+    "explanation/index.md",
+    { "Wat Amanzi is" = "explanation/what-amanzi-is.md" },
+    { "Drinkwaterzuivering" = "explanation/drinking-water-treatment.md" },
+    { "Scenario’s en stroomschema’s" = "explanation/scenarios-and-flowsheets.md" },
+    { "Waterkwaliteit lezen" = "explanation/reading-water-quality.md" },
+    { "Hoe Amanzi rekent" = "explanation/how-amanzi-calculates.md" },
+    { "Hoeveelheid, energie, chemicaliën, CO₂" = "explanation/quantity-energy-chemicals-co2.md" },
+    { "Beluchting" = "explanation/aeration.md" },
+    { "Filtratie" = "explanation/filtration.md" },
+    { "Aktiefkool en PFAS" = "explanation/activated-carbon-and-pfas.md" },
+    { "Membranen" = "explanation/membranes.md" },
+    { "Ontharding en dosering" = "explanation/softening-and-dosing.md" },
+    { "Literatuur" = "explanation/literature.md" },
+  ] },
+]
+
+[project.theme]
+language = "nl"
+logo = "media/site_logo.png"
+features = [
+  "navigation.tabs",
+  "navigation.indexes",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.path",
+  "toc.follow",
+  "search.suggest",
+  "content.code.copy",
+]
+
+[[project.extra.alternate]]
+name = "English"
+link = "/en/"
+lang = "en"
+
+[[project.extra.alternate]]
+name = "Nederlands"
+link = "/nl/"
+lang = "nl"
+
+[[project.extra.alternate]]
+name = "Deutsch"
+link = "/de/"
+lang = "de"
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+pymdownx.details = {}
+pymdownx.highlight.anchor_linenums = true
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]

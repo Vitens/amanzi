@@ -19,26 +19,39 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: "22"
+          python-version: "3.12"
 
-      - name: Install MyST
-        run: npm install --global mystmd
+      - name: Install documentation extra
+        run: pip install ".[docs]"
 
-      - name: Build HTML docs
-        run: myst build --html docs
+      - name: Build user documentation
+        run: |
+          zensical build
+          zensical build -f zensical.nl.toml
+          zensical build -f zensical.de.toml
+          printf '%s\n' '<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=en/"><link rel="canonical" href="en/"><title>Amanzi</title><p><a href="en/">English</a> · <a href="nl/">Nederlands</a> · <a href="de/">Deutsch</a></p>' > site/index.html
+
+      - name: Build architecture documentation
+        run: zensical build -f zensical.architecture.toml
 
       - name: Zip HTML docs
         run: |
-          cd docs/_build/html
-          zip -r ../../../docs-html.zip .
+          (cd site && zip -r ../docs-html.zip .)
+          (cd site-architecture && zip -r ../architecture-html.zip .)
 
-      - name: Upload docs zip artifact
+      - name: Upload user docs zip artifact
         uses: actions/upload-artifact@v4
         with:
           name: amanzi-docs-html
           path: docs-html.zip
 
-      # Future stage: publish docs artifact to GitHub Pages.
+      - name: Upload architecture docs zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amanzi-architecture-html
+          path: architecture-html.zip
+
+      # Future stage: publish docs artifacts to GitHub Pages.

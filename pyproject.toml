@@ -29,6 +29,11 @@ classifiers = [
 homepage = "https://github.com/Vitens/amanzi"
 repository = "https://github.com/Vitens/amanzi"
 
+[project.optional-dependencies]
+docs = [
+    "zensical",
+]
+
 [project.scripts]
 amanzi-server = "amanzi.server.app:main"
 

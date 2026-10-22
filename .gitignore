@@ -27,3 +27,10 @@ venv.bak/
 
 
 scribbles/
+
+# Zensical HTML output
+site/
+site-architecture/
+docs-html.zip
+architecture-html.zip
+
