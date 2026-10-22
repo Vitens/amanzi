@@ -111,6 +111,16 @@ jobs:
           VITE_BASE_PATH: ${{ env.PAGES_BASE_PATH }}
         run: npm run build
 
+      # After the Pages UI build, which replaces ui/dist. Copy the language
+      # sites in beside the app so /en/, /nl/, and /de/ are real files.
+      - name: Add user documentation
+        run: |
+          python -m pip install ".[docs]"
+          zensical build
+          zensical build -f zensical.nl.toml
+          zensical build -f zensical.de.toml
+          cp -R site/en site/nl site/de ui/dist/
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
