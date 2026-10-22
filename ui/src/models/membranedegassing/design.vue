@@ -99,9 +99,9 @@ export default {
     },
     output(group, key) {
       const resp = []
-      if(!(group in this.$project.designState)) { return resp }
-      if(!(key in this.$project.designState[group])) { return resp }
-      return this.$project.designState[group][key]
+      if(!(group in this.$runtime.designState)) { return resp }
+      if(!(key in this.$runtime.designState[group])) { return resp }
+      return this.$runtime.designState[group][key]
     },
     dosing(stage) {
       let n2_dosing = this.params['n2_rq_stage_'+stage] * this.displayFlow
@@ -113,9 +113,9 @@ export default {
     },
     resultSet(group) {
 
-      if(!(group in this.$project.designState)) { return [] }
+      if(!(group in this.$runtime.designState)) { return [] }
 
-      let data = this.$project.designState[group]
+      let data = this.$runtime.designState[group]
 
       if(group == 'gas1' || group == 'gas2') {
         return [

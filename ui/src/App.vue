@@ -39,18 +39,18 @@
     <el-container class="sub-container">
 
 
-      <el-aside class="sidebar" :class="{hidden: !$project.sidebar.left}">
+      <el-aside class="sidebar" :class="{hidden: !$interface.sidebar.left}">
         <Sidebar></Sidebar>
       </el-aside>
       <el-container>
       <el-main class="main">
-        <div id="error" v-if="$project.invalid"><i class='fa fa-warning'></i>&nbsp;{{ $t($project.invalid_message, $project.invalid_data) }}</div>
+        <div id="error" v-if="$interface.invalid"><i class='fa fa-warning'></i>&nbsp;{{ $t($interface.invalid_message, $interface.invalid_data) }}</div>
         <Canvas></Canvas>
         <ScenarioFeedback />
       </el-main>
       <el-footer height="45px" class="scenarios"><Scenariobar></Scenariobar></el-footer>
       </el-container>
-      <el-aside class="sidebar-right" width="280px" :class="{hidden: !$project.sidebar.right}">
+      <el-aside class="sidebar-right" width="280px" :class="{hidden: !$interface.sidebar.right}">
         <ResultBar></ResultBar>
       </el-aside>
     </el-container>
@@ -70,10 +70,11 @@ import ScenarioFeedback from './components/ScenarioFeedback.vue'
 import LoadingIndicator from './components/LoadingIndicator.vue'
 import Design from './components/Design.vue'
 import KeyFigures from './components/KeyFigures.vue'
-import components from './models/groundwater/assets/components'
 import Tutorial from './components/Dialogs/Tutorial.vue'
 import About from './components/Dialogs/About.vue'
-import DefaultProject from './assets/Default-project.json'
+import DefaultProjectEN from './assets/Default-project-EN.json'
+import DefaultProjectNL from './assets/Default-project-NL.json'
+import DefaultProjectDE from './assets/Default-project-DE.json'
 import DesignHeader from './components/DesignHeader.vue'
 import { notifyMigrationIfNeeded } from './lib/migrationToast'
 
@@ -94,13 +95,12 @@ export default {
       left: true,
       right: true
     },
-    components: components
   }},
   async mounted() {
     // check if tutorial was skipped
     const tutorialSkipped = this.$cookies.get('tutorial-skip')
     if (tutorialSkipped) {
-      this.$project.tutorial = false
+      this.$interface.tutorial = false
     }
     if (this.$backend.driver == 'pyodide') {
       this.initialized = false
@@ -114,6 +114,7 @@ export default {
 
     this.initialized = true
 
+    // set backend so that project can access it
     this.$project.backend = this.$backend
 
     const onMigrationNotify = () => {
@@ -121,7 +122,10 @@ export default {
     }
     this.$bus.on('migration-notify', onMigrationNotify)
 
-    this.$project.open(DefaultProject, false)
+    const locale = this.$i18n.locale?.value ?? this.$i18n.locale
+    const language = String(locale || 'en').split('-')[0].toLowerCase()
+    const defaultProjects = { en: DefaultProjectEN, nl: DefaultProjectNL, de: DefaultProjectDE }
+    this.$project.open(defaultProjects[language] || DefaultProjectEN, false)
 
     await this.$project.loadParameters()
     this.$project.solve()
@@ -132,7 +136,7 @@ export default {
       // suppress keys
       this.$project.changed = true
       if (this.$project.scenario.unsolved) { 
-        // this.$project.state.quality = []
+        // this.$runtime.solveState.quality = []
         this.$project.solve() 
         this.$project.scenario.unsolved = false
       }
@@ -148,24 +152,6 @@ export default {
       }
     })
 
-    this.components.micros[1].components.forEach(item => {
-      if (!this.$project.scenario.metaData.customMicroComponents['PFAS'].some(existingItem => existingItem.name === item.name)) {
-        this.$project.scenario.metaData.customMicroComponents['PFAS'].push({
-            name: item.name,
-            chemical: item.chemical,
-            PEQ: item.PFOAequviliant,
-            removalIEX: 0,
-            removalAKF: 0,
-            removalRO: 0,
-            unit: 'ng/l'
-            })}})
-    this.components.micros[0].components.forEach(item => {
-      if (!this.$project.scenario.metaData.customMicroComponents['VOC'].some(existingItem => existingItem.name === item.name)) {
-        this.$project.scenario.metaData.customMicroComponents['VOC'].push({
-            name: item.name,
-            unit: 'mg/l'
-            })}})
-
   },
 
   computed: {
@@ -173,16 +159,16 @@ export default {
       return this.$project.scenario.editingModel != null
     },
     reportVisible() {
-      return this.$project.report
+      return this.$interface.report
     },
     keyFiguresVisible() {
-      return this.$project.keyfigures
+      return this.$interface.keyfigures
     },
     tutorialVisible() {
-      return this.$project.tutorial
+      return this.$interface.tutorial
     },
     aboutVisible() {
-      return this.$project.about
+      return this.$interface.about
     },
     dialogVisible() {
       return this.designVisible || this.reportVisible || this.keyFiguresVisible || this.tutorialVisible || this.aboutVisible
@@ -206,14 +192,14 @@ export default {
   methods: {
     closeDialog() {
       if (this.tutorialVisible) {
-        this.$project.tutorial = false
+        this.$interface.tutorial = false
         return
       }
-      this.$project.report = false
-      this.$project.keyfigures = false
-      this.$project.about = false
+      this.$interface.report = false
+      this.$interface.keyfigures = false
+      this.$interface.about = false
       this.$project.scenario.editingModel = null
-      this.$project.designState = {}
+      this.$runtime.designState = {}
       this.$project.scenario.unsolved = true
     },
   }

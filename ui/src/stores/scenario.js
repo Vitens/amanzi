@@ -1,7 +1,8 @@
 import _ from "lodash";
 import { defineStore } from "pinia";
+import OMVdefaults from "./OMVdefaults";
 
-export const scenarioStore = (uid) =>
+export const scenarioStore = (uid, OMVs) =>
   defineStore("scenario/" + uid, {
     state: () => ({
       name: "Scenario1", // scenario name
@@ -11,7 +12,13 @@ export const scenarioStore = (uid) =>
       connections: [],
       selectedBlocks: [],
       metaData: {
-        customMicroComponents: { VOC: [], PFAS: [], Other: [] },
+        activatedcarbon: {
+          lastPfasCount: null,
+          userEditedCoefficients: {},
+        },
+        customMicroComponents: OMVs
+          ? _.cloneDeep(OMVs)
+          : _.cloneDeep(OMVdefaults),
       },
       keyfigureOverwrites: {},
       editingModel: null,
@@ -267,17 +274,18 @@ export const scenarioStore = (uid) =>
       // block actions
       addModel(modelspecs, defaults, type, name, position, autoConnect) {
         var modelspec = modelspecs[type];
-        const model = _.cloneDeep(modelspec.template);
-        model.uid = this.generateUID();
+        const model = {
+          uid: this.generateUID(),
+          name: this.suggestName(name),
+          type: modelspec.name,
+          category: modelspec.category,
+          configuration: {
+            parameters: {},
+          },
+          position: position,
+        };
 
-        model.name = this.suggestName(name);
-
-        model.type = modelspec.name;
-        model.category = modelspec.category;
-        model.configuration = model.configuration ? model.configuration : {};
-
-        model.configuration.parameters = {};
-
+        defaults = defaults || [];
         for (var param of defaults) {
           model.configuration.parameters[param.name] = param.default;
         }
@@ -289,7 +297,7 @@ export const scenarioStore = (uid) =>
         // autoconnect
         // find closest empty anchor of compatible type and direction for each anchor
         if (autoConnect) {
-          for (var anchor of modelspec.canvas.anchors) {
+          for (var anchor of modelspec.anchors) {
             // find target models that have connections space free
             let target = anchor.direction == "in" ? "out" : "in";
             let closestDistance = Infinity;
@@ -298,7 +306,7 @@ export const scenarioStore = (uid) =>
 
             for (var m of this.models) {
               let spec = modelspecs[m.type];
-              for (var a of spec.canvas.anchors) {
+              for (var a of spec.anchors) {
                 // check if anchor is right type and direction
                 if (a.type != anchor.type || a.direction != target) {
                   continue;
@@ -545,7 +553,7 @@ export const scenarioStore = (uid) =>
           }
 
           // loop over anchors, check if all connections are made
-          for (var a of spec.canvas.anchors) {
+          for (var a of spec.anchors) {
             if (a.optional) {
               continue;
             } // skip optional anchors

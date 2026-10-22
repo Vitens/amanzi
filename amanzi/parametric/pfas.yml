@@ -1,0 +1,376 @@
+parameters:
+  _compounds:
+    PFBS:
+      PFBS_Freundlich_k:
+        default: 457
+        range: [0, 100000]
+      PFBS_Freundlich_1n:
+        default: 0.411
+        range: [0, 1]
+      PFBS_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFBS_PEQ:
+        default: 0.001
+        range: [0, 1]
+      PFBS_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFBS_removeRO:
+        default: 0
+        range: [0, 100]
+      PFBS_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFPeS:
+      PFPeS_Freundlich_k:
+        default: 1521
+        range: [0, 100000]
+      PFPeS_Freundlich_1n:
+        default: 0.352
+        range: [0, 1]
+      PFPeS_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFPeS_PEQ:
+        default: 0.6
+        range: [0, 1]
+      PFPeS_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFPeS_removeRO:
+        default: 0
+        range: [0, 100]
+      PFPeS_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFHxS:
+      PFHxS_Freundlich_k:
+        default: 3840
+        range: [0, 100000]
+      PFHxS_Freundlich_1n:
+        default: 0.313
+        range: [0, 1]
+      PFHxS_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFHxS_PEQ:
+        default: 0.6
+        range: [0, 1]
+      PFHxS_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFHxS_removeRO:
+        default: 0
+        range: [0, 100]
+      PFHxS_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFHpS:
+      PFHpS_Freundlich_k:
+        default: 4589
+        range: [0, 100000]
+      PFHpS_Freundlich_1n:
+        default: 0.286
+        range: [0, 1]
+      PFHpS_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFHpS_PEQ:
+        default: 2
+        range: [0, 1]
+      PFHpS_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFHpS_removeRO:
+        default: 0
+        range: [0, 100]
+      PFHpS_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFOS:
+      PFOS_Freundlich_k:
+        default: 7222
+        range: [0, 100000]
+      PFOS_Freundlich_1n:
+        default: 0.253
+        range: [0, 1]
+      PFOS_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFOS_PEQ:
+        default: 2
+        range: [0, 1]
+      PFOS_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFOS_removeRO:
+        default: 0
+        range: [0, 100]
+      PFOS_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFDS:
+      PFDS_Freundlich_k:
+        default: 20000
+        range: [0, 100000]
+      PFDS_Freundlich_1n:
+        default: 0.24
+        range: [0, 1]
+      PFDS_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFDS_PEQ:
+        default: 2
+        range: [0, 1]
+      PFDS_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFDS_removeRO:
+        default: 0
+        range: [0, 100]
+      PFDS_removeIEX:
+        default: 0
+        range: [0, 100]
+    TFA:
+      TFA_Freundlich_k:
+        default: 215
+        range: [0, 100000]
+      TFA_Freundlich_1n:
+        default: 0.343
+        range: [0, 1]
+      TFA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      TFA_PEQ:
+        default: 0.002
+        range: [0, 1]
+      TFA_removeAKF:
+        default: 0
+        range: [0, 100]
+      TFA_removeRO:
+        default: 0
+        range: [0, 100]
+      TFA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFBA:
+      PFBA_Freundlich_k:
+        default: 255
+        range: [0, 100000]
+      PFBA_Freundlich_1n:
+        default: 0.494
+        range: [0, 1]
+      PFBA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFBA_PEQ:
+        default: 0.05
+        range: [0, 1]
+      PFBA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFBA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFBA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFPeA:
+      PFPeA_Freundlich_k:
+        default: 1160
+        range: [0, 100000]
+      PFPeA_Freundlich_1n:
+        default: 0.425
+        range: [0, 1]
+      PFPeA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFPeA_PEQ:
+        default: 0.05
+        range: [0, 1]
+      PFPeA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFPeA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFPeA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFHxA:
+      PFHxA_Freundlich_k:
+        default: 4179
+        range: [0, 100000]
+      PFHxA_Freundlich_1n:
+        default: 0.361
+        range: [0, 1]
+      PFHxA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFHxA_PEQ:
+        default: 0.01
+        range: [0, 1]
+      PFHxA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFHxA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFHxA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFHpA:
+      PFHpA_Freundlich_k:
+        default: 2700
+        range: [0, 100000]
+      PFHpA_Freundlich_1n:
+        default: 0.32
+        range: [0, 1]
+      PFHpA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFHpA_PEQ:
+        default: 1
+        range: [0, 1]
+      PFHpA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFHpA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFHpA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFOA:
+      PFOA_Freundlich_k:
+        default: 1718
+        range: [0, 100000]
+      PFOA_Freundlich_1n:
+        default: 0.281
+        range: [0, 1]
+      PFOA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFOA_PEQ:
+        default: 1
+        range: [0, 1]
+      PFOA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFOA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFOA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFDA:
+      PFDA_Freundlich_k:
+        default: 6371
+        range: [0, 100000]
+      PFDA_Freundlich_1n:
+        default: 0.242
+        range: [0, 1]
+      PFDA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFDA_PEQ:
+        default: 10
+        range: [0, 100]
+      PFDA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFDA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFDA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFUnDA:
+      PFUnDA_Freundlich_k:
+        default: 14603
+        range: [0, 100000]
+      PFUnDA_Freundlich_1n:
+        default: 0.223
+        range: [0, 1]
+      PFUnDA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFUnDA_PEQ:
+        default: 4
+        range: [0, 100]
+      PFUnDA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFUnDA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFUnDA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFDoDA:
+      PFDoDA_Freundlich_k:
+        default: 18106
+        range: [0, 100000]
+      PFDoDA_Freundlich_1n:
+        default: 0.2076
+        range: [0, 1]
+      PFDoDA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFDoDA_PEQ:
+        default: 3
+        range: [0, 100]
+      PFDoDA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFDoDA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFDoDA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFTrDA:
+      PFTrDA_Freundlich_k:
+        default: 25862
+        range: [0, 100000]
+      PFTrDA_Freundlich_1n:
+        default: 0.1972
+        range: [0, 1]
+      PFTrDA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFTrDA_PEQ:
+        default: 3
+        range: [0, 100]
+      PFTrDA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFTrDA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFTrDA_removeIEX:
+        default: 0
+        range: [0, 100]
+    PFTeDA:
+      PFTeDA_Freundlich_k:
+        default: 30582
+        range: [0, 100000]
+      PFTeDA_Freundlich_1n:
+        default: 0.186
+        range: [0, 1]
+      PFTeDA_competition_coefficient:
+        default: 1
+        range: [0, 100]
+      PFTeDA_PEQ:
+        default: 0.3
+        range: [0, 100]
+      PFTeDA_removeAKF:
+        default: 0
+        range: [0, 100]
+      PFTeDA_removeRO:
+        default: 0
+        range: [0, 100]
+      PFTeDA_removeIEX:
+        default: 0
+        range: [0, 100]

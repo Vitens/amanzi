@@ -17,7 +17,7 @@
       </thead>
       <tbody ref="tbody">
         <div class="hover-bar" :style="{left: hoverPosition}" v-if="compare_index != null"></div>
-        <tr v-for='scenario, scenario_index in $project.reportState.scenarios' :key="scenario_index">
+        <tr v-for='scenario, scenario_index in $runtime.reportState.scenarios' :key="scenario_index">
           <td>{{ scenario }}</td>
           <td @mouseenter="compare_index = scenario_index" @mouseleave="compare_index = null" class="score-td">
             <div class="score-bar" :style="{width: bar_width(scenario_index)}" :ref="scenario_index">
@@ -84,10 +84,10 @@ export default {
       return {'quantity': 'primary', 'energy': 'warning', 'sustainability': 'success', 'quality': 'danger'}[this.namespace]
     },
     metrics() {
-      if (!this.$project.reportState.results) {
+      if (!this.$runtime.reportState.results) {
         return []
       }
-      return this.$project.reportState.results[0].summaries[this.namespace].metrics
+      return this.$runtime.reportState.results[0].summaries[this.namespace].metrics
     },
     hoverPosition() {
       let tbody = this.$refs['tbody']
@@ -101,18 +101,18 @@ export default {
 
     },
     metric() {
-      if(!this.$project.reportState.results) {
+      if(!this.$runtime.reportState.results) {
         return {}
       }
-      return this.$project.reportState.results[0].summaries[this.namespace].metrics[this.metric_index]
+      return this.$runtime.reportState.results[0].summaries[this.namespace].metrics[this.metric_index]
     },
     all_values() {
-      if(!this.$project.reportState.scenarios) {
+      if(!this.$runtime.reportState.scenarios) {
         return []
       }
       var values = []
-      for(var i = 0; i < this.$project.reportState.scenarios.length; i++) {
-        values.push(this.$project.reportState.results[i].summaries[this.namespace].metrics[this.metric_index].value)
+      for(var i = 0; i < this.$runtime.reportState.scenarios.length; i++) {
+        values.push(this.$runtime.reportState.results[i].summaries[this.namespace].metrics[this.metric_index].value)
       }
       return values
     }

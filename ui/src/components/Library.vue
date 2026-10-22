@@ -21,7 +21,7 @@
       </el-row>
 
     </div>
-    <el-scrollbar max-height="445px" v-if="displayMode == 'grid'">
+    <el-scrollbar max-height="545px" v-if="displayMode == 'grid'">
       <template v-for="category in categories">
         <div class="blocks-category">{{ $t('ui.sidebar.library.categories.'+category) }}</div>
         <div id="blocks-grid">
@@ -81,12 +81,13 @@ export default {
       var blocks = Object.values(this.modelspec).filter(block =>
         this.$t('models.'+block.name+'.name').toLowerCase().includes(this.filter.toLowerCase())
       );
+      console.log(blocks);
       // remove blocks that have a hidden property
       blocks = blocks.filter(block => !block.hidden);
       blocks = blocks.filter(block => block.category == category);
 
       return blocks.sort((a, b) =>
-        a.localizedName.localeCompare(b.localizedName)
+        a.name.localeCompare(b.name)
       );
     },
     addModel(block) {
@@ -96,9 +97,9 @@ export default {
       // if no models, set to window position
       if(models.length == 0) { 
 
-        var zoom = this.$project.canvas.zoom
+        var zoom = this.$interface.canvas.zoom
 
-        position = {x: (-this.$project.canvas.left + 100) / zoom, y: (-this.$project.canvas.top + 100) / zoom}
+        position = {x: (-this.$interface.canvas.left + 100) / zoom, y: (-this.$interface.canvas.top + 100) / zoom}
         position.y += 200
       }
       // else, get min y and max x
@@ -114,7 +115,7 @@ export default {
       this.$project.scenario.addModel(this.modelspec, this.$project.modelParameters[block.name],block.name, name, position, true);
     },
     getImageUrl(block) {
-      const imageUrl = new URL(`../models/${block.name}/assets/${block.canvas.defaultImg}`, import.meta.url).href;
+      const imageUrl = new URL(`../models/${block.name}/assets/block.png`, import.meta.url).href;
       return `url(${imageUrl})`;
     },
     startDrag(name, evt) {

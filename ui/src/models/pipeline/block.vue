@@ -8,11 +8,26 @@
 </template>
 
 <script>
+const properties = {
+  name: 'pipeline',
+  category: 'main',
+  anchors: [
+    {
+      position: 'left',
+      direction: 'in',
+      type: 'product'
+    },
+    {
+      position: 'right',
+      direction: 'out',
+      type: 'product'
+    }
+  ]
+}
+
 export default {
   props: ['model'],
-  name: 'block-pipeline',
-  mounted() {
-  },
+  name: 'pipeline',
   computed: {
     length() {
       let length = this.model.configuration.parameters.pipe_length
@@ -28,6 +43,8 @@ export default {
 
   }
 }
+
+export { properties }
 </script>
 
 
@@ -36,7 +53,7 @@ export default {
   width: 60px !important;
   height: 60px !important;
   outline: none !important;
-  background-image: url('./assets/pipe.png');
+  background-image: url('./assets/block.png');
   background-color: transparent !important;
   background-size: 100%;
 }

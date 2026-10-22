@@ -52,7 +52,7 @@ export default {
     },
     methods: {
         closeTutorial() {
-            this.$project.tutorial = false
+            this.$interface.tutorial = false
         },
         skipTutorial() {
             // Set cookie to remember tutorial has been skipped

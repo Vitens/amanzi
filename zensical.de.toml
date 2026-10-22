@@ -1,0 +1,139 @@
+# Amanzi user documentation — Deutsch
+# Parallel sites: zensical.toml (docs/en), zensical.nl.toml (docs/nl).
+# Language switcher links point at the GitHub Pages project site:
+# /amanzi/en/, /amanzi/nl/, and /amanzi/de/.
+#
+# Authoring (Diátaxis):
+# - Tutorials: one happy path, demo data, no literature, no parameter dumps.
+# - How-tos: one goal, numbered steps, assume a tutorial is already done.
+# - Reference: facts only (controls, units, streams). No "why".
+# - Explanation: why / theory / literature. No click-by-click steps.
+# - Diagrams: Mermaid fenced blocks only (rendered as SVG in the page).
+#   Do not commit duplicate .svg exports of the same diagram.
+
+[project]
+site_name = "Amanzi"
+site_description = "Benutzerdokumentation für das Amanzi-Szenariotool zur Trinkwasseraufbereitung"
+site_author = "Vitens N.V."
+copyright = "© Vitens N.V. — licensed under GPL-3.0"
+docs_dir = "docs/de"
+site_dir = "site/de"
+dev_addr = "localhost:8003"
+repo_url = "https://github.com/Vitens/amanzi"
+repo_name = "Vitens/amanzi"
+site_url = "https://vitens.github.io/amanzi/de/"
+
+nav = [
+  { "Start" = "index.md" },
+  { "Anleitungen" = [
+    "tutorials/index.md",
+    { "Amanzi öffnen" = "tutorials/open-amanzi.md" },
+    { "Ihre erste Anlage" = "tutorials/first-plant.md" },
+    { "Eine Sache ändern" = "tutorials/change-one-thing.md" },
+    { "Szenarien vergleichen" = "tutorials/compare-scenarios.md" },
+    { "Ihre Arbeit speichern" = "tutorials/save-your-work.md" },
+  ] },
+  { "Handlungsanleitungen" = [
+    "how-to/index.md",
+    { "Gehostet oder lokal öffnen" = "how-to/open-hosted-or-local.md" },
+    { "Speichern, laden, herunterladen" = "how-to/save-load-download.md" },
+    { "Einheiten hinzufügen und verbinden" = "how-to/add-and-connect-units.md" },
+    { "Eine Einheit konfigurieren" = "how-to/configure-a-unit.md" },
+    { "Kennzahlen festlegen" = "how-to/set-key-figures.md" },
+    { "Entwurfsansicht nutzen" = "how-to/use-design-view.md" },
+    { "Im Bericht vergleichen" = "how-to/compare-in-report.md" },
+    { "Mit Mikroschadstoffen arbeiten" = "how-to/work-with-micropollutants.md" },
+    { "Zwischen Szenarien kopieren" = "how-to/copy-between-scenarios.md" },
+    { "Sprache wechseln" = "how-to/switch-language.md" },
+  ] },
+  { "Referenz" = [
+    "reference/index.md",
+    { "Benutzeroberfläche" = "reference/ui.md" },
+    { "Ströme" = "reference/streams.md" },
+    { "Ergebnisse" = "reference/results.md" },
+    { "Kennzahlen" = "reference/key-figures.md" },
+    { "Maßeinheiten" = "reference/units.md" },
+    { "Glossar" = "reference/glossary.md" },
+    { "Einschränkungen" = "reference/limitations.md" },
+    { "Prozesseinheiten" = [
+      "reference/process-units/index.md",
+      { "Gewinnen" = "reference/process-units/groundwater.md" },
+      { "Reservoir" = "reference/process-units/reservoir.md" },
+      { "Sandfiltration" = "reference/process-units/sandfiltration.md" },
+      { "Marmorfiltration" = "reference/process-units/marblefiltration.md" },
+      { "Aktivkohlefiltration" = "reference/process-units/activatedcarbon.md" },
+      { "Turmbelüftung" = "reference/process-units/toweraeration.md" },
+      { "Spritzbelüftung" = "reference/process-units/sprayaerator.md" },
+      { "Plattenbelüftung" = "reference/process-units/plate.md" },
+      { "Kaskade" = "reference/process-units/cascade.md" },
+      { "Pelletontharding" = "reference/process-units/softening.md" },
+      { "Dosierung" = "reference/process-units/dosing.md" },
+      { "Membranfiltration" = "reference/process-units/membrane.md" },
+      { "Membranentgassung" = "reference/process-units/membranedegassing.md" },
+      { "Vakuum-Entgasung" = "reference/process-units/vacuum.md" },
+      { "Sandfang" = "reference/process-units/sandtrap.md" },
+      { "Transportleitung" = "reference/process-units/pipeline.md" },
+      { "Wiederverwendung von Spülwasser" = "reference/process-units/recycle.md" },
+      { "Teilen" = "reference/process-units/splitter.md" },
+      { "Lieferung" = "reference/process-units/output.md" },
+      { "Abfallstrom" = "reference/process-units/waste.md" },
+    ] },
+  ] },
+  { "Erläuterung" = [
+    "explanation/index.md",
+    { "Was Amanzi ist" = "explanation/what-amanzi-is.md" },
+    { "Trinkwasseraufbereitung" = "explanation/drinking-water-treatment.md" },
+    { "Szenarien und Fließschemata" = "explanation/scenarios-and-flowsheets.md" },
+    { "Wasserqualität lesen" = "explanation/reading-water-quality.md" },
+    { "Wie Amanzi berechnet" = "explanation/how-amanzi-calculates.md" },
+    { "Menge, Energie, Chemikalien, CO₂" = "explanation/quantity-energy-chemicals-co2.md" },
+    { "Belüftung" = "explanation/aeration.md" },
+    { "Filtration" = "explanation/filtration.md" },
+    { "Aktivkohle und PFAS" = "explanation/activated-carbon-and-pfas.md" },
+    { "Membranen" = "explanation/membranes.md" },
+    { "Enthärtung und Dosierung" = "explanation/softening-and-dosing.md" },
+    { "Literatur" = "explanation/literature.md" },
+  ] },
+]
+
+[project.theme]
+language = "de"
+logo = "media/site_logo.png"
+features = [
+  "navigation.tabs",
+  "navigation.indexes",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.path",
+  "toc.follow",
+  "search.suggest",
+  "content.code.copy",
+]
+
+[[project.extra.alternate]]
+name = "English"
+link = "/amanzi/en/"
+lang = "en"
+
+[[project.extra.alternate]]
+name = "Nederlands"
+link = "/amanzi/nl/"
+lang = "nl"
+
+[[project.extra.alternate]]
+name = "Deutsch"
+link = "/amanzi/de/"
+lang = "de"
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+pymdownx.details = {}
+pymdownx.highlight.anchor_linenums = true
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]

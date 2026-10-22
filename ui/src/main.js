@@ -4,6 +4,8 @@ import mitt from 'mitt'
 import _ from 'lodash'
 import { scenarioStore } from './stores/scenario'
 import { projectStore } from './stores/project'
+import { interfaceStore } from './stores/interface'
+import { runtimeStore } from './stores/runtime'
 import { piniaUndoRedo } from './stores/undo'
 import { createPinia } from 'pinia'
 import VueCookies from 'vue-cookies'
@@ -113,22 +115,21 @@ var modelspec = {}
 var modelVueNames = []
 
 async function loadModels() {
-  const models = import.meta.glob('./models/*/*.json')
- for(const path in models) {
-    let spec = await models[path]()
-    modelspec[spec.name] = JSON.parse(JSON.stringify(spec))
-  }
-
-  const modelVues = import.meta.glob('./models/*/*.vue', {'eager': true})
-  for(const path in modelVues) {
+  const models = import.meta.glob('./models/*/*.vue', {'eager': true})
+  for(const path in models) {
     let split = path.split('/')
     let model = split[2]
     let type = split[3].split('.')[0]
     // let mdl = await modelVues[path]()
-    let mdl = modelVues[path]
+    let mdl = models[path]
     let name = _.startCase(_.camelCase(type+"-"+model)).replace(" ","")
     app.component(name, mdl.default)
     modelVueNames.push(name)
+
+    if (type == 'block') {
+      const properties = models[path].properties
+      modelspec[model] = properties
+    }
   }
 
 }
@@ -141,11 +142,15 @@ pinia.use(({store}) => {
 await loadModels()
 
 let store = projectStore()
+let ui = interfaceStore()
+let runtime = runtimeStore()
 store.currentAmanziVersion = version
 store.$bus = eventBus
 app.config.globalProperties.$bus = eventBus
 app.config.globalProperties.modelspec = modelspec
 app.config.globalProperties.$project = store
+app.config.globalProperties.$interface = ui
+app.config.globalProperties.$runtime = runtime
 app.config.globalProperties.chemform = chemform
 
 app.config.globalProperties.$store = store.activeScenario
@@ -154,4 +159,5 @@ app.config.globalProperties.$modelVues = modelVueNames
 app.config.globalProperties.$version = version
 
 app.config.globalProperties.$http = api
+
 app.mount('#app')

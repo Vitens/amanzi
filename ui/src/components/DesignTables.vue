@@ -46,8 +46,8 @@ export default {
   },
   computed: {
     tables() {
-      if (this.$project.designState.tables) {
-        let tables = this.$project.designState.tables
+      if (this.$runtime.designState.tables) {
+        let tables = this.$runtime.designState.tables
         tables = tables.filter(table => table.outputs.length > 0)
 
         return tables

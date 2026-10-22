@@ -18,7 +18,7 @@ class QuantitySolver(Solver):
         Solve the linear matrix equation.
     """
 
-    def solve(self, until=None) -> list: 
+    def solve(self, until=None): 
         """
         Solve the linear matrix equation.
 

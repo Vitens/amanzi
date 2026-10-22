@@ -59,7 +59,7 @@
 
             <g :class="{'draggable': draggable(component)}">
             <component :is="'hydraulic-' + component.model.type" :config="component.model" :path="path" :position="index"
-              :hydraulics="$project.designState.hydraulics.models[component.model.uid]"
+              :hydraulics="$runtime.designState.hydraulics.models[component.model.uid]"
               :uid="component.model.uid"
               @anchor="setAnchorpoints" 
               @size="setSize" 
@@ -171,7 +171,7 @@ export default {
     },
     levels() {
       if(Object.keys(this.anchorpoints).length == 0) return []
-      let hydraulic_info = this.$project.designState.hydraulics
+      let hydraulic_info = this.$runtime.designState.hydraulics
 
       let levels = []
 
@@ -294,7 +294,7 @@ export default {
     pathComponents() {
       // get all components (i.e. models and boosters) in the path
       let components = []
-      let hydraulic_info = this.$project.designState.hydraulics
+      let hydraulic_info = this.$runtime.designState.hydraulics
 
       for(let i = 0; i < this.path.length - 1; i++) {
         let srcModel = this.path[i]
@@ -323,7 +323,7 @@ export default {
         let booster = false
         for(let j = i+1; j < this.path.length; j++) {
           let cid = this.path[j-1].uid + ' -> ' + this.path[j].uid + ' (product)'
-          let connection = this.$project.designState.hydraulics.connections[cid]
+          let connection = this.$runtime.designState.hydraulics.connections[cid]
           if(connection.booster) {
             // add booster to components
             components.push({'type': 'booster', 'booster': connection, 'uid': cid, 'head': connection.booster_head})

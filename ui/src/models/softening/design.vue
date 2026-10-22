@@ -109,22 +109,22 @@ export default {
   },
   methods: {
     dataset(group, key) {
-      if(this.$project.designState.charts == undefined) { return [] }
-      if(!(group in this.$project.designState.charts)) { return [] }
-      if(!(key in this.$project.designState.charts[group])) { return [] }
-      return this.$project.designState.charts[group][key]
+      if(this.$runtime.designState.charts == undefined) { return [] }
+      if(!(group in this.$runtime.designState.charts)) { return [] }
+      if(!(key in this.$runtime.designState.charts[group])) { return [] }
+      return this.$runtime.designState.charts[group][key]
     },
     output(group, key) {
       const resp = []
-      if(!(group in this.$project.designState)) { return resp }
-      if(!(key in this.$project.designState[group])) { return resp }
-      return this.$project.designState[group][key]
+      if(!(group in this.$runtime.designState)) { return resp }
+      if(!(key in this.$runtime.designState[group])) { return resp }
+      return this.$runtime.designState[group][key]
     },
     resultSet(group) {
 
-      if(!(group in this.$project.designState)) { return [] }
+      if(!(group in this.$runtime.designState)) { return [] }
 
-      let data = this.$project.designState[group]
+      let data = this.$runtime.designState[group]
 
       let resp = [
         {name: 'pH', value: data.pH, units: '-'},

@@ -79,18 +79,18 @@ export default {
   },
   methods: {
     output(group, key, precision=2, list=false) {
-      // if key not in $project.designState, return '-'
+      // if key not in $runtime.designState, return '-'
       const resp = list ? [] : '-'
-      if(!(group in this.$project.designState)) { return resp }
-      if(!(key in this.$project.designState[group])) { return resp }
+      if(!(group in this.$runtime.designState)) { return resp }
+      if(!(key in this.$runtime.designState[group])) { return resp }
 
-      let val = this.$project.designState[group][key]
+      let val = this.$runtime.designState[group][key]
       return list ? val : val.toFixed(precision)
     },
     resultSet(group) {
-      if(!(group in this.$project.designState)) { return false }
+      if(!(group in this.$runtime.designState)) { return false }
 
-      let data = this.$project.designState[group]
+      let data = this.$runtime.designState[group]
 
       if(group == 'gas') {
         return [

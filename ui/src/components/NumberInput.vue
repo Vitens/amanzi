@@ -24,8 +24,8 @@ export default {
   },
   emits: ['update:modelValue'],
   created() {
-    this.numberValue = this.modelValue
-  },
+    this.numberValue = this.modelValue ?? this.defaultValue
+    },
   watch: {
     modelValue() {
       this.numberValue = this.modelValue

@@ -24,6 +24,7 @@ class Scenario:
         # load models and connections
         self.models = self.load_models()  
         self.connections = self.load_connections()
+        self.metaData = config.get('metaData', {})
 
 
         # list of solvers

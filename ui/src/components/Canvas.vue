@@ -45,8 +45,8 @@
     tabindex=-1
     :style="{transform: 'translate('+display.zoomX+'px,'+display.zoomY+'px)scale('+display.zoom+')translate('+(-display.zoomX)+'px,'+(-display.zoomY)+'px)', left: display.left + 'px', top: display.top + 'px', 'transform-origin': 'left top'}"
     v-draggable="{start: startPanSelect, move: panSelect, end: endPanSelect, focus: true}"
-    :class="{gridlines: display.grid}"
-    v-zoomable="{zoom}"
+    :class="{gridlines: display.grid, panning: panning}"
+    v-zoomable="{zoom, pan: panTrackpad}"
     @dragover='allowDrop'
     @drop='dropBlock'
     
@@ -138,7 +138,7 @@ export default {
     },
 
     display() {
-      return this.$project.canvas
+      return this.$interface.canvas
     }
   },
   methods: {
@@ -205,9 +205,13 @@ export default {
         }
       }
     },
+    panTrackpad(dx,dy, args, evt) {
+      this.display.left -= dx 
+      this.display.top -= dy
+    },
     startPanSelect(x,y, args,evt) {
       // only pan when middle mouse button is clicked
-      if(evt.which == 2 || this.$project.mouseMode == 'pan') {
+      if(evt.which == 2 || this.$interface.mouseMode == 'pan') {
         this.panning = true
       } else {
         this.selection.active = true
@@ -238,7 +242,7 @@ export default {
       var nz = this.display.zoom + dz
 
       if(nz < 0.25) { dz = 0.25 - this.display.zoom; nz = 0.25 }
-      if(nz > 1.5) { dz = 1.5 - this.display.zoom; nz = 1.5 }
+      if(nz > 2.0) { dz = 2.0 - this.display.zoom; nz = 2.0 }
 
       let z = this.display.zoom
 
@@ -268,7 +272,7 @@ export default {
       // merge blocks and connections
       let all = [...blocks, ...connections]
 
-      let s = this.$project.canvas.zoom
+      let s = this.$interface.canvas.zoom
 
       // get position on canvas
       let positions = all.map(el => {
@@ -307,9 +311,9 @@ export default {
       
 
       // apply zoom and offset
-      this.$project.canvas.zoom = z
-      this.$project.canvas.left = -left * z + offsetx
-      this.$project.canvas.top = -top * z + offsety
+      this.$interface.canvas.zoom = z
+      this.$interface.canvas.left = -left * z + offsetx
+      this.$interface.canvas.top = -top * z + offsety
 
 
 
@@ -373,5 +377,7 @@ export default {
   opacity: 1;
 }
 
-
+#canvas.panning {
+  cursor: grabbing;
+}
 </style>

@@ -25,7 +25,7 @@
 
     </div>
 
-    <table v-if="$project.reportState.results">
+    <table v-if="$runtime.reportState.results">
       <tr class="bars">
         <td class="units"><span>{{ metrics[metric_index].uom }}</span></td>
         <td v-for="model, model_index in columns">
@@ -203,7 +203,7 @@ export default {
     paths() {
       if (!this.$project.scenario) return []
       // Convert model UIDs to names in each path
-      if (!this.$project.reportState.results) return []
+      if (!this.$runtime.reportState.results) return []
       console.log("computing paths for scenario", this.scenario)
       return this.$project.scenarios[this.scenario].findAllProductPaths()
     },
@@ -232,7 +232,7 @@ export default {
       if(!this.sum) {
         return this.paths[this.path_index].map(n => n.name)
       }
-      var order = this.$project.reportState.results[this.scenario].summaries[this.namespace].names
+      var order = this.$runtime.reportState.results[this.scenario].summaries[this.namespace].names
       if(this.sum && this.waterfall) {
         return order.concat('Total')
       }
@@ -245,8 +245,8 @@ export default {
         let path = this.$project.scenarios[this.scenario].findAllProductPaths()[this.path_index]
         for(var model of path) {
           // find the index of the model in the order
-          let m = this.$project.reportState.results[this.scenario].summaries[this.namespace].order.indexOf(model.uid)
-          let val = this.$project.reportState.results[this.scenario].summaries[this.namespace].models[m][this.metric_index]
+          let m = this.$runtime.reportState.results[this.scenario].summaries[this.namespace].order.indexOf(model.uid)
+          let val = this.$runtime.reportState.results[this.scenario].summaries[this.namespace].models[m][this.metric_index]
           // round to precision of the metric
           val.value = _.round(val.value, val.precision)
 
@@ -254,7 +254,7 @@ export default {
         }
       }
       else {
-        for(var model of this.$project.reportState.results[this.scenario].summaries[this.namespace].models) {
+        for(var model of this.$runtime.reportState.results[this.scenario].summaries[this.namespace].models) {
           values.push(model[this.metric_index])
         }
       }
@@ -274,10 +274,10 @@ export default {
       return cumsum
     },
     metrics() {
-      if (!this.$project.reportState.results) {
+      if (!this.$runtime.reportState.results) {
         return []
       }
-      return this.$project.reportState.results[this.scenario].summaries[this.namespace].models[0]
+      return this.$runtime.reportState.results[this.scenario].summaries[this.namespace].models[0]
     },
   }
 

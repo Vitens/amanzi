@@ -3,8 +3,26 @@
   </div>
 </template>
 <script>
+const properties = {
+  name: 'dosing',
+  category: 'main',
+  anchors: [
+    {
+      position: 'left',
+      direction: 'in',
+      type: 'product'
+    },
+    {
+      position: 'right',
+      direction: 'out',
+      type: 'product'
+    }
+  ]
+}
+
 export default {
   props: ['model'],
+  name: 'dosing',
   computed: {
     usedChem() {
       return this.$t('models.dosing.parameters.options.' + (this.model.configuration.parameters.chemical ?? 'lye'))
@@ -12,12 +30,14 @@ export default {
   }
 }
 
+export { properties }
+
 
 
 </script>
 <style>
 .dosing {
-  background: url('assets/dosing.png') no-repeat;
+  background: url('assets/block.png') no-repeat;
   background-position-x: 50%;
   background-position-y: -23px;
   background-color: transparent !important;

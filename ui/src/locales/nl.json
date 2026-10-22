@@ -27,7 +27,35 @@
 				"strontium": "Strontium",
 				"sulfate": "Sulfaat",
 				"temperature": "Temperatuur",
-				"total-organic-carbon": "Totaal organisch koolstof"
+				"total-organic-carbon": "Totaal organisch koolstof",
+				"Perchloroethylene": "Perchlooretheen",
+				"Trichloroethylene": "Trichlooretheen",
+				"cis-1,2-Dichlooretheen": "cis-1,2-Dichlooretheen",
+				"Vinylchloride": "Vinylchloride",
+				"1,1,1-Trichloroethane": "1,1,1-Trichloorethaan",
+				"1,1-Dichloroethane": "1,1-Dichloorethaan",
+				"1,2-Dichloroethane": "1,2-Dichloorethaan",
+				"Tetrachlormethane": "Tetrachloormethaan",
+				"Trichloromethane": "Trichloormethaan",
+				"Dichloromethane": "Dichloormethaan",
+				"1,2-Dichloropropane": "1,2-Dichloorpropaan",
+				"PFBS": "PFBS",
+				"PFPeS": "PFPeS",
+				"PFHxS": "PFHxS",
+				"PFHpS": "PFHpS",
+				"PFOS": "PFOS",
+				"PFDS": "PFDS",
+				"TFA": "TFA",
+				"PFBA": "PFBA",
+				"PFPeA": "PFPeA",
+				"PFHxA": "PFHxA",
+				"PFHpA": "PFHpA",
+				"PFOA": "PFOA",
+				"PFDA": "PFDA",
+				"PFUnDA": "PFUnDA",
+				"PFDoDA": "PFDoDA",
+				"PFTrDA": "PFTrDA",
+				"PFTeDA": "PFTeDA"
 			}
 		},
 		"terms": {
@@ -67,11 +95,11 @@
 			"hardness_lower_limit": "Hardheid ondergrens",
 			"hardness_upper_limit": "Hardheid bovengrens",
 			"hardness_upper_threshold": "Hardheid bovenstreefwaarde",
-			"hydrochloric_acid_emission": "Hydrochloride emissie",
+			"hydrochloric_acid_emission": "Zoutzuur emissie",
 			"hydrogen_peroxide_emission": "Hydrogenperoxide emissie",
 			"iron_chloride_emission": "IJzerchloride emissie",
 			"iron_sulphate_emission": "IJzersulfaat emissie",
-			"lime_emission": "Lime emissie",
+			"lime_emission": "Kalk emissie",
 			"lye_emission": "Natronloog emissie",
 			"manganese_chloride_emission": "Mangaanchloride emissie",
 			"max_hour": "Max uurfactor",
@@ -84,7 +112,7 @@
 			"nh4_upper_threshold": "Ammonium bovenstreefwaarde",
 			"o2_lower_limit": "Zuurstof ondergrens",
 			"o2_lower_threshold": "Zuurstof onderstreefwaarde",
-			"oxygen_emission": "Oxygen emissie",
+			"oxygen_emission": "Zuurstof emissie",
 			"ph_lower_limit": "pH ondergrens",
 			"ph_lower_threshold": "pH onderstreefwaarde",
 			"ph_upper_limit": "pH bovengrens",
@@ -96,12 +124,12 @@
 			"sc20_upper_threshold": "EGV bovenstreefwaarde",
 			"sc_upper_limit": "EGV bovengrens",
 			"sc_upper_threshold": "EGV bovenstreefwaarde",
-			"seed_calcite_emission": "Zaaizout emissie",
+			"seed_calcite_emission": "Calciet emissie",
 			"seed_dolomite_emission": "Dolomiet emissie",
 			"seed_garnet_emission": "Garnet emissie",
 			"seed_quartz_sand_emission": "Zilverzand emissie",
 			"si_lower_limit": "SI ondergrens",
-			"sodium_bisulfite_emission": "Natriumbisulfaat emissie",
+			"sodium_bisulfite_emission": "Natriumbisulfiet emissie",
 			"sodium_chloride_emission": "Natriumchloride emissie",
 			"sulphuric_acid_emission": "Zwavelzuur emissie",
 			"well_efficiency": "Rendement winput"
@@ -122,6 +150,87 @@
 			},
 			"sections": {
 				"direct_emissions": "Directe uitstoot"
+			}
+		},
+		"activatedcarbon": {
+			"parameters": {
+				"include_doc_competition": "DOC-competitie",
+				"DOC_Freundlich_k": "DOC Freundlich K",
+				"DOC_Freundlich_1n": "DOC Freundlich 1/n",
+				"DOC_competition_coefficient": "DOC-competitiecoëfficiënt",
+				"stationary_calculation": "Stationair gedrag",
+				"staggered_replacement": "Gestaffelde vervanging",
+				"staggered_replacement_units_warning": "Gestaffelde vervanging vereist meer dan één unit.",
+				"options": {
+					"no_staggering": "Geen staffeling",
+					"limit_staggering": "Staffeling op limiet",
+					"fixed_staggering": "Vaste staffeling",
+					"fallback": "Fallback",
+					"cadet": "CADET",
+					"psdm": "PSDM",
+					"NORIT-Supra-0,8": "NORIT Supra 0,8",
+					"NORIT-Supra-1,0": "NORIT Supra 1,0",
+					"NORIT-Supra-1,2": "NORIT Supra 1,2",
+					"NORIT-Supra-1,5": "NORIT Supra 1,5",
+					"NORIT-Supra-2,0": "NORIT Supra 2,0",
+					"sum20PFAS_limit": "Som 20 PFAS",
+					"sum4PFAS_limit": "Som 4 PFAS",
+					"PEQ_limit": "PEQ"
+				},
+				"advanced": "Geavanceerd",
+				"shape": "Vorm",
+				"length": "Lengte",
+				"width": "Breedte",
+				"diameter": "Diameter",
+				"bed_height": "Bedhoogte",
+				"bed_porosity": "Bedporositeit",
+				"bed_porosity_clogged": "Bedporositeit verstopt",
+				"design_limit": "Ontwerplimiet",
+				"particle_diameter": "Deeltjesdiameter",
+				"particle_porosity": "Deeltjesporositeit",
+				"particle_density": "Deeltjesdichtheid",
+				"packing_type": "Kooltype",
+				"apparent_density": "Stortgewicht",
+				"fixed_replacement": "Vast vervangingsinterval",
+				"replacement_interval": "Vervangingsinterval",
+				"replacement_loading": "Belading bij vervanging",
+				"breakthrough_solver": "Doorbraakmodel",
+				"breakthrough_bed_volumes": "Doorbraakbedvolumes",
+				"breakthrough_points": "Punten doorbraakcurve",
+				"axial_dispersion": "Axiale dispersie",
+				"mass_transfer_coefficient": "Stofoverdrachtscoëfficiënt"
+			},
+			"design": {
+				"compound": "Component",
+				"competition_coefficient": "Competitiecoëfficiënt",
+				"include_doc_competition": "DOC-competitie meenemen",
+				"freundlich_k": "Freundlich K",
+				"freundlich_1n": "Freundlich 1/n",
+				"doc_params": "Parameters organisch koolstof",
+				"removal_akf": "AKF-verwijdering",
+				"adsorption_capacity": "Adsorptiecapaciteit",
+				"loading_q": "Belading q"
+			},
+			"name": "Actieve kool",
+			"options": {
+				"shape": {
+					"rectangular": "Rechthoekig",
+					"circular": "Rond"
+				}
+			},
+			"outputs": {
+				"volume": "Volume",
+				"replacement": "Vervanging",
+				"total_surface": "Totaal oppervlak",
+				"filtration_velocity": "Filtratiesnelheid",
+				"EBCT": "EBCT",
+				"headloss_clean": "Drukverlies schoon",
+				"headloss_clogged": "Drukverlies verstopt",
+				"average_headloss": "Gemiddeld drukverlies"
+			},
+			"sections": {
+				"activatedcarbon": "Actieve kool",
+				"pressure_loss": "Drukverlies"
 			}
 		},
 		"base": {
@@ -227,7 +336,7 @@
 				"oxygen": "Zuurstof"
 			},
 			"parameters": {
-				"chemical": "Chemicalië",
+				"chemical": "Chemicalie",
 				"dosage": "Dosering",
 				"mode": "Doseermode",
 				"options": {
@@ -277,7 +386,7 @@
 				"denitrification": "Denitrificatie",
 				"filtration": "Filtratie",
 				"h2s_oxidation": "H2S oxidatie",
-				"highlight_editing_model": "Highlight huidig model",
+				"highlight_editing_model": "Huidig model markeren",
 				"influent": "Influent",
 				"iron_removal": "IJzerverwijdering",
 				"mangan_removal": "Ontmanganing",
@@ -286,11 +395,11 @@
 				"nitrification": "Nitrificatie",
 				"O2": "Zuurstof",
 				"O2_consumption": "Zuurstofverbruik",
-				"pH": "Zuurgrad",
+				"pH": "Zuurgraad",
 				"show_levels": "Aan- en afvoerhoogte",
 				"show_model_levels": "Waterniveaus",
 				"spray": "Sproeibeluchting",
-				"sprayeffluent": "Sproer effluent"
+				"sprayeffluent": "Sproei-effluent"
 			},
 			"name": "Zandfiltratie",
 			"outputs": {
@@ -309,7 +418,7 @@
 				"bed_expansion_sand": "Bed expansie zand",
 				"bed_height": "Bedhoogte",
 				"blower_efficiency": "Rendement beluchting",
-				"blower_energy": "Elektriciteitsverbruik sproebeluchting",
+				"blower_energy": "Elektriciteitsverbruik sproeibeluchting",
 				"EBCT": "EBCT",
 				"expanded_height_anthracite": "Geëxpandeerde hoogte antraciet",
 				"expanded_height_sand": "Geëxpandeerde hoogte zand",
@@ -334,7 +443,7 @@
 				"backwash_control": "Spoelen op:",
 				"backwash_head": "Overstorthoogte spoelen",
 				"backwash_pump_efficiency": "Rendement spoelpomp",
-				"blowereficiency": "Rendement sproebeluchting",
+				"blowereficiency": "Rendement sproeibeluchting",
 				"diameter": "Diameter",
 				"diameter_anthracite": "Diameter Antraciet",
 				"diameter_sand": "Diameter Zand",
@@ -362,7 +471,7 @@
 				"runtime": "Looptijd",
 				"runvolume": "Volume behandeld water",
 				"shape": "Vorm",
-				"spray": "Sproebeluchting integratie",
+				"spray": "Sproeibeluchting integratie",
 				"supernatant_level": "Bovenwaterstand",
 				"suppress_ammonium_removal": "Onderdruk NH₄ verwijdering",
 				"suppress_iron_removal": "Onderdruk Fe-verwijdering",
@@ -453,7 +562,23 @@
 				"SI": "SI",
 				"tac": "TAC",
 				"tds": "TDS",
-				"total": "Totaal"
+				"total": "Totaal",
+				"abreviation": "Afkorting",
+				"abbreviation": "Afkorting",
+				"addCompound": "Component toevoegen",
+				"chemical_formula": "Chemische formule",
+				"concentration": "Concentratie",
+				"henry": "Constante van Henry",
+				"dw": "Diffusiecoëfficiënt water",
+				"dg": "Diffusiecoëfficiënt gas",
+				"name": "Naam",
+				"pfas": "PFAS",
+				"pfoa-factor": "PFOA-equivalentfactor",
+				"removal_akf": "AKF-verwijdering %",
+				"removal_ro": "RO-verwijdering %",
+				"removal_iex": "IEX-verwijdering %",
+				"user_input": "Gebruikersinvoer",
+				"vocs": "Vluchtige organische stoffen"
 			},
 			"name": "Winning",
 			"outputs": {
@@ -495,6 +620,110 @@
 				"hydraulic_line": "Hydraulische lijn"
 			},
 			"select-preset": "Selecteer standaardoplossing"
+		},
+		"marblefiltration": {
+			"name": "Marmerfiltratie",
+			"design": {
+				"acid_formation": "Zuurvorming",
+				"bicarbonate": "Bicarbonaat",
+				"denitrification": "Denitrificatie",
+				"filtration": "Filtratie",
+				"h2s_oxidation": "H2S oxidatie",
+				"highlight_editing_model": "Huidig model markeren",
+				"influent": "Ingangswater",
+				"iron_removal": "IJzerafvang",
+				"mangan_removal": "Mangaanafvang",
+				"manganese_removal": "Mangaanafvang",
+				"methane_oxidation": "Methaanoxidatie",
+				"nitrification": "Nitrificatie",
+				"O2": "Zuurstof",
+				"O2_consumption": "Zuurstofverbruik",
+				"pH": "pH-waarde",
+				"show_levels": "Aan- en afvoerhoogte",
+				"show_model_levels": "Waterniveaus",
+				"spray": "Sproeibeluchting",
+				"sprayeffluent": "Sproei-effluent"
+			},
+			"outputs": {
+				"average_headloss": "Gemiddelde drukval",
+				"backwash_duration": "Terugspoelduur",
+				"backwash_energy": "Terugspoelenergieverbruik",
+				"backwash_headloss": "Terugspoelhoogteverlies",
+				"backwash_headloss_lime": "Terugspoelhoogteverlies in kalk",
+				"backwash_headloss_marble": "Terugspoelhoogteverlies in marmer",
+				"backwash_iron": "IJzergehalte terugspoelwater",
+				"backwash_loss": "Terugspoelverlies",
+				"backwash_power_consumption": "Terugspoelenergieverbruik",
+				"backwash_volume": "Totaal terugspoelvolume",
+				"bed_expansion": "Bed expandatie",
+				"bed_expansion_lime": "Bed expandatie kalk",
+				"bed_expansion_marble": "Bed expandatie marmer",
+				"bed_height": "Bed hoogte",
+				"blower_efficiency": "Rendement ventilatie",
+				"blower_energy": "Ventilator energieverbruik",
+				"EBCT": "EBCT",
+				"expanded_height_lime": "Uitbreiding hoogte kalk",
+				"expanded_height_marble": "Uitbreiding hoogte marmer",
+				"filtration_velocity": "Filtratiesnelheid",
+				"headloss_lime": "Drukval schoon kalk",
+				"headloss_marble": "Drukval schoon marmer",
+				"headloss_lime_clogged": "Drukval verstopt kalk",
+				"headloss_marble_clogged": "Drukval verstopt marmer",
+				"headloss_clean": "Drukval schoon filter",
+				"headloss_clogged": "Drukval verstopt filter",
+				"headloss_influent": "Hoogteverlies inlaat + nozzles",
+				"headloss_model": "Hoogteverlies over filter ",
+				"iron_capture": "IJzerafvang per filter run",
+				"iron_load": "IJzerbelasting",
+				"max_rate": "Maximum terugspoelsnelheid",
+				"runtime_volume": "Lopend volume",
+				"surface_area": "Filteroppervlak",
+				"total_surface": "Totaal filteroppervlak"
+			},
+			"parameters": {
+				"ammonium_removal_efficiency": "NH₄ verwijderingsrendement",
+				"backwash_control": "Spoelen op:",
+				"backwash_head": "Terugspoelhoogteverlies",
+				"backwash_pump_efficiency": "Terugspoelpomp rendement",
+				"blowereficiency": "Ventilator rendement",
+				"diameter_marble": "Diameter marmer",
+				"diameter_lime": "Diameter kalk",
+				"fall_height_to_media": "Hoogte val boven bed",
+				"filter_bottom": "Filter onderkant",
+				"height_gutter_to_media": "Hoogte van inlaat tot filter bed",
+				"height_marble": "Hoogte marmer",
+				"height_lime": "Hoogte kalk",
+				"iron_removal_efficiency": "IJzerafvang rendement",
+				"length": "Lengte",
+				"lime_pellets": "Kalkpellets",
+				"manganese_removal_efficiency": "Mangaanafvang rendement",
+				"options": {
+					"circular": "Rond",
+					"rectangular": "Rechthoekig",
+					"time": "Tijd",
+					"volume": "Loopvolume"
+				},
+				"porosity_lime": "Porositeit schoon kalk",
+				"porosity_marble": "Porositeit schoon marmer",
+				"porosity_lime_clogged": "Porositeit verstopt kalk",
+				"porosity_marble_clogged": "Porositeit verstopt marmer",
+				"pressure_loss_nozzles": "Drukval spray net",
+				"pressurized": "Drukfilter",
+				"runtime": "Looptijd",
+				"runvolume": "Volume van behandeld water",
+				"shape": "Vorm",
+				"spray": "Geïntegreerde sproeibeluchting",
+				"supernatant_level": "Supernatant niveau",
+				"suppress_ammonium_removal": "NH₄ verwijdering uitschakelen",
+				"suppress_iron_removal": "IJzerafvang uitschakelen",
+				"suppress_manganese_removal": "Mangaanafvang uitschakelen",
+				"width": "Breedte"
+			},
+			"sections": {
+				"backwash": "Terugspoel",
+				"general": "Algemeen",
+				"pressure_loss": "Drukval filter medium"
+			}
 		},
 		"membrane": {
 			"design": {
@@ -672,7 +901,7 @@
 				"total_headloss": "Totaal verlies hydraulische hoogte"
 			},
 			"parameters": {
-				"effluent_atmospheric": "Uitlaat asmosferisch",
+				"effluent_atmospheric": "Atmosferische uitlaat",
 				"influent_pressure_loss": "Drukverlies inlaatwerk",
 				"inlet_elevation": "Inlaathoogte",
 				"maximal_capacity": "Maximale capaciteit",
@@ -717,7 +946,7 @@
 			"outputs": {
 				"average_flow": "Gemiddeld debiet",
 				"average_velocity": "Gemiddelde snelheid",
-				"darcy_coefficient": "Darcy coefficient",
+				"darcy_coefficient": "Darcy-coëfficiënt",
 				"headloss_per_meter": "Hoogteverlies per strekkende meter",
 				"headloss_pipe": "Hoogteverlies in leiding",
 				"kinematic_viscosity": "Kinematische viscositeit",
@@ -935,7 +1164,7 @@
 				"pellet_production_per_day": "per dag",
 				"pellet_production_per_hour": "per uur",
 				"pellet_production_per_year": "per jaar",
-				"pellet_volume": "Volume pellet",
+				"pellet_volume": "Pelletvolume",
 				"quartz_sand": "Zilverzand",
 				"seed_consumption": "Entmateriaal verbruik",
 				"seed_consumption_per_day": "per dag",
@@ -986,7 +1215,7 @@
 					"hydrated_lime": "Geblust",
 					"milk_of_lime": "Kalkmelk",
 					"NaOH": "Natronloog",
-					"quartz_sand": "Silverzand",
+					"quartz_sand": "Zilverzand",
 					"quicklime": "Ongeblust",
 					"reactor-outlet": "Effluent"
 				},
@@ -1002,7 +1231,7 @@
 				"dosing": "Doseringen",
 				"hydraulic_load": "Hydraulische belasting",
 				"materials": "Materialen",
-				"pellet_bed": "Pellet bed",
+				"pellet_bed": "Pelletbed",
 				"pellet_production": "Pellet productie",
 				"reactor_shape": "Reactor vorm",
 				"velocities": "Snelheden"
@@ -1018,8 +1247,8 @@
 		"sprayaerator": {
 			"name": "Sproeibeluchting",
 			"outputs": {
-				"blower_energy": "Elektriciteitsverbruik sproebeluchting",
-				"blowerefficiency": "Rendement beluchter voor sproebeluchting",
+				"blower_energy": "Elektriciteitsverbruik sproeibeluchting",
+				"blowerefficiency": "Rendement beluchter voor sproeibeluchting",
 				"resparitoryquotient": "Respiratoire Quotient",
 				"total_air_flow": "Totale luchtstroom",
 				"total_nozzles": "Aantal sproeiers"
@@ -1027,7 +1256,7 @@
 			"parameters": {
 				"ambient_temperature": "Omgevingstemperatuur",
 				"area_per_nozzle": "Oppervlak per sproeier",
-				"blowereficiency": "Rendement sproebeluchting",
+				"blowereficiency": "Rendement sproeibeluchting",
 				"ch4_removal_efficiency": "CH4 verwijdering",
 				"co2_removal_efficiency": "CO2 verwijdering",
 				"fall_height": "Valhoogte boven bed",
@@ -1051,17 +1280,17 @@
 				"a-factor": "a-factor",
 				"air_volume": "Luchtvolume",
 				"b-factor": "b-factor",
-				"bed_volume": "Bed volume",
+				"bed_volume": "Bedvolume",
 				"blower_efficiency": "Rendement blower",
 				"blower_energy": "Blower energie",
 				"CO2": "CO2",
 				"delta_p": "Drukverschil bed",
 				"EBCT": "EBCT",
 				"F-Factor": "F-Factor",
-				"flooding_factor": "Flooding factor",
+				"flooding_factor": "Overstromingsfactor",
 				"headloss_influent": "Hydraulisch hoogteverlies influent",
 				"headloss_model": "Hydraulisch hoogteverlies torenbeluchter",
-				"liquid_holdup": "Liquid Holdup",
+				"liquid_holdup": "Vloeistofholdup",
 				"liquid_loading": "Oppervlaktebelasting",
 				"Methane": "Methaan",
 				"packing_size": "Pakkingsgrootte",
@@ -1072,7 +1301,35 @@
 				"total_height": "Totale hoogte",
 				"total_pressure_drop": "Totaal drukverlies luchtzijdig",
 				"void_fraction": "Void-fractie",
-				"volume": "Volume torenbeluchter"
+				"volume": "Volume torenbeluchter",
+				"Perchloroethylene": "Perchlooretheen",
+				"Trichloroethylene": "Trichlooretheen",
+				"cis-1,2-Dichlooretheen": "cis-1,2-Dichlooretheen",
+				"Vinylchloride": "Vinylchloride",
+				"1,1,1-Trichloroethane": "1,1,1-Trichloorethaan",
+				"1,1-Dichloroethane": "1,1-Dichloorethaan",
+				"1,2-Dichloroethane": "1,2-Dichloorethaan",
+				"Tetrachlormethane": "Tetrachloormethaan",
+				"Trichloromethane": "Trichloormethaan",
+				"Dichloromethane": "Dichloormethaan",
+				"1,2-Dichloropropane": "1,2-Dichloorpropaan",
+				"PFBS": "PFBS",
+				"PFPeS": "PFPeS",
+				"PFHxS": "PFHxS",
+				"PFHpS": "PFHpS",
+				"PFOS": "PFOS",
+				"PFDS": "PFDS",
+				"TFA": "TFA",
+				"PFBA": "PFBA",
+				"PFPeA": "PFPeA",
+				"PFHxA": "PFHxA",
+				"PFHpA": "PFHpA",
+				"PFOA": "PFOA",
+				"PFDA": "PFDA",
+				"PFUnDA": "PFUnDA",
+				"PFDoDA": "PFDoDA",
+				"PFTrDA": "PFTrDA",
+				"PFTeDA": "PFTeDA"
 			},
 			"parameters": {
 				"air_system_pressure_loss": "Drukverlies luchtsysteem",
@@ -1119,14 +1376,14 @@
 			"design": {
 				"acidity-and-si": "Zuurgraad en SI",
 				"dry": "Droog",
-				"effluent-quality": "Effluent Kwaliteit",
-				"gas-quality": "Gas Kwaliteit",
+				"effluent-quality": "Effluentkwaliteit",
+				"gas-quality": "Gaskwaliteit",
 				"per_m3": "Per m3",
 				"per_unit": "Per vacuumketel",
 				"total_process": "Totaal proces",
 				"vacuum-pressure": "Onderdruk [bara]",
 				"wet": "Nat",
-				"wet-gas-volume": "(nat) gas volume"
+				"wet-gas-volume": "(nat) gasvolume"
 			},
 			"name": "Vacuumontgassing",
 			"outputs": {
@@ -1142,13 +1399,13 @@
 				"velocity": "Snelheid"
 			},
 			"parameters": {
-				"acidity-and-si": "",
+				"acidity-and-si": "Zuurgraad en SI",
 				"bed_height": "Hoogte pakking",
 				"bottom_height": "Hoogte onderkant",
 				"diameter": "Diameter",
-				"dry": "",
-				"effluent-quality": "",
-				"gas-quality": "",
+				"dry": "Droog",
+				"effluent-quality": "Effluentkwaliteit",
+				"gas-quality": "Gaskwaliteit",
 				"options": {
 					"liquid_ring": "Vloeistofring",
 					"screw": "Schroefpomp"
@@ -1157,8 +1414,8 @@
 				"spray_height": "Valhoogte sproeiers",
 				"vacuum_pressure": "Vacuum diepte",
 				"vacuum_pump": "Type vacuumpomp",
-				"wet": "",
-				"wet-gas-volume": ""
+				"wet": "Nat",
+				"wet-gas-volume": "(nat) gasvolume"
 			},
 			"sections": {
 				"vacuum_system": "Vacuum systeem",
@@ -1212,7 +1469,7 @@
 			},
 			"notification_no_model_changes": "Er zijn geen modelmigraties op dit project toegepast (bestandsformaatversie is wel bijgewerkt).",
 			"notification_title": "Projectbestand bijgewerkt",
-			"notification_version_range": "v{from} → v{to}",
+			"notification_version_range": "{from} → {to}",
 			"notification_version_tag": "v{version}",
 			"notification_col_version": "Versie",
 			"notification_col_change": "Toegepaste wijziging"
@@ -1236,7 +1493,9 @@
 				"section": "Sectie",
 				"tag": "Tag",
 				"units": "Eenheid",
-				"value": "Waarde"
+				"value": "Waarde",
+				"allowed_values": "Toegestane waarden",
+				"default": "Standaard"
 			},
 			"sections": {
 				"aeration": "Beluchting",
@@ -1272,7 +1531,9 @@
 				"vacuum_system": "Vacuumsysteem",
 				"vent_processing": "Verwerking restgas ",
 				"vessel": "Ketel",
-				"well_design": "Winputten"
+				"well_design": "Winputten",
+				"filter": "Filterontwerp",
+				"marblefilter": "Marmerfiltratie"
 			},
 			"tables": {
 				"headers": {
@@ -1301,7 +1562,7 @@
 				"changelog": "Versiegeschiedenis",
 				"developed_by": "Ontwikkeld door Technologie & Onderzoek, Vitens",
 				"license": "Licentie",
-				"remark": "Amanzi is getest en gevalideerd op onze eigen installaties en zuiveringen. Vitens is  echter op geen enkele manier aansprakelijk voor de correctheid, toepasbaarheid en beschikbaarheid van de resultaten en de applicatie.",
+				"remark": "Amanzi is getest en gevalideerd op onze eigen installaties en zuiveringen. Vitens is echter op geen enkele manier aansprakelijk voor de correctheid, toepasbaarheid en beschikbaarheid van de resultaten en de applicatie.",
 				"title": "Over Amanzi"
 			},
 			"init": {
@@ -1347,7 +1608,7 @@
 				"zoom_out": "Verklein"
 			},
 			"edit": {
-				"copy": "Kopieëren",
+				"copy": "Kopiëren",
 				"cut": "Knippen",
 				"duplicate": "Dupliceren",
 				"edit": "Wijzigen",
@@ -1410,9 +1671,14 @@
 				}
 			},
 			"general": {
+				"compact": "Compact",
+				"comparison": "Vergelijking",
 				"energy": "Energie",
+				"extended": "Uitgebreid",
 				"higher_better": "hoger is beter",
 				"lower_better": "lager is beter",
+				"quantity": "Kwantiteit",
+				"single_model": "Enkel scenario",
 				"sustainability": "Duurzaamheid",
 				"waterquality": "Waterkwaliteit"
 			},

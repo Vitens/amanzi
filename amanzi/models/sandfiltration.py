@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 class Sandfiltration(Model, Loss):
-    parametric_model = ['base', 'model', 'sprayaerator','filtration']
+    parametric_model = ['base', 'model', 'sprayaerator','filtration', 'sandfiltration']
 
 
     def __init__(self, config, pp):
@@ -45,8 +45,8 @@ class Sandfiltration(Model, Loss):
     
     @property
     def backwash_programme(self):
-        config = self.config.get('configuration', {})
-        programme = config.get('backwash_programme', [])
+        # Does not work at the moment find alternative for configuration
+        programme = self.parameters.get('backwash_programme', [])
         return programme
     
     @property

@@ -3,7 +3,7 @@
 <div class="comparison-table-container">
   <copy-button :target="'.comparison-table.'+namespace"></copy-button>
 
-  <table v-if="$project.reportState.results" class="result-table comparison-table" :class="namespace">
+  <table v-if="$runtime.reportState.results" class="result-table comparison-table" :class="namespace">
     <colgroup span="1" />
     <colgroup :span="columns.length" class="comparison-scenarios" />
     <colgroup span="1" />
@@ -116,7 +116,7 @@ export default {
     },
     format(column_index, row_index) {
       var si = this.scenario !== undefined ? this.scenario : 0
-      // var row = this.$project.reportState.results[si].summaries[this.namespace].metrics[row_index]
+      // var row = this.$runtime.reportState.results[si].summaries[this.namespace].metrics[row_index]
       var row = this.metrics[row_index]
       if (row.value == null) { return '' }
       return this.values[row_index][column_index].toFixed(row.precision)
@@ -125,15 +125,15 @@ export default {
   computed: {
     columns() {
       if(this.scenario !== undefined) {
-        return this.$project.reportState.results[this.scenario].summaries[this.namespace].names
+        return this.$runtime.reportState.results[this.scenario].summaries[this.namespace].names
       }
-      return this.$project.reportState.scenarios
+      return this.$runtime.reportState.scenarios
     },
     metrics() {
       if(this.scenario === undefined) {
-        return this.$project.reportState.results[0].summaries[this.namespace].metrics
+        return this.$runtime.reportState.results[0].summaries[this.namespace].metrics
       }
-      return this.$project.reportState.results[this.scenario].summaries[this.namespace].models[0]
+      return this.$runtime.reportState.results[this.scenario].summaries[this.namespace].models[0]
     },
     values() {
 
@@ -141,7 +141,7 @@ export default {
         var outer = []
         for(var i = 0; i < this.columns.length; i++) {
           var inner = []
-          for(var r of this.$project.reportState.results[this.scenario].summaries[this.namespace].models[i]) {
+          for(var r of this.$runtime.reportState.results[this.scenario].summaries[this.namespace].models[i]) {
             inner.push(r.value)
           }
           outer.push(inner)
@@ -151,9 +151,9 @@ export default {
       }
 
       var outer = []
-      for (var i = 0; i < this.$project.reportState.scenarios.length; i++) {
+      for (var i = 0; i < this.$runtime.reportState.scenarios.length; i++) {
         var inner = []
-        for(var r of this.$project.reportState.results[i].summaries[this.namespace].metrics) {
+        for(var r of this.$runtime.reportState.results[i].summaries[this.namespace].metrics) {
           inner.push(r.value)
         }
         outer.push(inner)

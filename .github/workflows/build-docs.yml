@@ -1,0 +1,57 @@
+name: Build Documentation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-docs:
+    name: Build HTML docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install documentation extra
+        run: pip install ".[docs]"
+
+      - name: Build user documentation
+        run: |
+          zensical build
+          zensical build -f zensical.nl.toml
+          zensical build -f zensical.de.toml
+          printf '%s\n' '<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=en/"><link rel="canonical" href="en/"><title>Amanzi</title><p><a href="en/">English</a> · <a href="nl/">Nederlands</a> · <a href="de/">Deutsch</a></p>' > site/index.html
+
+      - name: Build architecture documentation
+        run: zensical build -f zensical.architecture.toml
+
+      - name: Zip HTML docs
+        run: |
+          (cd site && zip -r ../docs-html.zip .)
+          (cd site-architecture && zip -r ../architecture-html.zip .)
+
+      - name: Upload user docs zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amanzi-docs-html
+          path: docs-html.zip
+
+      - name: Upload architecture docs zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amanzi-architecture-html
+          path: architecture-html.zip
+
+      # Future stage: publish docs artifacts to GitHub Pages.

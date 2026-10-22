@@ -29,12 +29,20 @@ classifiers = [
 homepage = "https://github.com/Vitens/amanzi"
 repository = "https://github.com/Vitens/amanzi"
 
+[project.optional-dependencies]
+docs = [
+    "zensical",
+]
+
 [project.scripts]
 amanzi-server = "amanzi.server.app:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["amanzi"]
 
 #[tool.hatch.build.targets.wheel.force-include]
 #"ui/dist" = "amanzi/ui/dist"

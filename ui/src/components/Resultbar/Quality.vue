@@ -19,7 +19,7 @@ export default {
   components: {CopyButton},
   computed: {
     parameters() {
-      return this.$project.state.quality
+      return this.$runtime.solveState.quality
     }
   },
   methods: {

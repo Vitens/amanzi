@@ -7,34 +7,38 @@
       <el-main  v-loading='loading'  id="acfilter-design">
         <div class="process">
           <div id="acfilter-process">
-            <Result name="influent" units="ng/l" color="blue" :components="resultSet('influent')" />
+            <Result name="influent" color="blue" :components="resultSet('influent')" />
             <Result name="effluent" color="green" :components="resultSet('effluent')" />
-            <!-- <table class="hydraulics">
-              <tr><td>Regernatie</td><td>{{ output('model', 'regeneration') }}</td><td>jaar</td></tr>
-              <tr><td>Efficiency</td><td>{{ output('model', 'Efficiency2') }}</td><td>%</td></tr>
+            <table class="hydraulics">
+              <tr><td>Regeneration</td><td>{{ output('model', 'regeneration') }}</td><td>days</td></tr>
               <tr><td>EBCT</td><td>{{ output('model', 'EBCT') }}</td><td>min</td></tr>
               <tr><td>Volume</td><td>{{ output('model', 'Volume') }}</td><td>m<sup>3</sup></td></tr>
-            </table> -->
+              <tr><td>Bedvolumes per year</td><td>{{ output('model', 'bedvolume_jaar') }}</td><td>bedvolumes</td></tr>
+            </table>
           </div>
         </div>
   
-        <el-row v-if="params.advanced">
+        <el-row v-if="!params.stationary_calculation">
           <el-col :span="12">
             
-            <chart :datasets="removal_over_time" title="" xlabel="Bedvolumes" ylabel="Concentration " :designvalue="params.interval" :targetvalue="1" :ymax="1" :ymin="0"></chart>
+            <chart :datasets="removal_over_time" title="" xlabel=" Thousand Bedvolumes " xlabel2="Days" ylabel="Concentration " :designvalue="params.interval" :targetvalue="0.6" :ymax="1" :ymin="0" :xmin2="0" :xmax2="365" :x1x2ratio="bedvolumes_jaar/365"></chart>
   
           </el-col>
           <el-col :span="12">
  
             
-            <chart :datasets="Efficency" title="" xlabel="Bedvolumes" ylabel="PEQ" :designvalue="params.replacement_interval" :targetvalue="1" :ymin="0"></chart>
+            <chart :datasets="Efficency" title="" xlabel=" Thousand Bedvolumes " ylabel="PEQ" :designvalue="designvalue" :targetvalue="4.4" :ymin="0" :suggestedmax="4.4"></chart>
           </el-col>
         </el-row>
-  
       </el-main>
   
     </el-tab-pane>
-  
+    <el-tab-pane id="micropollutants-design" >
+      <template #label>
+        <el-icon size="14px"><i class='fa fa-flask'></i></el-icon><span>Micropollutants</span>
+      </template>
+      <Micropollutants :config="config"></Micropollutants>
+    </el-tab-pane>
   </template>
 
 <script>
@@ -42,7 +46,7 @@ import Chart from '@/components/Chart.vue'
 import Result from '@/components/ResultBlock.vue'
 import Percent from '@/components/Percent.vue'
 import DesignTables from '@/components/DesignTables.vue'
-
+import Micropollutants from './micropollutants.vue'
 const colors = {
   red: '#F56C6C',
   green: '#67C23A',
@@ -68,7 +72,7 @@ const colors = {
 
 
 export default {
-  components: {Chart, Result, Percent , DesignTables},
+  components: {Chart, Result, Percent , DesignTables, Micropollutants},
   props: ['config'],
   data() {
     return {
@@ -79,6 +83,7 @@ export default {
 
   computed: {
     params() {
+      console.log("params", this.config.parameters)
       return this.config.parameters
     },
     Efficency() {
@@ -89,20 +94,30 @@ export default {
 
       ]
     },
+    bedvolumes_jaar(){
+      return this.output('model', 'bedvolume_jaar', 0, true)
+    },
+    designvalue(){
+      const stagger = this.output('model', 'stagger_interval_BV', 0, true)
+      if (typeof stagger === 'number' && stagger > 0) {
+        return stagger / 1000
+      }
+      return this.output('model', 'regeneration_BV', 0, true) / 1000
+    },
     removal_over_time(){
       var trends = []
       
-      // console.log(this.$project.designState.charts.efficiency_height)
+      // console.log(this.$runtime.designState.charts.efficiency_height)
 
-      if(!this.$project.designState.model) { return [] }
+      if(!this.$runtime.designState.model) { return [] }
      
       var color_index = 0
 
-      for (var compound in this.$project.designState.model.breakthrough) {
-        //console.log(this.$project.designState.charts.efficiency_height[height])
+      for (var compound in this.$runtime.designState.model.breakthrough) {
+        //console.log(this.$runtime.designState.charts.efficiency_height[height])
         var trend = {
           label: compound,
-          data: this.$project.designState.model.breakthrough[compound],
+          data: this.$runtime.designState.model.breakthrough[compound],
           backgroundColor: Object.values(colors)[color_index],
           borderColor: Object.values(colors)[color_index],
           showLine: true,
@@ -137,10 +152,9 @@ export default {
     //   },
     //   deep: true
     // },
-    '$project.designState': {
+    '$runtime.designState': {
       handler(){
         this.loading = false
-        console.log(this.loading)
       },
       deep: true
     }
@@ -148,21 +162,21 @@ export default {
   
   methods: {
     output(group, key, precision=2, list=false, index=false) {
-      // if key not in $project.designState, return '-'
+      // if key not in $runtime.designState, return '-'
       const resp = list ? [] : '-'
-      if(!(group in this.$project.designState)) { return resp }
-      if(!(key in this.$project.designState[group])) { return resp }
+      if(!(group in this.$runtime.designState)) { return resp }
+      if(!(key in this.$runtime.designState[group])) { return resp }
 
-      let val = this.$project.designState[group][key]
+      let val = this.$runtime.designState[group][key]
       if(index) {
         val = val[index]
       }
       return list ? val : val.toFixed(precision)
     },
     resultSet(group) {
-      if(!(group in this.$project.designState)) { return false }
+      if(!(group in this.$runtime.designState)) { return false }
 
-      let data = this.$project.designState[group]
+      let data = this.$runtime.designState[group]
 
       let result = []
       for (let [key, value] of Object.entries(data)) {
@@ -198,7 +212,7 @@ height: 400px;
 background: url('./assets/process.png') no-repeat center
 }
 #acfilter-process .influent {
-left: 40%;
+left: 15%;
 top: 15%;
 }
 #acfilter-process .effluent {
@@ -209,7 +223,7 @@ bottom: 2%;
 #acfilter-process .hydraulics {
 position: absolute;
 top: 5%;
-left: 90%;
+left: 70%;
 font-size: 12px;
 width: 200px;
 }

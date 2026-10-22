@@ -10,7 +10,7 @@
 export default {
   computed: {
     feedback() {
-      return this.$project?.lastScenarioFeedback ?? null
+      return this.$interface?.lastScenarioFeedback ?? null
     }
   }
 }

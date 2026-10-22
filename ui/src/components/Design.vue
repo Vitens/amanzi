@@ -18,7 +18,7 @@
           <template #label>
             <el-icon size="14px"><Guide /></el-icon><span>{{$t('ui.design.categories.hydraulic_line')}}</span>
           </template>
-          <Hydraulicline v-if="$project.designState.hydraulics"></Hydraulicline>
+          <Hydraulicline v-if="$runtime.designState.hydraulics"></Hydraulicline>
         </el-tab-pane>
         <el-tab-pane lazy>
           <template #label>
@@ -61,12 +61,6 @@ export default {
   padding-bottom: 15px;
   min-height: 80vh;
   min-width: 1000px;
-}
-#parameters {
-}
-
-.design-container {
-  /* min-height: 80vh; */
 }
 .el-overlay-dialog {
   min-width: 1000px;

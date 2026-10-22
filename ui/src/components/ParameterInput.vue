@@ -15,7 +15,7 @@
       <div v-for="params, section in nonempty(sections)" :id="'section-'+section" class="parameter-section">
         <h3>{{ $t('ui.design.sections.'+section)}}</h3>
         <div class="parameter-group">
-          <Parameter v-for="param in filtered(params)" :param="param" v-model="values[param.name]" :key="param.name" :range="getRange(param)"/>
+          <Parameter v-for="param in filtered(params)" :param="param" v-model="values[param.name]" :key="param.name" :range="getRange(param)" :warning="paramWarning(param)"/>
         </div>
       </div>
       </el-form>
@@ -57,6 +57,7 @@ export default {
     if (typeof component == 'object') {
       this.customEditVue = true
     }
+    console.log("Editing", this.editingModel.configuration)
   },
   watch: {
     uid() {
@@ -145,7 +146,18 @@ export default {
       } else {
         return value == condition
       }
-    }
+    },
+    paramWarning(param) {
+      if (this.type !== 'activatedcarbon') return ''
+      const staggering =
+        this.values.staggered_replacement === 'limit_staggering' ||
+        this.values.staggered_replacement === 'fixed_staggering'
+      const needsMoreUnits = staggering && Number(this.values.units) < 2
+      if (needsMoreUnits && (param.name === 'staggered_replacement' || param.name === 'units')) {
+        return this.$t('models.activatedcarbon.parameters.staggered_replacement_units_warning')
+      }
+      return ''
+    },
   },
   computed: {
     customEdit() {

@@ -14,7 +14,7 @@
     <div class="model-content">
       <component :is="'block-'+info.type" :model="info"></component>
     </div>
-    <endpoint :uid="info.uid" :info="e" v-for="e in modelSpec.canvas.anchors" :key="info.uid+e.position" :connected="isConnected(e)"></endpoint>
+    <endpoint :uid="info.uid" :info="e" v-for="e in modelSpec.anchors" :key="info.uid+e.position" :connected="isConnected(e)"></endpoint>
     <div class="extended-info" v-if="debug">
       <label class="hydraulics_name">UID:</label>
       <span class="hydraulics_value">{{ info.uid }}</span>
@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     debug() {
-      return this.$project.display.debug
+      return this.$interface.display.debug
     },
     modelSpec() {
       return this.modelspec[this.info.type]
@@ -65,8 +65,8 @@ export default {
       return classes
     },
     hydraulics() {
-      if (this.$project.state.hydraulics && this.$project.state.hydraulics[this.info.uid]) {
-        return this.$project.state.hydraulics[this.info.uid]
+      if (this.$runtime.solveState.hydraulics && this.$runtime.solveState.hydraulics[this.info.uid]) {
+        return this.$runtime.solveState.hydraulics[this.info.uid]
       }
     }
   },

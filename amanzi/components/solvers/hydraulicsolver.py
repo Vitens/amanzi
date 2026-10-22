@@ -69,7 +69,7 @@ class HydraulicSolver(Solver):
         self._walk_backwards(c.from_model)
       
 
-    def _walk_forward(self, from_node, pump_efficiency=None, start=False):
+    def _walk_forward(self, from_node, pump_efficiency=1.0, start=False):
       """ Walks forward from starting nodes to leaf nodes. Propagate head_in and head_out for pressurized nodes, and assign booster and pump efficiency to connections """
 
       # check if all upstream connections are assigned an efficiency, otherwise wait
