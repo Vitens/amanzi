@@ -10,7 +10,6 @@ import { piniaUndoRedo } from './stores/undo'
 import { createPinia } from 'pinia'
 import VueCookies from 'vue-cookies'
 
-import posthog from './plugins/posthog'
 import api from './plugins/api'
 
 import en from "./locales/en.json"
@@ -133,10 +132,6 @@ async function loadModels() {
     }
   }
 
-}
-// use posthog if not in development mode
-if (import.meta.env.MODE != 'development') {
-  app.use(posthog)
 }
 
 // let store use modelspec
