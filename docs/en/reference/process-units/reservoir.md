@@ -3,34 +3,38 @@ lang: en
 title: Reservoir
 type: reference
 audience: everyone
-status: outline
+status: draft
 ---
 
 # Reservoir
 
-Library name: **Reservoir**. Storage on the train; can hold flush volume and optional aeration.
+Library name: **Reservoir**. A storage volume on the product line, with an optional gas exchange.
 
 ## Place it when
 
-You need a tank or clear-well between units, or a place for backwash water to sit before reuse.
+The train needs a clear-water volume between treatment and delivery.
 
 ## Streams
 
-- In/out: product.
-- Flush split via the unit’s hydraulic equations (backwash hold-up).
+In: product. Out: product. Out: flush, and that anchor is optional.
 
-## Inputs (UI groups)
+## Inputs
 
-- Shared capacities and elevations.
-- Reservoir geometry / volume (design section of `reservoir` parameters).
-- Optional integrated aeration (aeration parametric layer).
+Shared unit count is repeated here (default 1, range 1–40). Shape is `rectangular` or `cylindrical`.
 
-## Outputs / design tables
-
-- Hydraulic headloss and flush split.
-- Energy if pumping/aeration is enabled.
-- Sustainability inherited from base outputs when energy or chemicals apply.
+| Field | Unit | Default | When |
+|---|---|---|---|
+| `reservoir_width` | m | 10 | Rectangular. Range 1–100 |
+| `reservoir_length` | m | 20 | Rectangular. Range 1–100 |
+| `reservoir_diameter` | m | 10 | Cylindrical. Range 1–50 |
+| `reservoir_height` | m | 5 | Range 1–20 |
+| `inlet_elevation` | m | 2 | Range 0–80. Replaces the shared default |
+| `influent_pressure_loss` | mH₂O | 0 | Range 0–10 |
+| `mean_water_level` | m | 3 | Up to the reservoir height |
+| `integrated_aeration` | — | false | |
+| `co2_removal` | fraction | 0.5 | Only if aeration is on. Range 0–1 |
+| `o2_saturation` | fraction | 0.8 | Only if aeration is on. Range 0–1 |
 
 ## Science
 
-[Scenarios and flowsheets](../../explanation/scenarios-and-flowsheets.md).
+[Aeration](../../explanation/aeration.md) for the optional gas exchange. The reservoir itself is storage, not a treatment reaction.

@@ -3,31 +3,25 @@ lang: en
 title: Transport pipeline
 type: reference
 audience: everyone
-status: outline
+status: draft
 ---
 
 # Transport pipeline
 
-Library name: **Transport Pipeline**. Pipe for headloss between units. No custom quality change.
-
-## Place it when
-
-You need length, diameter, and roughness between two points on the hydraulic line.
+Library name: **Transport Pipeline**. A pipe on the product line. Head loss is Darcy friction. It does not change the water’s chemistry.
 
 ## Streams
 
-- In/out: product (or whichever anchors the block exposes).
+In: product. Out: product.
 
-## Inputs (UI groups)
+## Inputs
 
-- **Transport:** length, diameter, material/roughness as in the form.
-- Shared hydraulic-line elevations.
+| Field | Unit | Default | Range or choices |
+|---|---|---|---|
+| `pipe_inner_diameter` | mm | 450 | 100–2500 |
+| `pipe_length` | m | 1000 | 100–50000 |
+| `pipe_material` | — | PE | PE, PVC, Steel |
 
-## Outputs / design tables
+Roughness used in the friction factor is 0.003 mm for PE, 0.0015 mm for PVC, and 0.045 mm for steel. Kinematic viscosity in this calculation is the constant 1.308 mm²/s. The head-loss result carries a check that loss per metre stays under 0.005.
 
-- Headloss and residual head.
-- Pumping energy if a booster is implied by the hydraulic solver.
-
-## Science
-
-[How Amanzi calculates](../../explanation/how-amanzi-calculates.md) (hydraulics / energy).
+Abstraction has its own copy of these pipe fields. This block is the one you place between other units.

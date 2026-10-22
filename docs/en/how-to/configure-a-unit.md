@@ -8,7 +8,13 @@ status: outline
 
 # Configure a unit
 
-Open a block, change its parameters, and reset to defaults when needed.
+Configuring a selected number of design parameters of a trartment block can be done by selecting the treatment block which shows the parameters in a box on the bottom left. These can be directly edited. 
+
+For more comprehensive adjustment dubbleclick the treatment block that you want to edit.
+It will open a design view with the treatment model with a visualitsation of influent and effluent concentrations for this model and design parameters on the box in the left. As an additional help choosing the right parameters many models include graphs that illustrate how parameter changes effect the treatment behaviour of the model. 
+
+
+
 
 ## Content to write
 

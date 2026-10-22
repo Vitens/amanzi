@@ -72,7 +72,9 @@ import Design from './components/Design.vue'
 import KeyFigures from './components/KeyFigures.vue'
 import Tutorial from './components/Dialogs/Tutorial.vue'
 import About from './components/Dialogs/About.vue'
-import DefaultProject from './assets/Default-project.json'
+import DefaultProjectEN from './assets/Default-project-EN.json'
+import DefaultProjectNL from './assets/Default-project-NL.json'
+import DefaultProjectDE from './assets/Default-project-DE.json'
 import DesignHeader from './components/DesignHeader.vue'
 import { notifyMigrationIfNeeded } from './lib/migrationToast'
 
@@ -120,7 +122,10 @@ export default {
     }
     this.$bus.on('migration-notify', onMigrationNotify)
 
-    this.$project.open(DefaultProject, false)
+    const locale = this.$i18n.locale?.value ?? this.$i18n.locale
+    const language = String(locale || 'en').split('-')[0].toLowerCase()
+    const defaultProjects = { en: DefaultProjectEN, nl: DefaultProjectNL, de: DefaultProjectDE }
+    this.$project.open(defaultProjects[language] || DefaultProjectEN, false)
 
     await this.$project.loadParameters()
     this.$project.solve()

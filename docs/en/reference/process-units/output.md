@@ -3,34 +3,27 @@ lang: en
 title: Output
 type: reference
 audience: everyone
-status: outline
+status: draft
 ---
 
 # Output
 
-Library name: **Output**. Delivery point / sink for treated water. Required in every solvable scenario.
+Library name: **Output**. The sink of the product stream. The scenario’s delivered water is the product flow into this block. The demo often names the block **Levering**.
 
 ## Place it when
 
-The product water leaves the plant (distribution inlet).
+Every scenario that should solve needs one. Without it the quantity balance has no distribution.
 
 ## Streams
 
-- In: product.
-- No further downstream product.
+In: product. Nothing leaves.
 
-## Inputs (UI groups)
+## Inputs
 
-- Required delivery pressure / head.
-- Optional integrated booster.
-- Shared elevation.
+| Field | Unit | Default | Range |
+|---|---|---|---|
+| `integrated_booster` | — | true | |
+| `inlet_elevation` | m | 0 | −10–100 |
+| `required_pressure` | mH₂O | 35 | 10–100 |
 
-## Outputs / design tables
-
-- Delivery flow (quantity).
-- Booster energy if enabled.
-- Quality at the tap of the model (end of the PHREEQC walk).
-
-## Science
-
-[Scenarios and flowsheets](../../explanation/scenarios-and-flowsheets.md).
+Distribution energy on the results panel is the share that belongs to this block, including the booster when it is on. Booster efficiency is the key figure `booster_efficiency` (default 75%).

@@ -3,29 +3,22 @@ lang: en
 title: Splitter
 type: reference
 audience: everyone
-status: outline
+status: draft
 ---
 
 # Splitter
 
-Library name: **Splitter**. Generic flow split. No quality change.
-
-## Place it when
-
-You divide a stream toward two downstream units without treatment.
+Library name: **Splitter**. Divides one product stream into two product streams.
 
 ## Streams
 
-- One inlet, two (or more) outlets as the anchors show; types follow the connections you draw.
+In: product. Out: product, on the right. Out: product, on the bottom.
 
-## Inputs (UI groups)
+## Inputs
 
-- **Operational:** split fraction(s).
+| Field | Unit | Default | Range |
+|---|---|---|---|
+| `split` | fraction | 0.5 | 0.01–0.99 |
+| `pressurized` | — | false | |
 
-## Outputs / design tables
-
-- Branch flows from the quantity solver.
-
-## Science
-
-[Scenarios and flowsheets](../../explanation/scenarios-and-flowsheets.md).
+`split` is the fraction that leaves by one of the two outlets. 0.5 sends half each way. The label on the field says %. The stored value is the fraction.

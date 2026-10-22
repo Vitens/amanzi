@@ -3,32 +3,19 @@ lang: en
 title: Tutorials
 type: tutorial
 audience: novice
-status: outline
+status: draft
 ---
 
 # Tutorials
 
-This section teaches by doing. Work in the **demo project** that Amanzi opens for you. Do not start from a blank canvas or invent a groundwater analysis.
+Work through these in order. Stay in the demo project Amanzi opens. Leave the canvas as you find it until a later page asks you to change one thing.
 
-The in-app tutorial (Help → Tutorial) is an optional extra with short videos of the same first steps. These pages add names for what you are looking at and what to try next.
+**Help → Tutorial** inside the app is a short optional tour of the same first steps. These pages name the parts of the screen and say what to try next.
 
-## Rules for this section
+1. [Open Amanzi](open-amanzi.md) — start the app and name the main areas of the screen.
+2. [Your first plant](first-plant.md) — follow the demo flowsheet and glance at the results.
+3. [Change one thing](change-one-thing.md) — edit one parameter and watch the numbers move.
+4. [Compare scenarios](compare-scenarios.md) — make a second version and open the report.
+5. [Save your work](save-your-work.md) — keep the project as a file.
 
-- One happy path per page; no side quests.
-- Demo data only.
-- No literature, no parameter dumps, no chemistry lectures.
-- Diagrams: Mermaid wireframes of the screen, not screenshots.
-
-## Pages
-
-- [Open Amanzi](open-amanzi.md) — start the app and name the main areas of the screen.
-- [Your first plant](first-plant.md) — walk the demo flowsheet and glance at results.
-- [Change one thing](change-one-thing.md) — edit a parameter and watch numbers move.
-- [Compare scenarios](compare-scenarios.md) — a second what-if and the report.
-- [Save your work](save-your-work.md) — your project is a file, not an account.
-
-## Content to write
-
-- How to use this section (demo-first, in-app tutorial as optional extra).
-- Suggested order of the five tutorials.
-- What *not* to expect here (theory lives in Explanation; parameter lists live in Reference).
+How the pieces behave is in Explanation. Lists of parameters and units are in Reference.

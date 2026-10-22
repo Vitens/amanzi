@@ -3,30 +3,35 @@ lang: en
 title: Cascade
 type: reference
 audience: everyone
-status: outline
+status: draft
 ---
 
 # Cascade
 
-Library name: **Cascade**. Multi-step cascade (staircase) aeration.
+Library name: **Cascade**. A stair of steps. No blower.
 
 ## Place it when
 
-You model step aerators with a number of falls rather than a packed bed.
+Oxygen uptake and some CO₂ removal are enough, and methane removal can stay modest.
 
 ## Streams
 
-- In/out: product.
+In: product. Out: product.
 
-## Inputs (UI groups)
+## Inputs
 
-- Number of steps, step height.
-- Shared capacities and aeration sustainability.
+| Field | Unit | Default | Range |
+|---|---|---|---|
+| `units` | — | 1 | Replaces the shared default |
+| `number_of_steps` | — | 3 | 1–8 |
+| `step_height` | m | 0.5 | 0.1–2 |
+| `cascade_length` | m | 3 | 1–10 |
 
-## Outputs / design tables
+The block is not pressurized. Head loss of the model is the number of steps times the step height.
 
-- Approach to saturation for O₂, CO₂, CH₄ (as implemented).
-- Energy associated with pumping to the top of the cascade.
+## What it reports
+
+The design view repeats the gas transfer for 1 to 8 steps: pH, CO₂, oxygen, and methane.
 
 ## Science
 

@@ -3,31 +3,37 @@ lang: en
 title: Chemical dosage
 type: reference
 audience: everyone
-status: outline
+status: draft
 ---
 
 # Chemical dosage
 
-Library name: **Chemical Dosage**. Adds a chemical at constant dose or drives a setpoint.
+Library name: **Chemical Dosage**. One chemical, either a fixed dose or a search toward a target.
 
 ## Place it when
 
-You dose CO₂, acid, lye, lime, calcite, oxygen, FeCl₃, or MnCl₂ on the main stream.
+The water needs an acid, a base, CO₂, oxygen, or a metal salt, and a pellet reactor is the wrong block.
 
 ## Streams
 
-- In/out: product.
+In: product. Out: product.
 
-## Inputs (UI groups)
+## Inputs
 
-- **Position:** influent or effluent of the block.
-- **Chemical:** `co2`, `hcl`, `h2so4`, `lye`, `lime`, `calcite`, `oxygen`, `iron_chloride`, `manganese_chloride`.
-- **Mode:** constant (mmol/L) or setpoint (pH, SI, AggCO₂, CCPP90).
+| Field | Default | Choices or range |
+|---|---|---|
+| `position` | influent | influent, effluent |
+| `chemical` | co2 | co2, hcl, h2so4, lye, lime, calcite, oxygen, iron_chloride, manganese_chloride |
+| `mode` | constant | constant, setpoint |
+| `dosage` | 0.2 mmol/L | 0–5. Shown in constant mode |
+| `setpoint_parameter` | pH | pH, SI, AggCO2, CCPP90. Shown in setpoint mode |
+| `setpoint` | 7 | 0–14. Shown in setpoint mode |
 
-## Outputs / design tables
+The constant dose is accepted when Enter is pressed. In setpoint mode the search stays inside 0–5 mmol/L. If it fails, the dose stays 0 and the unit sets a warning.
 
-- Dosing response curves in design view.
-- Chemical mass and associated sustainability (emission factors from key figures).
+## What it reports
+
+Formula, formula weight (g AS/mol), dose (mmol/L), and mass dose (g AS/m³). The design view plots pH, oxygen, aggressive CO₂, SI, and TACC₉₀ against dose from 0 to 2 mmol/L.
 
 ## Science
 

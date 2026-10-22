@@ -7,8 +7,16 @@ status: outline
 ---
 
 # Copy between scenarios
+Selected Modelblocks (single or multiple) can be copied via the classic `Ctrl+C` and pasted in the same scenario canvas or into another scenario via `Ctrl+V`.
+Copy and pasting multiple blocks also keeps the connections between them. 
 
-Copy and paste blocks between scenario tabs, and attach notes to a scenario.
+Duplicating the current scenario can be done via the drop dwown menu at the top 
+
+or the scenario menu at the bottom of the canvas
+
+
+
+
 
 ## Content to write
 

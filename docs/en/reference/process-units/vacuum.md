@@ -3,34 +3,38 @@ lang: en
 title: Vacuum degassing
 type: reference
 audience: everyone
-status: outline
+status: draft
 ---
 
 # Vacuum degassing
 
-Library name: **Vacuum degassing**. Single-stage vacuum stripper (not a membrane contactor).
+Library name: **Vacuum degassing**. A vessel under vacuum. The gas phase includes hydrogen sulfide as `H2Sg`.
 
 ## Place it when
 
-You degas by lowering the gas-phase pressure on a vessel, and want pH / SI / gas composition vs vacuum.
+Methane or hydrogen sulfide has to be pulled out by lowering the pressure, rather than by blowing air through a tower.
 
 ## Streams
 
-- In/out: product.
+In: product. Out: product.
 
-## Inputs (UI groups)
+## Inputs
 
-- Vessel / vacuum setpoints (operational).
-- Shared capacities and hydraulic line.
-- Gas-processing fields when enabled.
+| Field | Unit | Default | Range or choices |
+|---|---|---|---|
+| `diameter` | m | 2 | 0.1–10 |
+| `spray_height` | m | 1 | 0–5 |
+| `bed_height` | m | 3 | 0–10 |
+| `pressure_loss_nozzles` | mH₂O | 2 | 0.01–10 |
+| `vacuum_pump` | — | liquid_ring | liquid_ring, screw |
+| `vacuum_pressure` | bara | 0.2 | 0.05–0.5 |
 
-## Outputs / design tables
+The same gas-processing switches as the tower (flare, power generation, generator efficiency and availability) apply to the off-gas.
 
-- Design charts: pH, SI, gas composition vs pressure.
-- Dry and wet gas composition (v1.0.2+).
-- Totals per m³, per unit, and process (v1.0.2+).
-- Vacuum energy.
+## What it reports
+
+The design view sweeps vacuum and plots pH, saturation index, and the gases.
 
 ## Science
 
-[Membranes](../../explanation/membranes.md) (comparison with membrane degassing), [How Amanzi calculates](../../explanation/how-amanzi-calculates.md).
+[Membranes](../../explanation/membranes.md).

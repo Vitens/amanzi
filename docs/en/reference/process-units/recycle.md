@@ -3,32 +3,27 @@ lang: en
 title: Backwash water reuse
 type: reference
 audience: everyone
-status: outline
+status: draft
 ---
 
 # Backwash water reuse
 
-Library name: **Backwash water reuse**. Recycle / split that can close a loop upstream.
-
-## Place it when
-
-You return flush or a side stream to an earlier unit.
+Library name: **Backwash water reuse**. Returns part of a waste or flush stream to the product train.
 
 ## Streams
 
-- Splitter-style: incoming flow split toward product/recycle according to the block.
-- Quality is passed through (no treatment).
+In: waste. Out: product. Out: waste.
 
-## Inputs (UI groups)
+The product outlet is the recovered water. The waste outlet is what is not recovered.
 
-- Split fractions / recycle design fields as in the form.
+## Inputs
 
-## Outputs / design tables
+| Field | Unit | Default | Range |
+|---|---|---|---|
+| `recycle_efficiency` | fraction | 0.8 | 0.5–0.95 |
 
-- Flows on each branch.
-- Energy if pumping is included.
-- Note: recycle mass helper returns empty to help the quantity solver converge (fact for key users filling this page).
+The label says %. The stored value is the fraction. 0.8 recovers 80% of the incoming waste flow to the product outlet.
 
-## Science
+## Energy
 
-[How Amanzi calculates](../../explanation/how-amanzi-calculates.md) (recycle iteration).
+The parametric energy total for this block is the constant 0.5 kWh/m³. It is not a pump curve.
