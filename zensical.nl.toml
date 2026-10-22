@@ -1,7 +1,7 @@
 # Amanzi user documentation — Nederlands
 # Parallel sites: zensical.toml (docs/en), zensical.de.toml (docs/de).
-# Language switcher links assume the three builds are served together
-# as site/en, site/nl and site/de.
+# Language switcher links point at the GitHub Pages project site:
+# /amanzi/en/, /amanzi/nl/, and /amanzi/de/.
 #
 # Authoring (Diátaxis):
 # - Tutorials: one happy path, demo data, no literature, no parameter dumps.
@@ -21,8 +21,7 @@ site_dir = "site/nl"
 dev_addr = "localhost:8002"
 repo_url = "https://github.com/Vitens/amanzi"
 repo_name = "Vitens/amanzi"
-# Placeholder until a public docs URL is chosen (needed for sitemap-based features).
-site_url = "https://vitens.github.io/amanzi/"
+site_url = "https://vitens.github.io/amanzi/nl/"
 
 nav = [
   { "Start" = "index.md" },
@@ -113,17 +112,17 @@ features = [
 
 [[project.extra.alternate]]
 name = "English"
-link = "/en/"
+link = "/amanzi/en/"
 lang = "en"
 
 [[project.extra.alternate]]
 name = "Nederlands"
-link = "/nl/"
+link = "/amanzi/nl/"
 lang = "nl"
 
 [[project.extra.alternate]]
 name = "Deutsch"
-link = "/de/"
+link = "/amanzi/de/"
 lang = "de"
 
 [project.theme.icon]

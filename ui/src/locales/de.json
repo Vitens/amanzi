@@ -1659,9 +1659,14 @@
 				}
 			},
 			"general": {
+				"compact": "Kompakt",
+				"comparison": "Vergleich",
 				"energy": "Energie",
+				"extended": "Erweitert",
 				"higher_better": "höher ist besser",
 				"lower_better": "niedriger ist besser",
+				"quantity": "Wassermenge",
+				"single_model": "Einzelszenario",
 				"sustainability": "Nachhaltigkeit",
 				"waterquality": "Wasserqualität"
 			},

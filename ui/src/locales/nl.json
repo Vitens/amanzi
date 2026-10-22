@@ -1671,9 +1671,14 @@
 				}
 			},
 			"general": {
+				"compact": "Compact",
+				"comparison": "Vergelijking",
 				"energy": "Energie",
+				"extended": "Uitgebreid",
 				"higher_better": "hoger is beter",
 				"lower_better": "lager is beter",
+				"quantity": "Kwantiteit",
+				"single_model": "Enkel scenario",
 				"sustainability": "Duurzaamheid",
 				"waterquality": "Waterkwaliteit"
 			},
