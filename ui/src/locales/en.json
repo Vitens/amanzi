@@ -21,12 +21,12 @@
 				"oxygen": "Oxygen",
 				"Perchloroethylene": "Perchloroethylene",
 				"Trichloroethylene": "Trichloroethylene",
-				"cis-1,2-Dichlooretheen": "cis-1,2-Dichlooretheen",
-				"Vinylchloride": "Vinylchloride",
+				"cis-1,2-Dichlooretheen": "cis-1,2-Dichloroethene",
+				"Vinylchloride": "Vinyl chloride",
 				"1,1,1-Trichloroethane": "1,1,1-Trichloroethane",
 				"1,1-Dichloroethane": "1,1-Dichloroethane",
 				"1,2-Dichloroethane": "1,2-Dichloroethane",
-				"Tetrachlormethane": "Tetrachlormethane",
+				"Tetrachlormethane": "Tetrachloromethane",
 				"Trichloromethane": "Trichloromethane",
 				"Dichloromethane": "Dichloromethane",
 				"1,2-Dichloropropane": "1,2-Dichloropropane",
@@ -64,7 +64,7 @@
 	},
 	"keyfigures": {
 		"categories": {
-			"chemicals": "Chemical",
+			"chemicals": "Chemicals",
 			"general": "General"
 		},
 		"name": {
@@ -143,7 +143,6 @@
 	"models": {
 		"activatedcarbon": {
 			"name": "Activated carbon",
-
 			"parameters": {
 				"advanced": "Advanced",
 				"shape": "Shape",
@@ -159,7 +158,7 @@
 				"particle_porosity": "Particle porosity",
 				"particle_density": "Particle density",
 				"packing_type": "Packing type",
-				"apparent_density": "Apparent density", 
+				"apparent_density": "Apparent density",
 				"fixed_replacement": "Fixed replacement interval",
 				"replacement_interval": "Replacement interval",
 				"replacement_loading": "Replacement loading",
@@ -190,9 +189,7 @@
 					"limit_staggering": "Limit staggering",
 					"fixed_staggering": "Fixed staggering"
 				}
-
-				
-			}, 
+			},
 			"design": {
 				"compound": "Compound",
 				"doc_params": "Organic carbon parameters",
@@ -209,7 +206,7 @@
 					"rectangular": "Rectangular",
 					"circular": "Circular"
 				}
-			}, 
+			},
 			"outputs": {
 				"volume": "Volume",
 				"replacement": "Replacement",
@@ -293,7 +290,7 @@
 				"crest_head": "Crest head",
 				"fall_time": "Fall time",
 				"headloss_model": "Headloss cascade",
-				"jet_velocity": "Horizontal wier velocity",
+				"jet_velocity": "Horizontal weir velocity",
 				"jet_width": "Jet width",
 				"total_height": "Total height of cascade",
 				"total_width": "Total width required",
@@ -315,11 +312,11 @@
 		},
 		"dosing": {
 			"design": {
-				"dosing": "Dosering",
-				"dosingcurve_AggCO2": "Dosingcurve Aggressief CO2",
-				"dosingcurve_CCPP90": "Dosingcurve TACC90",
-				"dosingcurve_pH": "Dosingcurve pH",
-				"dosingcurve_SI": "Dosingcurve SI",
+				"dosing": "Dosage",
+				"dosingcurve_AggCO2": "Dosing curve aggressive CO₂",
+				"dosingcurve_CCPP90": "Dosing curve TACC90",
+				"dosingcurve_pH": "Dosing curve pH",
+				"dosingcurve_SI": "Dosing curve SI",
 				"setpoint_warning": "Setpoint not achievable with current settings"
 			},
 			"name": "Chemical Dosage",
@@ -392,7 +389,7 @@
 				"highlight_editing_model": "Highlight current model",
 				"influent": "Influent",
 				"iron_removal": "Iron removal",
-				"mangan_removal": "Mangan removal",
+				"mangan_removal": "Manganese removal",
 				"manganese_removal": "Manganese removal",
 				"methane_oxidation": "Methane oxidation",
 				"nitrification": "Nitrification",
@@ -408,7 +405,7 @@
 			"outputs": {
 				"average_headloss": "Average pressure drop",
 				"backwash_duration": "Backwash duration",
-				"backwash_energy": "Backwash energy consuption",
+				"backwash_energy": "Backwash energy consumption",
 				"backwash_headloss": "Backwash headloss",
 				"backwash_headloss_anthracite": "Backwash headloss in antracite",
 				"backwash_headloss_sand": "Backwash headloss in sand",
@@ -420,7 +417,7 @@
 				"bed_expansion_anthracite": "Bed expansion anthracite",
 				"bed_expansion_sand": "Bed expansion sand",
 				"bed_height": "Bed height",
-				"blower_efficiency": "Efficiancy ventilation",
+				"blower_efficiency": "Efficiency ventilation",
 				"blower_energy": "Blower power consumption",
 				"EBCT": "EBCT",
 				"expanded_height_anthracite": "Expanded height anthracite",
@@ -474,7 +471,7 @@
 				"runtime": "Runtime",
 				"runvolume": "Volume of treated water",
 				"shape": "Shape",
-				"spray": "Integrated sprayaeration",
+				"spray": "Integrated spray aeration",
 				"supernatant_level": "Supernatant level",
 				"suppress_ammonium_removal": "Suppress NH₄ removal",
 				"suppress_iron_removal": "Suppress Fe removal",
@@ -585,7 +582,7 @@
 			},
 			"name": "Abstraction",
 			"outputs": {
-				"average_day": "Average dag",
+				"average_day": "Average day",
 				"delta_head": "Hydraulic pressure loss",
 				"head_at_treatment": "Elevation at treatment entrance",
 				"head_at_well": "Elevation at well",
@@ -635,7 +632,7 @@
 				"highlight_editing_model": "Highlight current model",
 				"influent": "Influent",
 				"iron_removal": "Iron removal",
-				"mangan_removal": "Mangan removal",
+				"mangan_removal": "Manganese removal",
 				"manganese_removal": "Manganese removal",
 				"methane_oxidation": "Methane oxidation",
 				"nitrification": "Nitrification",
@@ -650,7 +647,7 @@
 			"outputs": {
 				"average_headloss": "Average pressure drop",
 				"backwash_duration": "Backwash duration",
-				"backwash_energy": "Backwash energy consuption",
+				"backwash_energy": "Backwash energy consumption",
 				"backwash_headloss": "Backwash headloss",
 				"backwash_headloss_lime": "Backwash headloss in lime",
 				"backwash_headloss_marble": "Backwash headloss in marble",
@@ -662,7 +659,7 @@
 				"bed_expansion_lime": "Bed expansion lime",
 				"bed_expansion_marble": "Bed expansion marble",
 				"bed_height": "Bed height",
-				"blower_efficiency": "Efficiancy ventilation",
+				"blower_efficiency": "Efficiency ventilation",
 				"blower_energy": "Blower power consumption",
 				"EBCT": "EBCT",
 				"expanded_height_lime": "Expanded height lime",
@@ -715,7 +712,7 @@
 				"runtime": "Runtime",
 				"runvolume": "Volume of treated water",
 				"shape": "Shape",
-				"spray": "Integrated sprayaeration",
+				"spray": "Integrated spray aeration",
 				"supernatant_level": "Supernatant level",
 				"suppress_ammonium_removal": "Suppress NH₄ removal",
 				"suppress_iron_removal": "Suppress Fe removal",
@@ -904,7 +901,7 @@
 				"total_headloss": "Total headloss"
 			},
 			"parameters": {
-				"effluent_atmospheric": "Asospheric outlet",
+				"effluent_atmospheric": "Atmospheric outlet",
 				"influent_pressure_loss": "Pressure loss inlet work",
 				"inlet_elevation": "Inlet height",
 				"maximal_capacity": "Maximum capacity",
@@ -967,7 +964,7 @@
 				"pipe_material": "Material"
 			},
 			"sections": {
-				"transport_pipe": "Tranasport pipe"
+				"transport_pipe": "Transport pipe"
 			}
 		},
 		"plate": {
@@ -1136,7 +1133,7 @@
 				"Natronloog": "Sodium hydroxide",
 				"pH": "pH"
 			},
-			"name": "Pelletontharding",
+			"name": "Pellet softening",
 			"outputs": {
 				"base_height": "Height of cylindrical part",
 				"bed_expansion": "Bed expansion",
@@ -1225,7 +1222,7 @@
 				"pressurized": "Pressure reactor",
 				"reactor_shape": "Reactor shape",
 				"seed_material": "Seed material",
-				"soften_to_si": "Annealing to SI",
+				"soften_to_si": "Softening to SI",
 				"static_bed_height": "Fixed bed height",
 				"static_bed_porosity": "Fixed bed porosity"
 			},
@@ -1250,8 +1247,8 @@
 		"sprayaerator": {
 			"name": "Spray aeration",
 			"outputs": {
-				"blower_energy": "Power consumption sprayaeration",
-				"blowerefficiency": "Efficiency of blower for sprayaeration",
+				"blower_energy": "Power consumption spray aeration",
+				"blowerefficiency": "Efficiency of blower for spray aeration",
 				"resparitoryquotient": "Respiratory Quotient",
 				"total_air_flow": "Total air flow",
 				"total_nozzles": "Number of nozzles"
@@ -1259,7 +1256,7 @@
 			"parameters": {
 				"ambient_temperature": "Ambient temperature",
 				"area_per_nozzle": "Area per nozzle",
-				"blowereficiency": "Efficiency blower for sprayaeration",
+				"blowereficiency": "Efficiency blower for spray aeration",
 				"ch4_removal_efficiency": "CH4 removal",
 				"co2_removal_efficiency": "CO2 removal",
 				"fall_height": "Fall height over filtration bed",
@@ -1307,12 +1304,12 @@
 				"volume": "Volume tower aerator",
 				"Perchloroethylene": "Perchloroethylene",
 				"Trichloroethylene": "Trichloroethylene",
-				"cis-1,2-Dichlooretheen": "cis-1,2-Dichlooretheen",
-				"Vinylchloride": "Vinylchloride",
+				"cis-1,2-Dichlooretheen": "cis-1,2-Dichloroethene",
+				"Vinylchloride": "Vinyl chloride",
 				"1,1,1-Trichloroethane": "1,1,1-Trichloroethane",
 				"1,1-Dichloroethane": "1,1-Dichloroethane",
 				"1,2-Dichloroethane": "1,2-Dichloroethane",
-				"Tetrachlormethane": "Tetrachlormethane",
+				"Tetrachlormethane": "Tetrachloromethane",
 				"Trichloromethane": "Trichloromethane",
 				"Dichloromethane": "Dichloromethane",
 				"1,2-Dichloropropane": "1,2-Dichloropropane",
@@ -1525,7 +1522,7 @@
 				"sandfilter": "Rapid sand filter",
 				"sandtrap": "Sand Trap",
 				"seed": "Seed material",
-				"sprayaerator": "Sprayaerator",
+				"sprayaerator": "Spray aerator",
 				"stack_configuration": "Stack Configuration",
 				"stage_1": "Stage 1",
 				"stage_2": "Stage 2",
@@ -1553,7 +1550,7 @@
 		},
 		"dialogs": {
 			"about": {
-				"acknowledgements": "Acknowledgments",				
+				"acknowledgements": "Acknowledgments",
 				"citation": {
 					"bibtex": "BibTeX",
 					"copy_bibtex": "Copy BibTeX",
@@ -1565,7 +1562,7 @@
 				"changelog": "Version History",
 				"developed_by": "Developed by Technology & Research, Vitens",
 				"license": "License",
-				"remark": "",
+				"remark": "Amanzi has been tested and validated on our own installations and treatment plants. Vitens is in no way liable for the correctness, applicability, or availability of the results and the application.",
 				"title": "About Amanzi"
 			},
 			"init": {
