@@ -1522,6 +1522,7 @@
 			"enter_scenario_name_empty_error": "Der Name darf nicht leer sein",
 			"help": {
 				"about": "Über Amanzi",
+				"documentation": "Dokumentation",
 				"help": "Hilfe",
 				"label": "Hilfe",
 				"tutorial": "Tutorial"

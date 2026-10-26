@@ -20,4 +20,4 @@ Fakten darüber, was das aktuelle Produkt nicht tut. Keine Workarounds außer de
 - Spritzbelüftung als eigenständiger Bibliotheksblock kann fehlschlagen, wenn der Sauter-Durchmesser nicht gesetzt ist (nur notieren, falls beim Schreiben noch wahr).
 - Stationäre Modelle: keine Zeitreihen-Anlagensteuerung, kein SCADA.
 - Zeichenflächen-Koordinaten sind keine Landkarte.
-- Die Nutzerdokumentation ist Englisch, Niederländisch und Deutsch. Die Architekturdokumentation ist nur Englisch.
+- Die Nutzerdokumentation ist Englisch, Niederländisch, Deutsch und Französisch. Die Architekturdokumentation ist nur Englisch.

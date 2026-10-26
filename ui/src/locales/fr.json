@@ -1,0 +1,1805 @@
+{
+	"general": {
+		"solution": {
+			"components": {
+				"ammonium": "Ammonium",
+				"barium": "Baryum",
+				"bicarbonate": "Bicarbonate",
+				"boron": "Bore",
+				"calcium": "Calcium",
+				"chloride": "Chlorure",
+				"color": "Couleur",
+				"fluoride": "Fluorure",
+				"hydrogen-sulfide": "Sulfure d'hydrogène",
+				"iron": "Fer",
+				"magnesium": "Magnésium",
+				"manganese": "Manganèse",
+				"methane": "Méthane",
+				"nitrate": "Nitrate",
+				"nitrite": "Nitrite",
+				"nitrogen": "Azote",
+				"oxygen": "Oxygène",
+				"Perchloroethylene": "Perchloroéthylène",
+				"Trichloroethylene": "Trichloroéthylène",
+				"cis-1,2-Dichlooretheen": "cis-1,2-dichloroéthène",
+				"Vinylchloride": "Chlorure de vinyle",
+				"1,1,1-Trichloroethane": "1,1,1-trichloroéthane",
+				"1,1-Dichloroethane": "1,1-dichloroéthane",
+				"1,2-Dichloroethane": "1,2-dichloroéthane",
+				"Tetrachlormethane": "Tétrachlorométhane",
+				"Trichloromethane": "Trichlorométhane",
+				"Dichloromethane": "Dichlorométhane",
+				"1,2-Dichloropropane": "1,2-dichloropropane",
+				"PFBS": "PFBS",
+				"PFPeS": "PFPeS",
+				"PFHxS": "PFHxS",
+				"PFHpS": "PFHpS",
+				"PFOS": "PFOS",
+				"PFDS": "PFDS",
+				"TFA": "TFA",
+				"PFBA": "PFBA",
+				"PFPeA": "PFPeA",
+				"PFHxA": "PFHxA",
+				"PFHpA": "PFHpA",
+				"PFOA": "PFOA",
+				"PFDA": "PFDA",
+				"PFUnDA": "PFUnDA",
+				"PFDoDA": "PFDoDA",
+				"PFTrDA": "PFTrDA",
+				"PFTeDA": "PFTeDA",
+				"pH": "pH",
+				"phosphate": "Phosphate",
+				"potassium": "Potassium",
+				"silicate": "Silice",
+				"sodium": "Sodium",
+				"strontium": "Strontium",
+				"sulfate": "Sulfate",
+				"temperature": "Température",
+				"total-organic-carbon": "Carbone organique total"
+			}
+		},
+		"terms": {
+			"volume": "Volume"
+		}
+	},
+	"keyfigures": {
+		"categories": {
+			"chemicals": "Chimique",
+			"general": "Général"
+		},
+		"name": {
+			"activated_carbon_new_emission": "Émission de charbon actif (neuf)",
+			"activated_carbon_regenerated_emission": "Émission de charbon actif (régénéré)",
+			"aggco2_upper_limit": "Limite supérieure du CO₂ agressif",
+			"aggco2_upper_threshold": "Seuil supérieur du CO₂ agressif",
+			"aluminium_sulphate_emission": "Émission de sulfate d'aluminium",
+			"ammonia_emission": "Émission d'ammoniac",
+			"anthracite_emission": "Émission d'anthracite",
+			"bleach_emission": "Émission d'eau de Javel",
+			"booster_efficiency": "Rendement de la pompe de surpression",
+			"calcium_carbonate_emission": "Émission de carbonate de calcium",
+			"calcium_hydroxide_emission": "Émission d'hydroxyde de calcium",
+			"calcium_oxide_emission": "Émission d'oxyde de calcium",
+			"carbon_intensity_grid": "Facteur d'émission de l'électricité",
+			"ccpp90_upper_limit": "Limite supérieure CCPP90",
+			"ccpp90_upper_threshold": "Seuil supérieur pour CCPP90",
+			"chlorine_emission": "Émission de chlore",
+			"chlorine_gas_emission": "Émission de chlore gazeux",
+			"citric_acid_emission": "Émission d'acide citrique",
+			"cl_upper_limit": "Limite supérieure pour le chlorure",
+			"cl_upper_threshold": "Seuil supérieur pour le chlorure",
+			"co2_emission": "Émission de CO₂",
+			"fe_upper_limit": "Limite supérieure pour le fer",
+			"fe_upper_threshold": "Seuil supérieur pour le fer",
+			"filter_sand_emission": "Émission de sable",
+			"hardness_lower_limit": "Limite inférieure pour la dureté",
+			"hardness_upper_limit": "Limite supérieure pour la dureté",
+			"hardness_upper_threshold": "Seuil supérieur pour la dureté",
+			"hydrochloric_acid_emission": "Émission d'acide chlorhydrique",
+			"hydrogen_peroxide_emission": "Émission de peroxyde d'hydrogène",
+			"iron_chloride_emission": "Émission de chlorure ferrique",
+			"iron_sulphate_emission": "Émission de sulfate de fer",
+			"lime_emission": "Émission de chaux",
+			"lye_emission": "Émission de soude",
+			"manganese_chloride_emission": "Émission de chlorure de manganèse",
+			"max_hour": "Facteur d'heure de pointe",
+			"methane_emission_factor": "Facteur d'émission du méthane",
+			"mn_upper_limit": "Limite supérieure pour le manganèse",
+			"mn_upper_threshold": "Seuil supérieur pour le manganèse",
+			"na_upper_limit": "Limite supérieure pour le sodium",
+			"na_upper_threshold": "Seuil supérieur pour le sodium",
+			"nh4_upper_limit": "Limite supérieure pour l'ammonium",
+			"nh4_upper_threshold": "Seuil supérieur pour l'ammonium",
+			"o2_lower_limit": "Limite inférieure O2",
+			"o2_lower_threshold": "Seuil inférieur O2",
+			"oxygen_emission": "Émission d'oxygène",
+			"ph_lower_limit": "Limite inférieure pH",
+			"ph_lower_threshold": "Seuil inférieur pH",
+			"ph_upper_limit": "Limite supérieure pH",
+			"ph_upper_threshold": "Seuil supérieur pH",
+			"potassium_permangate_emission": "Émission de permanganate de potassium",
+			"psa_purity_4_power_consumption": "Générateur PSA classe 4",
+			"psa_purity_5_power_consumption": "Générateur PSA classe 5",
+			"sc20_upper_limit": "Limite supérieure de conductivité",
+			"sc20_upper_threshold": "Seuil supérieur de conductivité",
+			"sc_upper_limit": "Limite supérieure de conductivité",
+			"sc_upper_threshold": "Seuil supérieur de conductivité",
+			"seed_calcite_emission": "Émission de germes de calcite",
+			"seed_dolomite_emission": "Émission de germes de dolomie",
+			"seed_garnet_emission": "Émission de germes de grenat",
+			"seed_quartz_sand_emission": "Émission de germes de sable de quartz",
+			"si_lower_limit": "Limite inférieure SI",
+			"sodium_bisulfite_emission": "Émission de bisulfite de sodium",
+			"sodium_chloride_emission": "Émission de chlorure de sodium",
+			"sulphuric_acid_emission": "Émission d'acide sulfurique",
+			"well_efficiency": "Rendement du puits"
+		},
+		"types": {
+			"emission": "Durabilité et émissions",
+			"norms": "Normes de qualité",
+			"operational": "Exploitation"
+		}
+	},
+	"models": {
+		"activatedcarbon": {
+			"name": "Charbon actif",
+			"parameters": {
+				"advanced": "Avancé",
+				"shape": "Forme",
+				"length": "Longueur",
+				"width": "Largeur",
+				"diameter": "Diamètre",
+				"bed_height": "Hauteur de lit",
+				"bed_porosity": "Porosité du lit",
+				"bed_porosity_clogged": "Porosité du lit colmaté",
+				"design_limit": "Limite de conception",
+				"stationary_calculation": "Calcul stationnaire",
+				"particle_diameter": "Diamètre des particules",
+				"particle_porosity": "Porosité des particules",
+				"particle_density": "Masse volumique des particules",
+				"packing_type": "Type de garnissage",
+				"apparent_density": "Masse volumique apparente",
+				"fixed_replacement": "Intervalle de remplacement fixe",
+				"replacement_interval": "Intervalle de remplacement",
+				"replacement_loading": "Charge de remplacement",
+				"staggered_replacement": "Remplacement décalé",
+				"staggered_replacement_units_warning": "Le remplacement décalé nécessite plus d'une unité.",
+				"breakthrough_solver": "Solveur de percée",
+				"breakthrough_bed_volumes": "Volumes de lit à la percée",
+				"breakthrough_points": "Points de la courbe de percée",
+				"axial_dispersion": "Dispersion axiale",
+				"mass_transfer_coefficient": "Coefficient de transfert de matière",
+				"include_doc_competition": "Compétition COD",
+				"DOC_Freundlich_k": "K de Freundlich COD",
+				"DOC_Freundlich_1n": "1/n de Freundlich COD",
+				"DOC_competition_coefficient": "Coefficient de compétition COD",
+				"options": {
+					"fallback": "Repli",
+					"cadet": "CADET",
+					"psdm": "PSDM",
+					"NORIT-Supra-0,8": "NORIT Supra 0.8",
+					"NORIT-Supra-1,0": "NORIT Supra 1.0",
+					"NORIT-Supra-1,2": "NORIT Supra 1.2",
+					"NORIT-Supra-1,5": "NORIT Supra 1.5",
+					"NORIT-Supra-2,0": "NORIT Supra 2.0",
+					"sum20PFAS_limit": "Somme 20 PFAS",
+					"sum4PFAS_limit": "Somme 4 PFAS",
+					"PEQ_limit": "PEQ",
+					"no_staggering": "Sans décalage",
+					"limit_staggering": "Décalage à la limite",
+					"fixed_staggering": "Décalage fixe"
+				}
+			},
+			"design": {
+				"compound": "Composé",
+				"doc_params": "Paramètres du carbone organique",
+				"removal_akf": "Abattement charbon actif",
+				"adsorption_capacity": "Capacité d'adsorption",
+				"freundlich_k": "K de Freundlich",
+				"freundlich_1n": "1/n de Freundlich",
+				"competition_coefficient": "Coefficient de compétition",
+				"include_doc_competition": "Inclure la compétition COD",
+				"loading_q": "Charge q"
+			},
+			"options": {
+				"shape": {
+					"rectangular": "Rectangulaire",
+					"circular": "Circulaire"
+				}
+			},
+			"outputs": {
+				"volume": "Volume",
+				"replacement": "Remplacement",
+				"total_surface": "Surface totale",
+				"filtration_velocity": "Vitesse de filtration",
+				"EBCT": "EBCT",
+				"headloss_clean": "Perte de charge propre",
+				"headloss_clogged": "Perte de charge colmatée",
+				"average_headloss": "Perte de charge moyenne"
+			},
+			"sections": {
+				"activatedcarbon": "Charbon actif",
+				"pressure_loss": "Perte de charge"
+			}
+		},
+		"aeration": {
+			"outputs": {
+				"co2_emission": "Émissions de CO₂",
+				"methane_emission": "Émissions de méthane",
+				"methane_factor": "Facteur d'émission",
+				"methane_removal": "Élimination du méthane"
+			},
+			"sections": {
+				"direct_emissions": "Émissions directes"
+			}
+		},
+		"base": {
+			"outputs": {
+				"calcite_emissions": "Calcite",
+				"calcite_mass_dosage": "Dosage massique",
+				"calcite_specific_emission": "Émissions spécifiques",
+				"co2_emissions": "CO₂",
+				"co2_mass_dosage": "Dosage massique",
+				"co2_specific_emission": "Émissions spécifiques",
+				"electricity_consumption": "Consommation d'électricité",
+				"electricity_emission_factor": "Facteur d'émission",
+				"electricity_emissions": "Émissions de la consommation d'électricité",
+				"guartz_sand_mass_dosage": "Dosage massique",
+				"h2so4_emissions": "Acide sulfurique",
+				"h2so4_mass_dosage": "Dosage massique",
+				"h2so4_specific_emission": "Émissions spécifiques",
+				"hcl_emissions": "Acide chlorhydrique",
+				"hcl_mass_dosage": "Dosage massique",
+				"hcl_specific_emission": "Émissions spécifiques",
+				"iron_chloride_emissions": "Chlorure ferrique",
+				"iron_chloride_mass_dosage": "Dosage massique",
+				"iron_chloride_specific_emission": "Émissions spécifiques",
+				"lime_emissions": "Lait de chaux",
+				"lime_mass_dosage": "Dosage massique",
+				"lime_specific_emission": "Émissions spécifiques",
+				"lye_emissions": "Soude",
+				"lye_mass_dosage": "Dosage massique",
+				"lye_specific_emission": "Émissions spécifiques",
+				"oxygen_emissions": "Oxygène",
+				"oxygen_mass_dosage": "Dosage massique",
+				"oxygen_specific_emission": "Émissions spécifiques",
+				"quartz_sand_emissions": "Sable de quartz",
+				"quartz_sand_mass_dosage": "Dosage massique",
+				"quartz_sand_specific_emission": "Émissions spécifiques"
+			},
+			"sections": {
+				"chemical_emissions": "Produits chimiques et matériaux",
+				"indirect_emissions": "Émissions indirectes"
+			}
+		},
+		"cascade": {
+			"design": {
+				"effluentQuality": "Qualité en sortie",
+				"pHcourse": "pH selon la hauteur",
+				"step": "Marche",
+				"steps": "Nombre de marches",
+				"yield": "Rendement"
+			},
+			"name": "Cascade",
+			"outputs": {
+				"blower_capacity": "Capacité du surpresseur",
+				"blower_efficiency": "Rendement du surpresseur",
+				"blower_flow": "Débit d'air",
+				"blower_power": "Consommation d'électricité",
+				"blower_pressure": "Pression de ventilation",
+				"crest_head": "Charge sur crête",
+				"fall_time": "Temps de chute",
+				"headloss_model": "Perte de charge de la cascade",
+				"jet_velocity": "Vitesse horizontale au déversoir",
+				"jet_width": "Largeur du jet",
+				"total_height": "Hauteur totale de la cascade",
+				"total_width": "Largeur totale requise",
+				"trough_depth": "Profondeur de l'auge",
+				"trough_width": "Largeur de l'auge",
+				"wier_load": "Charge du déversoir"
+			},
+			"parameters": {
+				"cascade_length": "Longueur de déversoir",
+				"cascade_width": "Largeur de la cascade",
+				"number_of_steps": "Nombre de marches",
+				"step_height": "Hauteur de chute",
+				"units": "Nombre de cascades"
+			},
+			"sections": {
+				"blowers": "Ventilation",
+				"general": "Conception de la cascade"
+			}
+		},
+		"dosing": {
+			"design": {
+				"dosing": "Dosage",
+				"dosingcurve_AggCO2": "Courbe de dosage AggCO₂",
+				"dosingcurve_CCPP90": "Courbe de dosage TACC₉₀",
+				"dosingcurve_pH": "Courbe de dosage pH",
+				"dosingcurve_SI": "Courbe de dosage SI",
+				"setpoint_warning": "Consigne non atteignable avec les réglages actuels"
+			},
+			"name": "Dosage",
+			"outputs": {
+				"calcite": "CaCO₃",
+				"chemical_density": "Masse molaire",
+				"chemical_dosage": "Dosage",
+				"chemical_formula": "Formule chimique",
+				"chemical_mass_dosage": "Dosage massique",
+				"chemical_name": "Nom",
+				"co2": "CO₂",
+				"h2so4": "Acide sulfurique",
+				"hcl": "Acide chlorhydrique",
+				"iron_chloride": "Chlorure ferrique",
+				"lime": "Chaux",
+				"lye": "Soude",
+				"oxygen": "Oxygène"
+			},
+			"parameters": {
+				"chemical": "Réactif",
+				"dosage": "Dosage",
+				"mode": "Mode de dosage",
+				"options": {
+					"AggCO2": "AggCO₂",
+					"calcite": "CaCO3",
+					"CCPP90": "CCPP90",
+					"co2": "CO₂",
+					"constant": "Dosage constant",
+					"effluent": "Sortie",
+					"h2so4": "H2SO4",
+					"hcl": "HCl",
+					"influent": "Entrée",
+					"iron_chloride": "FeCl3",
+					"lime": "Ca(OH)2",
+					"lye": "NaOH",
+					"manganese_chloride": "MnCl2",
+					"oxygen": "O2",
+					"pH": "pH",
+					"setpoint": "Vers la consigne",
+					"SI": "SI"
+				},
+				"position": "Position (visuelle)",
+				"setpoint": "Consigne",
+				"setpoint_parameter": "Paramètre"
+			},
+			"sections": {
+				"dosing": "Dosage"
+			}
+		},
+		"filtration": {
+			"backwash_abbr": "Lavage",
+			"backwash_programme": {
+				"add_step": "Ajouter une étape",
+				"air_only": "Air",
+				"air_water": "Air/Eau",
+				"decreasing": "Décroissant",
+				"increasing": "Croissant",
+				"q_air": "Q<sub>air</sub>",
+				"q_water": "Q<sub>eau</sub>",
+				"step": "Étape",
+				"time": "Temps",
+				"water_only": "Eau"
+			},
+			"design": {
+				"acid_formation": "Formation d'acide",
+				"bicarbonate": "Bicarbonate",
+				"denitrification": "Dénitrification",
+				"filtration": "Filtration",
+				"h2s_oxidation": "Oxydation de H2S",
+				"highlight_editing_model": "Surligner le modèle en cours",
+				"influent": "Entrée",
+				"iron_removal": "Déferrisation",
+				"mangan_removal": "Démanganisation",
+				"manganese_removal": "Démanganisation",
+				"methane_oxidation": "Oxydation du méthane",
+				"nitrification": "Nitrification",
+				"O2": "Oxygène",
+				"O2_consumption": "Consommation d'oxygène",
+				"pH": "Acidité",
+				"show_levels": "Hauteur d'amenée et d'évacuation",
+				"show_model_levels": "Niveaux d'eau",
+				"spray": "Aération par aspersion",
+				"sprayeffluent": "Sortie d'aspersion"
+			},
+			"name": "Filtration sur sable",
+			"outputs": {
+				"average_headloss": "Perte de charge moyenne",
+				"backwash_duration": "Durée de lavage",
+				"backwash_energy": "Consommation d'énergie de lavage",
+				"backwash_headloss": "Perte de charge de lavage",
+				"backwash_headloss_anthracite": "Perte de charge de lavage dans l'anthracite",
+				"backwash_headloss_sand": "Perte de charge de lavage dans le sable",
+				"backwash_iron": "Teneur en fer de l'eau de lavage",
+				"backwash_loss": "Perte au lavage",
+				"backwash_power_consumption": "Puissance consommée au lavage",
+				"backwash_volume": "Volume total de lavage",
+				"bed_expansion": "Expansion du lit",
+				"bed_expansion_anthracite": "Expansion du lit d'anthracite",
+				"bed_expansion_sand": "Expansion du lit de sable",
+				"bed_height": "Hauteur de lit",
+				"blower_efficiency": "Rendement de ventilation",
+				"blower_energy": "Consommation du surpresseur",
+				"EBCT": "EBCT",
+				"expanded_height_anthracite": "Hauteur expansée anthracite",
+				"expanded_height_sand": "Hauteur expansée sable",
+				"filtration_velocity": "Vitesse de filtration",
+				"headloss_anthracite": "Perte de charge anthracite propre",
+				"headloss_anthracite_clogged": "Perte de charge anthracite colmaté",
+				"headloss_clean": "Perte de charge filtre propre",
+				"headloss_clogged": "Perte de charge filtre colmaté",
+				"headloss_influent": "Perte de hauteur entrée + buselures",
+				"headloss_model": "Perte de charge sur le filtre",
+				"headloss_sand": "Perte de charge sable propre",
+				"headloss_sand_clogged": "Perte de charge sable colmaté",
+				"iron_capture": "Fer capté par cycle",
+				"iron_load": "Charge en fer",
+				"max_rate": "Vitesse maximale de lavage",
+				"runtime_volume": "Volume de cycle",
+				"surface_area": "Surface filtrante",
+				"total_surface": "Surface filtrante totale"
+			},
+			"parameters": {
+				"ammonium_removal_efficiency": "Rendement d'élimination du NH₄",
+				"backwash_control": "Lavage sur :",
+				"backwash_head": "Perte de charge de lavage",
+				"backwash_pump_efficiency": "Rendement de la pompe de lavage",
+				"blowereficiency": "Rendement du surpresseur",
+				"diameter": "Diamètre",
+				"diameter_anthracite": "Diamètre anthracite",
+				"diameter_sand": "Diamètre sable",
+				"dual_media": "Bicouche",
+				"fall_height_to_media": "Hauteur de chute au-dessus du lit",
+				"filter_bottom": "Plancher filtrant",
+				"height_anthracite": "Hauteur d'anthracite",
+				"height_gutter_to_media": "Hauteur de l'entrée au lit filtrant",
+				"height_sand": "Hauteur de sable",
+				"iron_removal_efficiency": "Rendement d'élimination du Fe",
+				"length": "Longueur",
+				"manganese_removal_efficiency": "Rendement d'élimination du Mn",
+				"options": {
+					"circular": "Rond",
+					"rectangular": "Rectangulaire",
+					"time": "Temps",
+					"volume": "Volume de cycle"
+				},
+				"porosity_anthracite": "Porosité propre",
+				"porosity_anthracite_clogged": "Porosité colmatée",
+				"porosity_sand": "Porosité propre",
+				"porosity_sand_clogged": "Porosité colmatée",
+				"pressure_loss_nozzles": "Perte de charge du réseau d'aspersion",
+				"pressurized": "Filtre sous pression",
+				"runtime": "Durée de cycle",
+				"runvolume": "Volume d'eau traitée",
+				"shape": "Forme",
+				"spray": "Aération par aspersion intégrée",
+				"supernatant_level": "Niveau de surnageant",
+				"suppress_ammonium_removal": "Désactiver l'élimination du NH₄",
+				"suppress_iron_removal": "Désactiver l'élimination du Fe",
+				"suppress_manganese_removal": "Désactiver l'élimination du Mn",
+				"width": "Largeur"
+			},
+			"sections": {
+				"backwash": "Lavage",
+				"general": "Général",
+				"pressure_loss": "Perte de charge du média filtrant"
+			}
+		},
+		"gasprocessing": {
+			"outputs": {
+				"ch4_emission": "Émissions de méthane",
+				"co2_by_burning": "CO₂ de la combustion du méthane",
+				"co2_content": "Teneur en CO₂",
+				"co2_emission": "Émissions de CO₂",
+				"co2_gas": "CO₂ dans le gaz",
+				"gas_density": "Masse volumique",
+				"gas_production_max_day": "Jour de pointe",
+				"gas_production_per_m3": "Production de gaz par m³",
+				"gas_production_per_unit": "Production de gaz par colonne sous vide",
+				"gas_production_total": "Production totale du procédé",
+				"gas_production_year": "Production annuelle",
+				"generator_electric_rating": "Puissance électrique du générateur",
+				"generator_thermal_rating": "Puissance thermique du générateur",
+				"gross_caloric_value": "Pouvoir calorifique supérieur",
+				"gross_wobbe_index": "Indice de Wobbe supérieur",
+				"h2o_content": "Teneur en eau",
+				"methane_content": "Teneur en méthane",
+				"methane_content_dry": "Gaz sec",
+				"methane_emitted": "Méthane émis par m³",
+				"methane_factor": "Facteur d'émission du méthane",
+				"n2_content": "Teneur en N₂",
+				"net_caloric_value": "Pouvoir calorifique inférieur",
+				"net_wobbe_index": "Indice de Wobbe inférieur",
+				"power_produced": "Électricité produite",
+				"relative_density": "Densité relative"
+			},
+			"parameters": {
+				"flare": "Torche",
+				"flare_minimal_ch4": "Teneur minimale en méthane",
+				"power_generation": "Production d'électricité",
+				"power_generator_availability": "Disponibilité du générateur",
+				"power_generator_efficiency": "Rendement du générateur",
+				"power_generator_minimal_ch4": "Teneur minimale en méthane"
+			},
+			"sections": {
+				"direct_emissions": "Émissions directes",
+				"gas_composition": "Composition du gaz",
+				"gas_production": "Production de gaz",
+				"gas_quality": "Qualité du gaz",
+				"power_production": "Production d'électricité"
+			}
+		},
+		"groundwater": {
+			"composition": {
+				"groups": {
+					"anions": "Anions",
+					"cations": "Cations",
+					"common": "Général",
+					"dissolved-gasses": "Gaz dissous",
+					"other": "Autre"
+				}
+			},
+			"design": {
+				"abreviation": "Abréviation",
+				"activity": "Activité",
+				"abbreviation": "Abréviation",
+				"addCompound": "Ajouter un composé",
+				"balance-charge": "Équilibre",
+				"balance-charge-tooltip": "Équilibrer la solution en ajoutant des ions Na ou Cl",
+				"calculated-properties": "Propriétés calculées",
+				"carbon-equilibrium": "Équilibre calco-carbonique",
+				"ccpp": "CCPP",
+				"ccpp90": "CCPP90",
+				"charge": "Charge",
+				"charge-balance": "Équilibre",
+				"charge-derivation": "Écart",
+				"charge-inbalance-warning": "La charge de la solution n'est pas équilibrée. En conséquence, certains paramètres tels que la conductivité et le pH peuvent être calculés de façon incorrecte dans les étapes de traitement suivantes.",
+				"chemical_formula": "Formule chimique",
+				"concentration": "Concentration",
+				"conductivity": "SC20",
+				"hardness": "Dureté",
+				"henry": "Constante de Henry",
+				"dw": "Coefficient de diffusion eau",
+				"dg": "Coefficient de diffusion gaz",
+				"m-number": "Indice m",
+				"name": "Nom",
+				"osmotic-pressure": "Pression osmotique",
+				"oxygen-consumption": "Consommation d'oxygène",
+				"p-number": "Indice p",
+				"pfas": "PFAS",
+				"pfoa-factor": "Facteur d'équivalent PFOA",
+				"removal_akf": "Abattement charbon actif %",
+				"removal_ro": "Abattement OI %",
+				"removal_iex": "Abattement EI %",
+				"user_input": "Saisie utilisateur",
+				"redox-potential": "Pot. redox (pe)",
+				"scaling-potential": "Potentiel d'entartrage",
+				"scaling-warning": "L'eau souterraine ne peut pas être sursaturée en calcite",
+				"SI": "SI",
+				"tac": "TAC",
+				"tds": "TDS",
+				"total": "Total",
+				"vocs": "Composés organiques volatils"
+			},
+			"name": "Captage",
+			"outputs": {
+				"average_day": "Jour moyen",
+				"delta_head": "Perte de charge hydraulique",
+				"head_at_treatment": "Cote à l'entrée du traitement",
+				"head_at_well": "Cote au puits",
+				"headloss_pipe_": "Perte de charge en conduite",
+				"hydraulic_energy_loss": "Perte d'énergie hydraulique",
+				"installed_capacity": "Capacité installée",
+				"minor_losses_": "Pertes singulières",
+				"production": "Production",
+				"pump_efficiency": "Rendement moyen de la pompe de puits",
+				"required_pump_head": "Hauteur manométrique requise du puits",
+				"total_headloss": "Perte de charge totale",
+				"wells_in_use": "Puits en service",
+				"wells_standby": "Puits en secours"
+			},
+			"parameters": {
+				"average_drawdown": "Rabattement moyen",
+				"average_elevation": "Hauteur moyenne",
+				"average_groundwater_level": "Niveau moyen de la nappe",
+				"average_well_capacity": "Capacité moyenne",
+				"max_production": "Production maximale",
+				"maximal_capacity": "Production maximale",
+				"minimal_capacity": "Production minimale",
+				"minor_losses": "Perte par frottement",
+				"nominal_capacity": "Production nominale",
+				"number_of_wells": "Nombre de puits",
+				"yearly_production": "Production annuelle"
+			},
+			"presets": {
+				"deep-anaerobic": "Fortement anaérobie",
+				"slightly-anaerobic": "Légèrement anaérobie"
+			},
+			"sections": {
+				"capacity": "Capacité de production",
+				"hydraulic_energy": "Énergie hydraulique",
+				"hydraulic_line": "Ligne hydraulique"
+			},
+			"select-preset": "Choisir un préréglage"
+		},
+		"marblefiltration": {
+			"name": "Filtration sur marbre",
+			"design": {
+				"acid_formation": "Formation d'acide",
+				"bicarbonate": "Bicarbonate",
+				"denitrification": "Dénitrification",
+				"filtration": "Filtration",
+				"h2s_oxidation": "Oxydation de H2S",
+				"highlight_editing_model": "Surligner le modèle en cours",
+				"influent": "Entrée",
+				"iron_removal": "Déferrisation",
+				"mangan_removal": "Démanganisation",
+				"manganese_removal": "Démanganisation",
+				"methane_oxidation": "Oxydation du méthane",
+				"nitrification": "Nitrification",
+				"O2": "Oxygène",
+				"O2_consumption": "Consommation d'oxygène",
+				"pH": "Acidité",
+				"show_levels": "Hauteur d'amenée et d'évacuation",
+				"show_model_levels": "Niveaux d'eau",
+				"spray": "Aération par aspersion",
+				"sprayeffluent": "Sortie d'aspersion"
+			},
+			"outputs": {
+				"average_headloss": "Perte de charge moyenne",
+				"backwash_duration": "Durée de lavage",
+				"backwash_energy": "Consommation d'énergie de lavage",
+				"backwash_headloss": "Perte de charge de lavage",
+				"backwash_headloss_lime": "Perte de charge de lavage dans la chaux",
+				"backwash_headloss_marble": "Perte de charge de lavage dans le marbre",
+				"backwash_iron": "Teneur en fer de l'eau de lavage",
+				"backwash_loss": "Perte au lavage",
+				"backwash_power_consumption": "Puissance consommée au lavage",
+				"backwash_volume": "Volume total de lavage",
+				"bed_expansion": "Expansion du lit",
+				"bed_expansion_lime": "Expansion du lit de chaux",
+				"bed_expansion_marble": "Expansion du lit de marbre",
+				"bed_height": "Hauteur de lit",
+				"blower_efficiency": "Rendement de ventilation",
+				"blower_energy": "Consommation du surpresseur",
+				"EBCT": "EBCT",
+				"expanded_height_lime": "Hauteur expansée chaux",
+				"expanded_height_marble": "Hauteur expansée marbre",
+				"filtration_velocity": "Vitesse de filtration",
+				"headloss_lime": "Perte de charge chaux propre",
+				"headloss_marble": "Perte de charge marbre propre",
+				"headloss_lime_clogged": "Perte de charge chaux colmatée",
+				"headloss_marble_clogged": "Perte de charge marbre colmaté",
+				"headloss_clean": "Perte de charge filtre propre",
+				"headloss_clogged": "Perte de charge filtre colmaté",
+				"headloss_influent": "Perte de hauteur entrée + buselures",
+				"headloss_model": "Perte de charge sur le filtre",
+				"iron_capture": "Fer capté par cycle",
+				"iron_load": "Charge en fer",
+				"max_rate": "Vitesse maximale de lavage",
+				"runtime_volume": "Volume de cycle",
+				"surface_area": "Surface filtrante",
+				"total_surface": "Surface filtrante totale"
+			},
+			"parameters": {
+				"ammonium_removal_efficiency": "Rendement d'élimination du NH₄",
+				"backwash_control": "Lavage sur :",
+				"backwash_head": "Perte de charge de lavage",
+				"backwash_pump_efficiency": "Rendement de la pompe de lavage",
+				"blowereficiency": "Rendement du surpresseur",
+				"diameter_marble": "Diamètre du marbre",
+				"diameter_lime": "Diamètre de la chaux",
+				"fall_height_to_media": "Hauteur de chute au-dessus du lit",
+				"filter_bottom": "Plancher filtrant",
+				"height_gutter_to_media": "Hauteur de l'entrée au lit filtrant",
+				"height_marble": "Hauteur de marbre",
+				"height_lime": "Hauteur de chaux",
+				"iron_removal_efficiency": "Rendement d'élimination du Fe",
+				"length": "Longueur",
+				"lime_pellets": "Pellets de chaux",
+				"manganese_removal_efficiency": "Rendement d'élimination du Mn",
+				"options": {
+					"circular": "Rond",
+					"rectangular": "Rectangulaire",
+					"time": "Temps",
+					"volume": "Volume de cycle"
+				},
+				"porosity_lime": "Porosité propre",
+				"porosity_marble": "Porosité propre",
+				"porosity_lime_clogged": "Porosité colmatée",
+				"porosity_marble_clogged": "Porosité colmatée",
+				"pressure_loss_nozzles": "Perte de charge du réseau d'aspersion",
+				"pressurized": "Filtre sous pression",
+				"runtime": "Durée de cycle",
+				"runvolume": "Volume d'eau traitée",
+				"shape": "Forme",
+				"spray": "Aération par aspersion intégrée",
+				"supernatant_level": "Niveau de surnageant",
+				"suppress_ammonium_removal": "Désactiver l'élimination du NH₄",
+				"suppress_iron_removal": "Désactiver l'élimination du Fe",
+				"suppress_manganese_removal": "Désactiver l'élimination du Mn",
+				"width": "Largeur"
+			},
+			"sections": {
+				"backwash": "Lavage",
+				"general": "Général",
+				"pressure_loss": "Perte de charge du média filtrant"
+			}
+		},
+		"membrane": {
+			"design": {
+				"beta_factor": "Facteur bêta",
+				"crossflow_per_module": "Flux tangentiel par module",
+				"feed_flow": "Débit d'alimentation",
+				"headloss_per_module": "Perte de charge par module",
+				"osmotic_pressure": "Pression osmotique",
+				"stage": "Étage"
+			},
+			"name": "Filtration membranaire",
+			"outputs": {
+				"_recovery": "Taux de conversion",
+				"concentrate_flow": "Débit de concentrat",
+				"concentrate_pressure": "Pression du concentrat",
+				"concentration_factor": "Facteur de concentration",
+				"feed_pressure": "Pression d'alimentation",
+				"headloss_model": "Pression motrice nette requise",
+				"max_beta": "Facteur bêta maximal",
+				"max_feed": "Débit d'alimentation maximal",
+				"max_flux": "Flux maximal",
+				"max_pressure_drop": "Perte de charge maximale",
+				"mean_beta": "Facteur bêta moyen",
+				"mean_flux": "Flux moyen",
+				"mean_pressure_drop": "Perte de charge moyenne",
+				"membrane_area": "Surface membranaire",
+				"membrane_max_feed": "Débit d'alimentation maximal",
+				"membrane_max_pressure_drop": "Perte de charge maximale",
+				"membrane_min_brine": "Débit minimal de concentrat",
+				"membrane_name": "Nom du produit",
+				"membrane_rejection": "Rétention de sel",
+				"membrane_supplier": "Fournisseur",
+				"min_brine": "Débit minimal de concentrat",
+				"permeate_flow": "Débit de perméat",
+				"permeate_pressure": "Pression du perméat",
+				"required_ndp": "Pression motrice nette requise",
+				"total_membrane_surface": "Surface membranaire totale",
+				"total_modules": "Nombre total de membranes",
+				"total_pressure_vessels": "Nombre total de tubes de pression"
+			},
+			"parameters": {
+				"inlet_elevation": "Hauteur d'entrée",
+				"membrane_type": "Type de membrane",
+				"modules_per_stage": "Modules par tube de pression",
+				"modules_per_vessel": "Membranes par tube de pression",
+				"number_of_stages": "Nombre d'étages",
+				"optiflux": "Optiflux",
+				"options": {
+					"AK-400H": "AK-400H",
+					"AK-440H": "AK-440H",
+					"ESPA2-LD": "ESPA2-LD",
+					"ESPA2-LD-MAX": "ESPA2-LD-MAX",
+					"ESPA4-LD": "ESPA4-LD",
+					"ESPA4-MAX": "ESPA4-MAX",
+					"spiral": "Spirale"
+				},
+				"pressure_loss_between_stages": "Perte de charge entre étages",
+				"pressure_loss_cartridge_filter": "Perte de charge du filtre à cartouche",
+				"recovery": "Taux de conversion",
+				"stage1_vessels": "Tubes de pression étage 1",
+				"stage2_vessels": "Tubes de pression étage 2",
+				"stage3_vessels": "Tubes de pression étage 3"
+			},
+			"sections": {
+				"membrane": "Données membrane",
+				"membrane_conditions": "Conditions de membrane",
+				"operational": "Exploitation",
+				"stack": "Conception de l'empilement"
+			}
+		},
+		"membranedegassing": {
+			"design": {
+				"per_m3": "Par m³",
+				"per_membrane": "Par membrane",
+				"per_stack": "Par empilement",
+				"total_process": "Procédé total"
+			},
+			"name": "Dégazage membranaire",
+			"outputs": {
+				"ch4_emission_stage_2": "Émissions de méthane",
+				"co2_by_burning_stage_2": "CO₂ de la combustion du méthane",
+				"co2_emission_stage_2": "Émissions de CO₂",
+				"co2_gas_stage_2": "CO₂ dans le gaz",
+				"headloss_model": "Perte de charge du dégazeur membranaire",
+				"isothermic_energy": "Énergie isotherme",
+				"isothermic_energy2": "Énergie isotherme",
+				"membrane_load": "Charge membranaire",
+				"membrane_pressure_loss": "Perte de charge membranaire",
+				"psa_consumption": "Consommation du générateur PSA",
+				"psa_specific_consumption": "Consommation spécifique du générateur PSA",
+				"stage_2_co2_content": "Teneur en CO₂ étage 2",
+				"stage_2_gas_production_per_m3": "Production de gaz par m³",
+				"stage_2_gas_production_per_unit": "Production de gaz du dégazeur membranaire",
+				"stage_2_methane_content": "Teneur en méthane étage 2",
+				"stage_2_methane_emitted": "Méthane émis par m³",
+				"stage_2_methane_factor": "Facteur d'émission du méthane",
+				"stage_2_vacuum_pressure": "Pression de vide",
+				"total_membranes": "Nombre de membranes par unité",
+				"total_membranes_process": "Dégazage membranaire total",
+				"total_nitrogen_consumption": "Consommation totale d'azote",
+				"total_pressure_loss": "Perte de charge totale",
+				"vacuum_efficiency": "Rendement de la pompe à vide",
+				"vacuum_efficiency2": "Rendement de la pompe à vide",
+				"vacuum_pressure": "Pression de vide",
+				"vacuum_pump_rating": "Puissance de raccordement de la pompe à vide",
+				"vacuum_pump_rating2": "Puissance de raccordement de la pompe à vide",
+				"vacuum_pump_stage_1": "Pompe à vide étage 1",
+				"vacuum_pump_stage_2": "Pompe à vide étage 2"
+			},
+			"parameters": {
+				"co2_rq_stage_1": "RQ CO₂",
+				"co2_rq_stage_2": "RQ CO₂",
+				"inlet_elevation": "Hauteur d'entrée",
+				"membrane_type": "Type de membrane",
+				"membranes_per_stage": "Nombre de membranes par étage",
+				"n2_rq_stage_1": "RQ azote",
+				"n2_rq_stage_2": "RQ azote",
+				"nitrogen_purity": "Classe de pureté de l'azote",
+				"nitrogen_source": "Source d'azote",
+				"num_stages": "Nombre d'étages",
+				"options": {
+					"cryogenic": "Cryogénique",
+					"double": "Deux étages",
+					"EXF14x28": "EXF14x28",
+					"EXF14x40": "EXF14x40",
+					"liquid-ring": "Anneau liquide",
+					"PSA": "PSA",
+					"screw": "Vis",
+					"single": "Un étage"
+				},
+				"pressure_loss_cartridge_filter": "Perte de charge moyenne du filtre à cartouche",
+				"vacuum_stage_1": "Pression de vide étage 1",
+				"vacuum_stage_2": "Pression de vide étage 2",
+				"vacuum_type": "Type de pompe à vide",
+				"vent_flare": "Torche"
+			},
+			"sections": {
+				"direct_emissions": "Émissions directes étage 1",
+				"direct_emissions_stage_2": "Émission directe étage 2",
+				"gas_composition": "Composition du gaz étage 1",
+				"gas_production": "Production de gaz étage 1",
+				"gas_quality": "Qualité du gaz étage 1",
+				"general": "Dégazage membranaire",
+				"nitrogen_supply": "Alimentation en azote",
+				"stage_2_gas": "Production de gaz étage 2",
+				"vacuum_pumps": "Pompes à vide"
+			}
+		},
+		"model": {
+			"outputs": {
+				"average_day": "Jour moyen",
+				"average_day_load": "Charge au jour moyen",
+				"booster_efficiency": "Rendement de la pompe de surpression",
+				"booster_energy_consumption": "Consommation de la pompe de surpression",
+				"calculated_booster_head": "Hauteur de la pompe de surpression intégrée",
+				"calculated_head_in": "Charge calculée en entrée",
+				"calculated_head_out": "Charge calculée en sortie",
+				"delta_booster": "Perte de hauteur hydraulique",
+				"delta_head": "Perte de charge",
+				"headloss_influent": "Perte de charge de l'ouvrage d'entrée",
+				"hydraulic_energy_loss": "Perte d'énergie hydraulique",
+				"inlet_head": "Charge en entrée",
+				"inlet_height": "Hauteur d'entrée",
+				"installed_capacity": "Capacité installée de l'étape",
+				"max_day": "Jour de pointe",
+				"max_day_load": "Charge au jour de pointe",
+				"max_missing_units_average_day": "Défaillance max. au jour moyen",
+				"max_missing_units_max_day": "Défaillance max. au jour de pointe",
+				"minimal_head": "Charge minimale d'alimentation",
+				"minimal_pump_head": "Pression amont minimale de la pompe de surpression",
+				"outlet_head": "Charge en sortie",
+				"outlet_height": "Hauteur de sortie",
+				"pump_efficiency": "Rendement moyen de la pompe d'alimentation",
+				"test": "",
+				"total_headloss": "Perte de charge totale"
+			},
+			"parameters": {
+				"effluent_atmospheric": "Sortie atmosphérique",
+				"influent_pressure_loss": "Perte de charge de l'ouvrage d'entrée",
+				"inlet_elevation": "Hauteur d'entrée",
+				"maximal_capacity": "Capacité maximale",
+				"minimal_capacity": "Capacité minimale",
+				"nominal_capacity": "Capacité nominale",
+				"outlet_elevation": "Hauteur de sortie",
+				"pressurized": "Système sous pression",
+				"units": "Nombre d'unités"
+			},
+			"sections": {
+				"hydraulic_energy": "Énergie hydraulique",
+				"hydraulic_line": "Ligne hydraulique",
+				"hydraulic_load": "Charge hydraulique"
+			}
+		},
+		"output": {
+			"name": "Distribution",
+			"outputs": {
+				"calculated_head_in": "Charge calculée en entrée",
+				"calculated_head_out": "Charge de refoulement calculée",
+				"distribution_pump_efficiency": "Rendement des pompes de distribution",
+				"distribution_pumps_energy_consumption": "Consommation des pompes de distribution",
+				"hydraulic_energy_loss": "Énergie hydraulique de la pression amont",
+				"influent_headloss": "Contribution hydraulique amont",
+				"minimal_head": "Pression amont minimale",
+				"pump_efficiency": "Rendement net de la pompe",
+				"pump_head": "Hauteur des pompes de distribution",
+				"total_headloss": "Perte de hauteur hydraulique"
+			},
+			"parameters": {
+				"inlet_elevation": "Hauteur de la bâche",
+				"integrated_booster": "Pompes de distribution",
+				"required_pressure": "Pression de distribution"
+			},
+			"sections": {
+				"hydraulic_energy": "Énergie hydraulique",
+				"hydraulic_line": "Ligne hydraulique"
+			}
+		},
+		"pipeline": {
+			"name": "Conduite de transport",
+			"outputs": {
+				"average_flow": "Débit moyen",
+				"average_velocity": "Vitesse moyenne",
+				"darcy_coefficient": "Coefficient de Darcy",
+				"headloss_per_meter": "Perte de charge par mètre",
+				"headloss_pipe": "Perte de charge en conduite",
+				"kinematic_viscosity": "Viscosité cinématique",
+				"reynolds_number": "Nombre de Reynolds",
+				"roughness": "Rugosité de paroi"
+			},
+			"parameters": {
+				"options": {
+					"PE": "PE",
+					"PVC": "PVC",
+					"Steel": "Acier"
+				},
+				"pipe_inner_diameter": "Diamètre intérieur",
+				"pipe_length": "Longueur de conduite",
+				"pipe_material": "Matériau"
+			},
+			"sections": {
+				"transport_pipe": "Conduite de transport"
+			}
+		},
+		"plate": {
+			"design": {
+				"effluent_quality": "Qualité en sortie",
+				"oxygen": "Oxygène",
+				"pH_and_SI": "Niveau de pH et SI"
+			},
+			"name": "Aération à plateaux",
+			"outputs": {
+				"air_flow": "Débit d'air",
+				"deltaP": "Perte de charge au soufflage",
+				"deltaP_exhaust": "Perte de charge à l'extraction",
+				"deltaP_recirc": "Perte de charge en recirculation",
+				"efficiency_exhaust": "Rendement du ventilateur d'extraction",
+				"efficiency_recirculation": "Rendement du ventilateur de recirculation",
+				"efficiency_supply": "Rendement du ventilateur de soufflage",
+				"exhaust_blower_energy": "Consommation du surpresseur d'extraction",
+				"exhaust_fan_flow": "Débit d'air du ventilateur d'extraction",
+				"recirculation_blower_energy": "Consommation de la recirculation",
+				"recirculation_fan_flow": "Débit d'air du ventilateur de recirculation",
+				"supply_blower_energy": "Consommation du surpresseur de soufflage",
+				"supply_fan_flow": "Débit d'air du ventilateur de soufflage",
+				"surface": "Surface",
+				"surface_load": "Charge superficielle",
+				"watercolumn_height": "Hauteur de colonne d'eau"
+			},
+			"parameters": {
+				"contact_time": "Temps de contact",
+				"efficiency": "Rendement d'aération",
+				"endplate_height": "Hauteur du plateau final",
+				"exhaust_fan_efficiency": "Rendement du ventilateur d'extraction",
+				"exhaust_fan_pressure": "Pression du ventilateur d'extraction",
+				"exhaust_fan_pressure_difference": "Perte de charge du ventilateur d'extraction",
+				"hole_diameter": "Diamètre des orifices",
+				"length": "Longueur",
+				"options": {
+					"Foil": "Film",
+					"Metal": "Métal"
+				},
+				"recirculation": "Recirculation",
+				"recirculation_fan_efficiency": "Rendement du ventilateur de recirculation",
+				"recirculation_fan_pressure": "Pression du ventilateur de recirculation",
+				"recirculation_fan_pressure_difference": "Perte de charge du ventilateur de recirculation",
+				"RQ": "RQ",
+				"supply_fan_efficiency": "Rendement du ventilateur de soufflage",
+				"supply_fan_pressure": "Pression du ventilateur de soufflage",
+				"supply_fan_pressure_difference": "Perte de charge du ventilateur de soufflage",
+				"type": "Type d'aération",
+				"width": "Largeur"
+			},
+			"sections": {
+				"electric_energy": "Consommation électrique"
+			}
+		},
+		"recycle": {
+			"name": "Réutilisation des eaux de lavage",
+			"parameters": {
+				"recycle_efficiency": "Rendement"
+			}
+		},
+		"reservoir": {
+			"name": "Réservoir",
+			"outputs": {
+				"_headloss_model": "Perte de hauteur dans le réservoir",
+				"_influent_pressure_loss": "Perte de charge en entrée",
+				"average_production": "Production moyenne",
+				"average_retention_time": "Temps de séjour moyen",
+				"calculalted_head_in": "Hauteur d'alimentation calculée",
+				"calculated_head_out": "Charge calculée en sortie",
+				"delta_head": "Perte de hauteur hydraulique",
+				"energy_loss": "Perte d'énergie hydraulique",
+				"gross_volume": "Volume brut",
+				"max_production": "Production maximale",
+				"max_retention_time": "Temps de séjour moyen",
+				"minimal_head": "Charge minimale d'alimentation",
+				"net_volume": "Volume net",
+				"pump_efficiency": "Rendement moyen de la pompe d'alimentation",
+				"surface_area": "Surface",
+				"total_headloss": "Perte totale de hauteur hydraulique",
+				"total_storage": "Volume de stockage total"
+			},
+			"parameters": {
+				"co2_removal": "Rendement d'élimination du CO₂",
+				"elevation": "Cote",
+				"influent_pressure_loss": "Perte de charge en entrée",
+				"inlet_elevation": "Cote d'entrée",
+				"inlet_weir_height": "Hauteur du déversoir d'entrée",
+				"integrated_aeration": "Aération intégrée",
+				"mean_water_level": "Niveau d'eau moyen",
+				"o2_addition": "Saturation en oxygène",
+				"o2_saturation": "Oxygène jusqu'à saturation",
+				"options": {
+					"cylindrical": "Cylindrique",
+					"rectangular": "Rectangulaire"
+				},
+				"reservoir_diameter": "Diamètre",
+				"reservoir_height": "Hauteur",
+				"reservoir_length": "Longueur",
+				"reservoir_shape": "Forme du réservoir",
+				"reservoir_width": "Largeur",
+				"units": "Nombre de réservoirs/compartiments"
+			},
+			"sections": {
+				"general": "Réservoir",
+				"hydraulic_energy": "Énergie hydraulique",
+				"hydraulic_line": "Ligne hydraulique",
+				"retention_time": "Temps de séjour"
+			}
+		},
+		"sandfiltration": {
+			"name": "Filtration sur sable"
+		},
+		"sandtrap": {
+			"name": "Dessableur",
+			"outputs": {
+				"particle_density": "Masse volumique du matériau",
+				"settling_velocity": "Vitesse de décantation",
+				"settling_velocity_check": "Contrôle de la vitesse de décantation",
+				"surface_area": "Surface",
+				"surface_loading": "Charge superficielle",
+				"viscosity": "Viscosité dynamique",
+				"volume": "Volume",
+				"water_density": "Masse volumique de l'eau"
+			},
+			"parameters": {
+				"height_at_inlet": "Hauteur côté entrée",
+				"height_at_outlet": "Hauteur côté sortie",
+				"length": "Longueur",
+				"nominal_capacity": "Capacité nominale",
+				"options": {
+					"anthracite": "Anthracite",
+					"basalt": "Basalte",
+					"garnet": "Sable de grenat",
+					"gravel": "Gravier",
+					"hydro-anthracite": "Hydro-anthracite",
+					"marble": "Marbre",
+					"other": "Autre (à saisir)",
+					"pellets": "Pellets d'adoucissement",
+					"quartz-sand": "Sable de quartz"
+				},
+				"other_particle_density": "Masse volumique du matériau",
+				"particle_material": "Matériau",
+				"particle_size": "Taille des particules",
+				"temperature": "Température de l'eau",
+				"width": "Largeur"
+			},
+			"sections": {
+				"design_check": "Contrôle de conception",
+				"sandtrap": "Dessableur",
+				"settling": "Décantation"
+			}
+		},
+		"softening": {
+			"design": {
+				"Doseercurve": "Courbe de dosage",
+				"Dosering": "Dosage",
+				"EGV": "CE",
+				"Hardheid": "Dureté",
+				"HCO3": "HCO₃",
+				"Kalkmelk": "Lait de chaux",
+				"Kalkmelk doseren": "Dosage de lait de chaux",
+				"Kalkmelk ontharden": "Adoucissement au lait de chaux",
+				"NaOH doseren": "Dosage de soude",
+				"NaOH ontharden": "Adoucissement à la soude",
+				"Natronloog": "Soude",
+				"pH": "pH"
+			},
+			"name": "Adoucissement sur pellets",
+			"outputs": {
+				"base_height": "Hauteur de la partie cylindrique",
+				"bed_expansion": "Expansion du lit",
+				"bed_headloss": "Perte de charge du lit expansé",
+				"bottom_surface_area": "Surface de la partie cylindrique",
+				"calcite_production": "Production de calcite",
+				"calcite_volume": "Volume de coquille de calcite",
+				"co2": "CO₂",
+				"delta_ca": "Élimination du calcium",
+				"delta_hardness": "Δ Dureté",
+				"expanded_bed_height": "Hauteur du lit expansé",
+				"expanded_bed_porosity": "Porosité du lit expansé",
+				"flow_reactor": "Débit dans le réacteur",
+				"funnel_angle": "Angle de l'évasement",
+				"funnel_height": "Hauteur de l'évasement",
+				"hcl": "Acide chlorhydrique",
+				"headloss_model": "Perte de hauteur hydraulique du réacteur à pellets",
+				"installed_capacity": "Capacité installée",
+				"lime": "Lait de chaux",
+				"lye": "Soude",
+				"n_pellets": "Nombre de pellets",
+				"outlet_height": "Cote de sortie",
+				"pellet_bed_volume": "Volume du lit fixe",
+				"pellet_carbon_capture": "Capture de CO₂ dans les pellets",
+				"pellet_density": "Masse volumique des pellets",
+				"pellet_mass": "Masse du pellet",
+				"pellet_production": "Production de pellets",
+				"pellet_production_per_day": "Par jour",
+				"pellet_production_per_hour": "Par heure",
+				"pellet_production_per_year": "Par an",
+				"pellet_volume": "Volume du pellet",
+				"quartz_sand": "Sable de quartz",
+				"seed_consumption": "Consommation de germes",
+				"seed_consumption_per_day": "Par jour",
+				"seed_consumption_per_hour": "Par heure",
+				"seed_consumption_per_year": "Par an",
+				"seed_volume": "Volume de germes",
+				"top_surface_area": "Surface du sommet de l'évasement",
+				"total_flow": "Débit total",
+				"total_headloss": "Perte totale de hauteur hydraulique",
+				"total_reactor_height": "Hauteur totale du réacteur",
+				"velocity_cylindrical": "Partie cylindrique",
+				"velocity_top": "Sommet du réacteur"
+			},
+			"parameters": {
+				"acid_chemical": "Réactif acide",
+				"acid_concentration": "Concentration de l'acide",
+				"acid_dosage": "Dosage d'acide",
+				"acid_position": "Position du dosage d'acide",
+				"average_pellet_diameter": "Diamètre moyen des pellets",
+				"average_seed_diameter": "Diamètre moyen des germes",
+				"base_chemical": "Réactif basique",
+				"base_concentration": "Concentration de la base",
+				"base_dosage": "Dosage de base",
+				"bypass_capacity": "Capacité de dérivation",
+				"bypass_open": "Pourcentage d'ouverture de la dérivation",
+				"bypass_ratio": "Dérivation ouverte",
+				"diameter_cylindrical": "Diamètre de la partie cylindrique",
+				"diameter_funnel": "Diamètre de l'évasement",
+				"fe_capture": "Capture du Fe dans les pellets",
+				"height_cylindrical": "Hauteur de la partie cylindrique",
+				"height_funnel": "Hauteur de l'évasement",
+				"inlet_elevation": "Hauteur d'alimentation du réacteur",
+				"lime_type": "Type de chaux",
+				"maximal_capacity": "Capacité maximale",
+				"minimal_capacity": "Capacité minimale",
+				"mn_capture": "Capture du Mn dans les pellets",
+				"nominal_capacity": "Capacité nominale",
+				"options": {
+					"after-bypass": "Après dérivation",
+					"bypass": "Dérivation",
+					"Ca(OH)2": "Lait de chaux",
+					"calcite": "Calcite",
+					"CO2": "CO₂",
+					"cylindrical": "Cylindrique",
+					"funnel": "En entonnoir",
+					"garnet_sand": "Sable de grenat",
+					"HCl": "HCl",
+					"hydrated_lime": "Chaux éteinte",
+					"milk_of_lime": "Lait de chaux",
+					"NaOH": "Soude caustique",
+					"quartz_sand": "Sable de quartz",
+					"quicklime": "Chaux vive",
+					"reactor-outlet": "Sortie"
+				},
+				"pressurized": "Réacteur sous pression",
+				"reactor_shape": "Forme du réacteur",
+				"seed_material": "Matériau d'ensemencement",
+				"soften_to_si": "Adoucissement jusqu'au SI",
+				"static_bed_height": "Hauteur du lit fixe",
+				"static_bed_porosity": "Porosité du lit fixe"
+			},
+			"sections": {
+				"direct_emissions": "Émissions directes",
+				"dosing": "Dosage",
+				"hydraulic_load": "Charge hydraulique",
+				"materials": "Matériaux",
+				"pellet_bed": "Lit de pellets",
+				"pellet_production": "Production de pellets",
+				"reactor_shape": "Forme du réacteur",
+				"velocities": "Vitesses"
+			}
+		},
+		"splitter": {
+			"name": "Répartition",
+			"parameters": {
+				"pressurized": "Système sous pression",
+				"split": "Taux de répartition"
+			}
+		},
+		"sprayaerator": {
+			"name": "Aération par aspersion",
+			"outputs": {
+				"blower_energy": "Consommation de l'aération par aspersion",
+				"blowerefficiency": "Rendement du surpresseur d'aération par aspersion",
+				"resparitoryquotient": "Quotient respiratoire",
+				"total_air_flow": "Débit d'air total",
+				"total_nozzles": "Nombre de buses"
+			},
+			"parameters": {
+				"ambient_temperature": "Température ambiante",
+				"area_per_nozzle": "Surface par buse",
+				"blowereficiency": "Rendement du surpresseur d'aération par aspersion",
+				"ch4_removal_efficiency": "Élimination du CH4",
+				"co2_removal_efficiency": "Élimination du CO₂",
+				"fall_height": "Hauteur de chute au-dessus du lit filtrant",
+				"o2_saturation": "Oxygène jusqu'à saturation",
+				"rq": "RQ"
+			},
+			"sections": {
+				"electric_energy": "Consommation électrique"
+			}
+		},
+		"toweraeration": {
+			"design": {
+				"air_capacity": "Capacité d'air [m/s]",
+				"column_is_flooding": "La colonne est en engorgement",
+				"hydraulics": "Hydraulique",
+				"water_capacity": "Capacité d'eau [m/s]",
+				"water_quality": "Qualité de l'eau"
+			},
+			"name": "Aération en tour",
+			"outputs": {
+				"a-factor": "Facteur a",
+				"air_volume": "Volume d'air",
+				"b-factor": "Facteur b",
+				"bed_volume": "Volume de lit",
+				"blower_efficiency": "Rendement du surpresseur",
+				"blower_energy": "Énergie du surpresseur",
+				"CO2": "CO₂",
+				"delta_p": "Différence de pression du lit",
+				"EBCT": "EBCT",
+				"F-Factor": "Facteur F",
+				"flooding_factor": "Facteur d'engorgement",
+				"headloss_influent": "Perte de charge en entrée",
+				"headloss_model": "Perte de hauteur hydraulique de l'aérateur en tour",
+				"liquid_holdup": "Rétention liquide",
+				"liquid_loading": "Charge superficielle",
+				"Methane": "Méthane",
+				"packing_size": "Taille du garnissage",
+				"pressuredrop": "Perte de charge côté air",
+				"respiratory_quotient": "RQ",
+				"surface_area": "Surface",
+				"surface_volume_ratio": "Rapport surface/volume",
+				"total_height": "Hauteur hors tout",
+				"total_pressure_drop": "Perte de charge totale côté air",
+				"void_fraction": "Fraction de vide",
+				"volume": "Volume de l'aérateur en tour",
+				"Perchloroethylene": "Perchloroéthylène",
+				"Trichloroethylene": "Trichloroéthylène",
+				"cis-1,2-Dichlooretheen": "cis-1,2-dichloroéthène",
+				"Vinylchloride": "Chlorure de vinyle",
+				"1,1,1-Trichloroethane": "1,1,1-trichloroéthane",
+				"1,1-Dichloroethane": "1,1-dichloroéthane",
+				"1,2-Dichloroethane": "1,2-dichloroéthane",
+				"Tetrachlormethane": "Tétrachlorométhane",
+				"Trichloromethane": "Trichlorométhane",
+				"Dichloromethane": "Dichlorométhane",
+				"1,2-Dichloropropane": "1,2-dichloropropane",
+				"PFBS": "PFBS",
+				"PFPeS": "PFPeS",
+				"PFHxS": "PFHxS",
+				"PFHpS": "PFHpS",
+				"PFOS": "PFOS",
+				"PFDS": "PFDS",
+				"TFA": "TFA",
+				"PFBA": "PFBA",
+				"PFPeA": "PFPeA",
+				"PFHxA": "PFHxA",
+				"PFHpA": "PFHpA",
+				"PFOA": "PFOA",
+				"PFDA": "PFDA",
+				"PFUnDA": "PFUnDA",
+				"PFDoDA": "PFDoDA",
+				"PFTrDA": "PFTrDA",
+				"PFTeDA": "PFTeDA"
+			},
+			"parameters": {
+				"air_system_pressure_loss": "Perte de charge du circuit d'air",
+				"ambient_temperature": "Température ambiante",
+				"bed_height": "Hauteur de lit",
+				"blowereficiency": "Rendement du surpresseur",
+				"diameter": "Diamètre",
+				"fall_height": "Hauteur de chute au-dessus du lit",
+				"options": {
+					"Pall28": "Pall 28",
+					"Raflux25": "Raflux 25",
+					"Raflux50": "Raflux 50",
+					"Raflux90": "Raflux 90"
+				},
+				"packingmaterial": "Matériau de garnissage",
+				"pressure_loss_nozzles": "Perte de charge du collecteur",
+				"rq": "RQ"
+			},
+			"sections": {
+				"electric_energy": "Consommation d'électricité",
+				"general": "Aérateur en tour",
+				"operation": "Exploitation",
+				"packing": "Matériau de garnissage",
+				"removalrates": "Rendement d'élimination"
+			}
+		},
+		"transport": {
+			"outputs": {
+				"calculated_head_in": "Charge calculée en entrée",
+				"calculated_head_out": "Charge calculée en sortie",
+				"delta_head": "Perte de charge",
+				"hydraulic_energy_loss": "Perte d'énergie hydraulique",
+				"hydraulic_energy_loss (2)": "Perte d'énergie hydraulique",
+				"pump_efficiency": "Rendement moyen de la pompe d'alimentation",
+				"total_headloss": "Perte de charge totale"
+			},
+			"sections": {
+				"hydraulic_energy": "Consommation d'énergie hydraulique",
+				"hydraulic_line": "Ligne hydraulique",
+				"transport_pipe": "Conduite de transport"
+			}
+		},
+		"vacuum": {
+			"design": {
+				"acidity-and-si": "Acidité et SI",
+				"dry": "Sec",
+				"effluent-quality": "Qualité en sortie",
+				"gas-quality": "Qualité du gaz",
+				"per_m3": "Par m³",
+				"per_unit": "Par colonne sous vide",
+				"total_process": "Procédé total",
+				"vacuum-pressure": "Pression de vide [bara]",
+				"wet": "Humide",
+				"wet-gas-volume": "Volume de gaz (humide)"
+			},
+			"name": "Dégazage sous vide",
+			"outputs": {
+				"headloss_influent": "Perte de charge ouvrage d'entrée + réseau d'aspersion",
+				"headloss_model": "Perte de hauteur de la colonne sous vide",
+				"isothermic_energy": "Énergie isotherme",
+				"surface": "Surface",
+				"surface_load": "Charge superficielle",
+				"total_height": "Hauteur hors tout",
+				"vacuum_efficiency": "Rendement du vide",
+				"vacuum_pump_rating": "Puissance installée par colonne",
+				"vacuum_pumps": "Pompes à vide",
+				"velocity": "Vitesse"
+			},
+			"parameters": {
+				"acidity-and-si": "Acidité et SI",
+				"bed_height": "Hauteur de lit",
+				"bottom_height": "Hauteur de fond",
+				"diameter": "Diamètre",
+				"dry": "Sec",
+				"effluent-quality": "Qualité en sortie",
+				"gas-quality": "Qualité du gaz",
+				"options": {
+					"liquid_ring": "Anneau liquide",
+					"screw": "Pompe à vis"
+				},
+				"pressure_loss_nozzles": "Perte de charge du réseau d'aspersion",
+				"spray_height": "Hauteur de chute des buses",
+				"vacuum_pressure": "Pression de vide",
+				"vacuum_pump": "Type de pompe à vide",
+				"wet": "Humide",
+				"wet-gas-volume": "Volume de gaz (humide)"
+			},
+			"sections": {
+				"vacuum_system": "Système de vide",
+				"vessel": "Colonne sous vide"
+			}
+		},
+		"waste": {
+			"name": "Flux de rejet"
+		}
+	},
+	"Totaal": "Total",
+	"tutorial": [
+		{
+			"body": "Ce tutoriel vous guide à travers les fonctions de base d'Amanzi-UI.\n\nSuivez les étapes pour apprendre à créer et à configurer votre procédé de traitement de l'eau.\n\nCliquez sur « Suivant » pour commencer le tutoriel.",
+			"title": "Bienvenue dans Amanzi !"
+		},
+		{
+			"body": "Commencez par faire glisser les composants de la barre latérale gauche vers le canevas, ou double-cliquez-les dans la bibliothèque pour les connecter automatiquement.\n\nChaque scénario d'usine de traitement a besoin d'une source (modèle de captage) et d'un exutoire (modèle de distribution).",
+			"title": "Ajout de composants"
+		},
+		{
+			"body": "Reliez les composants en cliquant et en faisant glisser entre leurs points de connexion.\n\nVeillez à réaliser toutes les connexions du flux produit (bleu), du flux de rejet (rouge) et du flux de lavage (bleu pointillé).",
+			"title": "Connexion des composants"
+		},
+		{
+			"body": "Double-cliquez sur un composant ou utilisez son bouton de modification des paramètres pour ouvrir le panneau de configuration et régler les paramètres de ce composant.\n\nToute modification s'affiche immédiatement dans les graphiques et tableaux de conception et se répercute sur l'ensemble du procédé de traitement.",
+			"title": "Configurer les composants"
+		},
+		{
+			"body": "Cliquez sur l'onglet « Indicateurs » dans la barre latérale droite pour définir les paramètres à l'échelle du projet.\n\nCes paramètres servent à tous les calculs de ce projet.",
+			"title": "Configurer les indicateurs du projet"
+		},
+		{
+			"body": "Utilisez la barre latérale droite pour consulter les résultats de calcul et les indicateurs de performance.",
+			"title": "Consulter les résultats"
+		},
+		{
+			"body": "Vous pouvez créer plusieurs scénarios afin de comparer différentes options de conception.\n\nCliquez sur l'onglet « + » en bas pour créer un nouveau scénario.\n\nVous pouvez également modifier ou supprimer les scénarios existants.\n\nIl est possible de copier et coller des composants d'un scénario à l'autre avec les raccourcis ctrl+c et ctrl+v.",
+			"title": "Créer plusieurs scénarios"
+		},
+		{
+			"body": "Vous avez terminé le tutoriel. N'hésitez pas à explorer et à construire votre propre procédé de traitement.",
+			"title": "Tutoriel terminé"
+		}
+	],
+	"ui": {
+		"migration": {
+			"change_log_entry": "{description} : {count} unité(s)",
+			"descriptions": {
+				"dosing_chemical_slugs": "Dosage : formule chimique vers identifiant (p. ex. NaOH vers soude)"
+			},
+			"notification_no_model_changes": "Aucune migration de modèle n'a été appliquée à ce projet (la version du format de fichier a été mise à jour).",
+			"notification_title": "Fichier de projet mis à jour",
+			"notification_version_range": "{from} → {to}",
+			"notification_version_tag": "v{version}",
+			"notification_col_version": "Version",
+			"notification_col_change": "Modification appliquée"
+		},
+		"design": {
+			"categories": {
+				"chemicals": "Produits chimiques",
+				"design": "Conception",
+				"design_tables": "Tableaux de conception",
+				"gas_processing": "Proc. gaz",
+				"hydraulic_line": "Ligne hydraulique",
+				"massbalance": "Bilan massique",
+				"model": "Modèle",
+				"operational": "Exploitation",
+				"schematic": "Schéma"
+			},
+			"parameterlist": {
+				"allowed_values": "Valeurs admises",
+				"category": "Catégorie",
+				"default": "Défaut",
+				"equation": "Équation",
+				"parameter": "Paramètre",
+				"section": "Section",
+				"tag": "Balise",
+				"units": "Unités",
+				"value": "Valeur"
+			},
+			"sections": {
+				"aeration": "Aération",
+				"backwash": "Lavage",
+				"backwash_programme": "Programme de lavage",
+				"blowerspecifications": "Caractéristiques du surpresseur",
+				"cascade": "Cascade",
+				"chemicals": "Produits chimiques",
+				"dosing": "Dosage",
+				"flows": "Débits",
+				"filter": "Conception du filtre",
+				"general": "Général",
+				"hydraulic_energy": "Énergie hydraulique",
+				"hydraulic_line": "Ligne hydraulique",
+				"marblefilter": "Filtration sur marbre",
+				"membrane_degassing": "Dégazeur membranaire",
+				"methane_processing": "Traitement du méthane",
+				"particles": "Particules",
+				"pellet_bed": "Lit de pellets",
+				"plate_aeration": "Aérateur à plateaux",
+				"reactor": "Réacteur",
+				"reactor_model": "Modèle de réacteur",
+				"removal_rates": "Rendements d'élimination",
+				"sandfilter": "Filtre à sable rapide",
+				"sandtrap": "Dessableur",
+				"seed": "Matériau d'ensemencement",
+				"sprayaerator": "Aérateur par aspersion",
+				"stack_configuration": "Configuration de l'empilement",
+				"stage_1": "Étage 1",
+				"stage_2": "Étage 2",
+				"supernatant": "Surnageant",
+				"toweraeration": "Aérateur en tour",
+				"transport_pipe": "Conduite de transport",
+				"vacuum": "Vide",
+				"vacuum_system": "Système de vide",
+				"vent_processing": "Traitement des gaz résiduels",
+				"vessel": "Cuve",
+				"well_design": "Puits"
+			},
+			"tables": {
+				"headers": {
+					"chemicals": "Produits chimiques et matériaux",
+					"design": "Conception",
+					"energy": "Consommation d'énergie",
+					"hydraulic": "Hydraulique",
+					"sustainability": "Durabilité"
+				},
+				"parameter": "Paramètre",
+				"totals": "Total",
+				"units": "Unité"
+			}
+		},
+		"dialogs": {
+			"about": {
+				"acknowledgements": "Remerciements",
+				"citation": {
+					"bibtex": "BibTeX",
+					"copy_bibtex": "Copier le BibTeX",
+					"copy_plain_text": "Copier le texte brut",
+					"description": "Si vous utilisez Amanzi dans vos recherches, veuillez citer le logiciel selon l'un des formats ci-dessous.",
+					"plain_text": "Texte brut",
+					"title": "Citation"
+				},
+				"changelog": "Historique des versions",
+				"developed_by": "Développé par Technology & Research, Vitens",
+				"license": "Licence",
+				"remark": "",
+				"title": "À propos d'Amanzi"
+			},
+			"init": {
+				"title": "Démarrage d'Amanzi…"
+			},
+			"keyfigures": {
+				"title": "Indicateurs"
+			},
+			"report": {
+				"title": "Rapport"
+			},
+			"tutorial": {
+				"title": "Tutoriel"
+			}
+		},
+		"general": {
+			"messages": {
+				"missing_connections": "Le modèle « {name} » n'est pas entièrement connecté",
+				"missing_sink": "Le modèle a besoin d'un flux sortant (modèle de distribution)",
+				"missing_source": "Le modèle a besoin d'une source (captage d'eau souterraine) pour fonctionner",
+				"missing_source_sink": "Le modèle a besoin d'une source et d'un modèle de distribution"
+			},
+			"press-enter-to-commit": "Appuyez sur ENTRÉE pour enregistrer",
+			"reset-to-default": "Rétablir la valeur par défaut"
+		},
+		"menubar": {
+			"add_scenario": "Ajouter un scénario",
+			"cancel": "Annuler",
+			"confirm_remove": "Voulez-vous vraiment supprimer ce scénario ?",
+			"display": {
+				"booster_head": "Hauteur de surpression",
+				"boosters": "Pompes de surpression",
+				"debug": "Déboguer l'hydraulique",
+				"flows": "Débits",
+				"fullscreen": "Plein écran",
+				"grid": "Grille",
+				"label": "Affichage",
+				"losses": "Pertes hydrauliques",
+				"sidebar_left": "Modèles",
+				"sidebar_right": "Résultats",
+				"zoom_fit": "Ajuster le zoom",
+				"zoom_in": "Zoom avant",
+				"zoom_out": "Zoom arrière"
+			},
+			"edit": {
+				"copy": "Copier",
+				"cut": "Couper",
+				"duplicate": "Dupliquer",
+				"edit": "Modifier les paramètres",
+				"label": "Édition",
+				"paste": "Coller",
+				"redo": "Rétablir",
+				"remove": "Supprimer",
+				"select_all": "Tout sélectionner",
+				"select_nothing": "Effacer la sélection",
+				"undo": "Annuler"
+			},
+			"enter_scenario_name": "Saisissez le nom du nouveau scénario",
+			"enter_scenario_name_empty_error": "Le nom ne doit pas être vide",
+			"help": {
+				"about": "À propos d'Amanzi",
+				"documentation": "Documentation",
+				"help": "Aide",
+				"label": "Aide",
+				"tutorial": "Tutoriel"
+			},
+			"new": {
+				"cancel_button": "Écraser",
+				"confirm": "La création d'un nouveau projet écrase le projet en cours. Souhaitez-vous d'abord télécharger l'ancien projet ?",
+				"confirm_button": "Télécharger et écraser",
+				"title": "Créer un nouveau projet ?"
+			},
+			"new_scenario": "Nouveau scénario",
+			"project": {
+				"download": "Télécharger",
+				"keyfigures": "Indicateurs",
+				"label": "Projet",
+				"new": "Nouveau…",
+				"open": "Ouvrir",
+				"rename": "Renommer le projet",
+				"report": "Calculer le projet",
+				"save": "Enregistrer"
+			},
+			"remove": "Supprimer",
+			"remove_scenario": "Supprimer le scénario",
+			"rename": "Renommer",
+			"rename_scenario": "Renommer le scénario",
+			"saved": "Toutes les modifications sont enregistrées",
+			"scenario": {
+				"duplicate": "Dupliquer le scénario",
+				"label": "Scénario",
+				"new": "Nouveau scénario",
+				"remove": "Supprimer le scénario",
+				"rename": "Renommer le scénario"
+			},
+			"unsaved": "Modifications non enregistrées, cliquez ici pour enregistrer."
+		},
+		"report": {
+			"energy": {
+				"metrics": {
+					"model_specific_consumption": "Par m³ traité",
+					"specific_consumption": "Par m³ total livré",
+					"specific_consumption_distribution": "Conso. spéc. distribution",
+					"specific_consumption_production": "Conso. spéc. traitement",
+					"total_consumption": "Consommation totale",
+					"total_specific_consumption": "Consommation spécifique"
+				}
+			},
+			"general": {
+				"energy": "Énergie",
+				"higher_better": "plus élevé est préférable",
+				"lower_better": "plus faible est préférable",
+				"sustainability": "Durabilité",
+				"waterquality": "Qualité de l'eau"
+			},
+			"quality": {
+				"metrics": {
+					"aggco2": "AggCO₂",
+					"ccpp90": "TACC₉₀",
+					"Cl": "Cl",
+					"Fe": "Fe",
+					"hardness": "Dureté",
+					"hco3": "HCO₃",
+					"Mn": "Mn",
+					"Na": "Na",
+					"NH4": "NH₄",
+					"o2": "O₂",
+					"pH": "pH",
+					"sc20": "EGV",
+					"SI": "SI",
+					"tac": "TAC",
+					"tds": "TDS"
+				}
+			},
+			"quantity": {
+				"metrics": {
+					"loss": "Perte en eau",
+					"loss_percentage": "Perte %",
+					"total_distribution": "Distribution totale",
+					"total_production": "Production totale"
+				}
+			},
+			"sustainability": {
+				"metrics": {
+					"model_specific_emission": "Par m³ traité",
+					"specific_emission": "Par m³ total livré",
+					"total_emission": "Émissions totales",
+					"total_specific_emission": "Émissions spécifiques"
+				}
+			}
+		},
+		"scenariobar": {
+			"duplicate": "Dupliquer",
+			"remove": "Supprimer",
+			"rename": "Renommer",
+			"scenario_created": "Scénario créé",
+			"scenario_duplicated": "Scénario dupliqué"
+		},
+		"sidebar": {
+			"configuration": {
+				"edit": "Modifier les paramètres du modèle",
+				"label": "Configuration",
+				"name": "Nom"
+			},
+			"energy": {
+				"label": "Énergie",
+				"specific_consumption_distribution": "Distribution",
+				"specific_consumption_production": "Traitement",
+				"total_specific_consumption": "Total"
+			},
+			"library": {
+				"categories": {
+					"main": "Filière principale",
+					"waste": "Filière de rejet"
+				},
+				"filter": "Filtrer",
+				"label": "Bibliothèque"
+			},
+			"project": {
+				"download": "Télécharger",
+				"label": "Projet",
+				"reset": "Réinitialiser",
+				"save": "Enregistrer",
+				"upload": "Téléverser"
+			},
+			"quality": {
+				"aggco2": "AggCO₂",
+				"ccpp90": "TACC₉₀",
+				"Cl": "Cl",
+				"Fe": "Fe",
+				"hardness": "Dureté",
+				"hco3": "HCO₃",
+				"label": "Qualité",
+				"Mn": "Mn",
+				"Na": "Na",
+				"NH4": "NH₄",
+				"o2": "O₂",
+				"pH": "pH",
+				"sc20": "EGV",
+				"SI": "SI",
+				"tac": "TAC",
+				"tds": "TDS"
+			},
+			"quantity": {
+				"label": "Quantité",
+				"loss": "Perte",
+				"total_distribution": "Distribution",
+				"total_production": "Captage"
+			},
+			"scenario": {
+				"label": "Scénario",
+				"notes_placeholder": "Notes"
+			},
+			"sustainability": {
+				"label": "Durabilité",
+				"specific_emission": "Par m³ total livré",
+				"total_emission": "Émissions totales",
+				"total_specific_emission": "Émissions spécifiques"
+			}
+		},
+		"topbar": {
+			"cancel": "Annuler",
+			"enter_scenario_name_already_exists": "Un scénario porte déjà ce nom",
+			"feedback": "Retour ?",
+			"key_figures": "Indicateurs",
+			"rename": "Enregistrer",
+			"rename_error": "Nom non valide",
+			"rename_project": "Nouveau nom du projet",
+			"rename_project_title": "Modifier le nom",
+			"run_project": "Calculer le projet",
+			"zoom_to_fit": "Ajuster le zoom"
+		},
+		"tutorial": {
+			"close": "Terminé",
+			"next": "Suivant",
+			"previous": "Précédent",
+			"skip": "Ne plus afficher"
+		}
+	}
+}

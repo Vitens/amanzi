@@ -44,4 +44,4 @@ flowchart LR
 - Honesty box: design/scenario tool, not SCADA, not a substitute for a licensed design.
 - Link to the demo and to GitHub releases.
 - The four-section map (Mermaid, already drafted).
-- Pointer that this documentation and the app are available in English, Dutch, and German (language selector). Architecture documentation stays English.
+- Pointer that this documentation and the app are available in English, Dutch, German, and French (language selector). Architecture documentation stays English.

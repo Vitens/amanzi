@@ -44,4 +44,4 @@ flowchart LR
 - Ehrlichkeitshinweis: Entwurfs-/Szenario-Werkzeug, kein SCADA, kein Ersatz für einen zugelassenen Entwurf.
 - Link zur Demo und zu GitHub-Releases.
 - Die Vier-Abschnitte-Karte (Mermaid, bereits entworfen).
-- Hinweis, dass diese Dokumentation und die App auf Englisch, Niederländisch und Deutsch verfügbar sind (Sprachauswahl). Die Architekturdokumentation bleibt Englisch.
+- Hinweis, dass diese Dokumentation und die App auf Englisch, Niederländisch, Deutsch und Französisch verfügbar sind (Sprachauswahl). Die Architekturdokumentation bleibt Englisch.

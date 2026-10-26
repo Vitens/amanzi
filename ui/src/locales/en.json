@@ -1627,6 +1627,7 @@
 			"enter_scenario_name_empty_error": "The name must not be empty",
 			"help": {
 				"about": "About Amanzi",
+				"documentation": "Documentation",
 				"help": "Help",
 				"label": "Help",
 				"tutorial": "Tutorial"

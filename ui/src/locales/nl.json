@@ -1491,6 +1491,7 @@
 			"enter_scenario_name_empty_error": "De naam mag niet leeg zijn",
 			"help": {
 				"about": "Over Amanzi",
+				"documentation": "Documentatie",
 				"help": "Hulp",
 				"label": "Hulp",
 				"tutorial": "Tutorial"

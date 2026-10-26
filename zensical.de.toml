@@ -1,7 +1,7 @@
 # Amanzi user documentation — Deutsch
-# Parallel sites: zensical.toml (docs/en), zensical.nl.toml (docs/nl).
-# Language switcher links assume the three builds are served together
-# as site/en, site/nl and site/de.
+# Parallel sites: zensical.toml (docs/en), zensical.nl.toml (docs/nl), zensical.fr.toml (docs/fr).
+# Language switcher links assume the four builds are served together
+# as site/en, site/nl, site/de and site/fr.
 #
 # Authoring (Diátaxis):
 # - Tutorials: one happy path, demo data, no literature, no parameter dumps.
@@ -97,7 +97,11 @@ nav = [
   ] },
 ]
 
+[project.extra]
+architecture_url = "https://vitens.github.io/amanzi/architecture/"
+
 [project.theme]
+custom_dir = "docs/overrides"
 language = "de"
 logo = "media/site_logo.png"
 features = [
@@ -125,6 +129,11 @@ lang = "nl"
 name = "Deutsch"
 link = "/de/"
 lang = "de"
+
+[[project.extra.alternate]]
+name = "Français"
+link = "/fr/"
+lang = "fr"
 
 [project.theme.icon]
 repo = "fontawesome/brands/github"

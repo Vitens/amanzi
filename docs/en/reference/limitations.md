@@ -22,4 +22,4 @@ The models are steady. One scenario is one operating point. The canvas is not a 
 
 A unit with a required anchor left open is reported as not fully connected. A quality loop that does not settle stops after 100 passes.
 
-This documentation is English, Dutch, and German. The architecture documentation stays English.
+This documentation is English, Dutch, German, and French. The architecture documentation stays English.

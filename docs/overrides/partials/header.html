@@ -1,0 +1,105 @@
+{#-
+  User-docs header. Same as the Zensical theme header, plus the architecture link.
+-#}
+{% set class = "md-header" %}
+{% if "navigation.tabs.sticky" in features %}
+  {% set class = class ~ " md-header--shadow md-header--lifted" %}
+{% elif "navigation.tabs" not in features %}
+  {% set class = class ~ " md-header--shadow" %}
+{% endif %}
+{% if config.theme.language == "nl" %}
+  {% set architecture_label = "Architectuur" %}
+{% elif config.theme.language == "de" %}
+  {% set architecture_label = "Architektur" %}
+{% else %}
+  {% set architecture_label = "Architecture" %}
+{% endif %}
+<style>
+  .md-header__title {
+    min-width: 0;
+  }
+  .md-header__source {
+    width: auto;
+    max-width: 11.5rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .md-header__button.amanzi-architecture {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: auto;
+    height: auto;
+    margin-inline-start: .35rem;
+    padding: .28rem .7rem;
+    border: 1px solid currentColor;
+    border-radius: .2rem;
+    font-size: .68rem;
+    font-weight: 650;
+    line-height: 1.4;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+</style>
+<header class="{{ class }}" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="{{ lang.t('header') }}">
+    <a href="{{ config.extra.homepage | d(nav.homepage.url, true) | url }}" title="{{ config.site_name | e }}" class="md-header__button md-logo" aria-label="{{ config.site_name }}" data-md-component="logo">
+      {% include "partials/logo.html" %}
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="{{ lang.t('nav') }}">
+      {% set icon = config.theme.icon.menu or "material/menu" %}
+      {% include ".icons/" ~ icon ~ ".svg" %}
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            {{ config.site_name }}
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            {% if page.meta and page.meta.title %}
+              {{ page.meta.title }}
+            {% else %}
+              {{ page.title }}
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+    {% if config.theme.palette %}
+      {% if not config.theme.palette is mapping %}
+        {% include "partials/palette.html" %}
+      {% endif %}
+    {% endif %}
+    {% if not config.theme.palette is mapping %}
+      {% include "partials/javascripts/palette.html" %}
+    {% endif %}
+    {% if config.extra.alternate %}
+      {% include "partials/alternate.html" %}
+    {% endif %}
+    {% if "search" in config.plugins %}
+      {% set search = config.plugins["search"] | attr("config") %}
+      {% if search.enabled %}
+        <label class="md-header__button md-icon" for="__search" aria-label="{{ lang.t('search') }}">
+          {% set icon = config.theme.icon.search or "material/magnify" %}
+          {% include ".icons/" ~ icon ~ ".svg" %}
+        </label>
+        {% include "partials/search.html" %}
+      {% endif %}
+    {% endif %}
+    <a class="md-header__button amanzi-architecture" href="{{ config.extra.architecture_url }}" title="{{ architecture_label }}">
+      {{ architecture_label }}
+    </a>
+    <div class="md-header__source">
+      {% if config.repo_url %}
+        {% include "partials/source.html" %}
+      {% endif %}
+    </div>
+  </nav>
+  {% if "navigation.tabs.sticky" in features %}
+    {% if "navigation.tabs" in features %}
+      {% include "partials/tabs.html" %}
+    {% endif %}
+  {% endif %}
+</header>

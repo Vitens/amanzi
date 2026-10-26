@@ -20,4 +20,4 @@ Feiten over wat het huidige product niet doet. Geen workarounds behalve wijzen o
 - Sproeibeluchting als zelfstandig bibliotheekblok kan een fout geven als de Sauter-diameter niet is gezet (alleen noteren als dat bij schrijven nog zo is).
 - Stationaire modellen: geen tijdreeks-plantcontrol, geen SCADA.
 - Canvascoördinaten zijn geen kaart.
-- Gebruikersdocumentatie is Engels, Nederlands en Duits. Architectuurdocumentatie is alleen Engels.
+- Gebruikersdocumentatie is Engels, Nederlands, Duits en Frans. Architectuurdocumentatie is alleen Engels.

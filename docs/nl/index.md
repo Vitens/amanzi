@@ -44,4 +44,4 @@ flowchart LR
 - Eerlijkheidskader: ontwerp-/scenariotool, geen SCADA, geen vervanging voor een vergund ontwerp.
 - Link naar de demo en naar GitHub-releases.
 - De vier-sectiekaart (Mermaid, al opgezet).
-- Verwijzing dat deze documentatie en de app beschikbaar zijn in het Engels, Nederlands en Duits (taalkiezer). Architectuurdocumentatie blijft Engels.
+- Verwijzing dat deze documentatie en de app beschikbaar zijn in het Engels, Nederlands, Duits en Frans (taalkiezer). Architectuurdocumentatie blijft Engels.

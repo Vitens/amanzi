@@ -93,7 +93,8 @@ export default {
       let labels = {
         'nl': 'NL',
         'de': 'DE',
-        'en': 'EN'
+        'en': 'EN',
+        'fr': 'FR'
       }
       return labels[locale]
     },

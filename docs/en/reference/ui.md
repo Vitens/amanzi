@@ -28,7 +28,7 @@ flowchart TB
 
 ## Menu
 
-**Project** holds New, Open, Save, Download, Rename project, Key figures, and Calculate project. **Edit** holds undo, redo, and the usual clipboard commands. **Display** holds grid, sidebars, and zoom. **Scenario** holds commands for the open scenario. **Help** holds Tutorial and About Amanzi.
+**Project** holds New, Open, Save, Download, Rename project, Key figures, and Calculate project. **Edit** holds undo, redo, and the usual clipboard commands. **Display** holds grid, sidebars, and zoom. **Scenario** holds commands for the open scenario. **Help** holds Tutorial, Documentation, and About Amanzi. Documentation opens the user guide in a new tab, in the language selected on the globe (`en`, `nl`, `de`, or `fr`).
 
 The bar under the menu shows **Unsaved changes, click here to save** or **All changes saved**.
 
@@ -36,7 +36,7 @@ The bar under the menu shows **Unsaved changes, click here to save** or **All ch
 
 The project name sits in the centre. Clicking it opens **Change name**.
 
-On the left: zoom percent, zoom in and out, undo, redo, select or pan, and the language globe (**EN**, **NL**, **DE**).
+On the left: zoom percent, zoom in and out, undo, redo, select or pan, and the language globe (**EN**, **NL**, **DE**, **FR**).
 
 On the right: **Feedback?**, **Key figures**, and **Calculate project**. Key figures is this button. It is not a tab on the right-hand panel.
 
