@@ -75,6 +75,7 @@ import About from './components/Dialogs/About.vue'
 import DefaultProjectEN from './assets/Default-project-EN.json'
 import DefaultProjectNL from './assets/Default-project-NL.json'
 import DefaultProjectDE from './assets/Default-project-DE.json'
+import DefaultProjectFR from './assets/Default-project-FR.json'
 import DesignHeader from './components/DesignHeader.vue'
 import { notifyMigrationIfNeeded } from './lib/migrationToast'
 
@@ -124,7 +125,7 @@ export default {
 
     const locale = this.$i18n.locale?.value ?? this.$i18n.locale
     const language = String(locale || 'en').split('-')[0].toLowerCase()
-    const defaultProjects = { en: DefaultProjectEN, nl: DefaultProjectNL, de: DefaultProjectDE }
+    const defaultProjects = { en: DefaultProjectEN, nl: DefaultProjectNL, de: DefaultProjectDE, fr: DefaultProjectFR }
     this.$project.open(defaultProjects[language] || DefaultProjectEN, false)
 
     await this.$project.loadParameters()

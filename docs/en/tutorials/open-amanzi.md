@@ -39,7 +39,7 @@ Scenario tooling includes:
 - Model library, which includes all water treatment and wastestream models that can be used to build the treatment train
 - Configuration field, which is displayed when selecting a model and quickly change selected parameter or go further to the design view
 
-The Canvas is the sandbox in which you the user can place different model blocks and connect them to a treatment train for your application. You can drag and drop models into the canvas and have them auto connect, see more under [Add and connect units](add-and-connect-units.md)
+The Canvas is the sandbox in which you the user can place different model blocks and connect them to a treatment train for your application. You can drag and drop models into the canvas and have them auto connect, see more under [Add and connect units](../how-to/add-and-connect-units.md)
 
 In the result overview Amanzi displays a number of resultsparameter for the KPIs Quality, Quantity, Energy and Sustainability. 
 For Quality the individual compounds are color coded to show if they are below the drinkingwater norms or not. 
@@ -48,6 +48,6 @@ In the top bar are navigation tools, languange setting and other features.
 
 <img src="../media/OpenAmanziScreen.png" alt="The Amanzi window. Numbered marks show the top bar, notes, model library, configuration, canvas, and results." style="max-width: 100%; height: auto;">
 
-This documentation site has its own **English**, **Nederlands**, and **Deutsch** copies, and the architecture documentation stays English.
+This documentation site has its own **English**, **Nederlands**, **Deutsch**, and **Français** copies, and the architecture documentation stays English.
 
 Next, walk the plant that is already drawn: [Your first plant](first-plant.md).

@@ -16,7 +16,7 @@ Open de app en leer de namen van de hoofdonderdelen van het scherm. Bouw nog nie
 - Wacht op de voortgangsdialoog “Starting AMANZI…”; de rekenengine laadt in de browser.
 - Sla de in-app-tutorial over of rond hem af; deze pagina gaat verder vanaf een geladen demoproject.
 - Benoem de onderdelen: links **bibliotheek**, midden **canvas**, rechts **resultatenbalk**, onderaan **scenariotabs**, bovenaan **menu** (project downloaden/uploaden, project berekenen, kengetallen).
-- Wijs op de taalkiezer in de app (Engels, Nederlands, Duits) en dezelfde drie talen op deze documentatiesite.
+- Wijs op de taalkiezer in de app (Engels, Nederlands, Duits, Frans) en dezelfde vier talen op deze documentatiesite.
 
 ## Diagrammen
 

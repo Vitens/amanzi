@@ -15,6 +15,7 @@ import api from './plugins/api'
 import en from "./locales/en.json"
 import nl from "./locales/nl.json"
 import de from "./locales/de.json"
+import fr from "./locales/fr.json" // fr locale
 
 import {createI18n} from 'vue-i18n'
 
@@ -80,7 +81,7 @@ window._ = _
 const i18n = createI18n({
   locale: navigator.language.split('-')[0] || 'en',
   fallbackLocale: 'en',
-  messages: { en, nl, de },
+  messages: { en, nl, de, fr },
   silentTranslationWarn: true,
   fallbackWarn: false,
   missingWarn: false,

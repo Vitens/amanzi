@@ -112,14 +112,18 @@ jobs:
         run: npm run build
 
       # After the Pages UI build, which replaces ui/dist. Copy the language
-      # sites in beside the app so /en/, /nl/, and /de/ are real files.
+      # sites and architecture docs in beside the app so /en/, /nl/, /de/,
+      # /fr/, and /architecture/ are real files.
       - name: Add user documentation
         run: |
           python -m pip install ".[docs]"
           zensical build
           zensical build -f zensical.nl.toml
           zensical build -f zensical.de.toml
-          cp -R site/en site/nl site/de ui/dist/
+          zensical build -f zensical.fr.toml
+          zensical build -f zensical.architecture.toml
+          cp -R site/en site/nl site/de site/fr ui/dist/
+          cp -R site-architecture ui/dist/architecture
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3

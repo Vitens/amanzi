@@ -6,7 +6,7 @@ audience:
   - process-engineer
   - auditor
   - ai
-status: outline
+status: draft
 relates:
   - adr-0001
   - adr-0002
@@ -20,15 +20,22 @@ This chapter is an **index only**. Decision prose lives in ADR files.
 
 ## ADRs
 
-- [ADR index](decisions/index.md)
-- [ADR-0001 JSON project as system of record](decisions/0001-json-project-as-system-of-record.md)
-- [ADR-0002 Dual execution backends](decisions/0002-dual-execution-backends.md)
-- [ADR-0003 Sequential solvers](decisions/0003-sequential-solvers.md)
-- [ADR-0004 YAML parametric models](decisions/0004-yaml-parametric-models.md)
+- [adr-index](decisions/index.md)
+- [adr-0001](decisions/0001-json-project-as-system-of-record.md) — JSON project as system of record
+- [adr-0002](decisions/0002-dual-execution-backends.md) — dual execution backends
+- [adr-0003](decisions/0003-sequential-solvers.md) — sequential solvers
+- [adr-0004](decisions/0004-yaml-parametric-models.md) — YAML parametric models
 
-Template for new records: `architecture/decisions/0000-template.md` (not in nav).
+Template for new records: `architecture/decisions/0000-template.md` (not in the site nav). Steps: [arch-conventions](conventions.md).
 
-## Content to write
+## Status legend
 
-- Status legend: `outline` → `draft` → `accepted` | `deprecated` | `superseded`.
-- Who may change status (TBD owner — [arc42-01](01-introduction-and-goals.md)).
+| Status | Meaning |
+| --- | --- |
+| `outline` | Headings and a list of claims still to write. |
+| `draft` | Claims are written and cite a repository path. Not yet accepted. |
+| `accepted` | An owner has accepted the record. |
+| `deprecated` | No longer followed. Say what replaced it. |
+| `superseded` | Replaced by another ADR. Link that ADR’s `id`. |
+
+Every ADR on this site is `draft`. Who may change status to `accepted` is **TBD** ([arc42-01](01-introduction-and-goals.md)).
