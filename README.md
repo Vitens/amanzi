@@ -48,7 +48,7 @@ zensical build -f zensical.fr.toml
 python -m http.server -d site 8000
 ```
 
-Open http://localhost:8000/en/ (or `/nl/`, `/de/`, `/fr/`). To preview one language while writing: `zensical serve` (English, port 8000), `zensical serve -f zensical.nl.toml` (port 8002), `zensical serve -f zensical.de.toml` (port 8003), or `zensical serve -f zensical.fr.toml` (port 8004). The switcher links assume the four builds are served together from `site/`.
+Open http://localhost:8000/en/ (or `/nl/`, `/de/`, `/fr/`). To preview one language while writing: `zensical serve` (English, port 8000), `zensical serve -f zensical.nl.toml` (port 8002), `zensical serve -f zensical.de.toml` (port 8003), or `zensical serve -f zensical.fr.toml` (port 8004). The language switcher points at the published GitHub Pages paths (`/amanzi/en/`, `/amanzi/nl/`, `/amanzi/de/`, `/amanzi/fr/`).
 
 **Architecture documentation** (`architecture/`) follows [arc42](https://arc42.org/) for process engineers, auditors, and AI agents:
 

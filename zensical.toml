@@ -1,7 +1,7 @@
 # Amanzi user documentation — English
 # Parallel sites: zensical.nl.toml (docs/nl), zensical.de.toml (docs/de).
 # Language switcher links point at the GitHub Pages project site:
-# /amanzi/en/, /amanzi/nl/, and /amanzi/de/.
+# /amanzi/en/, /amanzi/nl/, /amanzi/de/, and /amanzi/fr/.
 #
 # Authoring (Diátaxis):
 # - Tutorials: one happy path, demo data, no literature, no parameter dumps.
@@ -131,7 +131,7 @@ lang = "de"
 
 [[project.extra.alternate]]
 name = "Français"
-link = "/fr/"
+link = "/amanzi/fr/"
 lang = "fr"
 
 [project.theme.icon]
