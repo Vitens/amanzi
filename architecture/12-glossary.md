@@ -6,24 +6,22 @@ audience:
   - process-engineer
   - auditor
   - ai
-status: outline
+status: draft
 relates:
   - arch-home
 ---
 
 # 12. Glossary
 
-Architecture terms only. Water-treatment terms (EBCT, SI, PFAS Sum4, …) live in the **user documentation** file `docs/reference/glossary.md` in this repository (Reference › Glossary on the user site). Do not duplicate them here.
+Architecture terms only. Water-treatment terms (EBCT, SI, PFAS Sum4, and the rest) live in `docs/en/reference/glossary.md` (Reference › Glossary on the user site; same path under `docs/nl/`, `docs/de/`, and `docs/fr/`). Do not duplicate them here.
 
-## Content to write
-
-- **Container** — C4 deployable/runnable piece (SPA, worker, Flask, Lambda).
-- **Component** — C4 building block inside a container (`AmanziAPI`, solvers).
-- **Scenario** — one flowsheet + parameters inside a project JSON (architecture sense: data), not an arc42 quality scenario (those are labelled “quality scenario” in chapter 10).
-- **Project JSON** — system of record for a user’s plant designs ([ADR-0001](decisions/0001-json-project-as-system-of-record.md)).
-- **Solver** — one of the six sequential calculation stages ([ADR-0003](decisions/0003-sequential-solvers.md)).
-- **Parametric model** — YAML-defined inputs/outputs bound to a Python `Model` ([ADR-0004](decisions/0004-yaml-parametric-models.md)).
-- **AmanziAPI** — single façade used by all backends (`bb-amanzi-api`).
-- **Extraneous composition** — PFAS/VOC/Other/TOC/colour carried beside PHREEQC `Solution`.
-- **ADR** — Architecture Decision Record (`adr-NNNN`).
-- **`id`** — stable frontmatter identifier for humans and agents.
+- **Container** — a C4 deployable or runnable piece: the SPA, the Pyodide worker, Flask, or Lambda ([c4-containers](c4/containers.md)).
+- **Component** — a C4 building block inside a container, such as `AmanziAPI` or the solvers ([c4-components](c4/components.md)).
+- **Scenario** — one flowsheet plus parameters inside a project JSON (`scenarios[]` in `ui/src/stores/project.js` and `amanzi/core/scenario.py`). This is data. An arc42 quality scenario is labelled “quality scenario” in [arc42-10](10-quality-requirements.md).
+- **Project JSON** — the system of record for a user’s plant designs ([adr-0001](decisions/0001-json-project-as-system-of-record.md)).
+- **Solver** — one of the six sequential calculation stages ([adr-0003](decisions/0003-sequential-solvers.md), `amanzi/components/solvers/`).
+- **Parametric model** — YAML-defined inputs and outputs bound to a Python `Model` ([adr-0004](decisions/0004-yaml-parametric-models.md), `amanzi/models/parametric/parametric.py`).
+- **AmanziAPI** — the single façade used by all backends (`amanzi/server/api.py`, [bb-amanzi-api](building-blocks/amanzi-api.md)).
+- **Extraneous composition** — `Color`, `TOC`, `PFAS`, `VOC`, and `Other` carried beside the PHREEQC solution. Groundwater attaches that dict in `PhreeqPython.add_solution` (`amanzi/models/groundwater.py`).
+- **ADR** — Architecture Decision Record, file `architecture/decisions/NNNN-….md`, id `adr-NNNN`.
+- **`id`** — stable frontmatter identifier for humans and agents ([arch-conventions](conventions.md)).

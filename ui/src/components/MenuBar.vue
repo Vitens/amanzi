@@ -177,6 +177,7 @@ let menu = [
     name: 'help',
     items: [
       { name: 'tutorial', action: function() {this.$interface.tutorial = true} },
+      { name: 'documentation', action: function() { this.openDocumentation() } },
       { name: 'about', action: function() {this.$interface.about = true} },
     ]
   }
@@ -373,6 +374,13 @@ export default {
         reader.readAsText(file)
       }
       input.click()
+    },
+    openDocumentation() {
+      const locale = this.$i18n.locale?.value ?? this.$i18n.locale
+      const language = String(locale || 'en').split('-')[0].toLowerCase()
+      const lang = ['en', 'nl', 'de', 'fr'].includes(language) ? language : 'en'
+      const base = (import.meta.env.VITE_DOCS_URL || 'https://vitens.github.io/amanzi').replace(/\/$/, '')
+      window.open(`${base}/${lang}/`, '_blank', 'noopener')
     },
     download() {
       // download to JSON file

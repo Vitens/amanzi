@@ -6,14 +6,14 @@ audience:
   - process-engineer
   - auditor
   - ai
-status: outline
+status: draft
 relates:
   - arc42-09
 ---
 
 # ADR-NNNN Title
 
-Copy this file to `NNNN-short-kebab-title.md`. Set `id: adr-NNNN`. Do not put the template in the published nav.
+Copy this file to `NNNN-short-kebab-title.md`. Set `id: adr-NNNN`. Do not put the template in the published nav (`zensical.architecture.toml`). A new record starts at `draft`.
 
 ## Status
 

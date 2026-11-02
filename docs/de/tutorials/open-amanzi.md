@@ -16,7 +16,7 @@ status: outline
 - Warten Sie auf den Fortschrittsdialog „Starting AMANZI…“; die Berechnungsmaschine wird im Browser geladen.
 - Überspringen oder beenden Sie die In-App-Anleitung; diese Seite setzt ab einem geladenen Demo-Projekt fort.
 - Benennen Sie die Oberfläche: links **Bibliothek**, Mitte **Zeichenfläche**, rechts **Ergebnis-Seitenleiste**, unten **Szenario-Register**, oben **Menü** (Projekt herunterladen/hochladen, Projekt berechnen, Kennzahlen).
-- Weisen Sie auf die Sprachsteuerung in der App hin (Englisch, Niederländisch, Deutsch) und auf dieselben drei Sprachen auf dieser Dokumentationsseite.
+- Weisen Sie auf die Sprachsteuerung in der App hin (Englisch, Niederländisch, Deutsch, Französisch) und auf dieselben vier Sprachen auf dieser Dokumentationsseite.
 
 ## Diagramme
 

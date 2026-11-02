@@ -1,0 +1,149 @@
+# Amanzi user documentation — Français
+# Parallel sites: zensical.toml (docs/en), zensical.nl.toml (docs/nl), zensical.de.toml (docs/de).
+# Language switcher links assume the four builds are served together
+# as site/en, site/nl, site/de and site/fr.
+#
+# Authoring (Diátaxis):
+# - Tutorials: one happy path, demo data, no literature, no parameter dumps.
+# - How-tos: one goal, numbered steps, assume a tutorial is already done.
+# - Reference: facts only (controls, units, streams). No "why".
+# - Explanation: why / theory / literature. No click-by-click steps.
+# - Diagrams: Mermaid fenced blocks only (rendered as SVG in the page).
+#   Do not commit duplicate .svg exports of the same diagram.
+
+[project]
+site_name = "Amanzi"
+site_description = "Documentation utilisateur de l'outil de scénarios Amanzi pour le traitement de l'eau potable"
+site_author = "Vitens N.V."
+copyright = "© Vitens N.V. — licensed under GPL-3.0"
+docs_dir = "docs/fr"
+site_dir = "site/fr"
+dev_addr = "localhost:8004"
+repo_url = "https://github.com/Vitens/amanzi"
+repo_name = "Vitens/amanzi"
+# Placeholder until a public docs URL is chosen (needed for sitemap-based features).
+site_url = "https://vitens.github.io/amanzi/"
+
+nav = [
+  { "Accueil" = "index.md" },
+  { "Tutoriels" = [
+    "tutorials/index.md",
+    { "Ouvrir Amanzi" = "tutorials/open-amanzi.md" },
+    { "Votre première installation" = "tutorials/first-plant.md" },
+    { "Modifier un paramètre" = "tutorials/change-one-thing.md" },
+    { "Comparer des scénarios" = "tutorials/compare-scenarios.md" },
+    { "Enregistrer votre travail" = "tutorials/save-your-work.md" },
+  ] },
+  { "Guides pratiques" = [
+    "how-to/index.md",
+    { "Ouvrir en ligne ou en local" = "how-to/open-hosted-or-local.md" },
+    { "Enregistrer, charger, télécharger" = "how-to/save-load-download.md" },
+    { "Ajouter et relier des unités" = "how-to/add-and-connect-units.md" },
+    { "Configurer une unité" = "how-to/configure-a-unit.md" },
+    { "Régler les indicateurs" = "how-to/set-key-figures.md" },
+    { "Utiliser la vue conception" = "how-to/use-design-view.md" },
+    { "Comparer dans le rapport" = "how-to/compare-in-report.md" },
+    { "Travailler avec les micropolluants" = "how-to/work-with-micropollutants.md" },
+    { "Copier entre scénarios" = "how-to/copy-between-scenarios.md" },
+    { "Changer de langue" = "how-to/switch-language.md" },
+  ] },
+  { "Référence" = [
+    "reference/index.md",
+    { "Interface utilisateur" = "reference/ui.md" },
+    { "Flux" = "reference/streams.md" },
+    { "Résultats" = "reference/results.md" },
+    { "Indicateurs" = "reference/key-figures.md" },
+    { "Unités de mesure" = "reference/units.md" },
+    { "Glossaire" = "reference/glossary.md" },
+    { "Limites" = "reference/limitations.md" },
+    { "Unités de procédé" = [
+      "reference/process-units/index.md",
+      { "Captage" = "reference/process-units/groundwater.md" },
+      { "Réservoir" = "reference/process-units/reservoir.md" },
+      { "Filtration sur sable" = "reference/process-units/sandfiltration.md" },
+      { "Filtration sur marbre" = "reference/process-units/marblefiltration.md" },
+      { "Charbon actif" = "reference/process-units/activatedcarbon.md" },
+      { "Aération en tour" = "reference/process-units/toweraeration.md" },
+      { "Aération par aspersion" = "reference/process-units/sprayaerator.md" },
+      { "Aération à plateaux" = "reference/process-units/plate.md" },
+      { "Cascade" = "reference/process-units/cascade.md" },
+      { "Adoucissement sur pellets" = "reference/process-units/softening.md" },
+      { "Dosage" = "reference/process-units/dosing.md" },
+      { "Filtration membranaire" = "reference/process-units/membrane.md" },
+      { "Dégazage membranaire" = "reference/process-units/membranedegassing.md" },
+      { "Dégazage sous vide" = "reference/process-units/vacuum.md" },
+      { "Dessableur" = "reference/process-units/sandtrap.md" },
+      { "Conduite de transport" = "reference/process-units/pipeline.md" },
+      { "Réutilisation des eaux de lavage" = "reference/process-units/recycle.md" },
+      { "Répartition" = "reference/process-units/splitter.md" },
+      { "Distribution" = "reference/process-units/output.md" },
+      { "Flux de rejet" = "reference/process-units/waste.md" },
+    ] },
+  ] },
+  { "Explications" = [
+    "explanation/index.md",
+    { "Ce qu'est Amanzi" = "explanation/what-amanzi-is.md" },
+    { "Traitement de l'eau potable" = "explanation/drinking-water-treatment.md" },
+    { "Scénarios et schémas de procédé" = "explanation/scenarios-and-flowsheets.md" },
+    { "Lire la qualité de l'eau" = "explanation/reading-water-quality.md" },
+    { "Comment Amanzi calcule" = "explanation/how-amanzi-calculates.md" },
+    { "Quantité, énergie, réactifs, CO₂" = "explanation/quantity-energy-chemicals-co2.md" },
+    { "Aération" = "explanation/aeration.md" },
+    { "Filtration" = "explanation/filtration.md" },
+    { "Charbon actif et PFAS" = "explanation/activated-carbon-and-pfas.md" },
+    { "Membranes" = "explanation/membranes.md" },
+    { "Adoucissement et dosage" = "explanation/softening-and-dosing.md" },
+    { "Littérature" = "explanation/literature.md" },
+  ] },
+]
+
+[project.extra]
+architecture_url = "https://vitens.github.io/amanzi/architecture/"
+
+[project.theme]
+custom_dir = "docs/overrides"
+language = "fr"
+logo = "media/site_logo.png"
+features = [
+  "navigation.tabs",
+  "navigation.indexes",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.path",
+  "toc.follow",
+  "search.suggest",
+  "content.code.copy",
+]
+
+[[project.extra.alternate]]
+name = "English"
+link = "/en/"
+lang = "en"
+
+[[project.extra.alternate]]
+name = "Nederlands"
+link = "/nl/"
+lang = "nl"
+
+[[project.extra.alternate]]
+name = "Deutsch"
+link = "/de/"
+lang = "de"
+
+[[project.extra.alternate]]
+name = "Français"
+link = "/fr/"
+lang = "fr"
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+pymdownx.details = {}
+pymdownx.highlight.anchor_linenums = true
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
