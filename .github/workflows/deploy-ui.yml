@@ -10,10 +10,18 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 env:
   PHREEQPYTHON_WHEEL: phreeqpython-1.6.2-py3-none-any.whl
   PHREEQPYTHON_WHEEL_URL: https://github.com/Vitens/phreeqpython/releases/download/v1.6.2/phreeqpython-1.6.2+pyodide-py3-none-any.whl
+  # Served from https://vitens.github.io/amanzi/, so the Pages build needs this base path.
+  PAGES_BASE_PATH: /amanzi/
 
 jobs:
   build:
@@ -67,7 +75,8 @@ jobs:
         working-directory: ui
         run: npm ci
 
-      - name: Build UI
+      # Release build is served from the site root (self-hosted from the release zip).
+      - name: Build UI (release, root base path)
         working-directory: ui
         run: npm run build
 
@@ -94,3 +103,28 @@ jobs:
           else
             gh release create "$GITHUB_REF_NAME" dist.zip --title "$GITHUB_REF_NAME" --notes "Automated UI build for $GITHUB_REF_NAME."
           fi
+
+      # Pages build is served from a subpath, so it needs a matching base path.
+      - name: Build UI (GitHub Pages, subpath base path)
+        working-directory: ui
+        env:
+          VITE_BASE_PATH: ${{ env.PAGES_BASE_PATH }}
+        run: npm run build
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ui/dist
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
