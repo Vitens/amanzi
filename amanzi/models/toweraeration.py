@@ -226,6 +226,7 @@ class Toweraeration(Model, Balance):
 
     def design(self):
         logging.debug("Designing toweraeration")
+
         
         influent= self.quality.influent.product
         ## gets called by design GUI
@@ -260,11 +261,10 @@ class Toweraeration(Model, Balance):
 
         heights = [1,2,3,4, self.packing_height]
         height_charts = {}
-        if self.compound != 'CO2' and self.compound != 'Mtg' and influent.extraneous['VOC'][self.compound] >0:
+        if self.compound != 'CO2' and self.compound != 'Mtg' and influent.extraneous['VOC'][self.compound] and influent.extraneous['VOC'][self.compound] >0:
             VOC_c =[{'x': rq, 'y': (1-self.calculate_efficiency(self.compound,rq,self.packing_height, self.capacity))*influent.extraneous['VOC'][self.compound]} for rq in Rq_space]
         else:
             VOC_c = [{'x': 0, 'y': 0} for rq in Rq_space]
-
         for h in range(len(heights)):
             intermediary =[]
             for k in Rq_space:
@@ -295,6 +295,7 @@ class Toweraeration(Model, Balance):
                 'O2': self.quality.influent.product.total('O2', 'mg') ,
                 'CO2': self.quality.influent.product.total('CO2', 'mg'),
                 'CH4': self.quality.influent.product.total('Mtg') * 16,
+                'VOC': self.quality.influent.product.extraneous['VOC']
                 
                 
             },
@@ -302,7 +303,8 @@ class Toweraeration(Model, Balance):
                 'pH': self.quality.effluent.product.pH,
                 'O2': self.quality.effluent.product.total('O2', 'mg'),
                 'CO2': self.quality.effluent.product.total('CO2', 'mg'),
-                'CH4': self.quality.effluent.product.total('Mtg') * 16 
+                'CH4': self.quality.effluent.product.total('Mtg') * 16 ,
+                'VOC': self.quality.effluent.product.extraneous['VOC']
             },
             'model': {
                 'F': F,

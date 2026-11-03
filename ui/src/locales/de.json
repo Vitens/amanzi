@@ -1271,7 +1271,13 @@
 			"design": {
 				"air_capacity": "Luftkapazität [m/s]",
 				"column_is_flooding": "Kolonne ist überschwemmt",
+				"component": "Komponente",
+				"effluent": "Ablauf",
 				"hydraulics": "Hydraulisch",
+				"influent": "Zulauf",
+				"removal": "Entfernung",
+				"unit": "Einheit",
+				"voc_title": "VOC",
 				"water_capacity": "Wasserkapazität [m/s]",
 				"water_quality": "Wasserqualität"
 			},

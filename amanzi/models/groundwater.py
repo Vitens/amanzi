@@ -7,7 +7,7 @@ logger.setLevel(logging.DEBUG)
 
 
 PFAS=    ['PFBS', 'PFPeS', 'PFHxS', 'PFHpS', 'PFOS', 'PFDS', 'TFA', 'PFBA', 'PFPeA', 'PFHxA', 'PFHpA', 'PFOA', 'PFDA', 'PFUnDA', 'PFDoDA', 'PFTrDA', 'PFTeDA']
-VOC=['Perchloroethylene', 'Trichloroethylene', 'Cis-1-2-Dichlooretheen', 'Vinylchloride', '1-1-1-Trichloroethane', '1-1-Dichloroethane', '1-2-Dichloroethane', 'Tetrachlormethane', 'Trichloromethane', 'Dichloromethane', '1-2-Dichloropropane']
+VOC=['Perchloroethylene', 'Trichloroethylene', 'cis-1,2-Dichlooretheen', 'Vinylchloride', '1,1,1-Trichloroethane', '1,1-Dichloroethane', '1,2-Dichloroethane', 'Tetrachlormethane', 'Trichloromethane', 'Dichloromethane', '1,2-Dichloropropane']
 
 
 class Groundwater(Model):
@@ -85,9 +85,11 @@ class Groundwater(Model):
          'Other':{}}
         )
         for item in c:
+            logger.info(f"{item}: {c.get(item, 0)}")
             if item in PFAS and c.get(item, 0) > 0:
                 self.solution.extraneous['PFAS'].update({item: c.get(item, 0)})
             if item in VOC and c.get(item, 0) > 0:
+                logger.info(f"{item}: {c.get(item, 0)}")
                 self.solution.extraneous['VOC'].update({item: c.get(item, 0)})
 
 

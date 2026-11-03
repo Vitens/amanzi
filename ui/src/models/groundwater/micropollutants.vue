@@ -15,15 +15,15 @@
             </tr>
         </thead>
         <tbody>
-        <tr v-for="(item,index) in $project.scenario.metaData.customMicroComponents['VOC']" :key="item.name" >
+        <tr v-for="(item,index) in vocComponents" :key="item.name" >
             <td> {{ $t('general.solution.components.'+item.name) }}</td>
             <td v-html="chemform(item.chemical)"> </td>
             <td>
-                <number-input v-model="item.concentration" :min=0 :max=1000 class="cheminput" :step=1.0 :placeholder="String(0)" />
-                <select class="unitselect" v-model="item.unit">
-                        <option value="mg/l"selected>mg/l</option>
+                <number-input v-model="config.parameters[item.name]" :min=0 :max=1000 class="cheminput" :unit="item.unit" :step=1.0 :placeholder="String(0)" />
+                <select class="unitselect" :value="vocUnit(item.name)" @change="setVocUnit(item.name, $event.target.value)">
+                        <option value="mg/l">mg/l</option>
                         <option value="μg/l">μg/l</option>
-                        <option value="ng/l" >ng/l</option>
+                        <option value="ng/l">ng/l</option>
                 </select>
             </td>
             <td > {{ parseFloat(findHenryNumber(item.name, 'henry')).toFixed(4) }}</td>
@@ -282,6 +282,19 @@ export default {
             }
 
             return result;
+        },
+        vocUnit(name) {
+            const item = this.$project.scenario?.metaData?.customMicroComponents?.VOC?.find(entry => entry.name === name)
+            return item?.unit || 'mg/l'
+        },
+        setVocUnit(name, unit) {
+            const list = this.$project.scenario.metaData.customMicroComponents.VOC
+            const item = list.find(entry => entry.name === name)
+            if (item) {
+                item.unit = unit
+                return
+            }
+            list.push({ name, chemical: '', henry: 0, dw: 0, dg: 0, unit })
         },
         findHenryNumber(name, parameter) {
             for (const component of this.VOCparameters.components) {
