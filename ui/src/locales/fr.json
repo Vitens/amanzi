@@ -1271,7 +1271,13 @@
 			"design": {
 				"air_capacity": "Capacité d'air [m/s]",
 				"column_is_flooding": "La colonne est en engorgement",
+				"component": "Composant",
+				"effluent": "Sortie",
 				"hydraulics": "Hydraulique",
+				"influent": "Entrée",
+				"removal": "Élimination",
+				"unit": "Unité",
+				"voc_title": "COV",
 				"water_capacity": "Capacité d'eau [m/s]",
 				"water_quality": "Qualité de l'eau"
 			},

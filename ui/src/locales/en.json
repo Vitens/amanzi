@@ -1271,7 +1271,13 @@
 			"design": {
 				"air_capacity": "Air capacity [m/s]",
 				"column_is_flooding": "Column is flooding",
+				"component": "Component",
+				"effluent": "Effluent",
 				"hydraulics": "Hydraulic",
+				"influent": "Influent",
+				"removal": "Removal",
+				"unit": "Unit",
+				"voc_title": "VOC",
 				"water_capacity": "Water capacity [m/s]",
 				"water_quality": "Water quality"
 			},

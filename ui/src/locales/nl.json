@@ -1271,7 +1271,13 @@
 			"design": {
 				"air_capacity": "Capaciteit Lucht [m/s]",
 				"column_is_flooding": "Kolom is overstromend",
+				"component": "Component",
+				"effluent": "Effluent",
 				"hydraulics": "Hydraulisch",
+				"influent": "Influent",
+				"removal": "Verwijdering",
+				"unit": "Eenheid",
+				"voc_title": "VOC",
 				"water_capacity": "Capaciteit Water [m/s]",
 				"water_quality": "Waterkwaliteit"
 			},
