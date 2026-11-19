@@ -15,7 +15,7 @@ import Arrow from './Arrow.vue'
 import Connection from './Connection.vue'
 import waterpipe from '../directives/waterpipe.js'
 
-const SNAP_SCREEN_PX = 15
+const SNAP_SCREEN_PX = 20
 
 export default {
   name: 'Connections',
