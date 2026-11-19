@@ -49,6 +49,15 @@ function anchorDirection(anc){
 	}[anc.toLowerCase()];
 }
 
+function anchorPoint(block, anchor, offset = 0) {
+	const direction = anchorDirection(anchor);
+	return {
+		x: block.x + (direction.x + 1) * (block.width || 0) / 2 + direction.x * offset,
+		y: block.y + (direction.y + 1) * (block.height || 0) / 2 + direction.y * offset,
+		anchor
+	};
+}
+
 /**
  * @typedef Point
  * @type {Object}
@@ -313,5 +322,5 @@ function relativate(info, path){
 }
 
 export default {
-	describe,makePath,rotate,relativate
+	describe,makePath,rotate,relativate,anchorPoint
 }

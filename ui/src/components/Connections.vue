@@ -4,7 +4,7 @@
   <svg id="connections">
     <connection :connection="c" v-for="c,i in $project.scenario.connections" :key="cid(c)" :index="i" :positions="positions" @update-path="updatePath" :allpaths="allPaths" ></connection>
 
-    <connection v-if="newConnection.active" :connection="newConnection" :positions="positions" :allpaths="allPaths" ></connection>
+    <connection v-if="newConnection" :connection="newConnection" :positions="positions" :allpaths="allPaths" ></connection>
   </svg>
 
 </template>
@@ -13,6 +13,9 @@
 
 import Arrow from './Arrow.vue'
 import Connection from './Connection.vue'
+import waterpipe from '../directives/waterpipe.js'
+
+const SNAP_SCREEN_PX = 15
 
 export default {
   name: 'Connections',
@@ -21,26 +24,31 @@ export default {
 
   data() { return {
     allPaths: {},
-    connectionClass: '',
-    newConnection: {
-      active: false,
-      src: '',
-      srcAnchor: 'right',
-      customTgt: {},
-      tgt: '',
-      tgtAnchor: 'top',
-      customPath: [],
-      type: 'new',
-      booster: false
-    }
+    newConnection: null,
   }},
 
   mounted() {
     // connect to mitt global bus for events sent from model endpoints 
     this.$bus.on("start-connection", this.startConnection)
     this.$bus.on("hint-connection", this.hintConnection)
-    this.$bus.on("unhint-connection", this.unhintConnection)
     this.$bus.on("delete-key", this.deleteConnection)
+  },
+  beforeUnmount() {
+    this.$bus.off('start-connection', this.startConnection)
+    this.$bus.off('hint-connection', this.hintConnection)
+    this.$bus.off('delete-key', this.deleteConnection)
+    this.cancelConnection()
+  },
+  watch: {
+    '$project.scenario'() {
+      this.cancelConnection()
+    },
+    positions(positions) {
+      const drag = this.newConnection
+      if (drag && (!positions[drag.src] || (drag.tgt && !positions[drag.tgt]))) {
+        this.cancelConnection()
+      }
+    },
   },
   methods: {
     deleteConnection() {
@@ -56,106 +64,134 @@ export default {
       this.allPaths[cid] = {path: path, index: index}
     },
 
-    findConnections(from, anchor) {
-      return this.$project.scenario.connections.filter(conn => (conn.src == from && conn.srcAnchor == anchor))
-    },
-
     translateEvt(evt) {
       // get coordinates relative to canvas
       let bounds = document.getElementById('canvas').getBoundingClientRect()
       return {x: (evt.clientX - bounds.left) / this.display.zoom, y: (evt.clientY - bounds.top) / this.display.zoom}
     },
 
-    startConnection(args) {
+    isValidSource(uid, endpoint) {
+      return endpoint.direction === 'out' && (endpoint.multiple ||
+        !this.$project.scenario.connections.some(conn =>
+          conn.src === uid && conn.srcAnchor === endpoint.position))
+    },
 
-      // validate new connection
-      // only allow connections with 'out' direction; only single connection per anchor, except for flushing from reservoirs
-      if(args.info.direction != 'out' || (this.findConnections(args.uid, args.info.position).length > 0 && !args.info.multiple)) {
-        return false
+    isValidTarget(uid, endpoint) {
+      const { src, srcAnchor, type } = this.newConnection
+      if (uid === src || endpoint.direction !== 'in' || endpoint.type !== type) return false
+      const occupied = this.$project.scenario.connections.some(conn =>
+        conn.tgt === uid && conn.tgtAnchor === endpoint.position &&
+        (type === 'flush' || (conn.src === src && conn.srcAnchor === srcAnchor)))
+      return !occupied && !this.createsLoop(uid)
+    },
+
+    createsLoop(target) {
+      const { src, type } = this.newConnection
+      const downstream = new Map()
+      for (const conn of this.$project.scenario.connections) {
+        if (conn.type !== type) continue
+        if (!downstream.has(conn.src)) downstream.set(conn.src, [])
+        downstream.get(conn.src).push(conn.tgt)
       }
+      const reachable = new Set([target])
+      for (const uid of reachable) {
+        if (uid === src) return true
+        for (const next of downstream.get(uid) || []) reachable.add(next)
+      }
+      return false
+    },
 
-      this.newConnection.src = args.uid
-      this.newConnection.srcAnchor = args.info.position
-      this.newConnection.customTgt = this.translateEvt(args.evt)
-      this.newConnection.active = true
-      this.newConnection.type = args.info.type
+    findSnapTarget(point) {
+      // Keep the same hit radius on screen when the canvas is zoomed.
+      let closestDistance = SNAP_SCREEN_PX / this.display.zoom
+      let closest = null
+      for (const model of this.$project.scenario.models) {
+        const block = this.positions[model.uid]
+        if (!block?.width || !block.height) continue
+        for (const endpoint of this.modelspec[model.type].anchors) {
+          const anchor = waterpipe.anchorPoint(block, endpoint.position)
+          const distance = Math.hypot(anchor.x - point.x, anchor.y - point.y)
+          if (distance < closestDistance && this.isValidTarget(model.uid, endpoint)) {
+            closest = { uid: model.uid, position: endpoint.position }
+            closestDistance = distance
+          }
+        }
+      }
+      return closest
+    },
 
+    startConnection({ evt, uid, info }) {
+      if (this.newConnection || !this.isValidSource(uid, info)) return
+      this.newConnection = {
+        active: true,
+        src: uid,
+        srcAnchor: info.position,
+        sourceEndpoint: info,
+        startX: evt.clientX,
+        startY: evt.clientY,
+        type: info.type,
+        tgt: '',
+        tgtAnchor: 'top',
+        customTgt: this.translateEvt(evt),
+      }
+      this.$bus.emit('connection-highlight', this.newConnection)
       document.addEventListener('mousemove', this.moveConnection)
       document.addEventListener('mouseup', this.finishConnection)
+      document.addEventListener('keydown', this.cancelOnEscape)
+      window.addEventListener('blur', this.cancelConnection)
     },
+
     moveConnection(evt) {
+      if (!(evt.buttons & 1)) {
+        this.cancelConnection()
+        return
+      }
       evt.preventDefault()
-      this.newConnection.customTgt = this.translateEvt(evt)
-    },
-    hintConnection(args) {
-      if(!this.newConnection.active) {
-        // check if new connections are allowed from that endpoint
-        let valid = (args.info.direction == 'out' && (this.findConnections(args.uid, args.info.position).length == 0 || args.info.multiple))
-
-        this.$bus.emit('valid-endpoint', valid)
-        return
-      }
-      // only allow single flush connections
-      if(args.info.type == 'flush' && this.findConnections(args.uid, args.info.position).length > 0) {
-        this.$bus.emit('valid-endpoint', false)
-        return
-      }
-
-
-      if(args.info.type == this.newConnection.type && args.info.direction == 'in' && !this.checkForLoop(args)) {
-        this.checkForLoop(args)
-        this.$bus.emit('valid-endpoint', true)
-        this.newConnection.tgtAnchor = args.info.position
-        this.newConnection.tgt = args.uid
-      } else {
-        this.$bus.emit('valid-endpoint', false)
-      }
-    },
-    unhintConnection(args) {
-      this.newConnection.tgt = ""
+      const point = this.translateEvt(evt)
+      const snap = this.findSnapTarget(point)
+      const drag = this.newConnection
+      const tgt = snap?.uid ?? ''
+      const tgtAnchor = snap?.position ?? 'top'
+      const targetChanged = tgt !== drag.tgt || tgtAnchor !== drag.tgtAnchor
+      Object.assign(drag, { tgt, tgtAnchor, customTgt: snap ? null : point })
+      if (targetChanged) this.$bus.emit('connection-highlight', drag)
     },
 
-    checkForLoop(args) {
-      // check if the new connection makes a loop
-      // get all connected blocks downstream
-      var allConnectedModels = [this.newConnection.src]
-
-      let walk = function(uid, type) {
-        // walk through all downstream connections to find all connected models
-        let from = this.$project.scenario.connections.filter(conn => (conn.tgt == uid && conn.type == type))
-        for(var conn of from) {
-          allConnectedModels.push(conn.src)
-          walk(conn.src, conn.type)
-        }
-      }.bind(this)
-
-      walk(this.newConnection.src, args.info.type)
-      // fail if connection target is already in connected list
-      return allConnectedModels.includes(args.uid)
-
+    hintConnection({ uid, info }) {
+      const valid = this.newConnection ? this.isValidTarget(uid, info) : this.isValidSource(uid, info)
+      this.$bus.emit('valid-endpoint', { uid, position: info.position, valid })
     },
 
     finishConnection(evt) {
+      if (evt.button !== 0) return
       evt.preventDefault()
-      this.newConnection.active = false
-      this.$bus.emit('connection-stop')
+      const drag = this.newConnection
+      // A click on the source alone shouldn't connect a nearby block.
+      const moved = evt.clientX !== drag.startX || evt.clientY !== drag.startY
+      const snap = moved && this.findSnapTarget(this.translateEvt(evt))
+      this.cancelConnection()
+      if (!snap || !this.isValidSource(drag.src, drag.sourceEndpoint)) return
 
-      if(this.newConnection.tgt != '') {
-        let newConnection = _.cloneDeep(this.newConnection)
-        delete newConnection.customTgt
-        delete newConnection.active
-        // create undo state
-        this.$project.scenario.$pushUndo()
-
-        this.$project.scenario.connections.push(newConnection)
-        // set unsolved
-        this.$project.scenario.unsolved = true
-      }
-      document.removeEventListener('mousemove', this.moveConnection)
-      document.removeEventListener('mouseup', this.finishConnection)
+      const scenario = this.$project.scenario
+      scenario.$pushUndo()
+      scenario.addConnection(drag.src, snap.uid, drag.srcAnchor, snap.position, drag.type)
+      scenario.unsolved = true
+      scenario.unsaved = true
     },
 
+    cancelOnEscape(evt) {
+      if (evt.key === 'Escape') this.cancelConnection()
+    },
 
+    cancelConnection() {
+      if (!this.newConnection) return
+      this.newConnection = null
+      this.$bus.emit('connection-highlight', null)
+      document.removeEventListener('mousemove', this.moveConnection)
+      document.removeEventListener('mouseup', this.finishConnection)
+      document.removeEventListener('keydown', this.cancelOnEscape)
+      window.removeEventListener('blur', this.cancelConnection)
+    },
   }
 
 }

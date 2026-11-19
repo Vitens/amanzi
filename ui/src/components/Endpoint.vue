@@ -1,8 +1,8 @@
 <template>
   <div 
-    class="endpoint" :class="[info.position, info.type, endpointClass]" 
+    class="endpoint" :class="[info.position, info.type, endpointClass, dragRole]"
     @mousedown="startConnection" @mouseenter="hintConnection" @mouseleave="unhintConnection">
-    <div class="endpoint-circle" v-if="unconnected"></div>
+    <div class="endpoint-circle" v-if="unconnected || dragRole"></div>
   </div>
 </template>
 
@@ -10,10 +10,16 @@
 export default {
   props: ['uid', 'info', 'connected'],
   data() { return {
-    endpointClass: true 
+    endpointClass: '',
+    dragRole: '',
   }},
   mounted() {
-    this.$bus.on("valid-endpoint", (val) => this.endpointClass = val ? 'valid' : 'invalid')
+    this.$bus.on('valid-endpoint', this.setValidity)
+    this.$bus.on('connection-highlight', this.highlightConnection)
+  },
+  beforeUnmount() {
+    this.$bus.off('valid-endpoint', this.setValidity)
+    this.$bus.off('connection-highlight', this.highlightConnection)
   },
   computed: {
     unconnected() {
@@ -22,8 +28,23 @@ export default {
     }
   },
   methods: {
+    setValidity({ uid, position, valid }) {
+      if (this.uid === uid && this.info.position === position) {
+        this.endpointClass = valid ? 'valid' : 'invalid'
+      }
+    },
+    highlightConnection(drag) {
+      this.dragRole = ''
+      if (!drag) return
+      if (this.uid === drag.src && this.info.position === drag.srcAnchor) {
+        this.dragRole = 'source'
+      } else if (this.uid === drag.tgt && this.info.position === drag.tgtAnchor) {
+        this.dragRole = 'target'
+      }
+    },
     startConnection(evt) {
       evt.stopPropagation()
+      if (evt.button !== 0) return
       evt.preventDefault()
       this.$bus.emit("start-connection", {evt: evt, uid: this.uid, info: this.info})
     },
@@ -31,9 +52,8 @@ export default {
       evt.stopPropagation()
       this.$bus.emit("hint-connection", {uid: this.uid, info: this.info})
     },
-    unhintConnection(evt) {
-      evt.stopPropagation()
-      this.$bus.emit("unhint-connection", {uid: this.uid})
+    unhintConnection() {
+      this.endpointClass = ''
     }
   }
 }
@@ -46,6 +66,14 @@ export default {
   height: 8px;
   background: #666;
   z-index: 12;
+}
+.endpoint::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+.endpoint.source, .endpoint.target {
+  z-index: 14;
 }
 .endpoint:hover {
   background: #F88;
@@ -86,6 +114,10 @@ export default {
   pointer-events: none;
   animation: 1s ease-in-out 0s infinite alternate pulse;
   background-color: rgba(255, 0, 0, 0.1);
+}
+.endpoint.source .endpoint-circle, .endpoint.target .endpoint-circle {
+  border-color: #16783d;
+  background-color: rgba(22, 120, 61, 0.15);
 }
 /* pulse red */
 @keyframes pulse {

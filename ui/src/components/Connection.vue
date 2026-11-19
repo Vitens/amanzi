@@ -106,6 +106,7 @@ export default {
     updateIntersections() {
 
       this.intersections = []
+      if (this.connection.active) return
 
       for (var cid in this.allpaths) {
         if(this.allpaths[cid].index >= this.index) { continue }
@@ -234,17 +235,7 @@ export default {
       return "ew"
     },
     getAnchor(block, anchor) {
-      let model = this.positions[block]
-
-      let width = model.width ? model.width : 0;
-      let height = model.height ? model.height : 0;
-
-      var offsetX = {'left': 0, 'right': 1, 'top': 0.5, 'bottom': 0.5}
-      var offsetY = {'left': 0.5, 'right': 0.5, 'top': 0, 'bottom': 1}
-      var constX = {'left': -5, 'right': 5, 'top': 0, 'bottom': 0}
-      var constY = {'left': 0, 'right': 0, 'top': -5, 'bottom': 5}
-
-      return {x: model.x + offsetX[anchor]*width + constX[anchor], y: model.y+offsetY[anchor]*height + constY[anchor], anchor: anchor}
+      return waterpipe.anchorPoint(this.positions[block], anchor, 5)
     }
 
   },
@@ -257,7 +248,8 @@ export default {
     pathStr() {
       this.$emit('update-path', this.cid, this.path, this.index)
       // update connection value midpoint
-      this.$nextTick(() =>{ 
+      this.$nextTick(() =>{
+        if (!this.$refs.path) return
         var length = this.$refs.path.getTotalLength()
         var center = this.$refs.path.getPointAtLength(length * this.textOffset)
         this.midPoint = {x:center.x, y: center.y}
@@ -288,7 +280,7 @@ export default {
       return true
     },
     showText() {
-      if(!this.$interface.display.flows) { return false }
+      if(this.connection.active || !this.$interface.display.flows) { return false }
 
       if(this.src.y == this.tgt.y) {
         return Math.abs(this.src.x - this.tgt.x) > 40
@@ -303,7 +295,7 @@ export default {
              this.connection.tgt+" ("+this.connection.type+")"
     },
     booster() {
-      if(!this.$interface.display.boosters) { return false }
+      if(this.connection.active || !this.$interface.display.boosters) { return false }
 
       if(!this.$runtime.solveState.connections || !this.$runtime.solveState.connections[this.cid]) {
         return false
@@ -351,7 +343,7 @@ export default {
       return this.getAnchor(this.connection.src, this.connection.srcAnchor)
     },
     tgt() {
-      if(this.connection.customTgt && this.connection.customTgt.x) {
+      if(this.connection.active && this.connection.customTgt) {
         return {x: this.connection.customTgt.x, y: this.connection.customTgt.y, anchor: this.connection.tgtAnchor}
       }
       return this.getAnchor(this.connection.tgt, this.connection.tgtAnchor)
